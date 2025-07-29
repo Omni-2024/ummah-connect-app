@@ -5,9 +5,9 @@ spring:
   application:
     name: auth-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/authdb
-    username: postgres
-    password: yourpassword
+    url: jdbc:postgresql://localhost:1000/users
+    username: admin
+    password: ummah-auth-postgres
   jpa:
     hibernate:
       ddl-auto: update
