@@ -1,11 +1,11 @@
 server:
-  port: 8081
+  port: 8082
 
 spring:
   application:
-    name: auth-service
+    name: course-service
   datasource:
-    url: jdbc:postgresql://localhost:1000/users
+    url: jdbc:postgresql://localhost:1000/courses
     username: admin
     password: ummah-auth-postgres
   jpa:

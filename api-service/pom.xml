@@ -12,6 +12,7 @@
     <name>Api-service</name>
 
     <modules>
+        <module>api-gateway</module>
         <module>auth-service</module>
         <module>course-service</module>
     </modules>
