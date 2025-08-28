@@ -1,32 +1,44 @@
+"use client";
+
 import Image from "next/image";
-import styles from "./page.module.css";
 import Header from "../components/Header";
+import { Flex, Text, Button } from "@radix-ui/themes";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <Header/>
-      <main className={styles.main}>
-        <h1>Welcome to Next.js 🚀</h1>
+    <Flex direction="column" className="min-h-screen" align="center" gap="6" style={{ padding: "2rem" }}>
+      {/* Header */}
+      <Header />
+
+      {/* Main content */}
+      <Flex direction="column" gap="4" align="center">
+        <Text size="7" weight="bold">
+          Welcome to Next.js 🚀
+        </Text>
+
         <Image
-          className={styles.logo}
           src="/next.svg"
           alt="Next.js logo"
           width={180}
           height={38}
           priority
         />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-      </main>
 
-      <footer className={styles.footer}>
-        <p>Built with ❤️ using Next.js</p>
-      </footer>
-    </div>
+        <Flex direction="column" gap="2" align="start">
+          <Text>
+            Get started by editing <code>src/app/page.tsx</code>.
+          </Text>
+        </Flex>
+
+        <Button onClick={() => alert("Radix Button clicked!")}>
+          Try a Radix Button
+        </Button>
+      </Flex>
+
+      {/* Footer */}
+      <Flex justify="center" style={{ marginTop: "auto" }}>
+        <Text>Built with ❤️ using Next.js</Text>
+      </Flex>
+    </Flex>
   );
 }
