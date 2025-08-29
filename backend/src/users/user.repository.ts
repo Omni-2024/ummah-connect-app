@@ -16,12 +16,9 @@ export  class UserRepository {
   async register(registerDto: RegisterDto, token: string): Promise<UserEntity> {
     try {
       const newUser = this.userRepository.create(registerDto);
-      console.log("ttttt",newUser);
       await newUser.hashPassword();
       newUser.token = token;
-      console.log("reached");
       newUser.signinMethod = SigninMethod.EMAIL;
-      console.log("new ",newUser);
       return await this.userRepository.save(newUser);
     } catch (error) {
       throw error;

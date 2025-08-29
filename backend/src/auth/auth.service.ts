@@ -1,4 +1,3 @@
-// src/auth/auth.service.ts
 import {
   BadRequestException,
   ForbiddenException,
@@ -20,6 +19,7 @@ import { SigninMethod, UserRole } from '../users/entities/abstract.user.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { UserRepository } from '../users/user.repository';
 import { ServiceResponseDto } from '../common/types/service-response-dto';
+import { EmailService } from '../common/email/email.service';
 
 type AtCfg = { atSecret: string; atExpires: string };
 type RtCfg = { rtSecret: string; rtExpires: string };
@@ -32,11 +32,14 @@ export class AuthService {
   private readonly verifyExpires: string;
   private readonly appBaseUrl: string;
 
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly userRepo: UserRepository,
-  ) {
+    private readonly emailService: EmailService
+
+) {
     this.accessToken = {
       atSecret: this.config.get<string>('JWT_ACCESS_SECRET')!,
       atExpires: this.config.get<string>('JWT_ACCESS_EXPIRES') || '15m',
@@ -46,8 +49,8 @@ export class AuthService {
       rtExpires: this.config.get<string>('JWT_REFRESH_EXPIRES') || '7d',
     };
     this.verifySecret =
-      this.config.get<string>('JWT_VERIFY_SECRET') || this.refreshTokenCfg.rtSecret;
-    this.verifyExpires = this.config.get<string>('JWT_VERIFY_EXPIRES') || '15m';
+      this.config.get<string>('JWT_VERIFY_SECRET')!;
+    this.verifyExpires = this.config.get<string>('JWT_VERIFY_EXPIRES') || '1d';
     this.appBaseUrl = this.config.get<string>('APP_BASE_URL') || '';
   }
 
@@ -70,33 +73,48 @@ export class AuthService {
         { expiresIn: this.verifyExpires, secret: this.verifySecret },
       );
 
-      console.log("Email",emailToken);
+      const newUser:UserEntity = await this.userRepo.register(registerDto, emailToken);
 
-      const app:UserEntity =await this.userRepo.register(registerDto, emailToken);
-      return this.generateToken(app);
-
+      const link =`${this.appBaseUrl}/verify-email?token=${emailToken}`
 
 
+      await this.emailService.sendEmailConformation(
+      {
+        name:newUser.name,
+        email,
+        link
+      })
 
+      // const customer: CreateCustomerDto = {
+      //   userId: newUser.id,
+      //   email: newUser.email,
+      //   name: newUser.name,
+      // };
+      //
+      // await this.stripeService.createCustomer(customer);
 
-
-      // return { status: HttpStatus.CREATED };
+      return { status: HttpStatus.CREATED };
     } catch (error) {
       return { status: HttpStatus.BAD_REQUEST, error };
     }
   }
 
-  async verifyEmail(token: string): Promise<void> {
+  async verifyEmail(token: string): Promise<ServiceResponseDto<void>> {
     const { email } = await this.jwtService.verifyAsync<{ email: string }>(token, {
       secret: this.verifySecret,
     });
     const user = await this.userRepo.findOneByEmail(email);
     if (!user) throw new NotFoundException('User not found');
-    if (user.token !== token) throw new BadRequestException('Invalid or expired token');
+    if (token === user.token) {
+      user.verified = true;
+      user.token = '';
+      await this.userRepo.update(user);
 
-    user.verified = true;
-    user.token = '';
-    await this.userRepo.update(user);
+      //TODO : Welcome Email
+      return { status: HttpStatus.OK };
+    }
+    return { status: HttpStatus.NOT_ACCEPTABLE };
+
   }
 
   async login(dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
@@ -171,19 +189,14 @@ export class AuthService {
     try {
       const { rtSecret } = this.refreshTokenCfg;
 
-      // 1) Verify the RT signature to get the payload
       const payload: JwtPayload = await this.jwtService.verifyAsync(token, { secret: rtSecret });
 
-      // 2) Fetch user and compare provided RT with stored hash
       const user = await this.userRepo.findOneById(payload.id);
-      if (!user) throw new NotFoundException('User not found');
-      if (!user.token) return { status: HttpStatus.UNAUTHORIZED, error: 'No active session' };
-
-      const matches = await bcrypt.compare(token, user.token);
-      if (!matches) return { status: HttpStatus.UNAUTHORIZED, error: 'Invalid refresh token' };
-
-      // 3) Rotate RT and return new pair
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
       return this.generateToken(user);
+
     } catch (error) {
       return { status: HttpStatus.UNAUTHORIZED, error };
     }
@@ -191,9 +204,7 @@ export class AuthService {
 
   async validateToken(token: string): Promise<ServiceResponseDto<JwtPayload>> {
     try {
-      const payload: JwtPayload = await this.jwtService.verifyAsync(token, {
-        secret: this.accessToken.atSecret,
-      });
+      const payload: JwtPayload = await this.jwtService.verifyAsync(token)
       const user = await this.userRepo.findOneVerifiedById(payload.id);
       if (!user) throw new NotFoundException('User not found');
       return { status: HttpStatus.OK, data: { email: user.email, id: user.id, role: user.role } };
@@ -204,36 +215,21 @@ export class AuthService {
     }
   }
 
-  // async logout(userId: string): Promise<ServiceResponseDto<void>> {
-  //   await this.userRepo.setRefreshToken(userId, null);
-  //   return { status: HttpStatus.OK };
-  // }
-
-  private async issueTokens(user: UserEntity) {
-    const atPayload: JwtPayload = { id: user.id, email: user.email, role: user.role };
-    const { atSecret, atExpires } = this.accessToken;
-    const { rtSecret, rtExpires } = this.refreshTokenCfg;
-
-    const token = await this.jwtService.signAsync(atPayload, {
-      secret: atSecret,
-      expiresIn: atExpires,
-    });
-    const refreshToken = await this.jwtService.signAsync(atPayload, {
-      secret: rtSecret,
-      expiresIn: rtExpires,
-    });
-    return { token, refreshToken };
-  }
-
-  private async saveRt(userId: string, refreshToken: string) {
-    const token = await bcrypt.hash(refreshToken, 12);
-    await this.userRepo.setRefreshToken(userId, token);
-  }
 
   async generateToken(user: UserEntity): Promise<ServiceResponseDto<LoginResponseDto>> {
     try {
-      const { token, refreshToken } = await this.issueTokens(user);
-      await this.saveRt(user.id, refreshToken);
+      const { rtSecret,rtExpires } = this.refreshTokenCfg;
+
+      const payload: JwtPayload = {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      };
+      const token = await this.jwtService.signAsync(payload);
+      const refreshToken = await this.jwtService.signAsync(payload, {
+        expiresIn:rtExpires,
+        secret:rtSecret,
+      });
 
       return {
         status: HttpStatus.OK,

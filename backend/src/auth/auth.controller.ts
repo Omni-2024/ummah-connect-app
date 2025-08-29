@@ -37,4 +37,10 @@ export class AuthController {
     return await this.auth.refresh(body.token);
   }
 
+  @Public()
+  @Post('verify-email')
+  async verifyEmail(@Body() body: { token: string }) {
+    return await this.auth.verifyEmail(body.token);
+  }
+
 }

@@ -38,7 +38,6 @@ export interface UserSignInFnRes {
   isFirstLogin: boolean;
 }
 
-/** Post - '/auth/verify-email' - verify user email adress */
 export const verifyEmailFn = async (token: string) => {
   const res = await Request<VerifyEmailFnRes>({
     method: "post",

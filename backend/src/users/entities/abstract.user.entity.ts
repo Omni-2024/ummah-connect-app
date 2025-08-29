@@ -1,16 +1,3 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsDate,
-  IsEmail,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsEnum,
-} from 'class-validator';
-import { Type } from 'class-transformer';
 import { AbstractBaseEntity } from './abstract.base.entity';
 
 export enum UserRole {
@@ -21,6 +8,13 @@ export enum UserRole {
   BUSINESS_ADMIN = 'business_admin',
   BUSINESS_USER = 'business_user',
 }
+
+export type JwtPayload ={
+  id: string;
+  email: string;
+  role: UserRole;
+}
+
 
 export enum SigninMethod {
   EMAIL = 'email',
