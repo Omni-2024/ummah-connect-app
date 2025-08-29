@@ -14,7 +14,7 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  register(@Body() dto: RegisterDto): Promise<ServiceResponseDto<void>> {
+  register(@Body() dto: RegisterDto): Promise<ServiceResponseDto<LoginResponseDto>> {
     return this.auth.register(dto);
   }
 

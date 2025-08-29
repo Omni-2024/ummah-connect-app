@@ -51,7 +51,7 @@ export class AuthService {
     this.appBaseUrl = this.config.get<string>('APP_BASE_URL') || '';
   }
 
-  async register(registerDto: RegisterDto): Promise<ServiceResponseDto<void>> {
+  async register(registerDto: RegisterDto): Promise<ServiceResponseDto<LoginResponseDto>> {
     try {
       const { email } = registerDto;
 
@@ -72,12 +72,15 @@ export class AuthService {
 
       console.log("Email",emailToken);
 
-      const app =await this.userRepo.register(registerDto, emailToken);
+      const app:UserEntity =await this.userRepo.register(registerDto, emailToken);
+      return this.generateToken(app);
 
 
-      console.log(app);
 
-      return { status: HttpStatus.CREATED };
+
+
+
+      // return { status: HttpStatus.CREATED };
     } catch (error) {
       return { status: HttpStatus.BAD_REQUEST, error };
     }
