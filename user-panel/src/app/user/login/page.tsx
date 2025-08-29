@@ -7,8 +7,6 @@ import { generalUserSignUpFn } from "@/lib/endpoints/authenticationFns";
 import { useRouter } from "next/navigation";
 import { login } from "@/features/auth/context/AuthState";
 
-
-// --- Types ---
 interface FormState {
   username: string;
   email: string;
