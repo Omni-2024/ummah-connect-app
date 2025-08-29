@@ -1,20 +1,26 @@
-// src/auth/auth.module.ts
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
-import { JwtStrategy } from './jwt/jwt.strategy';
-import { JwtRefreshStrategy } from './jwt/jwt-refresh.strategy';
+import { JwtAtStrategy } from './jwt/jwt.strategy';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './guard/jwt-auth.guard';
+import { RolesGuard } from './guard/role.guard';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
-    JwtModule.register({}), // dynamic config via service/env
+    JwtModule.register({}),
   ],
-  providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
+  providers: [
+    AuthService,
+    JwtAtStrategy,
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

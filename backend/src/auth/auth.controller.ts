@@ -1,31 +1,40 @@
-// src/auth/auth.controller.ts
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from '../users/dto/login.dto';
-import { JwtRefreshAuthGuard } from '../common/guards/jwt-auth.guard';
-import { GetUser } from '../common/decorators/get-user.decorator';
+import { ServiceResponseDto } from '../common/types/service-response-dto';
+import { LoginResponseDto } from './types/login-response.dto';
+import { Public } from './decorator/public.decorator';
+import { RegisterDto } from '../users/dto/register.dto';
+import { Roles } from './decorator/role.decorator';
+import { UserRole } from '../users/entities/abstract.user.entity';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
+  @Public()
   @Post('register')
-  register(@Body() dto: CreateUserDto) {
+  register(@Body() dto: RegisterDto): Promise<ServiceResponseDto<void>> {
     return this.auth.register(dto);
   }
 
+  @Public()
   @Post('login')
-  login(@Body() dto: LoginDto) {
-    return this.auth.login(dto.email, dto.password);
+  @Roles([UserRole.USER])
+  login(@Body() dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
+    return this.auth.login(dto);
   }
 
-  @UseGuards(JwtRefreshAuthGuard)
-  @Post('refresh')
-  refresh(@GetUser('sub') sub: string) {
-    // JwtRefreshAuthGuard will attach payload incl. refresh token validation
-    return this.auth.refresh(sub, (null as any)); // token is validated in guard/strategy
+  @Public()
+  @Post('login-admin')
+  loginAdmin(@Body() dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
+    return this.auth.loginAdmin(dto);
   }
 
-  // optional: you can also expose a logout route guarded by access token
+  @Public()
+  @Post('refresh-token')
+  async refreshToken(@Body() body: { token: string }) {
+    return await this.auth.refresh(body.token);
+  }
+
 }

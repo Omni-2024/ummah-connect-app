@@ -1,129 +1,130 @@
-// src/users/entities/user.entity.ts
 import {
-  Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn,
-  DeleteDateColumn, VersionColumn
+  BaseEntity,
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  Index,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  VersionColumn,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { Exclude } from 'class-transformer';
+import { AbstractUserEntity, SigninMethod, UserRole } from './abstract.user.entity';
 
-export enum UserRole {
-  USER = 'USER',
-  ADMIN = 'ADMIN',
-}
+@Entity('user')
+export class UserEntity extends BaseEntity implements AbstractUserEntity {
+  async comparePassword(password: string) {
+    return await bcrypt.compare(password, this.password);
+  }
 
-export enum SignInMethod {
-  EMAIL = 'EMAIL',
-  GOOGLE = 'GOOGLE',
-  GITHUB = 'GITHUB',
-  APPLE = 'APPLE',
-}
+  async hashPassword() {
+    this.salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, this.salt);
+  }
 
-@Entity({ name: 'users' })
-export class User {
   @PrimaryGeneratedColumn('uuid', { name: '_id' })
-  _id: string;
+  id: string;
 
   @CreateDateColumn({ name: 'created_at' })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'updated_at' })
-  updated_at: Date;
+  updatedAt: Date;
 
-  @DeleteDateColumn({ name: 'deleted_at', nullable: true })
-  deleted_at?: Date | null;
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt: Date;
 
   @VersionColumn({ name: '_v' })
-  _v: number;
+  version: number;
 
-  @Column({ type: 'varchar', length: 150, nullable: true })
-  name?: string;
+  @Column()
+  name: string;
 
-  @Column({ type: 'varchar', length: 190, unique: true })
+  @Index('email-index', { unique: true })
+  @Column({ unique: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 255, select: false })
+  @Exclude({ toPlainOnly: true })
+  @Column({ nullable: true, default: null })
   password: string;
 
-  // Store a hashed refresh token (so if DB leaks, tokens can’t be reused).
-  @Column({ type: 'text', nullable: true, select: false })
-  token?: string | null;
+  @Column({ nullable: true, default: null })
+  token: string;
 
-  @Column({ type: 'varchar', length: 20, default: UserRole.USER })
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
 
-  // bcrypt salt string used to hash the password
-  @Column({ type: 'varchar', length: 120, select: false })
+  @Exclude({ toPlainOnly: true })
+  @Column({ nullable: true, default: null })
   salt: string;
 
-  @Column({ type: 'boolean', default: true })
+  @Column({ default: true })
   active: boolean;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ default: false })
   verified: boolean;
 
-  @Column({ type: 'varchar', length: 120, nullable: true })
-  stripe_id?: string | null;
+  @Column({ name: 'stripe_id', nullable: true, default: null })
+  stripeId: string;
 
-  @Column({ type: 'text', array: true, nullable: true })
-  designations?: string[] | null;
+  @Column({ nullable: true, default: null, type: 'simple-array' })
+  designations: string[];
 
-  @Column({ type: 'text', array: true, nullable: true })
-  interests?: string[] | null;
+  @Column({ nullable: true, default: null, type: 'simple-array' })
+  interests: string[];
 
-  @Column({ type: 'text', nullable: true })
-  profile_image?: string | null;
+  @Column({ nullable: true, default: null, name: 'profile_image' })
+  profileImage: string;
 
-  @Column({ type: 'text', array: true, nullable: true })
-  specializations?: string[] | null;
+  @Column({ nullable: true, default: null })
+  specializations: string;
 
-  @Column({ type: 'varchar', length: 150, nullable: true })
-  company?: string | null;
+  @Column({ nullable: true, default: null })
+  company: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  country?: string | null;
+  @Column({ nullable: true, default: null })
+  country: string;
 
-  @Column({ type: 'float', default: 0 })
-  average_score: number;
+  @Column({
+    nullable: true,
+    default: null,
+    name: 'average_score',
+    type: 'real',
+  })
+  averageScore: number;
 
-  @Column({ type: 'int', default: 0 })
-  total_cme: number;
+  @Column({ nullable: true, default: null, name: 'total_cme', type: 'real' })
+  totalCme: number;
 
-  @Column({ type: 'int', default: 0 })
-  total_courses: number;
+  @Column({ nullable: true, default: null, name: 'total_courses' })
+  totalCourses: number;
 
-  @Column({ type: 'int', default: 0 })
-  total_courses_completed: number;
+  @Column({ nullable: true, default: null, name: 'total_courses_completed' })
+  totalCoursesCompleted: number;
 
-  @Column({ type: 'int', default: 0 })
-  total_active_courses: number;
+  @Column({ nullable: true, default: null, name: 'total_active_courses' })
+  totalActiveCourses: number;
 
-  @Column({ type: 'int', default: 0 })
-  total_webinars: number;
+  @Column({ default: true, name: 'is_first_login' })
+  isFirstLogin: boolean;
 
-  @Column({ type: 'int', default: 0 })
-  total_webinars_completed: number;
+  @Column({
+    type: 'enum',
+    enum: SigninMethod,
+    default: SigninMethod.SOCIAL,
+    name: 'signin_method',
+  })
+  signinMethod: SigninMethod;
 
-  @Column({ type: 'int', default: 0 })
-  total_active_webinars: number;
+  @Exclude({ toPlainOnly: true })
+  @Column({ nullable: true, default: null })
+  otp: string;
 
-  @Column({ type: 'boolean', default: true })
-  is_first_login: boolean;
+  @Column({ name: 'otp_expires', nullable: true, default: null })
+  otpExpires: Date;
 
-  @Column({ type: 'varchar', length: 20, default: SignInMethod.EMAIL })
-  signin_method: SignInMethod;
-
-  @Column({ type: 'varchar', length: 10, nullable: true, select: false })
-  otp?: string | null;
-
-  @Column({ type: 'timestamptz', nullable: true, select: false })
-  otp_expires?: Date | null;
-
-//   // Note: You listed both 'stripe_id' and 'stripeCustomerId'; keeping both
-//   @Column({ type: 'varchar', length: 120, nullable: true })
-//   stripeCustomerId?: string | null;
-
-    // @Column({ name: 'stripeCustomerId', type: 'varchar', length: 120, nullable: true })
-    // stripeCustomerId?: string | null;
-
-    @Column({ type: 'varchar', length: 120, nullable: true })
-    stripeCustomerId?: string | null;
-
+  @Column({ nullable: true, default: null })
+  stripeCustomerId: string;
 }

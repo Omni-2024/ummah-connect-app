@@ -2,13 +2,13 @@ version: "3.8"
 
 services:
   postgres:
-    image: postgres:15
-    container_name: ummah-auth-postgres
+    image: postgres:14
+    container_name: ummah-postgres
     restart: always
     environment:
-      POSTGRES_DB: users
+      POSTGRES_DB: ummah-connect
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: ummah-auth-postgres
+      POSTGRES_PASSWORD: ummah-postgres
     ports:
       - "1000:5432"
     volumes:

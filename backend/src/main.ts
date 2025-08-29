@@ -18,6 +18,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }));
   app.setGlobalPrefix('api');
-  await app.listen(process.env.PORT ? parseInt(process.env.PORT, 10) : 3000);
+  await app.listen(process.env.PORT ? parseInt(process.env.PORT, 10) : 3035);
 }
 bootstrap();
