@@ -1,4 +1,4 @@
-"use-client"
+"use client";
 
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import * as Label from "@radix-ui/react-label";
@@ -39,9 +39,9 @@ export default function LoginPage() {
   const validate = (): FormErrors => {
     const e: FormErrors = {};
     if (!form.username.trim()) e.username = "Username is required";
-    if (!form.email.trim()) e.email = "Email is required";
-    else if (!/^\\S+@\\S+\\.\\S+$/.test(form.email))
-      e.email = "Please enter a valid email";
+    // if (!form.email.trim()) e.email = "Email is required";
+    // else if (!/^\\S+@\\S+\\.\\S+$/.test(form.email))
+    //   e.email = "Please enter a valid email";
     if (!form.password) e.password = "Password is required";
     else if (form.password.length < 6)
       e.password = "Password must be at least 6 characters";
