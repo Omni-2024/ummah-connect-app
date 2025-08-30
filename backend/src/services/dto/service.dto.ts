@@ -1,0 +1,165 @@
+import { IsArray, IsBoolean, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { PaginatedRequestDto } from '../../users/dto/base.dto';
+
+export class CreateServiceDto {
+  @IsString()
+  title: string;
+
+
+  @IsString()
+  tagline: string;
+
+  @IsString()
+  description: string;
+
+  @IsNumber({ maxDecimalPlaces: 2 })
+  cmePoints: number;
+
+  @IsString()
+  coverImageUrl: string;
+
+  @IsString()
+  providerId: string;
+
+  @IsNumber()
+  price: number;
+
+  @IsString()
+  cmeId: string;
+
+  @IsOptional()
+  @IsInt()
+  totalReviewScore?: number;
+
+  @IsOptional()
+  @IsInt()
+  totalReviewCount?: number;
+
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  averageReviewScore?: number;
+
+  @IsOptional()
+  @IsString()
+  specialtyId?: string;
+
+  @IsOptional()
+  @IsString()
+  typeId?: string;
+
+  @IsString()
+  professionId: string;
+
+
+  @IsArray()
+  learningPoints: string[];
+
+
+  @IsNumber()
+  discount: number;
+
+  @IsBoolean()
+  discountEnabled: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  duration?: number;
+
+  @IsBoolean()
+  isPublished: boolean;
+
+  @IsBoolean()
+  isArchived: boolean;
+
+  @IsString()
+  slug: string;
+}
+
+
+export class UpdateServiceDto extends CreateServiceDto {
+
+  @IsString()
+  id: string;
+}
+
+export class FindOneServiceDto {
+  @IsString()
+  id: string;
+}
+
+export class FindServiceBySlugDto {
+
+  @IsString()
+  slug: string;
+}
+
+export class FindAllByProviderServiceDto extends PaginatedRequestDto {
+  @IsString()
+  providerId: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isPublished: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isArchived: boolean;
+}
+
+export class SearchServiceDto extends PaginatedRequestDto {
+  @IsOptional()
+  @IsString()
+  professionId?: string;
+
+  @IsOptional()
+  @IsString()
+  professionIds?: string[];
+
+  @IsOptional()
+  @IsString()
+  typeId?: string;
+
+  @IsOptional()
+  @IsString()
+  typeIds?: string[];
+
+  @IsOptional()
+  @IsString()
+  specialtyIds?: string[];
+
+  @IsOptional()
+  @IsString()
+  specialtyId?: string;
+
+  @IsOptional()
+  @IsInt()
+  lowerCmeRange?: number;
+
+
+  @IsOptional()
+  @IsInt()
+  upperCmeRange?: number;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsBoolean()
+  isPublished: boolean;
+
+  @IsBoolean()
+  isArchived: boolean;
+
+  @IsOptional()
+  @IsString()
+  providerIds?: string[];
+
+
+  @IsOptional()
+  @IsBoolean()
+  isPopular?: boolean;
+}
+
+
+
+

@@ -1,7 +1,4 @@
 "use client"
-
-import type React from "react"
-
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -29,6 +26,7 @@ import { useSnapshot } from "valtio"
 import { authState } from "@/features/auth/context/AuthState"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { log } from "console"
+import {useCurrentUser} from "@/lib/hooks/useUserInfo";
 
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -52,6 +50,11 @@ export default function AdminDashboardLayout({
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const {role,isAuthenticated,id,accessToken,refreshToken} = useAuthState();
+  const { data: currentUser, isLoading: isCurrentUserLoading } =
+      useCurrentUser();
+
+
+
 
   const handleLogout = () => {
     router.push("/admin/login")

@@ -5,6 +5,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { UserEntity } from './users/entities/user.entity';
 import { EmailModule } from './common/email/email.module';
+import { ServiceModule } from './services/services.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { EmailModule } from './common/email/email.module';
     UsersModule,
     AuthModule,
     EmailModule,
+    ServiceModule
   ],
 })
 export class AppModule {}

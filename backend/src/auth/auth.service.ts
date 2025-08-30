@@ -190,7 +190,11 @@ export class AuthService {
 
   async validateToken(token: string): Promise<ServiceResponseDto<JwtPayload>> {
     try {
-      const payload: JwtPayload = await this.jwtService.verifyAsync(token)
+      const { atSecret,atExpires } = this.accessToken;
+      const payload: JwtPayload = await this.jwtService.verifyAsync(token, {
+        secret:atSecret,
+      });
+
       const user = await this.userRepo.findOneVerifiedById(payload.id);
       if (!user) throw new NotFoundException('User not found');
       return { status: HttpStatus.OK, data: { email: user.email, id: user.id, role: user.role } };
