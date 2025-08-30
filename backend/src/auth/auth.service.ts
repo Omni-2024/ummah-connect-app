@@ -19,6 +19,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { UserRepository } from '../users/user.repository';
 import { ServiceResponseDto } from '../common/types/service-response-dto';
 import { EmailService } from '../common/email/email.service';
+import { log } from 'console';
 
 type AtCfg = { atSecret: string; atExpires: string };
 type RtCfg = { rtSecret: string; rtExpires: string };
@@ -194,13 +195,22 @@ export class AuthService {
   async generateToken(user: UserEntity): Promise<ServiceResponseDto<LoginResponseDto>> {
     try {
       const { rtSecret,rtExpires } = this.refreshTokenCfg;
+      const { atSecret,atExpires } = this.accessToken;
+
+      console.log("test0",rtSecret,rtExpires)
 
       const payload: JwtPayload = {
         id: user.id,
         email: user.email,
         role: user.role,
       };
-      const token = await this.jwtService.signAsync(payload);
+      console.log("test1",payload)
+      const token = await this.jwtService.signAsync(payload,{
+        expiresIn:atExpires,
+        secret:atSecret,
+      });
+      console.log("test2",token)
+
       const refreshToken = await this.jwtService.signAsync(payload, {
         expiresIn:rtExpires,
         secret:rtSecret,

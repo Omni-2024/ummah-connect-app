@@ -73,7 +73,7 @@ export default function LoginPage() {
                 responce.id,
                 responce.isFirstLogin,
             )
-          router.push("/");
+          // router.push("/email-send");
         },
         onError: (err) => {
           console.log(err)

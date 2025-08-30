@@ -1,14 +1,16 @@
+"use client"
 import Spinner from "@/components/base/Spinner";
 import CardWrapper from "@/features/auth/components/CardWrapper";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation"; // ✅ useSearchParams
 import { useEffect, useState } from "react";
 import Button from "@/components/base/Button";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import {verifyEmailFn} from "@/lib/endpoints/authenticationFns";
+import { verifyEmailFn } from "@/lib/endpoints/authenticationFns";
 
 const VerifyEmailRoute = () => {
     const router = useRouter();
+    const searchParams = useSearchParams(); // ✅ get URL query params
     const [isVerificationStarted, setVerificationStarted] = useState(false);
 
     const {
@@ -23,19 +25,12 @@ const VerifyEmailRoute = () => {
     });
 
     useEffect(() => {
-        if (router.isReady) {
-            let { token } = router.query;
-
-            if (Array.isArray(token)) {
-                token = token[0];
-            }
-
-            if (token) {
-                setVerificationStarted(true);
-                verifyEmail(token);
-            }
+        const token = searchParams.get("token"); // ✅ read token from ?token=...
+        if (token) {
+            setVerificationStarted(true);
+            verifyEmail(token);
         }
-    }, [router.isReady, router.query, verifyEmail]);
+    }, [searchParams, verifyEmail]);
 
     const mainText = isVerificationStarted
         ? isVerifyingEmail
@@ -98,7 +93,6 @@ const VerifyEmailRoute = () => {
                                 variant={"link"}
                                 onClick={() => {
                                     if (verifyEmailError) {
-                                        // TODO: Add support contact link
                                         router.push("/contact-support");
                                     }
                                 }}

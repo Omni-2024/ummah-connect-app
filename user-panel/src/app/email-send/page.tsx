@@ -1,6 +1,7 @@
+"use client"
 import { Sms as SmsIcon } from "iconsax-react";
 import CardWrapper from "@/features/auth/components/CardWrapper";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Button from "@/components/base/Button";
 import { useForgotPasswordState } from "@/features/auth/context/useForgotPasswordState";
 

@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -25,6 +25,10 @@ import {
   Bell,
   Shield,
 } from "lucide-react"
+import { useSnapshot } from "valtio"
+import { authState } from "@/features/auth/context/AuthState"
+import { useAuthState } from "@/features/auth/context/useAuthState"
+import { log } from "console"
 
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -47,9 +51,15 @@ export default function AdminDashboardLayout({
   const pathname = usePathname()
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const {role,isAuthenticated,id,accessToken,refreshToken} = useAuthState();
 
+
+  useEffect(()=>{
+      console.log("Yarra",role,isAuthenticated,id,accessToken,refreshToken)
+
+  },[])
   const handleLogout = () => {
-    router.push("/admin/auth/login")
+    router.push("/admin/login")
   }
 
   return (
@@ -163,12 +173,15 @@ export default function AdminDashboardLayout({
                 <Bell className="h-5 w-5" />
               </Button>
               <div className="h-6 w-px bg-border" />
+              {isAuthenticated && 
               <div className="flex items-center space-x-2">
                 <div className="h-8 w-8 rounded-full bg-destructive/10 flex items-center justify-center">
                   <Shield className="h-4 w-4 text-destructive" />
                 </div>
-                <span className="text-sm font-medium text-foreground">Administrator</span>
+                <span className="text-sm font-medium text-foreground">{role}</span>
               </div>
+              }
+              
             </div>
           </div>
         </div>

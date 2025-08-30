@@ -45,15 +45,17 @@ export default function AdminLoginPage() {
       if (!requiredRoles.includes(data.role))
           // return Toast.error("Invalid email or password");
 
-        setLogin({
-          accessToken: data.token,
-          refreshToken: data.refreshToken ?? "",
-          role: data.role,
-          id: data.id,
-        });
+      console.log("Neeyum nanum",data)
+
+      setLogin({
+        accessToken: data.token,
+        refreshToken: data.refreshToken ?? "",
+        role: data.role,
+        id: data.id,
+      });
 
       // Toast.success(`You have successfully logged in as a ${data.role}`);
-      router.push("/dashboard");
+      router.push("/admin/dashboard");
     },
     onError: (err) => {
       if (isAxiosError(err)) {
