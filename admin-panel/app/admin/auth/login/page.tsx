@@ -10,36 +10,88 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useAdminAuth } from "@/hooks/useAuth"
+// import { useAdminAuth } from "@/hooks/useAuth"
 import { Shield } from "lucide-react"
+import {useMutation} from "@tanstack/react-query";
+import {adminSignInFn} from "@/lib/endpoints/authenticationFns";
+import {ADMIN_ROLES} from "@/lib/constants";
+import {Toast} from "@/components/ui/toast";
+import {useAuthState} from "@/features/auth/context/useAuthState";
+import {HttpStatusCode, isAxiosError} from "axios";
 
 export default function AdminLoginPage() {
   const router = useRouter()
-  const { login } = useAdminAuth()
+  const { login: setLogin } = useAuthState();
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   })
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+
+  const {
+    mutate: login,
+    isPending,
+    isSuccess,
+  } = useMutation({
+    mutationFn: adminSignInFn,
+
+    onSuccess: (data) => {
+      const requiredRoles = [
+        ADMIN_ROLES.ADMIN,
+        ADMIN_ROLES.OPERATIONAL_ADMIN,
+        ADMIN_ROLES.ROOT,
+      ];
+
+      if (!requiredRoles.includes(data.role))
+          // return Toast.error("Invalid email or password");
+
+        setLogin({
+          accessToken: data.token,
+          refreshToken: data.refreshToken ?? "",
+          role: data.role,
+          id: data.id,
+        });
+
+      // Toast.success(`You have successfully logged in as a ${data.role}`);
+      // router.push("/dashboard");
+    },
+    onError: (err) => {
+      if (isAxiosError(err)) {
+        if (err.code === "ERR_NETWORK")
+            // return Toast.error("Network error. Please try again later");
+
+          if (err.status === HttpStatusCode.Unauthorized)
+            return ""
+        // return Toast.error("Invalid email or password");
+
+        // Toast.error("An error occurred. Please try again later");
+      }
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     setError("")
 
-    try {
-      const result = await login(formData.username, formData.password)
-      if (result.success) {
-        router.push("/admin/dashboard")
-      } else {
-        setError(result.error || "Login failed")
-      }
-    } catch (err) {
-      setError("An unexpected error occurred")
-    } finally {
-      setLoading(false)
-    }
+    await login({
+      email: formData.email,
+      password: formData.password,
+    });
+
+
+
+    // try {
+    //   // const result = await login(formData.username, formData.password)
+    //   if (result.success) {
+    //     router.push("/admin/dashboard")
+    //   } else {
+    //     setError(result.error || "Login failed")
+    //   }
+    // } catch (err) {
+    //   setError("An unexpected error occurred")
+    // } finally {
+    //   setLoading(false)
+    // }
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,16 +134,16 @@ export default function AdminLoginPage() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="email">Username</Label>
                 <Input
-                  id="username"
-                  name="username"
-                  type="text"
-                  placeholder="Enter admin username"
-                  value={formData.username}
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Enter admin email"
+                  value={formData.email}
                   onChange={handleChange}
                   required
-                  disabled={loading}
+                  disabled={isPending}
                 />
               </div>
 
@@ -105,12 +157,12 @@ export default function AdminLoginPage() {
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  disabled={loading}
+                  disabled={isPending}
                 />
               </div>
 
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Signing In..." : "Access Admin Panel"}
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "Signing In..." : "Access Admin Panel"}
               </Button>
             </form>
 

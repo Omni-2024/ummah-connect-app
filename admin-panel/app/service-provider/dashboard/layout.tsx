@@ -8,7 +8,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { useProviderAuth } from "@/hooks/useAuth"
+// import { useProviderAuth } from "@/hooks/useAuth"
 import {
   LayoutDashboard,
   Briefcase,
@@ -38,11 +38,11 @@ export default function ServiceProviderDashboardLayout({
 }) {
   const pathname = usePathname()
   const router = useRouter()
-  const { logout } = useProviderAuth()
+  // const { logout } = useProviderAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
-    logout()
+    // logout()
     router.push("/service-provider/auth/login")
   }
 

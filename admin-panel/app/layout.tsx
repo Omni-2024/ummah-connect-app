@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import "./globals.css"
+import Providers from "@/app/providers";
 
 export const metadata: Metadata = {
   title: "Islamic Community Platform",
@@ -20,8 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
+      <Providers>
         <Suspense fallback={null}>{children}</Suspense>
         <Analytics />
+      </Providers>
       </body>
     </html>
   )

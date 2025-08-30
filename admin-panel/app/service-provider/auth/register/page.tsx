@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useProviderAuth } from "@/hooks/useAuth"
+// import { useProviderAuth } from "@/hooks/useAuth"
 
 // Mock categories - in real app, these would come from API
 const SERVICE_CATEGORIES = [
@@ -30,7 +30,7 @@ const SERVICE_CATEGORIES = [
 
 export default function ServiceProviderRegisterPage() {
   const router = useRouter()
-  const { register } = useProviderAuth()
+  // const { register } = useProviderAuth()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -68,35 +68,35 @@ export default function ServiceProviderRegisterPage() {
     }
 
     try {
-      const result = await register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        phone: formData.phone,
-        category: formData.category,
-        description: formData.description,
-      })
+      // const result = await register({
+      //   name: formData.name,
+      //   email: formData.email,
+      //   password: formData.password,
+      //   phone: formData.phone,
+      //   category: formData.category,
+      //   description: formData.description,
+      // })
 
-      if (result.success) {
-        setError("")
-        // Reset form
-        setFormData({
-          name: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-          phone: "",
-          category: "",
-          description: "",
-        })
-        // Show success alert
-        alert(
-          "✅ Registration Successful!\n\nYour application has been submitted and is pending admin approval. You will receive an email notification once your account is approved.\n\nThank you for your patience!",
-        )
-        router.push("/") // ✅ Redirect to homepage
-      } else {
-        setError(result.error || "Registration failed")
-      }
+      // if (result.success) {
+      //   setError("")
+      //   // Reset form
+      //   setFormData({
+      //     name: "",
+      //     email: "",
+      //     password: "",
+      //     confirmPassword: "",
+      //     phone: "",
+      //     category: "",
+      //     description: "",
+      //   })
+      //   // Show success alert
+      //   alert(
+      //     "✅ Registration Successful!\n\nYour application has been submitted and is pending admin approval. You will receive an email notification once your account is approved.\n\nThank you for your patience!",
+      //   )
+      //   router.push("/") // ✅ Redirect to homepage
+      // } else {
+      //   setError(result.error || "Registration failed")
+      // }
     } catch (err) {
       setError("An unexpected error occurred")
     } finally {

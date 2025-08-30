@@ -14,7 +14,9 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  register(@Body() dto: RegisterDto): Promise<ServiceResponseDto<LoginResponseDto>> {
+  register(
+    @Body() dto: RegisterDto,
+  ): Promise<ServiceResponseDto<LoginResponseDto>> {
     return this.auth.register(dto);
   }
 
@@ -27,8 +29,10 @@ export class AuthController {
 
   @Public()
   @Post('login-admin')
-  loginAdmin(@Body() dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
-    return this.auth.loginAdmin(dto);
+  async loginAdmin(
+    @Body() dto: LoginDto,
+  ): Promise<ServiceResponseDto<LoginResponseDto>> {
+    return  await this.auth.loginAdmin(dto);
   }
 
   @Public()
@@ -42,5 +46,4 @@ export class AuthController {
   async verifyEmail(@Body() body: { token: string }) {
     return await this.auth.verifyEmail(body.token);
   }
-
 }

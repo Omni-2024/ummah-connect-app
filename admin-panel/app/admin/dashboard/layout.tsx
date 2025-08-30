@@ -8,7 +8,6 @@ import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { useAdminAuth } from "@/hooks/useAuth"
 import {
   LayoutDashboard,
   Users,
@@ -47,11 +46,9 @@ export default function AdminDashboardLayout({
 }) {
   const pathname = usePathname()
   const router = useRouter()
-  const { logout } = useAdminAuth()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const handleLogout = () => {
-    logout()
     router.push("/admin/auth/login")
   }
 
