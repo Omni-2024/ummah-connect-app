@@ -12,7 +12,7 @@ const Request = axios.create({
 
 const clearAuthStateAndRedirect = () => {
     localStorage.removeItem("authState");
-    window.location.href = "/login";
+    window.location.href = "/admin/auth/login";
 };
 
 const authExcludedPaths = ["/api/auth/login-admin", "/api/auth/refresh-token"];

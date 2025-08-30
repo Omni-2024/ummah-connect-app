@@ -9,7 +9,6 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 
-import * as bcrypt from 'bcrypt';
 
 import { JwtPayload } from './types/jwt-payload.type';
 import { LoginResponseDto } from './types/login-response.dto';
@@ -118,7 +117,6 @@ export class AuthService {
   }
 
   async login(dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
-    try {
       const user = await this.userRepo.findOneByEmail(dto.email);
       if (!user) throw new UnauthorizedException('Invalid credentials');
       if (user.signinMethod === SigninMethod.SOCIAL)
@@ -140,51 +138,28 @@ export class AuthService {
       if (!user.verified) throw new BadRequestException('Email not verified');
 
       return this.generateToken(user);
-    } catch (error) {
-      if (error instanceof UnauthorizedException)
-        return { status: HttpStatus.UNAUTHORIZED, error };
-      if (error instanceof ForbiddenException)
-        return { status: HttpStatus.FORBIDDEN, error };
-      if (error instanceof BadRequestException)
-        return { status: HttpStatus.BAD_REQUEST, error };
-      if (error instanceof NotFoundException)
-        return { status: HttpStatus.NOT_FOUND, error };
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error };
-    }
   }
 
   async loginAdmin(dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
-    try {
-      const user = await this.userRepo.findOneByEmail(dto.email);
-      if (!user) throw new UnauthorizedException('user not Found');
+    const user = await this.userRepo.findOneByEmail(dto.email);
+    if (!user) throw new NotFoundException('User not Found');
 
-      if (
-        !(await this.checkRole(user, [UserRole.ROOT, UserRole.ADMIN, UserRole.OPERATIONAL_ADMIN]))
-      ) {
-        throw new UnauthorizedException('Unauthorized access');
-      }
+    if (!(await this.checkRole(user, [UserRole.ROOT, UserRole.ADMIN, UserRole.OPERATIONAL_ADMIN])))
+      throw new UnauthorizedException('Unauthorized access');
 
-      if (!(await user.comparePassword(dto.password)))
-        throw new UnauthorizedException('Invalid credentials');
-      if (user.active === false) throw new ForbiddenException('User has been Blocked');
-      if (user.verified === false)
-        throw new BadRequestException('User Email has not been verified');
+    if (!(await user.comparePassword(dto.password)))
+      throw new UnauthorizedException('Invalid credentials');
 
-      return this.generateToken(user);
-    } catch (error) {
-      if (error instanceof UnauthorizedException)
-        return { status: HttpStatus.UNAUTHORIZED, error };
-      if (error instanceof ForbiddenException)
-        return { status: HttpStatus.FORBIDDEN, error };
-      if (error instanceof BadRequestException)
-        return { status: HttpStatus.BAD_REQUEST, error };
-      if (error instanceof NotFoundException)
-        return { status: HttpStatus.NOT_FOUND, error };
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error };
-    }
+    if (user.active === false)
+      throw new ForbiddenException('User has been Blocked');
+
+    if (user.verified === false)
+      throw new BadRequestException('User Email has not been verified');
+
+    return this.generateToken(user);
   }
 
-  // ---------- Refresh with verification + rotation ----------
+
   async refresh(token: string): Promise<ServiceResponseDto<LoginResponseDto>> {
     try {
       const { rtSecret } = this.refreshTokenCfg;

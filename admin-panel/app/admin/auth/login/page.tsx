@@ -53,7 +53,7 @@ export default function AdminLoginPage() {
         });
 
       // Toast.success(`You have successfully logged in as a ${data.role}`);
-      // router.push("/dashboard");
+      router.push("/dashboard");
     },
     onError: (err) => {
       if (isAxiosError(err)) {
