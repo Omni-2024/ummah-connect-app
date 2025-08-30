@@ -57,7 +57,6 @@ type LoginParams = {
 };
 
 export const login = ({ accessToken, refreshToken, role, id }: LoginParams) => {
-    console.log("yabbba",accessToken,role)
     authState.isAuthenticated = true;
     authState.accessToken = accessToken;
     authState.refreshToken = refreshToken;

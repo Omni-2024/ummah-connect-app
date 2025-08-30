@@ -16,14 +16,14 @@ export class AuthController {
   @Post('register')
   register(
     @Body() dto: RegisterDto,
-  ): Promise<ServiceResponseDto<LoginResponseDto>> {
+  ) {
     return this.auth.register(dto);
   }
 
   @Public()
   @Post('login')
   @Roles([UserRole.USER])
-  login(@Body() dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
+  login(@Body() dto: LoginDto) {
     return this.auth.login(dto);
   }
 
@@ -31,7 +31,7 @@ export class AuthController {
   @Post('login-admin')
   async loginAdmin(
     @Body() dto: LoginDto,
-  ): Promise<ServiceResponseDto<LoginResponseDto>> {
+  ) {
     return  await this.auth.loginAdmin(dto);
   }
 

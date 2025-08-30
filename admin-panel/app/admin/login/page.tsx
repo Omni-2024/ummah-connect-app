@@ -45,7 +45,6 @@ export default function AdminLoginPage() {
       if (!requiredRoles.includes(data.role))
           // return Toast.error("Invalid email or password");
 
-      console.log("Neeyum nanum",data)
 
       setLogin({
         accessToken: data.token,

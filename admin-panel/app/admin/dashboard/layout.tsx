@@ -53,11 +53,6 @@ export default function AdminDashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const {role,isAuthenticated,id,accessToken,refreshToken} = useAuthState();
 
-
-  useEffect(()=>{
-      console.log("Yarra",role,isAuthenticated,id,accessToken,refreshToken)
-
-  },[])
   const handleLogout = () => {
     router.push("/admin/login")
   }

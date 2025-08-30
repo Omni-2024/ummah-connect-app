@@ -6,11 +6,12 @@ import { useSnapshot } from "valtio";
 
 export default async function Home() {
   // 👇 you can add logic here (e.g., check cookies, auth, etc.)
-  const snap = useSnapshot(authState);
+  const {isAuthenticated} = useAuthState();
 
-  if (!snap.isAuthenticated) {
-    redirect("/admin/login")  // will redirect on server
+
+  if (isAuthenticated) {
+    redirect("/admin/login")
   }
 
-  redirect("/admin/dashboard") // if logged in, go to dashboard
+  redirect("/admin/dashboard")
 }

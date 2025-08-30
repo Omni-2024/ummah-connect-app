@@ -117,7 +117,7 @@ export class AuthService {
 
   }
 
-  async login(dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
+  async login(dto: LoginDto) {
       const user = await this.userRepo.findOneByEmail(dto.email);
       if (!user) throw new UnauthorizedException('Invalid credentials');
       if (user.signinMethod === SigninMethod.SOCIAL)
@@ -138,10 +138,13 @@ export class AuthService {
       if (!user.active) throw new ForbiddenException('User blocked');
       if (!user.verified) throw new BadRequestException('Email not verified');
 
-      return this.generateToken(user);
+
+      const token = await  this.generateToken(user);
+
+      return token.data
   }
 
-  async loginAdmin(dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
+  async loginAdmin(dto: LoginDto) {
     const user = await this.userRepo.findOneByEmail(dto.email);
     if (!user) throw new NotFoundException('User not Found');
 
@@ -157,11 +160,15 @@ export class AuthService {
     if (user.verified === false)
       throw new BadRequestException('User Email has not been verified');
 
-    return this.generateToken(user);
+    const token = await  this.generateToken(user);
+
+    return token.data
+
+
   }
 
 
-  async refresh(token: string): Promise<ServiceResponseDto<LoginResponseDto>> {
+  async refresh(token: string) {
     try {
       const { rtSecret } = this.refreshTokenCfg;
 
@@ -171,7 +178,10 @@ export class AuthService {
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      return this.generateToken(user);
+
+      const genToken = await  this.generateToken(user);
+
+      return genToken.data
 
     } catch (error) {
       return { status: HttpStatus.UNAUTHORIZED, error };
@@ -197,19 +207,15 @@ export class AuthService {
       const { rtSecret,rtExpires } = this.refreshTokenCfg;
       const { atSecret,atExpires } = this.accessToken;
 
-      console.log("test0",rtSecret,rtExpires)
-
       const payload: JwtPayload = {
         id: user.id,
         email: user.email,
         role: user.role,
       };
-      console.log("test1",payload)
       const token = await this.jwtService.signAsync(payload,{
         expiresIn:atExpires,
         secret:atSecret,
       });
-      console.log("test2",token)
 
       const refreshToken = await this.jwtService.signAsync(payload, {
         expiresIn:rtExpires,
