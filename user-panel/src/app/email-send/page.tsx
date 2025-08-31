@@ -1,59 +1,85 @@
-// app/email-send/page.tsx
-"use client";
+// app/email-sent/page.tsx
+"use client"
 
-import { Sms as SmsIcon } from "iconsax-react";
-import CardWrapper from "@/features/auth/components/CardWrapper";
-import { useRouter } from "next/router";
-import Button from "@/components/base/Button";
-import { useForgotPasswordState } from "@/features/auth/context/useForgotPasswordState";
+import { EnvelopeClosedIcon, ArrowLeftIcon, ReloadIcon } from "@radix-ui/react-icons"
+import { useRouter } from "next/navigation"
+import { useForgotPasswordState } from "@/features/auth/context/useForgotPasswordState"
 
-const EmailSentRoute = () => {
-    const router = useRouter();
-    //
-    const { email } = useForgotPasswordState();
-    //
-    return (
-        <main
-            style={{ backgroundImage: "url(/images/textures/1.svg)" }}
-            className="h-screen overflow-y-scroll scrollbar-thin"
-        >
-            <div className="flex w-full items-center justify-center pt-6">
-                <img
-                    alt="logo"
-                    src="/images/logo.svg"
-                    className="h-14 object-contain"
-                />
+export default function EmailSentPage() {
+  const router = useRouter()
+  const { email } = useForgotPasswordState()
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+      {/* Header */}
+      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+        <div className="container mx-auto px-6 py-4">
+          <button
+            onClick={() => router.push("/")}
+            className="flex items-center space-x-3 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeftIcon className="w-5 h-5" />
+            <div className="flex items-center space-x-2">
+              <div className="h-6 w-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600"></div>
+              <span className="text-lg font-bold">Ummah Community</span>
+            </div>
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-6 py-16">
+        <div className="max-w-md mx-auto">
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 text-center">
+            {/* Email Icon */}
+            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-6">
+              <EnvelopeClosedIcon className="w-8 h-8 text-white" />
             </div>
 
-            <div className="container flex min-h-[calc(100vh-10rem)] flex-row items-center justify-center py-8 lg:min-h-[calc(100vh-5rem)]">
-                <CardWrapper className="flex flex-col items-center justify-center lg:w-1/2">
-                    <div className="mb-4 mt-4 flex size-12 items-center justify-center rounded-full bg-tertiary-50 md:mt-0">
-                        <SmsIcon className="size-6 text-tertiary-500" />
-                    </div>
-                    <div className="flex w-10/12 flex-col items-center space-y-1">
-                        <h1 className="text-center font-primary text-2xl font-semibold">
-                            Check your inbox
-                        </h1>
+            {/* Content */}
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">Check your inbox</h1>
 
-                        <p className="text-center text-sm text-dark-300">
-                            We sent you a verification link to verify your email address.
-                            Please click on the verification link sent to{" "}
-                            <span className="font-semibold">{email}</span>
-                        </p>
-
-                        <Button
-                            className="py-10"
-                            variant={"link"}
-                            onClick={() => {
-                                router.push("/user/signup");
-                            }}
-                        >
-                            Sign up with different email
-                        </Button>
-                    </div>
-                </CardWrapper>
+            <div className="space-y-4 mb-8">
+              <p className="text-gray-600 leading-relaxed">
+                We've sent a verification link to verify your email address.
+              </p>
+              <div className="bg-gray-50 rounded-lg p-4">
+                <p className="text-sm text-gray-700">Verification email sent to:</p>
+                <p className="font-semibold text-gray-900 break-all">{email || "your email address"}</p>
+              </div>
+              <p className="text-sm text-gray-500">
+                Please click on the verification link in the email to complete your registration.
+              </p>
             </div>
-        </main>
-    );
-};
-export default EmailSentRoute;
+
+            {/* Actions */}
+            <div className="space-y-4">
+              <button
+                onClick={() => router.push("/user/signup")}
+                className="w-full flex items-center justify-center gap-2 border-2 border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:border-gray-300 hover:bg-gray-50 transition-all duration-200"
+              >
+                <ReloadIcon className="w-4 h-4" />
+                Sign up with different email
+              </button>
+
+              <div className="text-xs text-gray-500">
+                Didn't receive the email? Check your spam folder or try again with a different email address.
+              </div>
+            </div>
+          </div>
+
+          {/* Help Section */}
+          <div className="mt-8 text-center">
+            <p className="text-sm text-gray-500 mb-2">Need help?</p>
+            <button
+              onClick={() => router.push("/contact-support")}
+              className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+            >
+              Contact our support team
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}
