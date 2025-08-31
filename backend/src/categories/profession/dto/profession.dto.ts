@@ -7,14 +7,6 @@ export class CreateProfessionDto {
   @IsNumber({ maxDecimalPlaces: 2 })
   price: number;
 
-
-  @IsString()
-  professionId: string;
-
-
-  @IsString()
-  typeId: string;
-
   @IsNumber()
   order: number;
 }

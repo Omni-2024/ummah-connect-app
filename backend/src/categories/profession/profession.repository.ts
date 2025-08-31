@@ -14,8 +14,7 @@ export class ProfessionRepository {
 
   async create(createProfessionDto: CreateProfessionDto): Promise<Profession> {
     try {
-      const profession =
-        await this.professionRepository.create(createProfessionDto);
+      const profession = this.professionRepository.create(createProfessionDto);
       return await this.professionRepository.save(profession);
     } catch (e) {
       throw e;
