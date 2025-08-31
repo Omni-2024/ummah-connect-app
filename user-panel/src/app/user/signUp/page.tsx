@@ -110,7 +110,7 @@ export default function SignupPage() {
           setEmail(email)
           router.push("/email-sent")
         },
-        onError: (err: unknown) => {
+        onError: (err: any) => {
           const message = getErrorMessage(err, "An error occurred!")
           Toast.error(message)
         },

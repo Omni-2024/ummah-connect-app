@@ -79,7 +79,7 @@ export default function LoginPage() {
             router.push("/")
           }
         },
-        onError: (err) => {
+        onError: (err: any) => {
           const message = getErrorMessage(err, "Invalid credentials. Please try again.")
           Toast.error(message)
           setErrors({ form: message })
