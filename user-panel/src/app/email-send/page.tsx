@@ -1,3 +1,6 @@
+// app/email-send/page.tsx
+"use client";
+
 import { Sms as SmsIcon } from "iconsax-react";
 import CardWrapper from "@/features/auth/components/CardWrapper";
 import { useRouter } from "next/router";
@@ -53,5 +56,4 @@ const EmailSentRoute = () => {
         </main>
     );
 };
-
 export default EmailSentRoute;
