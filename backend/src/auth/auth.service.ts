@@ -19,6 +19,7 @@ import { UserEntity } from '../users/entities/user.entity';
 import { UserRepository } from '../users/user.repository';
 import { ServiceResponseDto } from '../common/types/service-response-dto';
 import { EmailService } from '../common/email/email.service';
+import { log } from 'console';
 
 type AtCfg = { atSecret: string; atExpires: string };
 type RtCfg = { rtSecret: string; rtExpires: string };
@@ -116,7 +117,7 @@ export class AuthService {
 
   }
 
-  async login(dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
+  async login(dto: LoginDto) {
       const user = await this.userRepo.findOneByEmail(dto.email);
       if (!user) throw new UnauthorizedException('Invalid credentials');
       if (user.signinMethod === SigninMethod.SOCIAL)
@@ -137,10 +138,13 @@ export class AuthService {
       if (!user.active) throw new ForbiddenException('User blocked');
       if (!user.verified) throw new BadRequestException('Email not verified');
 
-      return this.generateToken(user);
+
+      const token = await  this.generateToken(user);
+
+      return token.data
   }
 
-  async loginAdmin(dto: LoginDto): Promise<ServiceResponseDto<LoginResponseDto>> {
+  async loginAdmin(dto: LoginDto) {
     const user = await this.userRepo.findOneByEmail(dto.email);
     if (!user) throw new NotFoundException('User not Found');
 
@@ -156,11 +160,15 @@ export class AuthService {
     if (user.verified === false)
       throw new BadRequestException('User Email has not been verified');
 
-    return this.generateToken(user);
+    const token = await  this.generateToken(user);
+
+    return token.data
+
+
   }
 
 
-  async refresh(token: string): Promise<ServiceResponseDto<LoginResponseDto>> {
+  async refresh(token: string) {
     try {
       const { rtSecret } = this.refreshTokenCfg;
 
@@ -170,7 +178,10 @@ export class AuthService {
       if (!user) {
         throw new NotFoundException('User not found');
       }
-      return this.generateToken(user);
+
+      const genToken = await  this.generateToken(user);
+
+      return genToken.data
 
     } catch (error) {
       return { status: HttpStatus.UNAUTHORIZED, error };
@@ -179,7 +190,11 @@ export class AuthService {
 
   async validateToken(token: string): Promise<ServiceResponseDto<JwtPayload>> {
     try {
-      const payload: JwtPayload = await this.jwtService.verifyAsync(token)
+      const { atSecret,atExpires } = this.accessToken;
+      const payload: JwtPayload = await this.jwtService.verifyAsync(token, {
+        secret:atSecret,
+      });
+
       const user = await this.userRepo.findOneVerifiedById(payload.id);
       if (!user) throw new NotFoundException('User not found');
       return { status: HttpStatus.OK, data: { email: user.email, id: user.id, role: user.role } };
@@ -194,13 +209,18 @@ export class AuthService {
   async generateToken(user: UserEntity): Promise<ServiceResponseDto<LoginResponseDto>> {
     try {
       const { rtSecret,rtExpires } = this.refreshTokenCfg;
+      const { atSecret,atExpires } = this.accessToken;
 
       const payload: JwtPayload = {
         id: user.id,
         email: user.email,
         role: user.role,
       };
-      const token = await this.jwtService.signAsync(payload);
+      const token = await this.jwtService.signAsync(payload,{
+        expiresIn:atExpires,
+        secret:atSecret,
+      });
+
       const refreshToken = await this.jwtService.signAsync(payload, {
         expiresIn:rtExpires,
         secret:rtSecret,

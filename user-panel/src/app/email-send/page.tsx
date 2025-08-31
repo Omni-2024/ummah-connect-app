@@ -1,5 +1,5 @@
-// app/email-sent/page.tsx
 "use client"
+
 
 import { EnvelopeClosedIcon, ArrowLeftIcon, ReloadIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"

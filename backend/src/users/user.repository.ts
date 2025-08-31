@@ -1,9 +1,11 @@
 import { RegisterDto } from './dto/register.dto';
 import { UserEntity } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { ILike, Like, Repository } from 'typeorm';
 import { SigninMethod } from './entities/abstract.user.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
+import { PaginatedRequestDto } from './dto/base.dto';
 
 
 @Injectable()
@@ -78,5 +80,135 @@ export  class UserRepository {
     if (!result.affected) {
       throw new NotFoundException('User not found');
     }
+  }
+
+  async searchUsers({
+                      query,
+                      limit,
+                      offset,
+                    }: SearchUserDto): Promise<{ usersList: UserEntity[]; count: number }> {
+    try {
+      const options: FindOptions = {};
+      if (limit && limit > 0) {
+        options.take = limit;
+      }
+      if (offset && offset > 0) {
+        options.skip = offset;
+      }
+      const [usersList, count] = await this.userRepository.findAndCount({
+        ...options,
+        where: [
+          { email: Like(`%${query?.toLowerCase()}%`) },
+          { name: ILike(`%${query}%`) },
+        ],
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+      return { usersList, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllUsersAndCount({
+                              limit,
+                              offset,
+                            }: PaginatedRequestDto): Promise<{ usersList: UserEntity[]; count: number }> {
+    try {
+      const options: FindOptions = {};
+      if ((limit && limit > 0) || (offset && offset > 0)) {
+        options.take = limit;
+        options.skip = offset;
+      }
+
+      options.order = {
+        createdAt: 'DESC', // Sorting by createdAt in descending order
+      };
+
+      const [usersList, count] =
+        await this.userRepository.findAndCount(options);
+      return { usersList, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  async retrieveUser(user: UserEntity) {
+    try {
+      user.active = true;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateUser(updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOneBy({
+        id: updateUserDto.id,
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (user.isFirstLogin) {
+        user.isFirstLogin = false;
+      }
+
+      const updatedUser = this.userRepository.merge(user, updateUserDto);
+      return await this.userRepository.save(updatedUser);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async deleteCurrentUser(id: string): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      user.deletedAt = new Date();
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteUser(user: UserEntity) {
+    try {
+      user.active = false;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async changeStatus(id: string, status: boolean): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      user.active = status;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+
+
+}
+
+
+interface FindOptions {
+  take?: number;
+  skip?: number;
+  order?: {
+    createdAt?: 'ASC' | 'DESC';
   }
 }

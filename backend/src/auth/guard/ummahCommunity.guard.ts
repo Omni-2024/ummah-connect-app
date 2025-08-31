@@ -27,17 +27,23 @@ export class UmmahCommunityGuard implements CanActivate {
     if (this.isPublic(context)) {
       return true;
     }
+
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     this.logger.debug(`Token: ${token}`);
+
     if (!token) {
       throw new UnauthorizedException();
     }
+
     const payload = await this.authService.validateToken(token);
-    // 💡 We're assigning the payload to the request object here
-    this.setUser(payload.data !!);
-    this.logger.debug(`Payload: ${JSON.stringify(payload)}`);
-    this.logger.debug(`User Payload: ${this.userPayloadService.getPayload()}`);
+    this.logger.debug(`Payload returned: ${JSON.stringify(payload)}`);
+
+    if (!payload || !payload.data) {
+      throw new UnauthorizedException('Invalid token payload');
+    }
+
+    this.setUser(payload.data);
 
     return this.RoleGuard(context);
   }
