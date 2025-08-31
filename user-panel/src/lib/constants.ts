@@ -14,6 +14,11 @@ export enum SOCIAL_TYPE{
   LINKEDIN = "linkedin",
 }
 
+export enum SIGNIN_METHOD {
+  EMAIL = "email",
+  SOCIAL = "social",
+}
+
 export const COUNTRY_LIST = [
   { label: "Afghanistan", value: "Afghanistan" },
   { label: "Albania", value: "Albania" },
