@@ -69,7 +69,7 @@ export const useGoogleLogin = () => {
 
                         router.push(redirectUrl);
                     },
-                    onError: (err) => {
+                    onError: (err:any) => {
                         const message = getErrorMessage(err);
                         Toast.error(message);
                     },
