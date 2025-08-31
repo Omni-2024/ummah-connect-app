@@ -10,14 +10,14 @@ import { GetAllServiceParams } from "@/types";
 
 export const useServices = (params: GetAllServiceParams) => {
   return useQuery({
-    queryKey: ["courses", params],
+    queryKey: ["services", params],
     queryFn: () => getAllCoursesFn(params),
   });
 };
 
 export const useCoursesHints = (params: GetAllServiceParams) => {
   return useQuery({
-    queryKey: ["courses-hints", params],
+    queryKey: ["services-hints", params],
     queryFn: () => getAllCoursesFn(params),
     enabled: !!params.limit && !!params.search,
   });
@@ -28,7 +28,7 @@ export const useCoursesByEducator = (params: {
   educator: string;
 }) => {
   return useQuery({
-    queryKey: ["educator-courses", params],
+    queryKey: ["provider-services", params],
     queryFn: () => getAllCoursesFn(params),
     enabled: !!params.limit && !!params.educator,
   });
@@ -36,7 +36,7 @@ export const useCoursesByEducator = (params: {
 
 export const useCourse = (id: string) => {
   return useQuery({
-    queryKey: ["course", id],
+    queryKey: ["service", id],
     queryFn: () => getOneCourseFn(id),
     enabled: !!id, // ! Should be enabled only when id is present
   });
@@ -44,7 +44,7 @@ export const useCourse = (id: string) => {
 
 export const useCourseBySlug = (slug: string) => {
   return useQuery({
-    queryKey: ["course-by-slug", slug],
+    queryKey: ["service-by-slug", slug],
     queryFn: () => getOneServiceBySlugFn(slug),
     enabled: !!slug, // ! Should be enabled only when slug is present
   });
