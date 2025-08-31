@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { Specialist } from './entities/specialist.entity';
 import {
-  CreateSpecialistDto,
-  FindAllSpecialistsByTypeDto,
+  CreateSpecialistDto, FindAllSpecialistsByProfessionDto,
   FindOneSpecialistDto,
   UpdateSpecialistDto,
 } from './dto/specialist.dto';
@@ -26,12 +25,12 @@ export class SpecialistRepository {
     }
   }
 
-  async findAllByType(
-    findAllSpecialistsByTypeDto: FindAllSpecialistsByTypeDto,
+  async findAllByProfession(
+      findAllSpecialistsByProfessionDto: FindAllSpecialistsByProfessionDto,
   ): Promise<Specialist[] | null> {
     try {
       return await this.professionRepository.findBy(
-        findAllSpecialistsByTypeDto,
+          findAllSpecialistsByProfessionDto,
       );
     } catch (e) {
       throw e;

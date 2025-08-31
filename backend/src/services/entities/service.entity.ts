@@ -92,9 +92,6 @@ export class Service extends BaseEntity implements AbstractServiceEntity {
   @Column({ name: 'specialty_id', nullable: true, type: 'uuid' })
   specialtyId?: string;
 
-  @Column({ name: 'type_id', nullable: true, type: 'uuid' })
-  typeId?: string;
-
   @Column({ name: 'profession_id', type: 'uuid' })
   professionId: string;
 

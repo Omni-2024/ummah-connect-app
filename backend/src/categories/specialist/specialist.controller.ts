@@ -12,7 +12,7 @@ import { SpecialistService } from './specialist.service';
 import { Public } from '../../auth/decorator/public.decorator';
 import { Roles } from '../../auth/decorator/role.decorator';
 import { UserRole } from '../../users/entities/abstract.user.entity';
-import { CreateSpecialistDto, FindAllSpecialistsByTypeDto, UpdateSpecialistDto } from './dto/specialist.dto';
+import { CreateSpecialistDto, UpdateSpecialistDto } from './dto/specialist.dto';
 
 @Controller('specialist')
 export class SpecialistController {

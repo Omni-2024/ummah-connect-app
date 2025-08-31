@@ -39,6 +39,4 @@ export class Specialist
   @Column({ name: 'profession_id', type: 'uuid' })
   professionId: string;
 
-  @Column({ name: 'type_id', type: 'uuid' })
-  typeId: string;
 }

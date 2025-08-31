@@ -8,6 +8,7 @@ import { EmailModule } from './common/email/email.module';
 import { ServiceModule } from './services/services.module';
 import { ProfessionModule } from './categories/profession/profession.module';
 import { SpecialistModule } from './categories/specialist/specialist.module';
+import { CategoryModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SpecialistModule } from './categories/specialist/specialist.module';
     AuthModule,
     EmailModule,
     ServiceModule,
+    CategoryModule,
     ProfessionModule,
     SpecialistModule
   ],

@@ -29,7 +29,11 @@ export class FindAllSpecialistsByProfessionDto {
   professionId: string;
 }
 
-export class FindAllSpecialistsByTypeDto {
-  @IsString()
-  typeId: string;
+
+export class SpecialistDto {
+  id: string;
+  name: string;
+  price: number;
+  professionId: string;
+
 }

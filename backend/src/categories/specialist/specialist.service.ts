@@ -2,7 +2,6 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { SpecialistRepository } from './specialist.repository';
 import {
   CreateSpecialistDto,
-  FindAllSpecialistsByTypeDto,
   FindOneSpecialistDto,
   UpdateSpecialistDto,
 } from './dto/specialist.dto';
@@ -25,25 +24,6 @@ export class SpecialistService {
       }
       const specialist = await this.specialistRepo.create(createSpecialistDto);
       return specialist;
-    } catch (e) {
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e };
-    }
-  }
-
-  async findAllByType(
-    findAllSpecialistsByTypeDto: FindAllSpecialistsByTypeDto,
-  ) {
-    try {
-      const specialists = await this.specialistRepo.findAllByType(
-        findAllSpecialistsByTypeDto,
-      );
-      if (!specialists) {
-        return { status: HttpStatus.BAD_REQUEST, error: 'No specialist found' };
-      }
-      if (specialists.length === 0) {
-        return { status: HttpStatus.NOT_FOUND, error: 'No specialist found' };
-      }
-      return  specialists ;
     } catch (e) {
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e };
     }

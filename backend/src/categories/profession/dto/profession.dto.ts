@@ -31,3 +31,10 @@ export class FindOneProfessionDto {
   @IsString()
   id: string;
 }
+
+export class ProfessionDto {
+  id: string;
+  name: string;
+  price: number;
+  order: number;
+}

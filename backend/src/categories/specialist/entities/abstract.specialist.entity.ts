@@ -11,6 +11,5 @@ export abstract class AbstractSpecialistCategoryEntity extends AbstractBaseEntit
   @IsString()
   professionId: string;
 
-  @IsString()
-  typeId: string;
+
 }

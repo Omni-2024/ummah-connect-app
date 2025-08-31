@@ -4,10 +4,13 @@
 import { EnvelopeClosedIcon, ArrowLeftIcon, ReloadIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"
 import { useForgotPasswordState } from "@/features/auth/context/useForgotPasswordState"
+import {useCurrentUser} from "@/lib/hooks/useUser";
 
 export default function EmailSentPage() {
   const router = useRouter()
   const { email } = useForgotPasswordState()
+  const { data: currentUser, isLoading: isCurrentUserLoading } =
+      useCurrentUser();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -45,7 +48,7 @@ export default function EmailSentPage() {
               </p>
               <div className="bg-gray-50 rounded-lg p-4">
                 <p className="text-sm text-gray-700">Verification email sent to:</p>
-                <p className="font-semibold text-gray-900 break-all">{email || "your email address"}</p>
+                <p className="font-semibold text-gray-900 break-all">{currentUser?.email || "your email address"}</p>
               </div>
               <p className="text-sm text-gray-500">
                 Please click on the verification link in the email to complete your registration.
