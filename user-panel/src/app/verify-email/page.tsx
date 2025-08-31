@@ -1,114 +1,135 @@
-// app/verify-email/page.tsx
-
 "use client"
-import Spinner from "@/components/base/Spinner";
-import CardWrapper from "@/features/auth/components/CardWrapper";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation"; 
-import { useEffect, useState } from "react";
-import Button from "@/components/base/Button";
-import { CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import { verifyEmailFn } from "@/lib/endpoints/authenticationFns";
 
-const VerifyEmailRoute = () => {
-    const router = useRouter();
-    const searchParams = useSearchParams(); // ✅ get URL query params
-    const [isVerificationStarted, setVerificationStarted] = useState(false);
+import { useEffect, useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
+import { useMutation } from "@tanstack/react-query"
+import { CheckCircledIcon, CrossCircledIcon, ArrowLeftIcon } from "@radix-ui/react-icons"
+import { verifyEmailFn } from "@/lib/endpoints/authenticationFns"
 
-    const {
-        mutate: verifyEmail,
-        isPending: isVerifyingEmail,
-        isError: verifyEmailError,
-    } = useMutation({
-        mutationFn: verifyEmailFn,
-        onSuccess: () => {
-            router.push("/user/login");
-        },
-    });
+export default function VerifyEmailPage() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const [isVerificationStarted, setVerificationStarted] = useState(false)
 
-    useEffect(() => {
-        const token = searchParams.get("token"); // ✅ read token from ?token=...
-        if (token) {
-            setVerificationStarted(true);
-            verifyEmail(token);
-        }
-    }, [searchParams, verifyEmail]);
+  // Mutation expects { token, email } object
+const {
+  mutate: verifyEmail,
+  isPending: isVerifyingEmail,
+  isError: verifyEmailError,
+  isSuccess: verifyEmailSuccess,
+} = useMutation({
+  mutationFn: verifyEmailFn,
+  onSuccess: (data) => {
+    console.log("Email verified successfully:", data)
+    router.push("/user/login")
+  },
+  onError: (err) => {
+    console.error("Email verification failed:", err)
+  },
+})
 
-    const mainText = isVerificationStarted
-        ? isVerifyingEmail
-            ? "Hang on while we verify your email!"
-            : verifyEmailError
-                ? "Email verification unsuccessful"
-                : "Email verified successfully"
-        : "Starting email verification...";
+  useEffect(() => {
+    const token = searchParams.get("token")
 
-    const descriptionText = isVerificationStarted
-        ? isVerifyingEmail
-            ? "Please wait while we verify your email."
-            : verifyEmailError
-                ? "We couldn't verify your email. Please try again or check for any errors in the link. If the issue persists, contact our support team for assistance."
-                : "Your email has been successfully verified. You can now explore MedLearning and access all the features to enhance your medical knowledge. Let's get started!"
-        : "Please wait while we verify your token.";
+    if (token) {
+      setVerificationStarted(true)
+      verifyEmail(token)
+    }
+  }, [searchParams, verifyEmail])
 
-    return (
-        <main
-            style={{ backgroundImage: "url(/images/textures/1.svg)" }}
-            className="h-screen overflow-y-scroll scrollbar-thin"
-        >
-            <div className="flex w-full items-center justify-center pt-6">
-                <img
-                    alt="logo"
-                    src="/images/logo.svg"
-                    className="h-14 object-contain"
-                />
+  const getStatusContent = () => {
+    if (!isVerificationStarted || isVerifyingEmail) {
+      return {
+        icon: <div className="w-8 h-8 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin" />,
+        title: "Verifying your email...",
+        description: "Please wait while we verify your email address.",
+        bgColor: "from-indigo-500 to-purple-600",
+      }
+    }
+
+    if (verifyEmailError) {
+      return {
+        icon: <CrossCircledIcon className="w-8 h-8 text-white" />,
+        title: "Verification failed",
+        description:
+          "The link may be expired or invalid. Please try signing up again or contact support.",
+        bgColor: "from-red-500 to-red-600",
+      }
+    }
+
+    if (verifyEmailSuccess) {
+      return {
+        icon: <CheckCircledIcon className="w-8 h-8 text-white" />,
+        title: "Email verified successfully!",
+        description:
+          "Your email has been verified. Redirecting to login page...",
+        bgColor: "from-green-500 to-green-600",
+      }
+    }
+
+    return {
+      icon: <div className="w-8 h-8 border-3 border-indigo-500 border-t-transparent rounded-full animate-spin" />,
+      title: "Verifying your emaill...",
+      description: "Please wait while we confirm your email address.",
+      bgColor: "from-indigo-500 to-purple-600",
+    }
+  }
+
+  const statusContent = getStatusContent()
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+      {/* Header */}
+      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+        <div className="container mx-auto px-6 py-4">
+          <button
+            onClick={() => router.push("/")}
+            className="flex items-center space-x-3 text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeftIcon className="w-5 h-5" />
+            <div className="flex items-center space-x-2">
+              <div className="h-6 w-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600" />
+              <span className="text-lg font-bold">Ummah Community</span>
+            </div>
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-6 py-16">
+        <div className="max-w-md mx-auto">
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 text-center">
+            {/* Status Icon */}
+            <div
+              className={`mx-auto w-16 h-16 bg-gradient-to-br ${statusContent.bgColor} rounded-full flex items-center justify-center mb-6`}
+            >
+              {statusContent.icon}
             </div>
 
-            <div className="container flex min-h-[calc(100vh-10rem)] flex-row items-center justify-center py-8 lg:min-h-[calc(100vh-5rem)]">
-                <CardWrapper className="flex flex-col items-center justify-center lg:w-1/2">
-                    {isVerificationStarted ? (
-                        isVerifyingEmail ? (
-                            <Spinner classname="mb-4 mt-4 size-14 text-primary-500" />
-                        ) : verifyEmailError ? (
-                            <div className="mb-4 mt-4 flex size-12 items-center justify-center rounded-full bg-red-50 md:mt-0">
-                                <XMarkIcon className="size-6 text-tertiary-500" />
-                            </div>
-                        ) : (
-                            <div className="mb-4 mt-4 flex size-12 items-center justify-center rounded-full bg-primary-50 md:mt-0">
-                                <CheckIcon className="size-6 text-primary-500" />
-                            </div>
-                        )
-                    ) : (
-                        <Spinner classname="size-14 text-primary-500" />
-                    )}
+            {/* Content */}
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">{statusContent.title}</h1>
+            <p className="text-gray-600 leading-relaxed mb-8">{statusContent.description}</p>
 
-                    <div className="flex w-10/12 flex-col items-center space-y-5">
-                        <h1 className="text-center font-primary text-2xl font-semibold">
-                            {mainText}
-                        </h1>
-
-                        <p className="text-center text-sm text-dark-300">
-                            {descriptionText}
-                        </p>
-
-                        {!isVerifyingEmail && isVerificationStarted && (
-                            <Button
-                                variant={"link"}
-                                onClick={() => {
-                                    if (verifyEmailError) {
-                                        router.push("/contact-support");
-                                    }
-                                }}
-                            >
-                                {verifyEmailError
-                                    ? "Contact support team"
-                                    : "You'll be redirected shortly to MedLearning..."}
-                            </Button>
-                        )}
-                    </div>
-                </CardWrapper>
-            </div>
-        </main>
-    );
-};
-
-export default VerifyEmailRoute;
+            {/* Actions */}
+            {!isVerifyingEmail && isVerificationStarted && verifyEmailError && (
+              <div className="space-y-4">
+                <button
+                  onClick={() => router.push("/contact-support")}
+                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-3 rounded-xl font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
+                >
+                  Contact Support
+                </button>
+                <button
+                  onClick={() => router.push("/user/signup")}
+                  className="w-full border-2 border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:border-gray-300 hover:bg-gray-50 transition-all duration-200"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+}
