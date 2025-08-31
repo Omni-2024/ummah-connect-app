@@ -12,5 +12,6 @@ import { Service } from './entities/service.entity';
   ],
   controllers: [ServiceController],
   providers: [ServiceService, ServiceRepository, ServiceDetailService],
+  exports: [ServiceRepository]
 })
 export class ServiceModule {}

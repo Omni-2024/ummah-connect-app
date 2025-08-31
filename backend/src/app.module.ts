@@ -9,6 +9,7 @@ import { ServiceModule } from './services/services.module';
 import { ProfessionModule } from './categories/profession/profession.module';
 import { SpecialistModule } from './categories/specialist/specialist.module';
 import { CategoryModule } from './categories/categories.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -34,7 +35,8 @@ import { CategoryModule } from './categories/categories.module';
     ServiceModule,
     CategoryModule,
     ProfessionModule,
-    SpecialistModule
+    SpecialistModule,
+    ReviewModule
   ],
 })
 export class AppModule {}
