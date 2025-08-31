@@ -2,27 +2,27 @@ import { Profession } from "@/types";
 import Request from "@/lib/http";
 
 /** Get - '/category' - get all categories */
-// export const getAllCategoriesFn = async () => {
-//   try {
-//     const res = await Request<Profession[]>({
-//       method: "get",
-//       url: "/category",
-//     });
-//     // return res.data;
-//     /**
-//      * Checking if the categories is an array or not
-//      * Reason: Backend isn't updated yet
-//      */
-//     if (Array.isArray(res.data)) {
-//       return res.data;
-//     } else {
-//       return [];
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     return [];
-//   }
-// };
+export const getAllCategoriesFn = async () => {
+  try {
+    const res = await Request<Profession[]>({
+      method: "get",
+      url: "/api/category",
+    });
+    // return res.data;
+    /**
+     * Checking if the categories is an array or not
+     * Reason: Backend isn't updated yet
+     */
+    if (Array.isArray(res.data)) {
+      return res.data;
+    } else {
+      return [];
+    }
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
 
 /** Get - '/profession/:id' - get profession by id */
 export const getProfessionByIdFn = async (id: string) => {

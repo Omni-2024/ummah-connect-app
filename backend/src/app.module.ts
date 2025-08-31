@@ -22,7 +22,8 @@ import { CategoryModule } from './categories/categories.module';
         password: process.env.DB_PASS,
         database: process.env.DB_NAME,
         entities: [UserEntity],
-        // synchronize: false, // set true only for dev; use migrations in prod
+        // synchronize: false,
+        autoLoadEntities: true,
         synchronize: true, 
         ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
       }),
