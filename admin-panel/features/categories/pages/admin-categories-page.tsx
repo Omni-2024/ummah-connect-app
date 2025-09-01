@@ -38,7 +38,7 @@ export default function AdminCategoriesPage() {
                                 </div>
                                 <div>
                                     <h1 className="text-2xl font-bold text-foreground">Categories Management</h1>
-                                    <p className="text-sm text-muted-foreground">Organize professionals and specialists</p>
+                                    <p className="text-sm text-muted-foreground">Organize professions and specialists</p>
                                 </div>
                             </div>
                             <Skeleton className="h-10 w-36" />
@@ -74,7 +74,7 @@ export default function AdminCategoriesPage() {
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-foreground">Categories Management</h1>
-                                <p className="text-sm text-muted-foreground">Organize professionals and specialists</p>
+                                <p className="text-sm text-muted-foreground">Organize professions and specialists</p>
                             </div>
                         </div>
                     </div>
@@ -119,7 +119,7 @@ export default function AdminCategoriesPage() {
                                 </div>
                                 <div>
                                     <h1 className="text-2xl font-bold text-foreground">Categories Management</h1>
-                                    <p className="text-sm text-muted-foreground">Organize professionals and specialists</p>
+                                    <p className="text-sm text-muted-foreground">Organize professions and specialists</p>
                                 </div>
                             </div>
                         </div>
@@ -136,12 +136,12 @@ export default function AdminCategoriesPage() {
                                 <div className="space-y-2">
                                     <h3 className="text-xl font-semibold text-foreground">No categories yet</h3>
                                     <p className="text-muted-foreground">
-                                        Create your first category to start organizing professionals and specialists.
+                                        Create your first category to start organizing professions and specialists.
                                     </p>
                                 </div>
                                 <Button size="lg" className="w-full" onClick={handleAddCategory}>
                                     <Plus className="h-4 w-4 mr-2" />
-                                    Create First Category
+                                    Create First Profession
                                 </Button>
                             </CardContent>
                         </Card>
@@ -151,7 +151,7 @@ export default function AdminCategoriesPage() {
                 <CategoryAddEditPopup
                     open={showAddCategory}
                     action="add"
-                    type="main category"
+                    type="Profession"
                     onClose={() => setShowAddCategory(false)}
                     mutationFn={addCategoryFn}
                     mutationParams={{ price: 0 }}
@@ -171,12 +171,12 @@ export default function AdminCategoriesPage() {
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-foreground">Categories Management</h1>
-                                <p className="text-sm text-muted-foreground">Organize professionals and specialists</p>
+                                <p className="text-sm text-muted-foreground">Organize professions and specialists</p>
                             </div>
                         </div>
                         <Button onClick={handleAddCategory} className="bg-primary hover:bg-primary/90">
                             <Plus className="h-4 w-4 mr-2" />
-                            Add Category
+                            Add Profession
                         </Button>
                     </div>
                 </div>
@@ -233,7 +233,7 @@ export default function AdminCategoriesPage() {
             <CategoryAddEditPopup
                 open={showAddCategory}
                 action="add"
-                type="main category"
+                type="profession"
                 onClose={() => setShowAddCategory(false)}
                 mutationFn={addCategoryFn}
                 mutationParams={{ price: 0 }}

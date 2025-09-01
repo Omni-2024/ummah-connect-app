@@ -31,7 +31,7 @@ const AddNewCard: React.FC<AddNewCardProps> = ({ name, className = "", onClick, 
                             <Plus className="h-5 w-5 text-primary" />
                         </div>
                         <span className="font-medium">Add {name}</span>
-                        <span className="text-xs text-muted-foreground">Click to create new category</span>
+                        <span className="text-xs text-muted-foreground">Click to create new profession</span>
                     </div>
                 </Button>
             </CardContent>

@@ -77,7 +77,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                         <div className="text-left">
                                             <h3 className="font-semibold text-base text-foreground">{category.name}</h3>
                                             <p className="text-sm text-muted-foreground">
-                                                {category.specialists?.length || 0} specialists
+                                                {category.specialists?.length || 0} specialist
                                                 {(category.specialists?.length || 0) !== 1 ? "s" : ""}
                                             </p>
                                         </div>
@@ -141,7 +141,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                                     ) : (
                                                         <div>
                                                             <h4 className="font-medium text-sm text-foreground">{specialist.name}</h4>
-                                                            <p className="text-xs text-muted-foreground">Professional</p>
+                                                            <p className="text-xs text-muted-foreground">Specialist</p>
                                                         </div>
                                                     )}
                                                 </div>
@@ -176,7 +176,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                         <div className="mx-auto w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center mb-2 shadow-sm">
                                             <Users className="h-5 w-5 text-white" />
                                         </div>
-                                        <p className="text-sm text-muted-foreground mb-3">No professionals added yet</p>
+                                        <p className="text-sm text-muted-foreground mb-3">No specialist added yet</p>
                                         <Button
                                             variant="secondary"
                                             size="sm"
@@ -184,7 +184,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                             className="hover:bg-cyan-500 hover:text-white border-cyan-200 text-cyan-600 transition-colors duration-200"
                                         >
                                             <Plus className="h-3 w-3 mr-1" />
-                                            Add Professional
+                                            Add Specialist
                                         </Button>
                                     </div>
                                 )}
@@ -198,7 +198,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                             className="text-cyan-600 hover:bg-cyan-50 transition-all duration-200"
                                         >
                                             <Plus className="h-3 w-3 mr-1" />
-                                            Add Professional
+                                            Add Specialist
                                         </Button>
                                     </div>
                                 )}
