@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import  Button  from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 import {
@@ -74,7 +74,7 @@ export default function AdminDashboardLayout({
                 </div>
                 <span className="text-lg font-bold text-foreground">Admin Panel</span>
               </Link>
-              <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
+              <Button variant="primary" size="sm" onClick={() => setSidebarOpen(false)}>
                 <X className="h-4 w-4" />
               </Button>
             </div>
@@ -100,7 +100,7 @@ export default function AdminDashboardLayout({
               })}
             </nav>
             <div className="absolute bottom-4 left-4 right-4">
-              <Button variant="outline" onClick={handleLogout} className="w-full bg-transparent">
+              <Button variant="secondary" onClick={handleLogout} className="w-full bg-transparent">
                 <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
@@ -146,7 +146,7 @@ export default function AdminDashboardLayout({
                 </ul>
               </li>
               <li className="mt-auto">
-                <Button variant="outline" onClick={handleLogout} className="w-full bg-transparent">
+                <Button variant="secondary" onClick={handleLogout} className="w-full bg-transparent">
                   <LogOut className="h-4 w-4 mr-2" />
                   Sign Out
                 </Button>
@@ -160,14 +160,14 @@ export default function AdminDashboardLayout({
       <div className="lg:pl-64">
         {/* Top bar */}
         <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-border bg-background px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
-          <Button variant="ghost" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
+          <Button variant="primary" size="sm" className="lg:hidden" onClick={() => setSidebarOpen(true)}>
             <Menu className="h-5 w-5" />
           </Button>
 
           <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
             <div className="flex flex-1" />
             <div className="flex items-center gap-x-4 lg:gap-x-6">
-              <Button variant="ghost" size="sm">
+              <Button variant="primary" size="sm">
                 <Bell className="h-5 w-5" />
               </Button>
               <div className="h-6 w-px bg-border" />

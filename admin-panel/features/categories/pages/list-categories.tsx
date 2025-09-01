@@ -16,8 +16,6 @@ import {
     removeSecondaryCategory,
     updateSecondaryCategoryNameFn,
 } from "@/lib/endpoints/categoriesFns"
-// import { Toast } from "@/components/base/Toast"
-// import RemoveDialog from "@/components/widgets/removeDiaog"
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd"
 import RemoveDialog from "@/components/widget/removeDialog";
 import {invalidateQueries, queryClient} from "@/app/providers";
@@ -27,16 +25,16 @@ type ListCategoriesProps = {
     categories: CategoryData[]
 }
 
-export enum CategoryCardPopupTypes {
+export enum ProfessionCardPopupTypes {
     Add = "Add",
     Edit = "Edit",
     Delete = "Delete",
-    AddProfession = "AddProfession",
-    EditProfession = "EditProfession",
+    AddSpeciality = "AddSpeciality",
+    EditSpeciality = "EditSpeciality",
 }
 
 const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
-    const [popupType, setPopupType] = useState<CategoryCardPopupTypes | undefined>()
+    const [popupType, setPopupType] = useState<ProfessionCardPopupTypes | undefined>()
     const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>()
     const [editingSpecialist, setEditingSpecialist] = useState<
         { id: string; name: string; professionId: string } | undefined
@@ -148,11 +146,11 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
                                                 category={category}
                                                 onDelete={(id) => {
                                                     setDeletingId(id)
-                                                    setPopupType(CategoryCardPopupTypes.Delete)
+                                                    setPopupType(ProfessionCardPopupTypes.Delete)
                                                 }}
                                                 onAddProfession={(categoryId) => {
                                                     setSelectedCategoryId(categoryId)
-                                                    setPopupType(CategoryCardPopupTypes.AddProfession)
+                                                    setPopupType(ProfessionCardPopupTypes.AddSpeciality)
                                                 }}
                                                 onEditSpecialist={(specialistId, newName) => {
                                                     const specialist = category.specialists?.find((s) => s.id === specialistId)
@@ -163,7 +161,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
                                                             professionId: specialist.professionId,
                                                         })
                                                         setSelectedCategoryId(category.id)
-                                                        setPopupType(CategoryCardPopupTypes.EditProfession)
+                                                        setPopupType(ProfessionCardPopupTypes.EditSpeciality)
                                                     }
                                                 }}
                                                 onDeleteSpecialist={(specialistId) => {
@@ -182,19 +180,19 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
 
             <div className="px-4">
                 <AddNewCard
-                    name="new main category"
-                    className="py-4  flex-row text-base font-medium h-[120px] "
+                    name="new profession"
+                    className="py-4 flex-row text-base font-medium h-[120px] "
                     onClick={() => {
-                        setPopupType(CategoryCardPopupTypes.Add)
+                        setPopupType(ProfessionCardPopupTypes.Add)
                     }}
                     type={AddNewCardType.Click}
                 />
             </div>
 
             <CategoryAddEditPopup
-                open={popupType === CategoryCardPopupTypes.Add}
+                open={popupType === ProfessionCardPopupTypes.Add}
                 action="add"
-                type="main category"
+                type="Profession"
                 onClose={() => {
                     setPopupType(undefined)
                 }}
@@ -202,9 +200,9 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
             />
 
             <CategoryAddEditPopup
-                open={popupType === CategoryCardPopupTypes.AddProfession}
+                open={popupType === ProfessionCardPopupTypes.AddSpeciality}
                 action="add"
-                type="professional"
+                type="specialist"
                 onClose={() => {
                     setPopupType(undefined);
                     setSelectedCategoryId(undefined);
@@ -219,9 +217,9 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
 
 
             <CategoryAddEditPopup
-                open={popupType === CategoryCardPopupTypes.EditProfession}
+                open={popupType === ProfessionCardPopupTypes.EditSpeciality}
                 action="edit"
-                type="professional"
+                type="profession"
                 onClose={() => {
                     setPopupType(undefined)
                     setSelectedCategoryId(undefined)
@@ -239,7 +237,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
 
             <RemoveDialog
                 name={`category (${categories.find((category) => category.id === deletingId)?.name ?? ""})`}
-                open={deletingId !== undefined && popupType === CategoryCardPopupTypes.Delete}
+                open={deletingId !== undefined && popupType === ProfessionCardPopupTypes.Delete}
                 onClose={() => {
                     setDeletingId(undefined)
                     setPopupType(undefined)
