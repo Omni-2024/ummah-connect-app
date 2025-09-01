@@ -184,47 +184,47 @@ export default function AdminCategoriesPage() {
 
             <div className="container mx-auto px-6 py-8 max-w-6xl">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <Card className="border-l-4 border-l-primary">
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-muted-foreground">Total Categories</p>
-                                    <p className="text-3xl font-bold text-foreground">{totalCategories}</p>
-                                </div>
-                                <div className="p-3 bg-primary/10 rounded-lg">
-                                    <FolderOpen className="h-6 w-6 text-primary" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    {/*<Card className="border-l-4 border-l-primary">*/}
+                    {/*    <CardContent className="p-6">*/}
+                    {/*        <div className="flex items-center justify-between">*/}
+                    {/*            <div>*/}
+                    {/*                <p className="text-sm font-medium text-muted-foreground">Total Categories</p>*/}
+                    {/*                <p className="text-3xl font-bold text-foreground">{totalCategories}</p>*/}
+                    {/*            </div>*/}
+                    {/*            <div className="p-3 bg-primary/10 rounded-lg">*/}
+                    {/*                <FolderOpen className="h-6 w-6 text-primary" />*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+                    {/*    </CardContent>*/}
+                    {/*</Card>*/}
 
-                    <Card className="border-l-4 border-l-secondary">
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-muted-foreground">Total Professionals</p>
-                                    <p className="text-3xl font-bold text-foreground">{totalProfessionals}</p>
-                                </div>
-                                <div className="p-3 bg-secondary/10 rounded-lg">
-                                    <Users className="h-6 w-6 text-secondary" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    {/*<Card className="border-l-4 border-l-secondary">*/}
+                    {/*    <CardContent className="p-6">*/}
+                    {/*        <div className="flex items-center justify-between">*/}
+                    {/*            <div>*/}
+                    {/*                <p className="text-sm font-medium text-muted-foreground">Total Professionals</p>*/}
+                    {/*                <p className="text-3xl font-bold text-foreground">{totalProfessionals}</p>*/}
+                    {/*            </div>*/}
+                    {/*            <div className="p-3 bg-secondary/10 rounded-lg">*/}
+                    {/*                <Users className="h-6 w-6 text-secondary" />*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+                    {/*    </CardContent>*/}
+                    {/*</Card>*/}
 
-                    <Card className="border-l-4 border-l-accent">
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-muted-foreground">Average Price</p>
-                                    <p className="text-3xl font-bold text-foreground">${averagePrice.toFixed(0)}</p>
-                                </div>
-                                <div className="p-3 bg-accent/10 rounded-lg">
-                                    <Settings className="h-6 w-6 text-accent" />
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                    {/*<Card className="border-l-4 border-l-accent">*/}
+                    {/*    <CardContent className="p-6">*/}
+                    {/*        <div className="flex items-center justify-between">*/}
+                    {/*            <div>*/}
+                    {/*                <p className="text-sm font-medium text-muted-foreground">Average Price</p>*/}
+                    {/*                <p className="text-3xl font-bold text-foreground">${averagePrice.toFixed(0)}</p>*/}
+                    {/*            </div>*/}
+                    {/*            <div className="p-3 bg-accent/10 rounded-lg">*/}
+                    {/*                <Settings className="h-6 w-6 text-accent" />*/}
+                    {/*            </div>*/}
+                    {/*        </div>*/}
+                    {/*    </CardContent>*/}
+                    {/*</Card>*/}
                 </div>
 
                 <ListCategories categories={categories} />

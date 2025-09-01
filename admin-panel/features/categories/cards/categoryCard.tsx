@@ -58,7 +58,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
             className={`transition-all duration-200 ${snapshot.isDragging ? "opacity-95 scale-[1.01]" : ""}`}
         >
             <AccordionItem value={category.id} className="border-0 mb-3">
-                <Card className="group hover:shadow-sm transition-all duration-200 border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white">
+                <Card className="group hover:shadow-sm transition-all duration-200 border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white ">
                     <CardContent className="p-0">
                         <AccordionTrigger className="hover:no-underline p-4">
                             <div className="flex items-center justify-between w-full">
