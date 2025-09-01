@@ -1,18 +1,24 @@
 "use client"
 
 import type React from "react"
-
+import { useQueryClient, useMutation } from "@tanstack/react-query"
 import type { CategoryData } from "@/types/data"
+import { Accordion } from "@/components/ui/accordion"
 import CategoryCard from "../cards/categoryCard"
 import AddNewCard, { AddNewCardType } from "../cards/addNewCard"
 import { useEffect, useState } from "react"
 import CategoryAddEditPopup from "./categoryAdd"
-import { addCategoryFn, removeCategoryFn, updateCategoryOrderFn } from "@/lib/endpoints/categoriesFns"
-import { useMutation } from "@tanstack/react-query"
-import {Button} from "@/components/ui/button"
-import { Export } from "iconsax-react"
+import {
+    addCategoryFn,
+    removeCategoryFn,
+    updateCategoryOrderFn,
+    addSecondaryCategory,
+    removeSecondaryCategory,
+    updateSecondaryCategoryNameFn,
+} from "@/lib/endpoints/categoriesFns"
+// import { Toast } from "@/components/base/Toast"
+// import RemoveDialog from "@/components/widgets/removeDiaog"
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd"
-import {Accordion} from "@/components/ui/accordion";
 import RemoveDialog from "@/components/widget/removeDialog";
 
 type ListCategoriesProps = {
@@ -23,10 +29,16 @@ export enum CategoryCardPopupTypes {
     Add = "Add",
     Edit = "Edit",
     Delete = "Delete",
+    AddProfession = "AddProfession",
+    EditProfession = "EditProfession",
 }
 
 const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
     const [popupType, setPopupType] = useState<CategoryCardPopupTypes | undefined>()
+    const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>()
+    const [editingSpecialist, setEditingSpecialist] = useState<
+        { id: string; name: string; professionId: string } | undefined
+    >()
 
     const [orderChanged, setOrderChanged] = useState(false)
 
@@ -39,7 +51,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
     const { mutate: removeCategory, isPending: isDeleting } = useMutation({
         mutationFn: removeCategoryFn,
         onSuccess: () => {
-            // invalidateQueries(["categories"])
+            // queryClient.invalidateQueries({ queryKey: ["categories"] })
             // Toast.success("Category removed successfully")
         },
         onError: () => {
@@ -50,12 +62,47 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
     const { mutate: updateCategoryOrder, isPending: isUpdatingOrder } = useMutation({
         mutationFn: updateCategoryOrderFn,
         onSuccess: () => {
-            // invalidateQueries(["categories"])categories
+            // queryClient.invalidateQueries({ queryKey: ["categories"] })
             // Toast.success("Category order updated successfully")
             setOrderChanged(false)
         },
         onError: () => {
             // Toast.error("Failed to update category order")
+        },
+    })
+
+    const { mutate: addProfession, isPending: isAddingProfession } = useMutation({
+        mutationFn: addSecondaryCategory,
+        onSuccess: () => {
+            // queryClient.invalidateQueries({ queryKey: ["categories"] })
+            // Toast.success("Professional added successfully")
+            setPopupType(undefined)
+            setSelectedCategoryId(undefined)
+        },
+        onError: () => {
+            // Toast.error("Failed to add professional")
+        },
+    })
+
+    const { mutate: editSpecialist, isPending: isEditingSpecialist } = useMutation({
+        mutationFn: updateSecondaryCategoryNameFn,
+        onSuccess: () => {
+            // queryClient.invalidateQueries({ queryKey: ["categories"] })
+            // Toast.success("Specialist updated successfully")
+        },
+        onError: () => {
+            // Toast.error("Failed to update specialist")
+        },
+    })
+
+    const { mutate: deleteSpecialist, isPending: isDeletingSpecialist } = useMutation({
+        mutationFn: removeSecondaryCategory,
+        onSuccess: () => {
+            // queryClient.invalidateQueries({ queryKey: ["categories"] })
+            // Toast.success("Specialist deleted successfully")
+        },
+        onError: () => {
+            // Toast.error("Failed to delete specialist")
         },
     })
 
@@ -65,22 +112,6 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
 
     return (
         <>
-            <div className="flex justify-end pt-4 px-4">
-                <Button
-                    onClick={() => {
-                        updateCategoryOrder({
-                            newData: orderedCategories,
-                            oldData: categories,
-                        })
-                    }}
-                    disabled={!orderChanged || isUpdatingOrder}
-                    isLoading={isUpdatingOrder}
-                >
-                    <Export />
-                    Save Order
-                </Button>
-            </div>
-
             <DragDropContext
                 onDragEnd={(result) => {
                     if (!result.destination) {
@@ -90,7 +121,10 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
                     const [reorderedItem] = items.splice(result.source.index, 1)
                     items.splice(result.destination.index, 0, reorderedItem)
                     setOrderedCategories(items)
-                    setOrderChanged(true)
+                    updateCategoryOrder({
+                        newData: items,
+                        oldData: categories,
+                    })
                 }}
             >
                 <Droppable droppableId="categories" direction="vertical">
@@ -113,6 +147,25 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
                                                 onDelete={(id) => {
                                                     setDeletingId(id)
                                                     setPopupType(CategoryCardPopupTypes.Delete)
+                                                }}
+                                                onAddProfession={(categoryId) => {
+                                                    setSelectedCategoryId(categoryId)
+                                                    setPopupType(CategoryCardPopupTypes.AddProfession)
+                                                }}
+                                                onEditSpecialist={(specialistId, newName) => {
+                                                    const specialist = category.specialist?.find((s) => s.id === specialistId)
+                                                    if (specialist) {
+                                                        setEditingSpecialist({
+                                                            id: specialistId,
+                                                            name: specialist.name,
+                                                            professionId: specialist.professionId,
+                                                        })
+                                                        setSelectedCategoryId(category.id)
+                                                        setPopupType(CategoryCardPopupTypes.EditProfession)
+                                                    }
+                                                }}
+                                                onDeleteSpecialist={(specialistId) => {
+                                                    deleteSpecialist(specialistId)
                                                 }}
                                             />
                                         )}
@@ -144,7 +197,42 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
                     setPopupType(undefined)
                 }}
                 mutationFn={addCategoryFn}
-                mutationParams={{ name: "new category" }}
+            />
+
+            <CategoryAddEditPopup
+                open={popupType === CategoryCardPopupTypes.AddProfession}
+                action="add"
+                type="professional"
+                onClose={() => {
+                    setPopupType(undefined);
+                    setSelectedCategoryId(undefined);
+                }}
+                mutationFn={async (data: any) => {
+                    return addProfession({
+                        name: data.name,
+                        professionId: selectedCategoryId!,
+                    });
+                }}
+            />
+
+
+            <CategoryAddEditPopup
+                open={popupType === CategoryCardPopupTypes.EditProfession}
+                action="edit"
+                type="professional"
+                onClose={() => {
+                    setPopupType(undefined)
+                    setSelectedCategoryId(undefined)
+                    setEditingSpecialist(undefined)
+                }}
+                mutationFn={async (data: any) =>
+                    editSpecialist({
+                        id: editingSpecialist!.id,
+                        name: data.name,
+                        professionId: editingSpecialist!.professionId,
+                    })
+                }
+                initialValue={editingSpecialist?.name}
             />
 
             <RemoveDialog
