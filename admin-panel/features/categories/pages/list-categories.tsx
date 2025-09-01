@@ -20,6 +20,8 @@ import {
 // import RemoveDialog from "@/components/widgets/removeDiaog"
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd"
 import RemoveDialog from "@/components/widget/removeDialog";
+import {invalidateQueries, queryClient} from "@/app/providers";
+import {Toast} from "@/components/base/Toast";
 
 type ListCategoriesProps = {
     categories: CategoryData[]
@@ -51,58 +53,58 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
     const { mutate: removeCategory, isPending: isDeleting } = useMutation({
         mutationFn: removeCategoryFn,
         onSuccess: () => {
-            // queryClient.invalidateQueries({ queryKey: ["categories"] })
-            // Toast.success("Category removed successfully")
+            invalidateQueries(["categories"]);
+            Toast.success("Category removed successfully")
         },
         onError: () => {
-            // Toast.error("Failed to remove category")
+            Toast.error("Failed to remove category")
         },
     })
 
     const { mutate: updateCategoryOrder, isPending: isUpdatingOrder } = useMutation({
         mutationFn: updateCategoryOrderFn,
         onSuccess: () => {
-            // queryClient.invalidateQueries({ queryKey: ["categories"] })
-            // Toast.success("Category order updated successfully")
+            invalidateQueries(["categories"]);
+            Toast.success("Category order updated successfully")
             setOrderChanged(false)
         },
         onError: () => {
-            // Toast.error("Failed to update category order")
+            Toast.error("Failed to update category order")
         },
     })
 
     const { mutate: addProfession, isPending: isAddingProfession } = useMutation({
         mutationFn: addSecondaryCategory,
         onSuccess: () => {
-            // queryClient.invalidateQueries({ queryKey: ["categories"] })
-            // Toast.success("Professional added successfully")
+            invalidateQueries(["categories"]);
+            Toast.success("Professional added successfully")
             setPopupType(undefined)
             setSelectedCategoryId(undefined)
         },
         onError: () => {
-            // Toast.error("Failed to add professional")
+            Toast.error("Failed to add professional")
         },
     })
 
     const { mutate: editSpecialist, isPending: isEditingSpecialist } = useMutation({
         mutationFn: updateSecondaryCategoryNameFn,
         onSuccess: () => {
-            // queryClient.invalidateQueries({ queryKey: ["categories"] })
-            // Toast.success("Specialist updated successfully")
+            invalidateQueries(["categories"]);
+            Toast.success("Specialist updated successfully")
         },
         onError: () => {
-            // Toast.error("Failed to update specialist")
+            Toast.error("Failed to update specialist")
         },
     })
 
     const { mutate: deleteSpecialist, isPending: isDeletingSpecialist } = useMutation({
         mutationFn: removeSecondaryCategory,
         onSuccess: () => {
-            // queryClient.invalidateQueries({ queryKey: ["categories"] })
-            // Toast.success("Specialist deleted successfully")
+            invalidateQueries(["categories"]);
+            Toast.success("Specialist deleted successfully")
         },
         onError: () => {
-            // Toast.error("Failed to delete specialist")
+            Toast.error("Failed to delete specialist")
         },
     })
 
@@ -153,7 +155,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
                                                     setPopupType(CategoryCardPopupTypes.AddProfession)
                                                 }}
                                                 onEditSpecialist={(specialistId, newName) => {
-                                                    const specialist = category.specialist?.find((s) => s.id === specialistId)
+                                                    const specialist = category.specialists?.find((s) => s.id === specialistId)
                                                     if (specialist) {
                                                         setEditingSpecialist({
                                                             id: specialistId,

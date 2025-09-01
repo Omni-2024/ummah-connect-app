@@ -10,8 +10,6 @@ export class CreateSpecialistDto {
   @IsString()
   professionId: string;
 
-  @IsString()
-  typeId: string;
 }
 
 export class UpdateSpecialistDto extends CreateSpecialistDto {
