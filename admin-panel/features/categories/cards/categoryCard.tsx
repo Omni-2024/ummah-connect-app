@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Plus, Users, GripVertical, Edit2, Trash2, Save, X } from "lucide-react"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import Button  from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
@@ -90,7 +90,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                     </Badge>
 
                                     <Button
-                                        variant="ghost"
+                                        variant="primary"
                                         size="sm"
                                         onClick={(e) => {
                                             e.stopPropagation()
@@ -130,7 +130,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                                                 <Save className="h-3 w-3" />
                                                             </Button>
                                                             <Button
-                                                                variant="ghost"
+                                                                variant="primary"
                                                                 size="sm"
                                                                 onClick={handleEditCancel}
                                                                 className="h-8 w-8 p-0 hover:bg-red-50 text-red-500"
@@ -150,7 +150,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                             {editingSpecialist !== specialist.id && (
                                                 <div className="flex items-center gap-2">
                                                     <Button
-                                                        variant="ghost"
+                                                        variant="primary"
                                                         size="sm"
                                                         onClick={() => handleEditStart(specialist)}
                                                         className="h-6 w-6 p-0 opacity-0 group-hover/spec:opacity-100 transition-opacity hover:bg-cyan-50 text-cyan-600"
@@ -158,7 +158,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                                         <Edit2 className="h-3 w-3" />
                                                     </Button>
                                                     <Button
-                                                        variant="ghost"
+                                                        variant="primary"
                                                         size="sm"
                                                         onClick={() => onDeleteSpecialist?.(specialist.id)}
                                                         className="h-6 w-6 p-0 opacity-0 group-hover/spec:opacity-100 transition-opacity hover:bg-red-50 text-red-500"
@@ -178,7 +178,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                         </div>
                                         <p className="text-sm text-muted-foreground mb-3">No professionals added yet</p>
                                         <Button
-                                            variant="outline"
+                                            variant="secondary"
                                             size="sm"
                                             onClick={() => onAddProfession(category.id)}
                                             className="hover:bg-cyan-500 hover:text-white border-cyan-200 text-cyan-600 transition-colors duration-200"
@@ -192,7 +192,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                                 {category.specialists && category.specialists.length > 0 && (
                                     <div className="flex justify-center pt-2">
                                         <Button
-                                            variant="ghost"
+                                            variant="primary"
                                             size="sm"
                                             onClick={() => onAddProfession(category.id)}
                                             className="text-cyan-600 hover:bg-cyan-50 transition-all duration-200"

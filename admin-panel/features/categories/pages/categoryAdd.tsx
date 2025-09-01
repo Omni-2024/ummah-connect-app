@@ -5,7 +5,7 @@ import { useState } from "react"
 import type React from "react"
 import { useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+import Button  from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useMutation } from "@tanstack/react-query"
@@ -102,7 +102,7 @@ const CategoryAddEditPopup: React.FC<CategoryAddEditPopupProps> = ({
                     <DialogFooter className="gap-3 pt-4">
                         <Button
                             type="button"
-                            variant="outline"
+                            variant="secondary"
                             onClick={onClose}
                             className="flex-1 h-11 border-gray-200 hover:bg-gray-50 bg-transparent"
                         >

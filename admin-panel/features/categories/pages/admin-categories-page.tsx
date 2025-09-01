@@ -1,7 +1,7 @@
 "use client"
 
 import { useCategories } from "@/hooks/useCategories"
-import { Button } from "@/components/ui/button"
+import  Button  from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -85,7 +85,7 @@ export default function AdminCategoriesPage() {
                         <AlertCircle className="h-4 w-4" />
                         <AlertDescription className="flex items-center justify-between">
                             <span>{error?.message || "Failed to load categories"}</span>
-                            <Button variant="outline" size="sm" onClick={() => refetch()}>
+                            <Button variant="secondary" size="sm" onClick={() => refetch()}>
                                 Retry
                             </Button>
                         </AlertDescription>

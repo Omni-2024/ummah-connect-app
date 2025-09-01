@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
+import  Button  from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
@@ -98,7 +98,7 @@ export function AddEditCategoryDialog({ open, onOpenChange, category, onSave }: 
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={handleCancel}>
+                    <Button variant="secondary" onClick={handleCancel}>
                         Cancel
                     </Button>
                     <Button

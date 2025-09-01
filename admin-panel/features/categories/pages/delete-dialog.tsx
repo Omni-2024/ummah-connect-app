@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import  Button  from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
@@ -40,10 +40,10 @@ export function DeleteDialog({ open, onOpenChange, title, description, onConfirm
                     <DialogDescription className="pt-2">{description}</DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button variant="secondary" onClick={() => onOpenChange(false)}>
                         Cancel
                     </Button>
-                    <Button variant="destructive" onClick={handleConfirm}>
+                    <Button variant="primary" onClick={handleConfirm}>
                         Delete
                     </Button>
                 </DialogFooter>

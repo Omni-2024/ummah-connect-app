@@ -183,7 +183,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
             <div className="px-4">
                 <AddNewCard
                     name="new main category"
-                    className="py-4  flex-row text-base font-medium h-[120px] "
+                    className="py-4 flex-row text-base font-medium h-[120px] "
                     onClick={() => {
                         setPopupType(CategoryCardPopupTypes.Add)
                     }}

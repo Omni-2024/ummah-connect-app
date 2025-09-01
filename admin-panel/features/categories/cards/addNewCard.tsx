@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import  Button  from "@/components/ui/button"
 import { Plus } from "lucide-react"
 
 export enum AddNewCardType {
@@ -22,7 +22,7 @@ const AddNewCard: React.FC<AddNewCardProps> = ({ name, className = "", onClick, 
         <Card className="border-2 border-dashed border-border hover:border-primary/50 transition-all duration-200 hover:shadow-sm group">
             <CardContent className="p-0">
                 <Button
-                    variant="ghost"
+                    variant="primary"
                     className={`w-full justify-center text-muted-foreground hover:text-primary group-hover:bg-primary/5 transition-all duration-200 ${className}`}
                     onClick={onClick}
                 >
