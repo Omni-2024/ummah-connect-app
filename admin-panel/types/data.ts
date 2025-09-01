@@ -86,7 +86,6 @@ export type SpecialistData = {
   name: string;
   price: number;
   professionId: string;
-  typeId: string;
 };
 
 export type ProfessionTypeData = {
@@ -94,7 +93,7 @@ export type ProfessionTypeData = {
   name: string;
   price: number;
   professionId: string;
-  specialist: SpecialistData[];
+  specialists: SpecialistData[];
 };
 
 export type CategoryData = {
@@ -102,7 +101,7 @@ export type CategoryData = {
   name: string;
   price: number;
   order: number;
-  type: ProfessionTypeData[];
+  specialists: SpecialistData[];
 };
 
 export type SubscriberData = {

@@ -13,16 +13,14 @@ export const getCategoriesFn = async () => {
   return res.data.sort((a, b) => a.order - b.order);
 };
 
-export const addCategoryFn = async (data: Pick<CategoryData, "name">) => {
+export const addCategoryFn = async (data: Pick<CategoryData, "name" | "order">) => {
   const res = await Request<CategoryData>({
     method: "post",
     url: "/api/profession",
     data: {
       name: data.name,
-      // TODO::: Update price correctly
       price: 5,
-      professionId: uuid(),
-      typeId: uuid(),
+      order:1
     },
   });
   return res.data;
@@ -55,7 +53,6 @@ export const updateCategoryNameFn = async (
 export const addSecondaryCategory = async (data: {
   name: string;
   professionId: string;
-  typeId: string;
 }) => {
   const res = await Request<CategoryData>({
     method: "post",
@@ -64,7 +61,6 @@ export const addSecondaryCategory = async (data: {
       name: data.name,
       price: 5,
       professionId: data.professionId,
-      typeId: data.typeId,
     },
   });
   return data;
@@ -82,8 +78,6 @@ export const updateSecondaryCategoryNameFn = async (data: {
   name: string;
   id: string;
   professionId: string;
-  typeId: string;
-  price: number;
 }) => {
   const res = await Request<CategoryData>({
     method: "patch",
@@ -91,8 +85,7 @@ export const updateSecondaryCategoryNameFn = async (data: {
     data: {
       name: data.name,
       professionId: data.professionId,
-      typeId: data.typeId,
-      price: data.price,
+      price: 5,
       id: data.id,
     },
   });
