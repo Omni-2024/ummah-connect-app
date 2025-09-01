@@ -9,9 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useMutation } from "@tanstack/react-query"
-// import { invalidateQueries } from "@/lib/queryClient"
-// import { Toast } from "@/components/base/Toast"
+import {Toast} from "@/components/base/Toast";
 import { Plus, User } from "lucide-react"
+import {invalidateQueries, queryClient} from "@/app/providers";
 
 interface CategoryAddEditPopupProps {
     open: boolean
@@ -45,13 +45,13 @@ const CategoryAddEditPopup: React.FC<CategoryAddEditPopupProps> = ({
     const { mutate, isPending } = useMutation({
         mutationFn,
         onSuccess: () => {
-            // invalidateQueries(["categories"])
-            // Toast.success(`${type} ${action === "add" ? "added" : "updated"} successfully`)
+            invalidateQueries(["categories"]);
+            Toast.success(`${type} ${action === "add" ? "added" : "updated"} successfully`)
             onClose()
             setName("")
         },
         onError: () => {
-            // Toast.error(`Failed to ${action} ${type}`)
+            Toast.error(`Failed to ${action} ${type}`)
         },
     })
 

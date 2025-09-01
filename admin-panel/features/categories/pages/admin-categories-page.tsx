@@ -97,7 +97,7 @@ export default function AdminCategoriesPage() {
 
     const totalCategories = categories.length;
     const totalProfessionals = categories.reduce(
-        (sum, cat) => sum + (cat.specialist?.length ?? 0),
+        (sum, cat) => sum + (cat.specialists?.length ?? 0),
         0
     );
     const averagePrice =
@@ -106,8 +106,9 @@ export default function AdminCategoriesPage() {
             categories.length
             : 0;
 
-    if (isFetched && categories.length === 0) {
+    if (categories.length === 0) {
         return (
+            <>
             <div className="min-h-screen bg-background">
                 <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
                     <div className="container mx-auto px-6 py-4">
@@ -147,6 +148,15 @@ export default function AdminCategoriesPage() {
                     </div>
                 </div>
             </div>
+                <CategoryAddEditPopup
+                    open={showAddCategory}
+                    action="add"
+                    type="main category"
+                    onClose={() => setShowAddCategory(false)}
+                    mutationFn={addCategoryFn}
+                    mutationParams={{ price: 0 }}
+                />
+                </>
         )
     }
 
@@ -226,7 +236,7 @@ export default function AdminCategoriesPage() {
                 type="main category"
                 onClose={() => setShowAddCategory(false)}
                 mutationFn={addCategoryFn}
-                mutationParams={{ name: "new category" }}
+                mutationParams={{ price: 0 }}
             />
         </div>
     )
