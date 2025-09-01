@@ -9,8 +9,8 @@ export default async function Home() {
   const {isAuthenticated} = useAuthState();
 
 
-  if (isAuthenticated) {
-    redirect("/admin/login")
+  if (!isAuthenticated) {
+    redirect("/login")
   }
 
   redirect("/admin/dashboard")

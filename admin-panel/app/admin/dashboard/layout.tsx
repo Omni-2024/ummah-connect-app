@@ -57,7 +57,7 @@ export default function AdminDashboardLayout({
 
 
   const handleLogout = () => {
-    router.push("/admin/login")
+    router.push("/login")
   }
 
   return (
