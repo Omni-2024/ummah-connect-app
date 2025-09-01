@@ -41,21 +41,21 @@ export default function AdminCategoriesPage() {
                                     <p className="text-sm text-muted-foreground">Organize professions and specialists</p>
                                 </div>
                             </div>
-                            <Skeleton className="h-10 w-36" />
+                            <Skeleton className="h-10 w-48 rounded-full" />
                         </div>
                     </div>
                 </div>
 
                 <div className="container mx-auto px-6 py-8 max-w-6xl">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        {[...Array(3)].map((_, i) => (
-                            <Skeleton key={i} className="h-24 w-full" />
-                        ))}
-                    </div>
+                    {/*<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">*/}
+                    {/*    {[...Array(3)].map((_, i) => (*/}
+                    {/*        <Skeleton key={i} className="h-24 w-full" />*/}
+                    {/*    ))}*/}
+                    {/*</div>*/}
 
                     <div className="space-y-4">
                         {[...Array(4)].map((_, i) => (
-                            <Skeleton key={i} className="h-32 w-full" />
+                            <Skeleton key={i} className="h-20 w-full" />
                         ))}
                     </div>
                 </div>

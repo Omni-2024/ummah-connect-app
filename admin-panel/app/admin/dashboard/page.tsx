@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import { useState } from "react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import  Button  from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import {
@@ -243,7 +243,7 @@ export default function AdminDashboard() {
                 </CardTitle>
                 <CardDescription>Service providers awaiting approval</CardDescription>
               </div>
-              <Button variant="outline" size="sm" asChild>
+              <Button variant="secondary" size="sm" asChild>
                 <Link href="/admin/dashboard/providers">View All</Link>
               </Button>
             </div>
@@ -270,7 +270,7 @@ export default function AdminDashboard() {
                   <div className="flex space-x-2">
                     <Button
                       size="sm"
-                      variant="outline"
+                      variant="secondary"
                       className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200"
                       onClick={() => handleProviderAction(provider.id, "approve")}
                     >
@@ -279,7 +279,7 @@ export default function AdminDashboard() {
                     </Button>
                     <Button
                       size="sm"
-                      variant="outline"
+                      variant="secondary"
                       className="bg-red-50 hover:bg-red-100 text-red-700 border-red-200"
                       onClick={() => handleProviderAction(provider.id, "reject")}
                     >
@@ -301,7 +301,7 @@ export default function AdminDashboard() {
                 <CardTitle>Recent Activity</CardTitle>
                 <CardDescription>Latest platform activities and events</CardDescription>
               </div>
-              <Button variant="outline" size="sm" asChild>
+              <Button variant="secondary" size="sm" asChild>
                 <Link href="/admin/dashboard/analytics">View Analytics</Link>
               </Button>
             </div>
@@ -348,7 +348,7 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold mb-2">{stats.totalServices}</div>
             <p className="text-sm text-muted-foreground">Active service listings</p>
-            <Button variant="outline" size="sm" className="mt-3 bg-transparent" asChild>
+            <Button variant="secondary" size="sm" className="mt-3 bg-transparent" asChild>
               <Link href="/admin/dashboard/services">Manage Services</Link>
             </Button>
           </CardContent>
@@ -364,7 +364,7 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold mb-2">{stats.totalReviews}</div>
             <p className="text-sm text-muted-foreground">Average rating: {stats.averageRating}/5</p>
-            <Button variant="outline" size="sm" className="mt-3 bg-transparent" asChild>
+            <Button variant="secondary" size="sm" className="mt-3 bg-transparent" asChild>
               <Link href="/admin/dashboard/reviews">Moderate Reviews</Link>
             </Button>
           </CardContent>
@@ -380,7 +380,7 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="text-2xl font-bold mb-2">{stats.unreadMessages}</div>
             <p className="text-sm text-muted-foreground">Unread admin messages</p>
-            <Button variant="outline" size="sm" className="mt-3 bg-transparent" asChild>
+            <Button variant="secondary" size="sm" className="mt-3 bg-transparent" asChild>
               <Link href="/admin/dashboard/messages">View Messages</Link>
             </Button>
           </CardContent>

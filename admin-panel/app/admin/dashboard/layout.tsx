@@ -30,6 +30,7 @@ import {useCurrentUser} from "@/lib/hooks/useUserInfo";
 
 const navigation = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+  { name: "Users", href: "/admin/dashboard/users", icon: Users },
   { name: "Providers", href: "/admin/dashboard/providers", icon: Users },
   { name: "Categories", href: "/admin/dashboard/categories", icon: Tags },
   { name: "Services", href: "/admin/dashboard/services", icon: Briefcase },
