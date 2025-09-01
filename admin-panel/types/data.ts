@@ -102,7 +102,7 @@ export type CategoryData = {
   name: string;
   price: number;
   order: number;
-  type: ProfessionTypeData[];
+  profession: ProfessionTypeData[];
 };
 
 export type SubscriberData = {

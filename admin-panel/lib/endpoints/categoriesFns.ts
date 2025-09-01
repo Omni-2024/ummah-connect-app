@@ -13,16 +13,14 @@ export const getCategoriesFn = async () => {
   return res.data.sort((a, b) => a.order - b.order);
 };
 
-export const addCategoryFn = async (data: Pick<CategoryData, "name">) => {
+export const addCategoryFn = async (data: Pick<CategoryData, "name" | "order">) => {
   const res = await Request<CategoryData>({
     method: "post",
     url: "/api/profession",
     data: {
       name: data.name,
-      // TODO::: Update price correctly
       price: 5,
-      professionId: uuid(),
-      typeId: uuid(),
+      order:1
     },
   });
   return res.data;
