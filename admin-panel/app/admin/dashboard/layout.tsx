@@ -133,8 +133,8 @@ export default function AdminDashboardLayout({
                           className={cn(
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-colors",
                             pathname === item.href
-                              ? "bg-destructive text-destructive-foreground"
-                              : "text-muted-foreground hover:text-foreground hover:bg-accent",
+                              ? "bg-cyan-700 text-white"
+                              : "text-muted-foreground "
                           )}
                         >
                           <Icon className="h-5 w-5 shrink-0" />
