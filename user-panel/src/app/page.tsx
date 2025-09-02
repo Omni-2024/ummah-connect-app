@@ -9,6 +9,7 @@ import Image from "next/image";
 import {NAV_LOGO_SRC} from "@/lib/constants";
 import {useCurrentUser} from "@/lib/hooks/useUser";
 import envs from "@/lib/env";
+import {useAvatarUrl} from "@/lib/hooks/useAvatarUrl";
 
 
 
@@ -149,13 +150,7 @@ function UnauthenticatedHome() {
 }
 
 
-const buildAvatarUrl = (img?: string | null) => {
-  if (!img) return null;
-  if (/^https?:\/\//i.test(img)) return img;
-  const base = envs.imageBaseUrl;
-  console.log("base",base)
-  return `${base}/${img}`;
-};
+
 
 function AuthenticatedHome() {
   const { logout, role, onboardingCompleted } = useAuthState()
@@ -163,7 +158,7 @@ function AuthenticatedHome() {
   const { data, isFetched, isLoading } = useCurrentUser();
   const [broken, setBroken] = useState(false);
 
-  const avatarUrl = buildAvatarUrl(data?.profileImage);
+  const avatarUrl = useAvatarUrl(data?.profileImage);
 
   useEffect(() => {
     console.log("nan",data)
