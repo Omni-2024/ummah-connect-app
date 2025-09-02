@@ -1,18 +1,18 @@
 import { proxy } from 'valtio';
 
-type ExploreState = {
+type AppState = {
   showNotificationsModal: boolean;
   showNavDrawer: boolean;
   showNotLoggedInNavModal: boolean;
 };
 
-const initialState: ExploreState = {
+const initialState: AppState = {
   showNotificationsModal: false,
   showNavDrawer: false,
   showNotLoggedInNavModal: false,
 };
 
-export const appState = proxy<ExploreState>(initialState);
+export const appState = proxy<AppState>(initialState);
 
 export const setShowNotificationsModal = (show: boolean) => {
   appState.showNotificationsModal = show;

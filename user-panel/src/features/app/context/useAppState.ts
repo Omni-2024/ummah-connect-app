@@ -4,9 +4,9 @@ import {
   setShowNavDrawer,
   setShowNotificationsModal,
   setShowNotLoggedInNavModal,
-} from './ExploreState';
+} from './AppState';
 
-export const useExploreState = () => {
+export const useAppState = () => {
   const snap = useSnapshot(appState);
   return {
     showNotificationsModal: snap.showNotificationsModal,
