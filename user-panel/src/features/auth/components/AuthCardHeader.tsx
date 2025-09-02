@@ -5,7 +5,7 @@ interface Props {
 const AuthCardHeader: React.FC<Props> = ({ heading }) => {
   return (
     <div className="flex w-full flex-col items-center gap-4">
-      <img src="/images/logo.svg" alt="logo" className="w-28 object-contain" />
+      <img src="/images/logo.png" alt="logo" className="w-28 object-contain" />
 
       <h1 className="w-11/12 text-center font-primary text-2xl font-semibold md:w-10/12">
         {heading}

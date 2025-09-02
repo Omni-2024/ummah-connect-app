@@ -5,7 +5,7 @@ import { ArrowRight as ArrowRightIcon } from "iconsax-react";
 import {useRouter, useSearchParams} from "next/navigation";
 import * as Yup from "yup";
 
-import { userSignInFn } from "@/lib/endpoints/authenticationFns";
+import { generalUserSignUpFn } from "@/lib/endpoints/authenticationFns";
 import { getErrorMessage } from "@/lib/helpers/errors";
 import Button from "@/components/base/Button";
 import Separator from "@/components/base/Separator";
@@ -16,12 +16,11 @@ import AuthButtonSSO from "@/features/auth/components/AuthButtonSSO";
 import AuthCardFooter from "@/features/auth/components/AuthCardFooter";
 import AuthCardHeader from "@/features/auth/components/AuthCardHeader";
 import AuthCardLayout from "@/features/auth/components/AuthCardLayout";
-import Link from "next/link";
-import { useAuthState } from "@/features/auth/context/useAuthState";
 // import { useLinkedInLogin } from "@/lib/hooks/useLinkedInLogin";
 import { useGoogleLogin } from "@/lib/hooks/useGoogleLogin";
+import { useForgotPasswordState } from "@/features/auth/context/useForgotPasswordState";
 
-const UserLoginRoute = () => {
+const GeneralUserSignupRoute = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -29,21 +28,27 @@ const UserLoginRoute = () => {
   const callbackParam = searchParams.get("_callback") ?? "";
   const actionParam = searchParams.get("_action") ?? "";
 
-  const { login } = useAuthState();
+  const { setEmail } = useForgotPasswordState();
 
   const showEmailLogin = methodParam === "email";
   const changeLoginMethod = (method: "sso" | "email") => {
     const params = new URLSearchParams(window.location.search);
     params.set("method", method);
-    router.push(`/user/login?${params.toString()}`);
+    if (callbackParam) {
+      params.set("_callback", callbackParam);
+    }
+    if (actionParam) {
+      params.set("_action", actionParam);
+    }
+    router.push(`/user/signup?${params.toString()}`);
   };
 
   // Custom social login hooks
   // const { linkedInLogin, linkedInLoginIsPending } = useLinkedInLogin();
   const { googleLogin, googleLoginIsPending } = useGoogleLogin();
 
-  const { isPending, mutate: userSignIn } = useMutation({
-    mutationFn: userSignInFn,
+  const { isPending, mutate: generalUserSignUp } = useMutation({
+    mutationFn: generalUserSignUpFn,
   });
 
   const {
@@ -55,43 +60,23 @@ const UserLoginRoute = () => {
     touched,
     isValid,
   } = useFormik({
-    initialValues: { email: "", password: "" },
+    initialValues: { name: "", email: "", password: "" },
     validationSchema: SignUpFormValidationSchema,
-    onSubmit: ({ email, password }) => {
-      userSignIn(
-          { email, password },
+    onSubmit: ({ email, name, password }) => {
+      generalUserSignUp(
           {
-            onSuccess: (res) => {
-              Toast.success("Login Successful!");
-
-              // Update the auth state
-              login(
-                  res.token,
-                  res.refreshToken,
-                  res.role,
-                  res.id,
-                  res.isFirstLogin,
-              );
-              console.log(callbackParam);
-
-              // Redirect to onboarding if it's the first login
-              if (res.isFirstLogin) {
-                router.push("/onboarding");
-              } else if (callbackParam) {
-                const redirectUrl = new URL(
-                    callbackParam,
-                    window.location.origin,
-                );
-                if (actionParam) {
-                  redirectUrl.searchParams.set("_action", actionParam);
-                }
-                router.push(redirectUrl.toString());
-              } else {
-                router.push("/");
-              }
+            email,
+            password,
+            name,
+          },
+          {
+            onSuccess: () => {
+              setEmail(email);
+              router.push("/email-sent");
             },
             onError: (err:any) => {
-              const message = getErrorMessage(err);
+              // TODO: Handle error message
+              const message = getErrorMessage(err, "An error occurred!");
               Toast.error(message);
             },
           },
@@ -99,14 +84,12 @@ const UserLoginRoute = () => {
     },
   });
 
-  // TODO: redirect to home if user is already authenticated
-
   return (
       <main style={{ backgroundImage: "url(/images/textures/1.svg)" }}>
         <div className=" flex min-h-svh items-center justify-center">
           <AuthCardLayout childrenContainerClassName="flex-[1.1]" sliderContainerClassName="hidden lg:block">
             <div className="flex size-full flex-1 flex-col items-center space-y-12 py-4">
-              <AuthCardHeader heading="Welcome back to Ummah Community" />
+              <AuthCardHeader heading="Create a Ummah Community account" />
 
               <div className="w-full flex-1 space-y-4 md:max-w-[80%]">
                 {showEmailLogin ? (
@@ -117,6 +100,16 @@ const UserLoginRoute = () => {
                           handleSubmit();
                         }}
                     >
+                      <TextInput
+                          id="name"
+                          onBlur={handleBlur}
+                          value={values.name}
+                          onChange={handleChange}
+                          placeholder="Your full name"
+                          errorMessage={
+                            touched.name && errors.name ? errors.name : undefined
+                          }
+                      />
                       <TextInput
                           id="email"
                           onBlur={handleBlur}
@@ -140,14 +133,6 @@ const UserLoginRoute = () => {
                                 : undefined
                           }
                       />
-
-                      {/* Forgot password link */}
-                      <Link
-                          href="/forgot-password"
-                          className="text-xs text-dark-300 hover:text-status-blue"
-                      >
-                        Forgot password
-                      </Link>
 
                       <Button
                           type="submit"
@@ -185,11 +170,10 @@ const UserLoginRoute = () => {
 
                 <div className="">
                   <p className="flex items-center justify-center text-xs">
-                    New to Ummah Community?{" "}
+                    Already have a Ummah community account?{" "}
                     <Button
                         size="sm"
                         variant="link"
-                        className="px-2 font-medium text-status-blue hover:text-status-blue"
                         onClick={() => {
                           const params = new URLSearchParams();
                           if (callbackParam) {
@@ -200,14 +184,15 @@ const UserLoginRoute = () => {
                           }
                           const queryString = params.toString();
                           router.push(
-                              `/user/signup${queryString ? `?${queryString}` : ""}`,
+                              `/user/login${queryString ? `?${queryString}` : ""}`,
                           );
                         }}
+                        className="px-2 font-medium text-status-blue hover:text-status-blue"
                         rightIcon={
                           <ArrowRightIcon className="size-3.5 text-status-blue" />
                         }
                     >
-                      Get started
+                      Log in
                     </Button>
                   </p>
                 </div>
@@ -221,9 +206,16 @@ const UserLoginRoute = () => {
   );
 };
 
-export default UserLoginRoute;
+export default GeneralUserSignupRoute;
 
 const SignUpFormValidationSchema = Yup.object().shape({
+  name: Yup.string()
+      .trim()
+      .label("Name")
+      .min(1)
+      .max(50)
+      .required("Name is required"),
+
   email: Yup.string()
       .trim()
       .email("Invalid email address")
