@@ -151,7 +151,7 @@ const UserLoginRoute = () => {
 
                       <Button
                           type="submit"
-                          className="mt-4 bg-green-900"
+                          className="mt-4 "
                           disabled={!isValid || isPending}
                           isLoading={isPending}
                       >
