@@ -10,6 +10,7 @@ import { ProfessionModule } from './categories/profession/profession.module';
 import { SpecialistModule } from './categories/specialist/specialist.module';
 import { CategoryModule } from './categories/categories.module';
 import { ReviewModule } from './review/review.module';
+import { StorageModule } from './common/r2/storage.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { ReviewModule } from './review/review.module';
     CategoryModule,
     ProfessionModule,
     SpecialistModule,
-    ReviewModule
+    ReviewModule,
+    StorageModule
   ],
 })
 export class AppModule {}

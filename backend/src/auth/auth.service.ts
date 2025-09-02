@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  BadRequestException, ConflictException,
   ForbiddenException,
   HttpStatus,
   Injectable,
@@ -55,7 +55,6 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto): Promise<ServiceResponseDto<LoginResponseDto>> {
-    try {
       const { email } = registerDto;
 
       let user: UserEntity | null = null;
@@ -66,7 +65,7 @@ export class AuthService {
           return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: 'An unknown error occurred' };
         }
       }
-      if (user) return { status: HttpStatus.CONFLICT, error: 'User already exists' };
+      if (user)  throw new ConflictException('User with this email already exists');
 
       const emailToken = await this.jwtService.signAsync(
         { email },
@@ -94,9 +93,6 @@ export class AuthService {
       // await this.stripeService.createCustomer(customer);
 
       return { status: HttpStatus.CREATED };
-    } catch (error) {
-      return { status: HttpStatus.BAD_REQUEST, error };
-    }
   }
 
   async verifyEmail(token: string): Promise<ServiceResponseDto<void>> {

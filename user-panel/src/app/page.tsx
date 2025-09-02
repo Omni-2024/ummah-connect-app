@@ -1,12 +1,14 @@
 "use client"
 
-import type React from "react"
+import React, {useEffect, useState} from "react"
 
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useRouter } from "next/navigation"
 import { ArrowRightIcon, PersonIcon, TargetIcon, StarIcon } from "@radix-ui/react-icons"
 import Image from "next/image";
 import {NAV_LOGO_SRC} from "@/lib/constants";
+import {useCurrentUser} from "@/lib/hooks/useUser";
+import envs from "@/lib/env";
 
 
 
@@ -146,9 +148,26 @@ function UnauthenticatedHome() {
   )
 }
 
+
+const buildAvatarUrl = (img?: string | null) => {
+  if (!img) return null;
+  if (/^https?:\/\//i.test(img)) return img;
+  const base = envs.imageBaseUrl;
+  console.log("base",base)
+  return `${base}/${img}`;
+};
+
 function AuthenticatedHome() {
   const { logout, role, onboardingCompleted } = useAuthState()
   const router = useRouter()
+  const { data, isFetched, isLoading } = useCurrentUser();
+  const [broken, setBroken] = useState(false);
+
+  const avatarUrl = buildAvatarUrl(data?.profileImage);
+
+  useEffect(() => {
+    console.log("nan",data)
+  }, [data]);
 
   const handleLogout = () => {
     logout()
@@ -167,7 +186,21 @@ function AuthenticatedHome() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                <PersonIcon className="w-4 h-4 text-white" />
+                {!isFetched || isLoading ? (
+                    <div className="animate-pulse w-full h-full bg-gray-300" />
+                ) :  !avatarUrl || broken ? (
+                    <PersonIcon className="w-4 h-4 text-gray-600" />
+                ) : (
+                    <Image
+                        src={avatarUrl}
+                        alt="Profile"
+                        width={32}
+                        height={32}
+                        className="w-full h-full object-cover rounded-full"
+                        onError={() => setBroken(true)}
+                        priority
+                    />
+                )}
               </div>
               <button onClick={handleLogout} className="text-gray-600 hover:text-gray-900 transition-colors">
                 Sign Out

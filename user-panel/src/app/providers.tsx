@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import Toaster from "@/components/base/Toast";
+
 import { Theme } from "@radix-ui/themes";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import envs from "@/lib/env";
@@ -22,6 +23,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     return (
         <GoogleOAuthProvider clientId={envs.googleAuthClientId}>
             <QueryClientProvider client={queryClient}>
+                <Toaster/>
                 <Theme>{children}</Theme>
                 {/*<ReactQueryDevtools initialIsOpen={false} />*/}
             </QueryClientProvider>

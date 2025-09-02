@@ -5,9 +5,9 @@ import { login, authState } from "@/features/auth/context/AuthState";
 
 const Request: AxiosInstance = axios.create({
   baseURL: envs.backendBaseUrl,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
 
 const clearAuthStateAndRedirect = (currUrl: string) => {
