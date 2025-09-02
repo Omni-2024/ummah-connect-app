@@ -37,6 +37,7 @@ export declare abstract class AbstractUserEntity extends AbstractBaseEntity {
   specializations: string;
   company: string;
   country: string;
+  contactNumber:string;
   averageScore: number;
   totalCme: number;
   totalCourses: number;

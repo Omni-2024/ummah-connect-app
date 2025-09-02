@@ -10,7 +10,7 @@ export const updateUserFn = async (data: {
   designations?: string[];
   interests?: string[];
   profileImage?: string;
-  specializations?: string;
+  contactNumber?: string;
   company?: string;
   country?: string;
 }) => {
@@ -52,6 +52,7 @@ export interface GetUpdateUserByIdFnRes {
   specializations: string;
   company: string;
   country: string;
+  contactNumber: string;
   averageScore: number | null;
   totalCme: number | null;
   totalCourses: number | null;

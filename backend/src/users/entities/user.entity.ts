@@ -87,6 +87,9 @@ export class UserEntity extends BaseEntity implements AbstractUserEntity {
   @Column({ nullable: true, default: null })
   country: string;
 
+  @Column({ nullable: true, default: null })
+  contactNumber: string;
+
   @Column({
     nullable: true,
     default: null,

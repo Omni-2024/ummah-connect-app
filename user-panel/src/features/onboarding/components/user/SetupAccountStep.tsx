@@ -25,7 +25,7 @@ const SetupAccountStep = () => {
   const [image, setImage] = useState<File | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const imagePreview = image ? URL.createObjectURL(image) : null;
-  const [specialization, setSpecialization] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
   const [company, setCompany] = useState("");
   const [country, setCountry] = useState("");
 
@@ -44,7 +44,7 @@ const SetupAccountStep = () => {
       {
         id,
         profileImage: uploadedImageKey,
-        specializations: specialization,
+        contactNumber: contactNumber,
         company,
         country,
         designations: [selectedDesignation?.id || ""],
@@ -159,18 +159,18 @@ const SetupAccountStep = () => {
 
           <div className="w-full flex-1 space-y-4 lg:max-w-sm">
             <TextInput
-              id="specialization"
-              label="Specialization"
-              placeholder="Your specialization"
-              onChange={(e) => setSpecialization(e.target.value)}
+              id="contactNumber"
+              label="contactNumber"
+              placeholder="Your contactNumber"
+              onChange={(e) => setContactNumber(e.target.value)}
             />
 
-            <TextInput
-              id="company"
-              label="Hospital/Company"
-              placeholder="Your Hospital or Company"
-              onChange={(e) => setCompany(e.target.value)}
-            />
+            {/*<TextInput*/}
+            {/*  id="company"*/}
+            {/*  label="Hospital/Company"*/}
+            {/*  placeholder="Your Hospital or Company"*/}
+            {/*  onChange={(e) => setCompany(e.target.value)}*/}
+            {/*/>*/}
 
             <div className="w-full space-y-1">
               <Label>Country</Label>
