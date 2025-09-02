@@ -115,7 +115,7 @@ export default function AdminDashboardLayout({
         <Card className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-border rounded-none">
           <div className="flex items-center justify-between p-6 border-b border-border">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="h-8 w-8 rounded-lg bg-destructive flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#669f9d] to-[#337f7c] flex items-center justify-center">
                 <Shield className="h-4 w-4 text-destructive-foreground" />
               </div>
               <span className="text-lg font-bold text-foreground">Admin Panel</span>
@@ -134,7 +134,7 @@ export default function AdminDashboardLayout({
                           className={cn(
                             "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-colors",
                             pathname === item.href
-                              ? "bg-cyan-700 text-white"
+                              ? "bg-gradient-to-br from-[#669f9d] to-[#337f7c] text-white"
                               : "text-muted-foreground "
                           )}
                         >
