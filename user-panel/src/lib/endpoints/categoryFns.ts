@@ -38,6 +38,7 @@ export const getProfessionByIdFn = async (id: string) => {
   }
 };
 
+
 export interface GetProfessionByIdFnRes {
   id: string;
   createdAt: string;
@@ -54,6 +55,22 @@ export const getAllProfessionsFn = async () => {
     const res = await Request<GetAllProfessionsFnRes[]>({
       method: "get",
       url: "/api/profession",
+    });
+    return res.data;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+export const getAllSpecialistByProfessionIdFn = async (professionId: string) => {
+  try {
+    const res = await Request<GetAllTypesByProfessionIdFnRes[]>({
+      method: "get",
+      url: "/api/specialist",
+      params: {
+        professionId,
+      },
     });
     return res.data;
   } catch (error) {

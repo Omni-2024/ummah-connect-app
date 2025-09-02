@@ -1,7 +1,7 @@
 import { GetAllProfessionsFnRes, GetAllTypesByProfessionIdFnRes } from '@/lib/endpoints/categoryFns';
 import { proxy } from 'valtio';
 
-export type UserOnboardingStep = "designation" | "interests" | "setupAccount";
+export type UserOnboardingStep = "profession" | "interests" | "setupAccount";
 
 type OnboardingState = {
     userOnboardingStep: UserOnboardingStep;
@@ -10,7 +10,7 @@ type OnboardingState = {
 };
 
 const initialState: OnboardingState = {
-    userOnboardingStep: "designation",
+    userOnboardingStep: "profession",
     selectedDesignation: null,
     selectedInterests: [],
 };
@@ -30,7 +30,7 @@ export const setSelectedInterests = (interests: GetAllTypesByProfessionIdFnRes[]
 };
 
 export const resetOnboardingState = () => {
-    onboardingState.userOnboardingStep = "designation";
+    onboardingState.userOnboardingStep = "profession";
     onboardingState.selectedDesignation = null;
     onboardingState.selectedInterests = [];
 };

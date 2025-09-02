@@ -1,7 +1,13 @@
-import { BadRequestException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { SpecialistRepository } from './specialist.repository';
 import {
-  CreateSpecialistDto,
+  CreateSpecialistDto, FindAllSpecialistsByProfessionDto,
   FindOneSpecialistDto,
   UpdateSpecialistDto,
 } from './dto/specialist.dto';
@@ -47,5 +53,19 @@ export class SpecialistService {
       }
       await this.specialistRepo.delete(findOneSpecialistDto);
       return  specialist ;
+  }
+
+  async findAllByProfessionId(
+    findAllSpecialistsByProfessionDto: FindAllSpecialistsByProfessionDto
+  ) {
+      const specialists = await this.specialistRepo.findAllByProfession(
+        findAllSpecialistsByProfessionDto
+      );
+
+      if (!specialists || specialists.length === 0) {
+        throw new NotFoundException("No specialists found for the given profession.");
+      }
+
+      return specialists;
   }
 }

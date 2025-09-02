@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useAuthState } from "@/features/auth/context/useAuthState";
 import { UserRole } from "@/lib/constants";
 
@@ -7,37 +9,35 @@ export default function withAuth(Component: any, requiredRoles: UserRole[]) {
     return function WithAuth(props: any) {
         const { isAuthenticated, role, isFirstLogin, logout } = useAuthState();
         const router = useRouter();
+        const pathname = usePathname();
+        const searchParams = useSearchParams();
 
         useEffect(() => {
-            const currentPath = router.asPath;
-            const loginUrl = new URL("/user/login", window.location.origin);
-
-            // Redirect to login if the user is not authenticated
+            // Redirect to login if not authenticated
             if (!isAuthenticated) {
-                logout(); // Clear the state
+                logout(); // Clear local auth state
 
-                // Add current path as callback if not already on login
-                if (currentPath !== "/user/login") {
-                    loginUrl.searchParams.set("_callback", currentPath);
+                const callback = pathname;
+                const action = searchParams.get("_action");
+
+                const redirectParams = new URLSearchParams();
+                if (callback && callback !== "/user/login") {
+                    redirectParams.set("_callback", callback);
+                }
+                if (action) {
+                    redirectParams.set("_action", action);
                 }
 
-                // Preserve any existing action parameter
-                const action = router.query._action;
-                if (action && typeof action === "string") {
-                    loginUrl.searchParams.set("_action", action);
-                }
-
-                router.push(loginUrl.toString());
+                router.push(`/user/login?${redirectParams.toString()}`);
                 return;
             }
 
-            // Redirect to onboarding if it's first login
             if (isAuthenticated && isFirstLogin) {
                 router.push("/onboarding");
                 return;
             }
 
-            // Role-based access check
+            // Role-based access control
             if (
                 isAuthenticated &&
                 requiredRoles.length > 0 &&
@@ -46,17 +46,14 @@ export default function withAuth(Component: any, requiredRoles: UserRole[]) {
                 router.push("/");
                 return;
             }
-        }, [isAuthenticated, role, isFirstLogin, router]);
+        }, [isAuthenticated, isFirstLogin, role, pathname, searchParams, logout, router]);
 
-        /** This will prevent flashing of protected content,
-         * if the user is not authenticated or
-         * if the user does not have the required role */
+        // Optional: hide content while redirecting
         if (
             !isAuthenticated ||
             (requiredRoles.length > 0 && !requiredRoles.includes(role))
         ) {
-            // TODO: Add a loading spinner
-            return <p>Redirecting...</p>;
+            return <p>Redirecting...</p>; // Or show a spinner
         }
 
         return <Component {...props} />;

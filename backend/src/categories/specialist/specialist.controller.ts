@@ -5,14 +5,14 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Delete, Query,
 } from '@nestjs/common';
 import { SpecialistService } from './specialist.service';
 
 import { Public } from '../../auth/decorator/public.decorator';
 import { Roles } from '../../auth/decorator/role.decorator';
 import { UserRole } from '../../users/entities/abstract.user.entity';
-import { CreateSpecialistDto, UpdateSpecialistDto } from './dto/specialist.dto';
+import { CreateSpecialistDto, FindAllSpecialistsByProfessionDto, UpdateSpecialistDto } from './dto/specialist.dto';
 
 @Controller('specialist')
 export class SpecialistController {
@@ -25,15 +25,15 @@ export class SpecialistController {
     return await this.specialistService.create(createSpecialistDto);
   }
 
-  // @Public()
-  // @Get()
-  // async findAllByTypeId(
-  //   @Body() findAllSpecialistByTypeIdDto: FindAllSpecialistsByTypeDto,
-  // ) {
-  //   return await this.specialistService.findAllByTypeId(
-  //     findAllSpecialistByTypeIdDto,
-  //   );
-  // }
+  @Public()
+  @Get()
+  async findAllByProfession(
+    @Query() findAllSpecialistsByProfessionDto: FindAllSpecialistsByProfessionDto,
+  ) {
+    return await this.specialistService.findAllByProfessionId(
+      findAllSpecialistsByProfessionDto,
+    );
+  }
 
 
   @Public()
