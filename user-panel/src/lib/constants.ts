@@ -229,3 +229,6 @@ export const COUNTRY_LIST = [
   { label: "Zambia", value: "Zambia" },
   { label: "Zimbabwe", value: "Zimbabwe" },
 ];
+
+export const NAV_LOGO_SRC = "/images/nav-logo.png";
+

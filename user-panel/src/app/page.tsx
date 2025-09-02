@@ -5,6 +5,10 @@ import type React from "react"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useRouter } from "next/navigation"
 import { ArrowRightIcon, PersonIcon, TargetIcon, StarIcon } from "@radix-ui/react-icons"
+import Image from "next/image";
+import {NAV_LOGO_SRC} from "@/lib/constants";
+
+
 
 export default function HomePage() {
   const { isAuthenticated, onboardingCompleted } = useAuthState()
@@ -26,8 +30,7 @@ function UnauthenticatedHome() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600"></div>
-              <span className="text-xl font-bold text-gray-900">Ummah Community</span>
+              <Image src={NAV_LOGO_SRC} alt="ummah-comunity-logo" width={150}  height={50} priority/>
             </div>
             <div className="flex items-center space-x-4">
               <button

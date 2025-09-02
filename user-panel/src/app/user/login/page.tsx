@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type ChangeEvent, type FormEvent } from "react"
+import React, { useState, type ChangeEvent, type FormEvent } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { userSignInFn } from "@/lib/endpoints/authenticationFns"
 import { useRouter, useSearchParams } from "next/navigation"
@@ -16,6 +16,8 @@ import {
   EyeNoneIcon,
 } from "@radix-ui/react-icons"
 import { useGoogleLogin } from "@/lib/hooks/useGoogleLogin"
+import Image from "next/image";
+import {NAV_LOGO_SRC} from "@/lib/constants";
 
 interface FormState {
   email: string
@@ -100,8 +102,7 @@ export default function LoginPage() {
             >
               <ArrowLeftIcon className="w-5 h-5" />
               <div className="flex items-center space-x-2">
-                <div className="h-6 w-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600"></div>
-                <span className="text-lg font-bold">Ummah Community</span>
+                <Image src={NAV_LOGO_SRC} alt="ummah-comunity-logo" width={150}  height={50} priority/>
               </div>
             </button>
             <div className="text-sm text-gray-600">
