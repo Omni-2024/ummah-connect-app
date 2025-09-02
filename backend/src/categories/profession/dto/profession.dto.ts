@@ -11,12 +11,13 @@ export class CreateProfessionDto {
   order: number;
 }
 
-export class UpdateProfessionDto extends CreateProfessionDto {
+declare const UpdateProfessionDto_base: import("@nestjs/common").Type<Partial<CreateProfessionDto>>;
+export declare class UpdateProfessionDto extends UpdateProfessionDto_base {
   @IsString()
   id: string;
 
   @IsNumber()
-  declare order: number;
+  order: number;
 }
 
 export class FindOneProfessionDto {

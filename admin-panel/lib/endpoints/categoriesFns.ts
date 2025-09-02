@@ -41,7 +41,7 @@ export const updateCategoryNameFn = async (
     method: "patch",
     url: `/api/profession/${data.id}`,
     data: {
-      name: data.name,
+      name: data.name
     },
   });
   return res.data;

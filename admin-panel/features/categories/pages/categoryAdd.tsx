@@ -69,13 +69,13 @@ const CategoryAddEditPopup: React.FC<CategoryAddEditPopupProps> = ({
         <Dialog open={open} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader className="text-center pb-4">
-                    <div className="mx-auto w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center mb-3 shadow-sm">
-                        {type.includes("professional") ? (
+                    {/* <div className="mx-auto w-12 h-12 rounded-lg flex items-center justify-center mb-3 shadow-sm"> */}
+                        {/* {type.includes("professional") ? (
                             <User className="h-6 w-6 text-white" />
                         ) : (
                             <Plus className="h-6 w-6 text-white" />
-                        )}
-                    </div>
+                        )} */}
+                    {/* </div> */}
                     <DialogTitle className="text-xl font-semibold text-gray-900">
                         {action === "add" ? "Add New" : "Edit"} {type}
                     </DialogTitle>
@@ -111,7 +111,7 @@ const CategoryAddEditPopup: React.FC<CategoryAddEditPopupProps> = ({
                         <Button
                             type="submit"
                             disabled={isPending || !name.trim()}
-                            className="flex-1 h-11 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white shadow-sm"
+                            className="flex-1 h-11 bg-gradient-to-br from-[#669f9d] to-[#337f7c] hover:from-cyan-600 hover:to-blue-700 text-white shadow-sm"
                         >
                             {isPending ? "Saving..." : action === "add" ? `Add ${type}` : `Update ${type}`}
                         </Button>
