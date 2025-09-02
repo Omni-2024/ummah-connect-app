@@ -1,4 +1,4 @@
-import { getAllGeneralUsersFn } from "@/lib/endpoints/usersFns";
+import {getAllGeneralUsersFn, getGeneralUser} from "@/lib/endpoints/usersFns";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGeneralUsers = (
@@ -10,8 +10,24 @@ export const useGeneralUsers = (
     keepPrevious?: boolean
     ) => {
     return useQuery({
-        queryKey: ["user", "general", data],
+        queryKey: ["users", "general", data],
         queryFn: () => getAllGeneralUsersFn(data),
         placeholderData: keepPrevious ? (data) => data : undefined,
+    });
+};
+
+export const useGeneralUser = (id?: string) => {
+    return useQuery({
+        queryKey: ["user", id],
+        queryFn: () => getGeneralUser(id ?? ""),
+        enabled: !!id,
+    });
+};
+
+export const useDeleteUser = (id?: string) => {
+    return useQuery({
+        queryKey: ["rm-user", id],
+        queryFn: () => (id ?? ""),
+        enabled: !!id,
     });
 };
