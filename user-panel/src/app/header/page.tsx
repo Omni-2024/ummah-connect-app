@@ -43,7 +43,6 @@ export default function Header() {
   const [selectedMobileCategory, setSelectedMobileCategory] = useState<string | null>(null)
 
   
-  // Fetch categories dynamically
   const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useCategories()
 
   const avatarUrl = buildAvatarUrl(user?.profileImage)

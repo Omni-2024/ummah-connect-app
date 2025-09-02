@@ -55,11 +55,8 @@ export interface GetAllServiceParams {
   offset?: number;
   search?: string;
   provider?: string;
-  types?: string[];
   profession?: string;
   specialties?: string[];
-  cmeUp?: number;
-  cmeDown?: number;
   isPopular?: boolean;
 }
 
@@ -68,7 +65,6 @@ export interface Specialist {
   name: string;
   price: number;
   professionId: string;
-  typeId: string;
 }
 
 
