@@ -122,9 +122,9 @@ export default function Header() {
                       setHoveredCategory(null)
                     }}
                   >
-                    <div className="flex min-h-[400px]">
+                    <div className="flex min-h-[200px]">
                       {/* Main Categories - Left Side */}
-                      <div className="w-64 bg-slate-50 border-r border-slate-200">
+                      <div className="w-64 bg-slate-50 border-r border-slate-200 ">
                         <div className="p-4">
                           <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wide mb-3">
                             Categories
@@ -173,7 +173,7 @@ export default function Header() {
                       </div>
 
                       {/* Subcategories - Right Side */}
-                      <div className="w-80 bg-white h-min">
+                      <div className="w-60 bg-white h-min">
                         <div className="p-4">
                           {hoveredCategory ? (
                             <>
@@ -208,7 +208,7 @@ export default function Header() {
                                 <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
                                   <ChevronRightIcon className="w-6 h-6 text-slate-400" />
                                 </div>
-                                <p className="text-sm">Hover over a category to see options</p>
+                                 <p className="text-sm">Hover over a category to see options</p> 
                               </div>
                             </div>
                           )}
