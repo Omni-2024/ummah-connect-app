@@ -8,9 +8,8 @@ import "./globals.css"
 import Providers from "@/app/providers";
 
 export const metadata: Metadata = {
-  title: "Islamic Community Platform",
+  title: "Admin - Ummah community",
   description: "Connect with Islamic service providers in your community",
-  generator: "v0.app",
 }
 
 export default function RootLayout({

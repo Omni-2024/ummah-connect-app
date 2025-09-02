@@ -94,3 +94,6 @@ export enum SubscriptionPlanType {
   CATEGORY = "category",
   UNLIMITED = "unlimited",
 }
+
+export const NAV_LOGO_SRC = "/images/nav-logo.png";
+export const MAIN_LOGO_SRC = "/images/logo.png";
