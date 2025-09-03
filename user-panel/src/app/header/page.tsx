@@ -48,6 +48,7 @@ export default function Header() {
   const [mobileExploreOpen, setMobileExploreOpen] = useState(false)
   const [selectedMobileCategory, setSelectedMobileCategory] = useState<string | null>(null)
 
+
   const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useCategories()
 
   const avatarUrl = buildAvatarUrl(user?.profileImage)
@@ -91,14 +92,14 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Logo logoSrc={NAV_LOGO_SRC} router={router} />
-          <Navigation 
-            exploreDropdownOpen={exploreDropdownOpen} 
-            setExploreDropdownOpen={setExploreDropdownOpen} 
-            hoveredCategory={hoveredCategory} 
-            setHoveredCategory={setHoveredCategory} 
-            exploreCategories={exploreCategories} 
-            router={router} 
-            categoriesLoading={categoriesLoading} 
+          <Navigation
+            exploreDropdownOpen={exploreDropdownOpen}
+            setExploreDropdownOpen={setExploreDropdownOpen}
+            hoveredCategory={hoveredCategory}
+            setHoveredCategory={setHoveredCategory}
+            exploreCategories={exploreCategories}
+            router={router}
+            categoriesLoading={categoriesLoading}
             categoriesError={categoriesError}
           />
           <SearchBar />
@@ -111,16 +112,16 @@ export default function Header() {
                     <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
                   </span>
                 </button>
-                <ProfileDropdown 
-                  profileDropdownOpen={profileDropdownOpen} 
-                  setProfileDropdownOpen={setProfileDropdownOpen} 
-                  user={user} 
-                  avatarUrl={avatarUrl} 
-                  avatarBroken={avatarBroken} 
-                  setAvatarBroken={setAvatarBroken} 
-                  isFetched={isFetched} 
-                  isLoading={isLoading} 
-                  router={router} 
+                <ProfileDropdown
+                  profileDropdownOpen={profileDropdownOpen}
+                  setProfileDropdownOpen={setProfileDropdownOpen}
+                  user={user}
+                  avatarUrl={avatarUrl}
+                  avatarBroken={avatarBroken}
+                  setAvatarBroken={setAvatarBroken}
+                  isFetched={isFetched}
+                  isLoading={isLoading}
+                  router={router}
                   handleLogout={handleLogout}
                 />
               </>
@@ -137,16 +138,16 @@ export default function Header() {
             </div>
           </div>
         </div>
-        {mobileMenuOpen && <MobileMenu 
-          mobileExploreOpen={mobileExploreOpen} 
-          setMobileExploreOpen={setMobileExploreOpen} 
-          selectedMobileCategory={selectedMobileCategory} 
-          setSelectedMobileCategory={setSelectedMobileCategory} 
-          exploreCategories={exploreCategories} 
-          categoriesLoading={categoriesLoading} 
-          categoriesError={categoriesError} 
-          handleMobileNavigation={handleMobileNavigation} 
-          router={router} 
+        {mobileMenuOpen && <MobileMenu
+          mobileExploreOpen={mobileExploreOpen}
+          setMobileExploreOpen={setMobileExploreOpen}
+          selectedMobileCategory={selectedMobileCategory}
+          setSelectedMobileCategory={setSelectedMobileCategory}
+          exploreCategories={exploreCategories}
+          categoriesLoading={categoriesLoading}
+          categoriesError={categoriesError}
+          handleMobileNavigation={handleMobileNavigation}
+          router={router}
           isAuthenticated={isAuthenticated}
         />}
       </div>

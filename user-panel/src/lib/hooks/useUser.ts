@@ -12,3 +12,11 @@ export const useCurrentUser = () => {
     enabled: !!id, // ! Should be enabled only when id is present
   });
 };
+
+export const useGeneralUser = (id?: string) => {
+  return useQuery({
+    queryKey: ["user", id],
+    queryFn: () => getUserByIdFn(id ?? ""),
+    enabled: !!id,
+  });
+};

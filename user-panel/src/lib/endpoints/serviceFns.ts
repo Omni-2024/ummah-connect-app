@@ -1,10 +1,14 @@
 import { Service, GetAllServiceParams, Meta } from "@/types";
-// import { exploreActions } from "@/features/explore/context/slice";
 import Request, { catchAxiosErrorTyped } from "@/lib/http";
-// import { getEnrollmentStatusFn } from "./enrollmentFns";
-// import { getPaymentByIdFn } from "./paymentFns";
+import {useExploreState} from "@/features/explore/context/exploreState";
 
-export const getAllCoursesFn = async (params: GetAllServiceParams) => {
+const {
+  setOffset,
+  setLimit,
+
+} =useExploreState()
+
+export const getAllServicesFn = async (params: GetAllServiceParams) => {
   try {
     const res = await Request<GetAllCoursesFnRes>({
       method: "get",
@@ -14,8 +18,8 @@ export const getAllCoursesFn = async (params: GetAllServiceParams) => {
     return res.data;
   } catch (error) {
     console.error(error);
-    // exploreActions.setLimit(9);
-    // exploreActions.setOffset(0);
+    setLimit(9)
+    setOffset(0)
     return { data: [], meta: { total: 0, limit: null, offset: null } };
   }
 };
@@ -27,7 +31,7 @@ export interface GetAllCoursesFnRes {
 }
 
 /** Get - '/course/detail/:id' - get one course */
-export const getOneCourseFn = async (id: string) => {
+export const getOneServiceFn = async (id: string) => {
   try {
     const res = await Request<GetOneServiceDetailsFnRes>({
       method: "get",

@@ -17,7 +17,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuthState } from "@/features/auth/context/useAuthState";
 import { Toast } from "@/components/base/Toast";
 import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns"; // ✅ use this
-import { COUNTRY_LIST } from "@/lib/constants";
+import {COUNTRY_LIST, MAX_IMAGE_BYTES} from "@/lib/constants";
 
 const SetupAccountStep = () => {
   const router = useRouter();
@@ -104,6 +104,15 @@ const SetupAccountStep = () => {
       Toast.error("Invalid file type. Please upload JPG, PNG, or WEBP.");
       return;
     }
+    if (file.size > MAX_IMAGE_BYTES) {
+      const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+      Toast.error(`Image too large (${sizeMB} MB). Max allowed is 2 MB.`);
+      setImage(null);
+      setPreviewUrl(null);
+      e.currentTarget.value = "";
+      return;
+    }
+
     setImage(file);
   };
 

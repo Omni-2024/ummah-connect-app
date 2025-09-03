@@ -1,48 +1,45 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-  getAllCoursesFn,
-  // getServiceEnrollmentStatusFn,
   getOneServiceBySlugFn,
-  GetOneServiceDetailsFnRes,
-  getOneCourseFn,
+  getAllServicesFn, getOneServiceFn,
 } from "@/lib/endpoints/serviceFns";
 import { GetAllServiceParams } from "@/types";
 
 export const useServices = (params: GetAllServiceParams) => {
   return useQuery({
     queryKey: ["services", params],
-    queryFn: () => getAllCoursesFn(params),
+    queryFn: () => getAllServicesFn(params),
   });
 };
 
-export const useCoursesHints = (params: GetAllServiceParams) => {
+export const useServicesHints = (params: GetAllServiceParams) => {
   return useQuery({
     queryKey: ["services-hints", params],
-    queryFn: () => getAllCoursesFn(params),
+    queryFn: () => getAllServicesFn(params),
     enabled: !!params.limit && !!params.search,
   });
 };
 
-export const useCoursesByEducator = (params: {
+export const useServicesByEducator = (params: {
   limit: number;
   educator: string;
 }) => {
   return useQuery({
     queryKey: ["provider-services", params],
-    queryFn: () => getAllCoursesFn(params),
+    queryFn: () => getAllServicesFn(params),
     enabled: !!params.limit && !!params.educator,
   });
 };
 
-export const useCourse = (id: string) => {
+export const useService = (id: string) => {
   return useQuery({
     queryKey: ["service", id],
-    queryFn: () => getOneCourseFn(id),
+    queryFn: () => getOneServiceFn(id),
     enabled: !!id, // ! Should be enabled only when id is present
   });
 };
 
-export const useCourseBySlug = (slug: string) => {
+export const useServiceBySlug = (slug: string) => {
   return useQuery({
     queryKey: ["service-by-slug", slug],
     queryFn: () => getOneServiceBySlugFn(slug),

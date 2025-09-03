@@ -44,7 +44,7 @@ export class UsersService {
         total
       ) {
         return {
-          data: { data: users, meta: { total, limit, offset } },
+         data: users, meta: { total, limit, offset  }
         };
       }
       return { status: HttpStatus.NOT_FOUND, error: 'No users found' };

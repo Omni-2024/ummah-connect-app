@@ -51,7 +51,7 @@ export const getGeneralUser = async (id?: string) => {
 };
 
 /** Delete - '/user/:id' - delete General User */
-export const deleteUser = async (id: string) => {
+export const deleteUserFn = async (id: string) => {
     const res = await Request<R<null>>({
         method: "delete",
         url: `/api/user/${id}`,

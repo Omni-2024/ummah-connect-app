@@ -22,22 +22,22 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white">
       <Header />
-      
+
       {/* Hero Section */}
       <HeroSection isAuthenticated={isAuthenticated} router={router} />
-      
+
       {/* Features Section - shown to everyone */}
       <FeaturesSection />
-      
+
       {/* Categories Section - shown to everyone */}
       <CategoriesSection router={router} />
-      
+
       {/* Dashboard/Stats Section - shown only to authenticated users */}
       {isAuthenticated && <DashboardSection router={router} />}
-      
+
       {/* CTA Section - shown to unauthenticated users */}
       {!isAuthenticated && <CTASection router={router} />}
-      
+
       {/* Footer */}
       <footer className="bg-slate-900 text-white py-12 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -68,7 +68,7 @@ function HeroSection({ isAuthenticated, router }: { isAuthenticated: boolean; ro
           <p className="text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto">
             Join thousands of healthcare professionals learning from world-class courses in medicine, dentistry, and allied health sciences.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             {!isAuthenticated ? (
               <>
@@ -104,7 +104,7 @@ function HeroSection({ isAuthenticated, router }: { isAuthenticated: boolean; ro
               </>
             )}
           </div>
-          
+
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 mt-16 max-w-2xl mx-auto">
             <div className="text-center">
@@ -159,7 +159,7 @@ function FeaturesSection() {
             We're dedicated to advancing healthcare education through innovative learning experiences.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <FeatureCard key={index} {...feature} />
@@ -180,7 +180,7 @@ function CategoriesSection({ router }: { router: AppRouterInstance }) {
       bgColor: "from-emerald-50 to-teal-50"
     },
     {
-      title: "Dentistry", 
+      title: "Dentistry",
       description: "General Dentistry, Orthodontics, Oral Surgery",
       icon: <StarIcon className="w-12 h-12 text-blue-600" />,
       courses: "80+ courses",
@@ -190,7 +190,7 @@ function CategoriesSection({ router }: { router: AppRouterInstance }) {
       title: "Allied Health",
       description: "Nursing, Physical Therapy, Medical Technology",
       icon: <TargetIcon className="w-12 h-12 text-purple-600" />,
-      courses: "120+ courses", 
+      courses: "120+ courses",
       bgColor: "from-purple-50 to-pink-50"
     }
   ]
@@ -204,7 +204,7 @@ function CategoriesSection({ router }: { router: AppRouterInstance }) {
             Find courses tailored to your healthcare profession and specialty.
           </p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {categories.map((category, index) => (
             <div
@@ -235,7 +235,7 @@ function DashboardSection({ router }: { router: AppRouterInstance }) {
           <h2 className="text-3xl font-bold text-slate-900 mb-4">Your Learning Journey</h2>
           <p className="text-lg text-slate-600">Continue where you left off and discover new opportunities.</p>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <DashboardCard
             icon={<StarIcon className="w-8 h-8 text-emerald-600" />}
