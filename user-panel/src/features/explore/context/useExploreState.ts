@@ -1,4 +1,4 @@
-import {proxy} from "valtio/index";
+import { proxy } from "valtio"
 
 
 export type ExploreState = {

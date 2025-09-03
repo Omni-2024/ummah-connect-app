@@ -2,11 +2,11 @@ import { Service, GetAllServiceParams, Meta } from "@/types";
 import Request, { catchAxiosErrorTyped } from "@/lib/http";
 import {useExploreState} from "@/features/explore/context/exploreState";
 
-const {
-  setOffset,
-  setLimit,
-
-} =useExploreState()
+// const {
+//   setOffset,
+//   setLimit,
+//
+// } =useExploreState()
 
 export const getAllServicesFn = async (params: GetAllServiceParams) => {
   try {
@@ -18,8 +18,8 @@ export const getAllServicesFn = async (params: GetAllServiceParams) => {
     return res.data;
   } catch (error) {
     console.error(error);
-    setLimit(9)
-    setOffset(0)
+    // setLimit(9)
+    // setOffset(0)
     return { data: [], meta: { total: 0, limit: null, offset: null } };
   }
 };

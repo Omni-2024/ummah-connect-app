@@ -1,15 +1,15 @@
 "use client"
-import {useRouter, useSearchParams} from "next/navigation";
-import React, {useEffect, useState} from "react";
-import {useExploreState} from "@/features/explore/context/exploreState";
-import {useCategories} from "@/lib/hooks/useCategories";
-import {GetAllServiceParams} from "@/types";
-import {useServices} from "@/lib/hooks/useServices";
-import {SkeletonServicesCard} from "@/features/explore/component/SkeletonCourseCard";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { useExploreState } from "@/features/explore/context/exploreState";
+import { useCategories } from "@/lib/hooks/useCategories";
+import { GetAllServiceParams } from "@/types";
+import { useServices } from "@/lib/hooks/useServices";
+import { SkeletonServicesCard } from "@/features/explore/component/SkeletonCourseCard";
 import NoServicesFound from "@/features/explore/component/NoServicesFound";
 import ServiceCard from "@/features/app/components/ServiceCard";
 import CertificatBanner from "@/features/explore/component/CertificatBanner";
-import {setProfession, setProfessionName, setSpecialties} from "@/features/explore/context/useExploreState";
+import { setProfession, setProfessionName, setSpecialties } from "@/features/explore/context/useExploreState";
 import Header from "@/app/header/page";
 import FilterModal from "@/features/explore/component/search/FilterModal";
 import {
@@ -19,9 +19,9 @@ import {
     BreadcrumbList, BreadcrumbPage,
     BreadcrumbSeparator
 } from "@/components/base/Breadcrumb";
-import { IconButton} from "@radix-ui/themes";
+import { IconButton } from "@radix-ui/themes";
 import Button from "@/components/base/Button"
-import {Cross2Icon} from "@radix-ui/react-icons";
+import { Cross2Icon } from "@radix-ui/react-icons";
 import FilterBar from "@/features/explore/component/search/FilterBar";
 import NavSearchbar from "@/features/explore/component/search/NavSearchbar";
 import {
@@ -33,7 +33,7 @@ import {
 } from "@/components/base/Pagination";
 import FilterTabs from "@/components/base/FilterTabs";
 
-export default function ExploreServiceRoute()   {
+export default function ExploreServiceRoute() {
 
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -51,8 +51,7 @@ export default function ExploreServiceRoute()   {
         setSearchTerm,
         setLimit,
 
-    } =useExploreState()
-
+    } = useExploreState()
 
     const { data: categories } = useCategories();
 
@@ -91,7 +90,6 @@ export default function ExploreServiceRoute()   {
     };
 
     const handleResetFilters = () => {
-        // reset the filters
         setCurrentPage(1);
         setSearchTerm("");
         setProfession("")
@@ -107,7 +105,6 @@ export default function ExploreServiceRoute()   {
 
     const getCourseCardsWithBanner = () => {
         if (isLoading) {
-            // Render SkeletonCourseCards while data is loading
             const skeletonCards = Array.from({ length: 9 }).map((_, idx) => (
                 <SkeletonServicesCard key={idx} size="sm" />
             ));
@@ -158,7 +155,7 @@ export default function ExploreServiceRoute()   {
         setShowMobileFilterModal(open);
     };
 
-    return(
+    return (
         <div className="min-h-screen w-full pb-16 lg:pb-0">
             <Header />
             <FilterModal
@@ -178,7 +175,7 @@ export default function ExploreServiceRoute()   {
                                     className="cursor-pointer text-dark-400 hover:text-primary-500"
                                     onClick={handleResetFilters}
                                 >
-                                    All courses
+                                    All services
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
 
@@ -267,9 +264,9 @@ export default function ExploreServiceRoute()   {
                                 <div className="flex items-center gap-2 lg:hidden">
                                     <div>Search for </div>
                                     <div className="flex max-w-[200px] items-center gap-2 rounded-full border border-gray-200 bg-primary-50 px-3 py-1.5">
-                    <span className="truncate text-sm text-primary-700">
-                      {searchTerm}
-                    </span>
+                                        <span className="truncate text-sm text-primary-700">
+                                            {searchTerm}
+                                        </span>
                                         <Button
                                             variant={"icon"}
                                             onClick={() => {

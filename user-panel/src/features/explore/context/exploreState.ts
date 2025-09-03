@@ -1,4 +1,4 @@
-import {useSnapshot} from "valtio/index";
+import {useSnapshot} from "valtio";
 import {
     exploreState, setLimit, setOffset, setProfession, setProfessionName,
     setSearchTerm, setServiceId, setServiceSlug,

@@ -1,4 +1,3 @@
-// src/features/auth/context/AuthState.ts
 import { UserRole } from "@/lib/constants"
 import { proxy, subscribe } from "valtio"
 

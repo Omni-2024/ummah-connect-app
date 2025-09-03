@@ -1,18 +1,18 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useMemo } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useCurrentUser } from "@/lib/hooks/useUser"
 import { useCategories } from "@/lib/hooks/useCategories"
-import { 
-  PersonIcon, 
-  HamburgerMenuIcon, 
-  Cross1Icon, 
+import {
+  PersonIcon,
+  HamburgerMenuIcon,
+  Cross1Icon,
   ChevronDownIcon,
   ChevronRightIcon,
-  MagnifyingGlassIcon, 
+  MagnifyingGlassIcon,
   BellIcon,
   BookmarkIcon,
   GearIcon,
@@ -28,6 +28,8 @@ import SearchBar from "./subcomponents/SearchBar"
 import AuthButtons from "./subcomponents/AuthButtons"
 import ProfileDropdown from "./subcomponents/ProfileDropdown"
 import MobileMenu from "./subcomponents/MobileMenu"
+import NavSearchbar from "@/features/explore/component/search/NavSearchbar";
+import { CategoryData } from "@/types";
 
 const buildAvatarUrl = (img?: string | null) => {
   if (!img) return null;
@@ -36,7 +38,11 @@ const buildAvatarUrl = (img?: string | null) => {
   return `${base}/${img}`;
 };
 
-export default function Header() {
+type NavbarProps = {
+  clearPage?: () => void;
+};
+
+export default function Header(props: NavbarProps) {
   const { isAuthenticated, logout } = useAuthState()
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -66,6 +72,11 @@ export default function Header() {
     router.push("/")
     setProfileDropdownOpen(false)
   }
+
+  const exploreCategoriesForNav: CategoryData[] = useMemo(
+    () => (categories && !categoriesError ? categories : []),
+    [categories, categoriesError]
+  );
 
   const exploreCategories = React.useMemo(() => {
     if (!categories || categoriesLoading || categoriesError) {
@@ -97,12 +108,12 @@ export default function Header() {
             setExploreDropdownOpen={setExploreDropdownOpen}
             hoveredCategory={hoveredCategory}
             setHoveredCategory={setHoveredCategory}
-            exploreCategories={exploreCategories}
-            router={router}
+            exploreCategories={exploreCategoriesForNav}
             categoriesLoading={categoriesLoading}
             categoriesError={categoriesError}
           />
-          <SearchBar />
+          <NavSearchbar onSearch={props.clearPage} />
+          {/*<SearchBar />*/}
           <div className="flex items-center space-x-3">
             {isAuthenticated ? (
               <>

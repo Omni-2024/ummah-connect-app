@@ -40,7 +40,7 @@ const MenuFilterItem = ({
     id: string;
     title: string;
     onChange: (id: string) => void;
-    selectedCategories: readonly string[]; // readonly works with Valtio snapshot
+    selectedCategories: readonly string[];
 }) => {
     const checked = selectedCategories.includes(id);
     return (
@@ -59,6 +59,7 @@ const FilterBar = ({ resetPage }: { resetPage: () => void }) => {
     const { categories, profession, specialties, changeProfession, toggleSpecialty } =
         useExploreFilters(resetPage);
 
+
     return (
         <aside className="flex h-min min-w-72 max-w-72 flex-col rounded-3xl border p-5">
             <h3 className="flex items-center gap-3 font-primary text-lg font-bold">
@@ -67,10 +68,8 @@ const FilterBar = ({ resetPage }: { resetPage: () => void }) => {
 
             <Separator className="my-4" />
 
-            {/* Main category = Profession */}
             <FilterItemWrapper title="Profession">
                 <RadioGroup value={profession || ""} onValueChange={changeProfession}>
-                    {/* All option to clear selection */}
                     <div className="flex items-center justify-start gap-2 py-1">
                         <RadioGroupItem value="" id="__all" checked={!profession} />
                         <Label htmlFor="__all" className="select-none text-left font-medium">
