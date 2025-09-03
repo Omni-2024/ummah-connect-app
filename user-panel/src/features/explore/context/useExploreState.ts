@@ -1,5 +1,4 @@
 import {proxy} from "valtio/index";
-import {Specialist} from "@/types";
 
 
 export type ExploreState = {

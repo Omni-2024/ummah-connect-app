@@ -60,19 +60,6 @@ export interface GetAllServiceParams {
   isPopular?: boolean;
 }
 
-export interface Specialist {
-  id: string;
-  name: string;
-  price: number;
-  professionId: string;
-}
-
-
-export interface Profession {
-  id: string;
-  name: string;
-  price: number;
-}
 
 export type CardTypes =
   | "Visa"
@@ -100,4 +87,27 @@ export type PaymentCard = {
   cardHolder: string;
   expiryDate: string;
   isDefault: boolean;
+};
+
+export type CategoryData = {
+  id: string;
+  name: string;
+  price: number;
+  order: number;
+  specialists: SpecialistData[];
+};
+
+export type SpecialistData = {
+  id: string;
+  name: string;
+  price: number;
+  professionId: string;
+};
+
+export type ProfessionTypeData = {
+  id: string;
+  name: string;
+  price: number;
+  professionId: string;
+  specialists: SpecialistData[];
 };

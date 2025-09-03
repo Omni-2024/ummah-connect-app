@@ -3,13 +3,13 @@ import {useRouter, useSearchParams} from "next/navigation";
 import React, {useEffect, useState} from "react";
 import {useExploreState} from "@/features/explore/context/exploreState";
 import {useCategories} from "@/lib/hooks/useCategories";
-import {GetAllServiceParams, Specialist} from "@/types";
+import {GetAllServiceParams} from "@/types";
 import {useServices} from "@/lib/hooks/useServices";
 import {SkeletonServicesCard} from "@/features/explore/component/SkeletonCourseCard";
 import NoServicesFound from "@/features/explore/component/NoServicesFound";
 import ServiceCard from "@/features/app/components/ServiceCard";
 import CertificatBanner from "@/features/explore/component/CertificatBanner";
-import {setProfession, setProfessionName} from "@/features/explore/context/useExploreState";
+import {setProfession, setProfessionName, setSpecialties} from "@/features/explore/context/useExploreState";
 import Header from "@/app/header/page";
 import FilterModal from "@/features/explore/component/search/FilterModal";
 import {
@@ -94,9 +94,10 @@ export default function ExploreServiceRoute()   {
         // reset the filters
         setCurrentPage(1);
         setSearchTerm("");
+        setProfession("")
+        setSpecialties([])
         setOffset(0);
         setLimit(9);
-        // if url has search query, remove it
         const searchQuery = searchParams.get("search_query");
 
         if (searchQuery) {
@@ -330,6 +331,6 @@ export default function ExploreServiceRoute()   {
 
 
         </div>
-        )
+    )
 
 }

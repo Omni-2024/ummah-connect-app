@@ -13,6 +13,7 @@ const NoServiceFound: React.FC<NoServicesFoundProps> = ({
     const {
         searchTerm:search,
         profession,
+        professionName
     } =useExploreState()
 
 
@@ -22,17 +23,17 @@ const NoServiceFound: React.FC<NoServicesFoundProps> = ({
   let descriptionPart2 = "";
 
   if (search && profession) {
-    title = `No results found for "${search}" in ${profession}`;
+    title = `No results found for "${search}" in ${professionName}`;
     descriptionPart1 = `We couldn't find any exact matches related to `;
-    descriptionPart2 = `"${search}" in ${profession}.`;
+    descriptionPart2 = `"${search}" in ${professionName}.`;
   } else if (search) {
     title = `No results found for "${search}"`;
     descriptionPart1 = `We couldn't find any exact matches related to `;
     descriptionPart2 = `${search}`;
   } else if (profession) {
-    title = `No services found for ${profession}`;
+    title = `No services found for ${professionName}`;
     descriptionPart1 = `It seems we couldn't find any services in `;
-    descriptionPart2 = `${profession}.`;
+    descriptionPart2 = `${professionName}.`;
   }
 
   return (
