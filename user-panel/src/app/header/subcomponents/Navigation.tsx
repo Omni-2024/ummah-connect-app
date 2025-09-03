@@ -1,0 +1,123 @@
+import React from "react"
+import { ChevronDownIcon, ChevronRightIcon } from "@radix-ui/react-icons"
+import { useRouter } from "next/navigation"
+
+const Navigation = ({
+  exploreDropdownOpen,
+  setExploreDropdownOpen,
+  hoveredCategory,
+  setHoveredCategory,
+  exploreCategories,
+  router,
+  categoriesLoading,
+  categoriesError
+}: {
+  exploreDropdownOpen: boolean;
+  setExploreDropdownOpen: (open: boolean) => void;
+  hoveredCategory: string | null;
+  setHoveredCategory: (category: string | null) => void;
+  exploreCategories: any[];
+  router: any;
+  categoriesLoading: boolean;
+  categoriesError: any;
+}) => {
+  return (
+    <nav className="hidden lg:flex items-center space-x-1">
+      <div className="relative">
+        <button
+          onClick={() => setExploreDropdownOpen(!exploreDropdownOpen)}
+          onMouseEnter={() => setExploreDropdownOpen(true)}
+          className="flex items-center space-x-1 text-slate-700 hover:text-emerald-600 px-4 py-2 text-sm font-medium transition-all duration-200 relative group rounded-lg hover:bg-slate-50"
+        >
+          <span>Explore</span>
+          <ChevronDownIcon className={`w-4 h-4 transition-transform duration-200 ${exploreDropdownOpen ? 'rotate-180' : ''}`} />
+          <span className="absolute inset-x-3 -bottom-px h-0.5 bg-gradient-to-r from-emerald-500 to-teal-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 rounded-full"></span>
+        </button>
+        {exploreDropdownOpen && (
+          <>
+            <div className="fixed inset-0 z-40" onClick={() => { setExploreDropdownOpen(false); setHoveredCategory(null); }} />
+            <div 
+              className="absolute left-0 mt-2 bg-white rounded-xl shadow-xl border border-slate-200 z-50 animate-in slide-in-from-top-2 duration-200 overflow-hidden"
+              onMouseLeave={() => { setExploreDropdownOpen(false); setHoveredCategory(null); }}
+            >
+              <div className="flex min-h-[200px]">
+                <div className="w-64 bg-slate-50 border-r border-slate-200">
+                  <div className="p-4">
+                    <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wide mb-3">Categories</h3>
+                    {categoriesLoading ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-600"></div>
+                        <span className="ml-2 text-sm text-slate-600">Loading...</span>
+                      </div>
+                    ) : categoriesError ? (
+                      <div className="text-center py-8 text-red-600 text-sm">Error loading categories</div>
+                    ) : exploreCategories.length === 0 ? (
+                      <div className="text-center py-8 text-slate-600 text-sm">No categories available</div>
+                    ) : (
+                      <div className="space-y-1">
+                        {exploreCategories.map((category) => (
+                          <button
+                            key={category.title}
+                            onMouseEnter={() => setHoveredCategory(category.title)}
+                            onClick={() => {
+                              router.push(`/courses/${category.title.toLowerCase().replace(/\s+/g, '-')}`);
+                              setExploreDropdownOpen(false);
+                              setHoveredCategory(null);
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-3 text-left text-sm rounded-lg transition-all duration-200 group ${
+                              hoveredCategory === category.title ? 'bg-emerald-100 text-emerald-700' : 'text-slate-700 hover:bg-white hover:text-slate-900'
+                            }`}
+                          >
+                            <span className="font-medium">{category.title}</span>
+                            <ChevronRightIcon className={`w-4 h-4 transition-colors duration-200 ${
+                              hoveredCategory === category.title ? 'text-emerald-600' : 'text-slate-400 group-hover:text-slate-600'
+                            }`} />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="w-60 bg-white h-min">
+                  <div className="p-4">
+                    {hoveredCategory ? (
+                      <>
+                        <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wide mb-3">{hoveredCategory}</h3>
+                        <div className="space-y-1">
+                          {exploreCategories.find(cat => cat.title === hoveredCategory)?.subcategories?.map((sub: any) => (
+                            <button
+                              key={sub.name}
+                              onClick={() => {
+                                router.push(`/courses/${sub.slug}`);
+                                setExploreDropdownOpen(false);
+                                setHoveredCategory(null);
+                              }}
+                              className="w-full text-left px-3 py-2 text-sm text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-200"
+                            >
+                              {sub.name}
+                            </button>
+                          )) || <div className="px-3 py-4 text-sm text-slate-500">No subcategories available</div>}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="flex items-center justify-center h-full text-slate-500">
+                        <div className="text-center">
+                          <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <ChevronRightIcon className="w-6 h-6 text-slate-400" />
+                          </div>
+                          <p className="text-sm">Hover over a category to see options</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    </nav>
+  )
+}
+
+export default Navigation
