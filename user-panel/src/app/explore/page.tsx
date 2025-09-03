@@ -10,7 +10,6 @@ import NoServicesFound from "@/features/explore/component/NoServicesFound";
 import ServiceCard from "@/features/app/components/ServiceCard";
 import CertificatBanner from "@/features/explore/component/CertificatBanner";
 import { setProfession, setProfessionName, setSpecialties } from "@/features/explore/context/useExploreState";
-import Header from "@/app/header/page";
 import FilterModal from "@/features/explore/component/search/FilterModal";
 import {
     Breadcrumb,
@@ -19,7 +18,7 @@ import {
     BreadcrumbList, BreadcrumbPage,
     BreadcrumbSeparator
 } from "@/components/base/Breadcrumb";
-import { IconButton } from "@radix-ui/themes";
+import IconButton from "@/components/base/IconButton";
 import Button from "@/components/base/Button"
 import { Cross2Icon } from "@radix-ui/react-icons";
 import FilterBar from "@/features/explore/component/search/FilterBar";
@@ -32,6 +31,10 @@ import {
     PaginationPrevious
 } from "@/components/base/Pagination";
 import FilterTabs from "@/components/base/FilterTabs";
+import Navbar from "@/features/app/components/Navbar";
+import NavbarMobile, {NavbarTitle} from "@/features/app/components/Navbar.mobile";
+import {Setting4} from "iconsax-react";
+import Bottombar from "@/features/app/components/Bottombar";
 
 export default function ExploreServiceRoute() {
 
@@ -157,7 +160,20 @@ export default function ExploreServiceRoute() {
 
     return (
         <div className="min-h-screen w-full pb-16 lg:pb-0">
-            <Header />
+            <Navbar />
+            <NavbarMobile
+                className="px-4"
+                left={<NavbarTitle title="Search" size="md" />}
+                right={
+                    <IconButton variant="primary">
+                        <Setting4
+                            className="size-6 "
+                            onClick={() => setShowMobileFilterModal(true)}
+                            color="black"
+                        />
+                    </IconButton>
+                }
+            />
             <FilterModal
                 showModal={showMobileFilterModal}
                 handleModalChange={handleFilterModalChange}
@@ -325,8 +341,7 @@ export default function ExploreServiceRoute() {
                     </div>
                 </div>
             </div>
-
-
+            <Bottombar/>
         </div>
     )
 

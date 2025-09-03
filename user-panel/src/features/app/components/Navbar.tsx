@@ -22,16 +22,16 @@ import {
 } from "@radix-ui/react-icons"
 import { NAV_LOGO_SRC } from "@/lib/constants"
 import envs from "@/lib/env"
-import Logo from "./subcomponents/Logo"
-import Navigation from "./subcomponents/Navigation"
-import SearchBar from "./subcomponents/SearchBar"
-import AuthButtons from "./subcomponents/AuthButtons"
-import ProfileDropdown from "./subcomponents/ProfileDropdown"
-import MobileMenu from "./subcomponents/MobileMenu"
+import Logo from "../../../app/header/subcomponents/Logo"
+import Navigation from "../../../app/header/subcomponents/Navigation"
+import SearchBar from "../../../app/header/subcomponents/SearchBar"
+import AuthButtons from "../../../app/header/subcomponents/AuthButtons"
+import ProfileDropdown from "../../../app/header/subcomponents/ProfileDropdown"
+import MobileMenu from "../../../app/header/subcomponents/MobileMenu"
 import NavSearchbar from "@/features/explore/component/search/NavSearchbar";
 import { CategoryData } from "@/types";
 
-const buildAvatarUrl = (img?: string | null) => {
+export const buildAvatarUrl = (img?: string | null) => {
   if (!img) return null;
   if (/^https?:\/\//i.test(img)) return img;
   const base = envs.imageBaseUrl;
@@ -42,17 +42,15 @@ type NavbarProps = {
   clearPage?: () => void;
 };
 
-export default function Header(props: NavbarProps) {
+export default function Navbar(props: NavbarProps) {
   const { isAuthenticated, logout } = useAuthState()
   const router = useRouter()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false)
   const [exploreDropdownOpen, setExploreDropdownOpen] = useState(false)
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
   const { data: user, isFetched, isLoading } = useCurrentUser()
   const [avatarBroken, setAvatarBroken] = useState(false)
-  const [mobileExploreOpen, setMobileExploreOpen] = useState(false)
-  const [selectedMobileCategory, setSelectedMobileCategory] = useState<string | null>(null)
+
 
 
   const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useCategories()
@@ -78,28 +76,9 @@ export default function Header(props: NavbarProps) {
     [categories, categoriesError]
   );
 
-  const exploreCategories = React.useMemo(() => {
-    if (!categories || categoriesLoading || categoriesError) {
-      return []
-    }
-    return categories.map((category: any) => ({
-      title: category.name,
-      subcategories: category.specialists?.map((sub: any) => ({
-        name: sub.name,
-        slug: sub.name.toLowerCase().replace(/\s+/g, '-')
-      })) || []
-    }))
-  }, [categories])
-
-  const handleMobileNavigation = (path: string) => {
-    router.push(path)
-    setMobileMenuOpen(false)
-    setMobileExploreOpen(false)
-    setSelectedMobileCategory(null)
-  }
 
   return (
-    <header className="sticky h-20 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm pt-1">
+    <header className="hidden lg:block sticky h-20 top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm pt-1">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Logo logoSrc={NAV_LOGO_SRC} router={router} />
@@ -139,28 +118,8 @@ export default function Header(props: NavbarProps) {
             ) : (
               <AuthButtons router={router} />
             )}
-            <div className="lg:hidden">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors duration-200"
-              >
-                {mobileMenuOpen ? <Cross1Icon className="w-5 h-5" /> : <HamburgerMenuIcon className="w-5 h-5" />}
-              </button>
-            </div>
           </div>
         </div>
-        {mobileMenuOpen && <MobileMenu
-          mobileExploreOpen={mobileExploreOpen}
-          setMobileExploreOpen={setMobileExploreOpen}
-          selectedMobileCategory={selectedMobileCategory}
-          setSelectedMobileCategory={setSelectedMobileCategory}
-          exploreCategories={exploreCategories}
-          categoriesLoading={categoriesLoading}
-          categoriesError={categoriesError}
-          handleMobileNavigation={handleMobileNavigation}
-          router={router}
-          isAuthenticated={isAuthenticated}
-        />}
       </div>
     </header>
   )

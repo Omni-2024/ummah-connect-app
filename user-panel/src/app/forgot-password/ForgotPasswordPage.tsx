@@ -1,4 +1,4 @@
-// app/forgot-password/page.tsx
+// app/forgot-password/Navbar.tsx
 "use client";
 
 import { useState } from "react";
