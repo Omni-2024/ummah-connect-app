@@ -30,7 +30,7 @@ const ProfileDropdown = ({
     <div className="relative">
       <button
         onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-        className="flex items-center space-x-3 p-2 rounded-xl hover:bg-slate-50 transition-all duration-200 group border border-transparent hover:border-slate-200"
+        className="flex items-center space-x-3 p-2  rounded-xl hover:bg-slate-50 transition-all duration-200 group border border-transparent hover:border-slate-200"
       >
         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center overflow-hidden ring-2 ring-white shadow-sm">
           {!isFetched || isLoading ? (

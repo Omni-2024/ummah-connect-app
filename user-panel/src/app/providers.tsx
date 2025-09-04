@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import {useLayoutEffect, useState} from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Toaster from "@/components/base/Toast";
 
 import { Theme } from "@radix-ui/themes";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import envs from "@/lib/env";
+import {hydrateAuthFromStorage} from "@/features/auth/context/AuthState";
 
 function makeQueryClient() {
     return new QueryClient({
@@ -17,8 +18,11 @@ function makeQueryClient() {
 }
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-    // ensure one client per browser tab
     const [queryClient] = useState(() => makeQueryClient());
+
+    useLayoutEffect(() => {
+        hydrateAuthFromStorage();
+    }, []);
 
     return (
         <GoogleOAuthProvider clientId={envs.googleAuthClientId}>
