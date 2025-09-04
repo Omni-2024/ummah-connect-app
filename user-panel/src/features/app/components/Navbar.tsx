@@ -1,35 +1,21 @@
 "use client"
 
 import React, { useState, useEffect, useMemo } from "react"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useCurrentUser } from "@/lib/hooks/useUser"
 import { useCategories } from "@/lib/hooks/useCategories"
 import {
-  PersonIcon,
-  HamburgerMenuIcon,
-  Cross1Icon,
-  ChevronDownIcon,
-  ChevronRightIcon,
-  MagnifyingGlassIcon,
   BellIcon,
-  BookmarkIcon,
-  GearIcon,
-  ExitIcon,
-  DashboardIcon,
-  ChevronLeftIcon
 } from "@radix-ui/react-icons"
 import { NAV_LOGO_SRC } from "@/lib/constants"
 import envs from "@/lib/env"
-import Logo from "../../../app/header/subcomponents/Logo"
-import Navigation from "../../../app/header/subcomponents/Navigation"
-import SearchBar from "../../../app/header/subcomponents/SearchBar"
-import AuthButtons from "../../../app/header/subcomponents/AuthButtons"
-import ProfileDropdown from "../../../app/header/subcomponents/ProfileDropdown"
-import MobileMenu from "../../../app/header/subcomponents/MobileMenu"
+import Logo from "./Logo"
+import AuthButtons from "./AuthButtons"
+import ProfileDropdown from "./ProfileDropdown"
 import NavSearchbar from "@/features/explore/component/search/NavSearchbar";
 import { CategoryData } from "@/types";
+import ExploreDropDown from "./ExploreDropDown";
 
 export const buildAvatarUrl = (img?: string | null) => {
   if (!img) return null;
@@ -82,7 +68,7 @@ export default function Navbar(props: NavbarProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Logo logoSrc={NAV_LOGO_SRC} router={router} />
-          <Navigation
+          <ExploreDropDown
             exploreDropdownOpen={exploreDropdownOpen}
             setExploreDropdownOpen={setExploreDropdownOpen}
             hoveredCategory={hoveredCategory}

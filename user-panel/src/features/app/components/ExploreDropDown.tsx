@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useExploreState } from "@/features/explore/context/exploreState";
 import type { CategoryData } from "@/types";
 
-type NavigationProps = {
+type ExploreDropDownProps = {
     exploreDropdownOpen: boolean;
     setExploreDropdownOpen: (open: boolean) => void;
     hoveredCategory: string | null;
@@ -16,7 +16,7 @@ type NavigationProps = {
     categoriesError: any;
 };
 
-const Navigation: React.FC<NavigationProps> = ({
+const ExploreDropDown: React.FC<ExploreDropDownProps> = ({
                                                    exploreDropdownOpen,
                                                    setExploreDropdownOpen,
                                                    hoveredCategory,
@@ -181,4 +181,4 @@ const Navigation: React.FC<NavigationProps> = ({
     );
 };
 
-export default Navigation;
+export default ExploreDropDown;
