@@ -165,7 +165,7 @@ export default function ExploreServiceRoute() {
                 className="px-4"
                 left={<NavbarTitle title="Search" size="md" />}
                 right={
-                    <IconButton variant="primary">
+                    <IconButton >
                         <Setting4
                             className="size-6 "
                             onClick={() => setShowMobileFilterModal(true)}
