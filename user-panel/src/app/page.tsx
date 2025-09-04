@@ -88,22 +88,16 @@ export default function HomePage() {
       <NavDrawerMobile />
       <NotLoggedInNavModal />
 
-      {/* Hero Section */}
       <HeroSection isAuthenticated={isAuthenticated} router={router} />
 
-      {/* Features Section - shown to everyone */}
       <FeaturesSection />
 
-      {/* Categories Section - shown to everyone */}
       <CategoriesSection router={router} />
 
-      {/* Dashboard/Stats Section - shown only to authenticated users */}
       {isAuthenticated && <DashboardSection router={router} />}
 
-      {/* CTA Section - shown to unauthenticated users */}
       {!isAuthenticated && <CTASection router={router} />}
 
-      {/* Footer */}
       <footer className="bg-slate-900 text-white py-12 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
