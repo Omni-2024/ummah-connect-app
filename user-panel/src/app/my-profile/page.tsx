@@ -251,7 +251,7 @@ export default function ProfileEdit({ router }: ProfileEditProps) {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <h1 className="text-2xl font-bold text-gray-900">Edit Profile</h1>
-          <p className="text-gray-600">Update your professional information</p>
+          <p className="text-gray-600">Update your Profile Information</p>
         </div>
       </div>
 
@@ -292,7 +292,7 @@ export default function ProfileEdit({ router }: ProfileEditProps) {
                 </div>
                 <div>
                   <p className="font-medium text-gray-900 mb-1">Upload Profile Picture</p>
-                  <p className="text-sm text-gray-600">JPG, PNG or GIF. Max size 5MB.</p>
+                  <p className="text-sm text-gray-600">JPG or PNG. Max size 3MB.</p>
                 </div>
               </div>
             </div>
