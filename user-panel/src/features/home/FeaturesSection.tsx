@@ -1,5 +1,5 @@
+"use client"
 import {TargetIcon, StarIcon, GlobeIcon, BookmarkIcon, PersonIcon} from "@radix-ui/react-icons"
-import FeatureCard from "./FeatureCard"
 
 export default function FeaturesSection() {
   const features = [
