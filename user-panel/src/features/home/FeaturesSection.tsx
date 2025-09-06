@@ -1,46 +1,55 @@
-import {TargetIcon, StarIcon, GlobeIcon} from "@radix-ui/react-icons"
+import {TargetIcon, StarIcon, GlobeIcon, BookmarkIcon, PersonIcon} from "@radix-ui/react-icons"
 import FeatureCard from "./FeatureCard"
 
 export default function FeaturesSection() {
   const features = [
     {
-      icon: <StarIcon className="w-8 h-8 text-emerald-600" />,
-      title: "Expert-Led Courses",
-      description: "Learn from practicing physicians, specialists, and healthcare professionals with years of experience."
+      icon: <BookmarkIcon className="w-6 h-6" />,
+      title: "Islamic Ethics Integration",
+      description: "Every course designed with Islamic values at its core"
     },
     {
-      icon: <TargetIcon className="w-8 h-8 text-emerald-600" />,
-      title: "Practical Learning",
-      description: "Apply knowledge through case studies, simulations, and real-world scenarios relevant to your practice."
+      icon: <PersonIcon className="w-6 h-6" />,
+      title: "Certified Islamic Scholars", 
+      description: "Learn from qualified ulama and industry professionals"
     },
     {
-      icon: <StarIcon className="w-8 h-8 text-emerald-600" />,
-      title: "Certified Programs",
-      description: "Earn certificates and continuing education credits recognized by professional medical bodies."
+      icon: <GlobeIcon className="w-6 h-6" />,
+      title: "Global Ummah Network",
+      description: "Connect with Muslim professionals worldwide"
     },
     {
-      icon: <GlobeIcon className="w-8 h-8 text-emerald-600" />,
-      title: "Global Community",
-      description: "Connect with healthcare professionals worldwide and share knowledge across cultures and practices."
+      icon: <StarIcon className="w-6 h-6" />,
+      title: "Blessed Learning",
+      description: "Experience barakah through proper Islamic etiquettes"
     }
-  ]
+  ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-10 sm:py-16 lg:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-slate-900 mb-4">Why Choose Ummah Community?</h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            We're dedicated to advancing healthcare education through innovative learning experiences.
+        {/* Header Section */}
+        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 mb-4 sm:mb-6">
+            Why Choose Us?
+          </h2>
+          <p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+            More than just education - we nurture Muslim excellence
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
-            <FeatureCard key={index} {...feature} />
+            <div key={index} className="text-center group">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl mb-4 group-hover:bg-emerald-200 transition-colors duration-300">
+                {feature.icon}
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 mb-2">{feature.title}</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">{feature.description}</p>
+            </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }
