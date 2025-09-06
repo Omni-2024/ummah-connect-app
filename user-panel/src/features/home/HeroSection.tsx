@@ -48,7 +48,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
               <>
                 <Button
                   variant="unstyled"
-                  onClick={() => router.push("/dashboard")}
+                  onClick={() => router.push("/my-purchases")}
                   className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-6 rounded-xl transition-all duration-200 text-lg font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl hover:text-white transform flex items-center gap-2"
                 >
                   Continue Learning
