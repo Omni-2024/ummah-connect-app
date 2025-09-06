@@ -26,6 +26,7 @@ import { useExploreState } from "@/features/explore/context/exploreState";
 import ServiceHeader from "./ServiceHeader";
 import ServiceSidebar from "./ServiceSidebar";
 import ServiceContent from "./ServiceContent";
+import { SkeletonServiceDetailsPage } from "./SkeletonServiceDetailsPage";
 
 export default function ServiceDetailsPage() {
   const router = useRouter();
@@ -90,14 +91,7 @@ export default function ServiceDetailsPage() {
             </div>
           }
         />
-        <div className="container px-4 py-8">
-          <div className="animate-pulse space-y-6">
-            <div className="h-48 w-full bg-gray-200 rounded-2xl lg:h-40"></div>
-            <div className="h-8 w-3/4 bg-gray-200 rounded"></div>
-            <div className="h-4 w-1/2 bg-gray-200 rounded"></div>
-            <div className="h-32 w-full bg-gray-200 rounded"></div>
-          </div>
-        </div>
+        <SkeletonServiceDetailsPage />
         <Bottombar />
       </div>
     );
