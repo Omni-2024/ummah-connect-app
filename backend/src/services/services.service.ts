@@ -28,7 +28,7 @@ export class ServiceService {
         .replace(/[^\w-]+/g, '');
       //
       const course = await this.serviceRepo.createService(createServiceDto);
-      return { status: HttpStatus.CREATED, data: course };
+      return  course ;
     } catch (e) {
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
     }
@@ -111,7 +111,7 @@ export class ServiceService {
     try {
       const service = await this.serviceRepo.getServiceById(findOneServiceDto);
       if (service instanceof Service) {
-        return { status: HttpStatus.OK, data: service };
+        return  service ;
       }
       return { status: HttpStatus.BAD_REQUEST, error: 'Course not found' };
     } catch (e) {
@@ -125,7 +125,7 @@ export class ServiceService {
     try {
       const service = await this.serviceRepo.updateService(updateServiceDto);
       if (service instanceof Service) {
-        return { status: HttpStatus.OK, data: service };
+        return service;
       }
       return { status: HttpStatus.BAD_REQUEST, error: 'Course not found' };
     } catch (e) {
@@ -139,7 +139,7 @@ export class ServiceService {
     try {
       const service = await this.serviceRepo.deleteService(findOneServiceDto);
       if (service instanceof Service) {
-        return { status: HttpStatus.OK, data: service };
+        return service ;
       }
       return { status: HttpStatus.BAD_REQUEST, error: 'Course not found' };
     } catch (e) {
