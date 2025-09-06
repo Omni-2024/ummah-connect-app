@@ -4,8 +4,8 @@ import { useState } from "react"
 import Button from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Filter, Briefcase } from "lucide-react"
-import { GigGrid } from "./components/gig-grid"
-import { CreateGigWizard } from "./components/create-gig-wizard"
+import { GigGrid } from "./gig-grid"
+import { CreateGigWizard } from "./create-gig-wizard"
 
 export function GigManagement() {
   const [activeTab, setActiveTab] = useState<"published" | "drafts">("published")

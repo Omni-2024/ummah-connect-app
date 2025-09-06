@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge"
 import { X, Plus } from "lucide-react"
 import { useRef, useState } from "react"
 import Image from "next/image"
-import type { CreateServiceFnArgs } from "@/features/gig/types/gig-types"
+import type { CreateServiceFnArgs } from "@/features/services/types/gig-types"
 
 interface StepTwoProps {
   formData: Partial<CreateServiceFnArgs>

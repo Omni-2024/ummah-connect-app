@@ -5,10 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Button from "@/components/ui/button"
 import { X } from "lucide-react"
 import { WizardSteps } from "./wizard-steps"
-import { StepOne } from "./steps/step-one"
-import { StepTwo } from "./steps/step-two"
-import { StepThree } from "./steps/step-three"
-import type { CreateServiceFnArgs } from "@/features/gig/types/gig-types"
+import { StepOne } from "@/features/services/component/pages/steps/step-one"
+import { StepTwo } from "@/features/services/component/pages/steps/step-two"
+import { StepThree } from "@/features/services/component/pages/steps/step-three"
+import type { CreateServiceFnArgs } from "@/features/services/types/gig-types"
 
 interface CreateGigWizardProps {
   onClose: () => void

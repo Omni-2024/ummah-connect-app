@@ -5,7 +5,7 @@ import type React from "react"
 import Button from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { CreateServiceFnArgs } from "@/features/gig/types/gig-types"
+import type { CreateServiceFnArgs } from "@/features/services/types/gig-types"
 
 interface StepOneProps {
   formData: Partial<CreateServiceFnArgs>

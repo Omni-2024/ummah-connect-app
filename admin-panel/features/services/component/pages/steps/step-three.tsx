@@ -4,7 +4,7 @@ import Button from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CheckCircle, FileText, DollarSign } from "lucide-react"
-import type { CreateServiceFnArgs } from "@/features/gig/types/gig-types"
+import type { CreateServiceFnArgs } from "@/features/services/types/gig-types"
 
 interface StepThreeProps {
   formData: Partial<CreateServiceFnArgs>
