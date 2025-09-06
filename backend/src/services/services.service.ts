@@ -46,10 +46,7 @@ export class ServiceService {
       ) {
         const { limit, offset } = findAllServicesDto;
         const total = await this.serviceRepo.countAll();
-        return {
-          status: HttpStatus.OK,
-          data: { data: services, meta: { total, limit, offset } },
-        };
+        return { data: services, meta: { total, limit, offset  }, };
       }
       return { status: HttpStatus.NOT_FOUND, error: 'No courses found' };
     } catch (e) {
@@ -72,8 +69,7 @@ export class ServiceService {
         const total = count;
 
         return {
-          status: HttpStatus.OK,
-          data: { data: services, meta: { total, limit, offset } },
+          data: services, meta: { total, limit, offset  },
         };
       }
       return { status: HttpStatus.NOT_FOUND, error: 'No courses found' };

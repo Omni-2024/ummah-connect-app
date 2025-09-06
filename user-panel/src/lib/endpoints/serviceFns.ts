@@ -1,14 +1,14 @@
 import { Service, GetAllServiceParams, Meta } from "@/types";
 import Request, { catchAxiosErrorTyped } from "@/lib/http";
-import {useExploreState} from "@/features/explore/context/exploreState";
 
-// const {
+
+
+export const getAllServicesFn = async (params: GetAllServiceParams) => {
+//   const {
 //   setOffset,
 //   setLimit,
 //
 // } =useExploreState()
-
-export const getAllServicesFn = async (params: GetAllServiceParams) => {
   try {
     const res = await Request<GetAllCoursesFnRes>({
       method: "get",
@@ -25,9 +25,8 @@ export const getAllServicesFn = async (params: GetAllServiceParams) => {
 };
 
 export interface GetAllCoursesFnRes {
-  // Define the structure of the response data here
-  data: Service[];
-  meta: Meta;
+   data: Service[];
+   meta: Meta;
 }
 
 /** Get - '/course/detail/:id' - get one course */
