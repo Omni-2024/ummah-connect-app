@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthState } from "@/features/auth/context/useAuthState";
@@ -47,6 +48,4 @@ export default function withAuth<T extends WithAuthComponentProps>(
   };
 }
 
-// export default function withAuth(Component: React.ComponentType) {
-//   return Component;
-// }
+

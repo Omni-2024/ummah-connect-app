@@ -1,5 +1,24 @@
-import AdminCategoriesPage from "@/features/categories/pages/admin-categories-page"
+"use client"
+import AdminCategoriesPage from "@/features/categories/pages/adminCategoriesPage"
+import {useCategories} from "@/hooks/useCategories";
+import LoadingError from "@/components/widget/loadingError";
+import CategoriesSkeletonList from "@/features/categories/skeletons/categories";
+import withAuth from "@/components/withAuth";
+import {ADMIN_ROLES} from "@/lib/constants";
 
-export default function Page() {
-    return <AdminCategoriesPage />
+const  SuperAdminCategoriesDashboard=()=> {
+    const {
+        data: categories = [],
+        refetch,
+        isError,
+        error,
+        isLoading,
+    } = useCategories()
+    if (isError) return <LoadingError error={error.message} reload={refetch} />;
+    if (isLoading || !categories) return <CategoriesSkeletonList />;
+    return <AdminCategoriesPage categories={categories} />
 }
+export default withAuth(
+    SuperAdminCategoriesDashboard,
+    [ADMIN_ROLES.ADMIN, ADMIN_ROLES.OPERATIONAL_ADMIN, ADMIN_ROLES.ROOT]
+);

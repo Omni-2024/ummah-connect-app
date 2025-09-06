@@ -1,6 +1,6 @@
 "use client";
 import { useMemo } from "react";
-import { useExploreState } from "@/features/explore/context/exploreState";
+import { useExploreState } from "@/features/explore/context/useExploreState";
 import { useCategories } from "@/lib/hooks/useCategories";
 
 export const useExploreFilters = (onResetPage?: () => void) => {

@@ -18,6 +18,7 @@ import {
   updateCategoryNameFn,
   updateSecondaryCategoryNameFn,
 } from "@/lib/endpoints/categoriesFns"
+import {useCategoriesState} from "@/features/categories/context/useCategoryState";
 
 interface CategoryCardProps {
   category: CategoryData
@@ -37,7 +38,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   snapshot,
 }) => {
   // --- PROFESSION modal state ---
-  const [showEditProfession, setShowEditProfession] = useState(false)
+  // const [showEditProfession, setShowEditProfession] = useState(false)
+
+  const {setAction,setType,setShowCategoryModal}=useCategoriesState()
+
 
   // --- SPECIALIST modal state ---
   const [specToEditId, setSpecToEditId] = useState<string | null>(null)
@@ -45,18 +49,21 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     () => category.specialists?.find((s: any) => s.id === specToEditId) ?? null,
     [specToEditId, category.specialists]
   )
-  const [showEditSpecialist, setShowEditSpecialist] = useState(false)
 
   // open profession modal
   const openProfessionEdit = (e: React.MouseEvent) => {
     e.stopPropagation()
-    setShowEditProfession(true)
+    setType("profession")
+    setAction("edit")
+    setShowCategoryModal(true)
   }
 
   // open specialist modal
   const openSpecialistEdit = (id: string) => {
+    setAction("edit")
+    setType("specialist")
     setSpecToEditId(id)
-    setShowEditSpecialist(true)
+    setShowCategoryModal(true)
   }
 
   return (
@@ -215,31 +222,17 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         </Card>
       </AccordionItem>
 
-      {/* ---------- Profession Edit Modal ---------- */}
       <CategoryAddEditPopup
-        open={showEditProfession}
-        action="edit"
-        type="profession"
         initialValue={category.name}
-        onClose={() => setShowEditProfession(false)}
         mutationFn={(payload) => updateCategoryNameFn({ id: category.id, name: payload.name })}
         onSuccess={(newName) => {
-            // ✅ immutable update so React re-renders
             category.name = newName;
         }}
         />
 
 
-      {/* ---------- Specialist Edit Modal ---------- */}
       <CategoryAddEditPopup
-        open={showEditSpecialist}
-        action="edit"
-        type="specialist"
         initialValue={specToEdit?.name ?? ""}
-        onClose={() => {
-          setShowEditSpecialist(false)
-          setSpecToEditId(null)
-        }}
         mutationFn={(payload) =>
           updateSecondaryCategoryNameFn({
             id: specToEditId as string,
