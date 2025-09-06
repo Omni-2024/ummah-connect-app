@@ -96,18 +96,18 @@ export class ServiceController {
   }
 
 
-  // @Public()
-  // @Get('detail/:id')
-  // async findOneDetail(@Param('id') id: string) {
-  //   return this.serviceDetailService.findOneDetail(id);
-  // }
-  //
-  //
-  // @Public()
-  // @Get('detail/slug/:slug')
-  // async findOneDetailBySlug(@Param('slug') slug: string) {
-  //   return this.serviceDetailService.findOneDetailBySlug(slug);
-  // }
+  @Public()
+  @Get('detail/:id')
+  async findOneDetail(@Param('id') id: string) {
+    return this.serviceDetailService.findOneDetail({id});
+  }
+
+
+  @Public()
+  @Get('detail/slug/:slug')
+  async findOneDetailBySlug(@Param('slug') slug: string) {
+    return this.serviceDetailService.findOneDetailBySlug({slug});
+  }
 
   @Roles([UserRole.ADMIN, UserRole.ROOT])
   @Patch(':id')

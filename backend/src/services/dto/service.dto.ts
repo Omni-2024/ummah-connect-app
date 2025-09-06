@@ -88,7 +88,6 @@ export class FindOneServiceDto {
 }
 
 export class FindServiceBySlugDto {
-
   @IsString()
   slug: string;
 }
@@ -159,6 +158,71 @@ export class SearchServiceDto extends PaginatedRequestDto {
   @IsBoolean()
   isPopular?: boolean;
 }
+
+export class ProviderDto {
+  id: string;
+
+  name: string;
+
+  designation: string;
+
+  @IsOptional()
+  bio: string;
+
+  profileImageUrl: string;
+}
+
+
+export class ServiceDetailDto {
+  id: string;
+
+  title: string;
+
+  tagline: string;
+
+  description: string;
+
+  coverImageUrl: string;
+
+  learningPoints: string[];
+
+  cmePoints: number;
+
+  @IsOptional()
+  provider: ProviderDto;
+
+  price: number;
+
+  cmeId: string;
+
+  totalReviewScore: number;
+
+  totalReviewCount: number;
+
+  averageReviewScore: number;
+
+  specialty?: { name: string; id: string };
+
+
+  profession: { name: string; id: string };
+
+  discount: number;
+
+  discountEnabled: boolean;
+
+  duration: number;
+
+  @IsOptional()
+  enrollmentCount?: number;
+
+  slug: string;
+
+  isArchived: boolean;
+}
+
+
+
+
 
 
 

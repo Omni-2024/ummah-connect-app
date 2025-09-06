@@ -32,6 +32,7 @@ const clearAuthStateAndRedirect = (currUrl: string) => {
 
     window.location.href = loginUrl.toString();
   } catch (error) {
+    localStorage.removeItem("authState");
     window.location.href = "/user/login";
   }
 };

@@ -158,19 +158,18 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
                           setSelectedCategoryId(categoryId)
                           setPopupType(ProfessionCardPopupTypes.AddSpeciality)
                         }}
-                        onEditSpecialist={(specialistId, newName) => {
-                          // store current specialist details for editing
-                          const specialist = category.specialists?.find((s) => s.id === specialistId)
-                          if (specialist) {
-                            setEditingSpecialist({
-                              id: specialistId,
-                              name: specialist.name,
-                              professionId: specialist.professionId,
-                            })
-                            setSelectedCategoryId(category.id)
-                            setPopupType(ProfessionCardPopupTypes.EditSpeciality)
-                          }
-                        }}
+                        // onEditSpecialist={(specialistId, newName) => {
+                        //   const specialist = category.specialists?.find((s) => s.id === specialistId)
+                        //   if (specialist) {
+                        //     setEditingSpecialist({
+                        //       id: specialistId,
+                        //       name: specialist.name,
+                        //       professionId: specialist.professionId,
+                        //     })
+                        //     setSelectedCategoryId(category.id)
+                        //     setPopupType(ProfessionCardPopupTypes.EditSpeciality)
+                        //   }
+                        // }}
                         onDeleteSpecialist={(specialistId) => {
                           deleteSpecialist(specialistId)
                         }}
@@ -188,7 +187,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
       <div className="px-4">
         <AddNewCard
           name="new profession"
-          className="py-4 flex-row text-base font-medium h-[120px] "
+          className="py-4 flex-row text-base font-medium h-[80px] "
           onClick={() => {
             setPopupType(ProfessionCardPopupTypes.Add)
           }}
@@ -229,7 +228,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ categories }) => {
       <CategoryAddEditPopup
         open={popupType === ProfessionCardPopupTypes.EditSpeciality}
         action="edit"
-        type="specialist" /* make sure this is specialist */
+        type="specialist"
         onClose={() => {
           setPopupType(undefined)
           setSelectedCategoryId(undefined)

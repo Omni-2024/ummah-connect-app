@@ -30,7 +30,7 @@ const ProfileDropdown = ({
     <div className="relative">
       <button
         onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-        className="flex items-center space-x-3 p-2 rounded-xl hover:bg-slate-50 transition-all duration-200 group border border-transparent hover:border-slate-200"
+        className="flex items-center space-x-3 p-2  rounded-xl hover:bg-slate-50 transition-all duration-200 group border border-transparent hover:border-slate-200"
       >
         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center overflow-hidden ring-2 ring-white shadow-sm">
           {!isFetched || isLoading ? (
@@ -87,7 +87,7 @@ const ProfileDropdown = ({
             </div>
             <div className="py-2">
               <button
-                onClick={() => { router.push("/profile"); setProfileDropdownOpen(false); }}
+                onClick={() => { router.push("/my-profile"); setProfileDropdownOpen(false); }}
                 className="flex items-center w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-emerald-600 transition-colors duration-200 group"
               >
                 <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center mr-3 transition-colors duration-200">

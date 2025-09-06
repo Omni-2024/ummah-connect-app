@@ -13,6 +13,7 @@ export const useAuthState = () => {
     id: snap.id,
     isFirstLogin: snap.isFirstLogin,
     onboardingCompleted: snap.onboardingCompleted,
+    isHydrated: snap.isHydrated,
     login: login,
     logout: logout,
     setIsFirstLogin: setIsFirstLogin,
@@ -20,4 +21,3 @@ export const useAuthState = () => {
   }
 }
 
-// The AuthProvider is no longer needed with Valtio's reactive state management

@@ -1,3 +1,5 @@
+"use client";
+
 import { useSnapshot } from 'valtio';
 import {
   appState,

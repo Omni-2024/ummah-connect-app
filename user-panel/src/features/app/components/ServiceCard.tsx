@@ -1,16 +1,16 @@
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 import { Card, CardDescription, CardTitle } from "@/components/base/Card";
 import { cn } from "@/lib/className";
 import { Service } from "@/types";
 import {
-  formatDurationFromSeconds,
-  formatReviewCount,
-} from "@/lib/helpers/formatUtils";
-import { useEducator } from "@/lib/hooks/useEducator";
+  formatDurationFromSeconds} from "@/lib/helpers/formatUtils";
 import { S3_BUCKET_URL } from "@/lib/constants";
 import StudentCountLabel from "@/components/widgets/StudentCountLabel";
 import {useGeneralUser} from "@/lib/hooks/useUser";
+import Image from "next/image";
+import React from "react";
+import {buildAvatarUrl} from "@/features/app/components/Navbar";
 
 interface Props {
   size?: "sm" | "md";
@@ -46,9 +46,9 @@ const ServiceCard = ({ size = "md", service, className }: Props) => {
       <img
         alt="cover"
         src={
-          service
-            ? `${S3_BUCKET_URL}/${service?.coverImageUrl}`
-            : "/images/course-card.jpeg"
+          service?.coverImageUrl
+            ? buildAvatarUrl(service.coverImageUrl)!!
+            : "/images/coverImage.png"
         }
         className={cn("h-44 w-full rounded-2xl object-cover", {
           "h-36": size === "sm",
@@ -60,20 +60,24 @@ const ServiceCard = ({ size = "md", service, className }: Props) => {
           "gap-1.5 text-xs": size === "sm",
         })}
       >
-        <span
-          className={cn("flex items-center gap-2", {
-            "gap-1": size === "sm",
-          })}
-        >
+       <span
+           className={cn("flex items-center gap-2", {
+             "gap-1": size === "sm",
+           })}
+       >
           <img
-            alt="trophy"
-            src="/icons/filled/trophy.svg"
-            className={cn("size-5 object-cover", {
-              "size-4": size === "sm",
-            })}
+              alt="trophy"
+              src="/icons/filled/trophy.svg"
+              className={cn("size-5 object-cover", {
+                "size-4": size === "sm",
+              })}
           />
-          {service ? service?.cmePoints : 5} CME Points
-        </span>
+            {service?.averageReviewScore ?? 5} ★
+            <span className="">
+              ({service?.totalReviewCount ?? 0} reviews)
+            </span>
+       </span>
+
 
         {/* TODO: Temporarily disabled review score */}
         {/* <span>•</span>

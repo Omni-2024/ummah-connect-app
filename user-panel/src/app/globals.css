@@ -47,7 +47,7 @@ header {
   padding-top: 4px;
 }
 
-button {
+/* button {
   color: var(--text-color);
   transition: all 0.2s ease;
 }
@@ -55,15 +55,15 @@ button {
 button:hover {
   color: var(--text-hover);
   background-color: var(--background-hover);
-}
+} */
 
-.bg-gradient-to-br {
+/* .bg-gradient-to-br {
   background: linear-gradient(to bottom right, var(--gradient-from), var(--gradient-to));
-}
+} */
 
-.bg-gradient-to-r {
+/* .bg-gradient-to-r {
   background: linear-gradient(to right, var(--gradient-from), var(--gradient-to));
-}
+} */
 
 .bg-gradient-hover {
   background: linear-gradient(to right, var(--gradient-hover-from), var(--gradient-hover-to));

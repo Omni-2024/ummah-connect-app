@@ -37,7 +37,7 @@ const SearchResultsPreview = forwardRef<
         {hints.map((hint) => (
           <Link
             key={hint.title}
-            href={`/course/${hint.slug}`}
+            href={`/service/${hint.slug}`}
             className="flex flex-col gap-1 rounded-lg px-4 py-2 hover:bg-primary-50"
             onClick={onClose}
           >

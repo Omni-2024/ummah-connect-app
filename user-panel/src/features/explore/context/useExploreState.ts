@@ -3,7 +3,7 @@ import { proxy } from "valtio"
 
 export type ExploreState = {
     searchTerm?: string;
-    showGiftCourseModal?: boolean;
+    showGiftServiceModal?: boolean;
     showServiceShareModal?: boolean;
     showWatchIntroLessonModal?: boolean;
     limit: number;
@@ -17,7 +17,7 @@ export type ExploreState = {
 
 const initialState: ExploreState = {
     searchTerm: "",
-    showGiftCourseModal: false,
+    showGiftServiceModal: false,
     showServiceShareModal: false,
     showWatchIntroLessonModal: false,
     limit: 9,
@@ -35,8 +35,8 @@ export const setSearchTerm = (term: string) => {
     exploreState.searchTerm = term;
 };
 
-export const setShowGiftCourseModal = (show: boolean) => {
-    exploreState.showGiftCourseModal = show;
+export const setShowGiftServiceModal = (show: boolean) => {
+    exploreState.showGiftServiceModal = show;
 };
 
 export const setShowServiceShareModal = (show: boolean) => {

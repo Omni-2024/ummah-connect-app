@@ -13,6 +13,7 @@ export const updateUserFn = async (data: {
   contactNumber?: string;
   company?: string;
   country?: string;
+  specializations?: string;
 }) => {
   const res = await Request<GetUpdateUserByIdFnRes>({
     method: "patch",
@@ -49,7 +50,7 @@ export interface GetUpdateUserByIdFnRes {
   designations: string[];
   interests: string[];
   profileImage: string;
-  specializations: string;
+  specializations: string; //added
   company: string;
   country: string;
   contactNumber: string;

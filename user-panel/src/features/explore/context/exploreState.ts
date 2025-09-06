@@ -1,8 +1,7 @@
 import {useSnapshot} from "valtio";
 import {
     exploreState, setLimit, setOffset, setProfession, setProfessionName,
-    setSearchTerm, setServiceId, setServiceSlug,
-    setShowGiftCourseModal,
+    setSearchTerm, setServiceId, setServiceSlug, setShowGiftServiceModal,
     setShowServiceShareModal, setSpecialties
 } from "@/features/explore/context/useExploreState";
 
@@ -11,8 +10,8 @@ export const useExploreState = () => {
     return {
         searchTerm: snap.searchTerm,
         setSearchTerm:setSearchTerm,
-        showGiftCourseModal: snap.showGiftCourseModal,
-        setShowGiftCourseModal: setShowGiftCourseModal,
+        showGiftServiceModal: snap.showGiftServiceModal,
+        setShowGiftServiceModal:setShowGiftServiceModal,
         showServiceShareModal: snap.showServiceShareModal,
         setShowServiceShareModal: setShowServiceShareModal,
         showWatchIntroLessonModal: snap.showWatchIntroLessonModal,

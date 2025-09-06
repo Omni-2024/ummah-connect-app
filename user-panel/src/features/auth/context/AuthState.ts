@@ -9,6 +9,7 @@ export type AuthState = {
   id: string
   isFirstLogin: boolean
   onboardingCompleted: boolean
+  isHydrated: boolean,
 }
 
 const initialState: AuthState = {
@@ -19,18 +20,37 @@ const initialState: AuthState = {
   id: "",
   isFirstLogin: false,
   onboardingCompleted: false,
+  isHydrated: false,
 }
 
-// Check if localStorage is available (i.e., if the code is running in a browser)
 const savedState = typeof window !== "undefined" && localStorage.getItem("authState")
-const parsedState = savedState ? JSON.parse(savedState) : initialState
+const parsedState = savedState ? { ...JSON.parse(savedState), isHydrated: false } : initialState
 
 export const authState = proxy<AuthState>(parsedState)
 
 if (typeof window !== "undefined") {
   subscribe(authState, () => {
-    localStorage.setItem("authState", JSON.stringify(authState))
-  })
+    const { isHydrated, ...persist } = authState;
+    localStorage.setItem("authState", JSON.stringify(persist));
+  });
+}
+
+export function hydrateAuthFromStorage() {
+  try {
+    const raw = localStorage.getItem("authState");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      authState.isAuthenticated      = !!parsed.isAuthenticated;
+      authState.accessToken          = parsed.accessToken ?? "";
+      authState.refreshToken         = parsed.refreshToken ?? "";
+      authState.role                 = parsed.role ?? UserRole.NONE;
+      authState.id                   = parsed.id ?? "";
+      authState.isFirstLogin         = !!parsed.isFirstLogin;
+      authState.onboardingCompleted  = !!parsed.onboardingCompleted;
+    }
+  } finally {
+    authState.isHydrated = true;
+  }
 }
 
 export const setIsFirstLogin = (isFirstLogin: boolean) => {

@@ -125,53 +125,41 @@ const ExploreDropDown: React.FC<ExploreDropDownProps> = ({
                                     </div>
                                 </div>
 
-                                {/* Right: specialists of hovered category */}
-                                <div className="w-60 bg-white h-min">
-                                    <div className="p-4">
-                                        {hoveredCat ? (
-                                            <>
-                                                <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wide mb-3">
-                                                    {hoveredCat.name}
-                                                </h3>
+                                {/* Right: specialists of hovered category - only show when category is hovered */}
+                                {hoveredCat && (
+                                    <div className="w-60 bg-white h-min">
+                                        <div className="p-4">
+                                            <h3 className="text-xs font-semibold text-slate-900 uppercase tracking-wide mb-3">
+                                                {hoveredCat.name}
+                                            </h3>
 
-                                                <div className="space-y-1">
-                                                    {hoveredCat.specialists?.length ? (
-                                                        hoveredCat.specialists.map((spec) => (
-                                                            <button
-                                                                key={spec.id}
-                                                                onClick={() => {
-                                                                    setProfession(hoveredCat.id);
-                                                                    setProfessionName(hoveredCat.name);
-                                                                    setSpecialties([spec.id]); // MUST be an array
-                                                                    router.push("/explore");
-                                                                    setExploreDropdownOpen(false);
-                                                                    setHoveredCategory(null);
-                                                                }}
-                                                                className="w-full text-left px-3 py-2 text-sm text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-200"
-                                                            >
-                                                                {spec.name}
-                                                            </button>
-                                                        ))
-                                                    ) : (
-                                                        <div className="px-3 py-4 text-sm text-slate-500">
-                                                            No specialists available
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className="flex items-center justify-center h-full text-slate-500">
-                                                <div className="text-center">
-                                                    <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                                        <ChevronRightIcon className="w-6 h-6 text-slate-400" />
+                                            <div className="space-y-1">
+                                                {hoveredCat.specialists?.length ? (
+                                                    hoveredCat.specialists.map((spec) => (
+                                                        <button
+                                                            key={spec.id}
+                                                            onClick={() => {
+                                                                setProfession(hoveredCat.id);
+                                                                setProfessionName(hoveredCat.name);
+                                                                setSpecialties([spec.id]); // MUST be an array
+                                                                router.push("/explore");
+                                                                setExploreDropdownOpen(false);
+                                                                setHoveredCategory(null);
+                                                            }}
+                                                            className="w-full text-left px-3 py-2 text-sm text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all duration-200"
+                                                        >
+                                                            {spec.name}
+                                                        </button>
+                                                    ))
+                                                ) : (
+                                                    <div className="px-3 py-4 text-sm text-slate-500">
+                                                        No specialists available
                                                     </div>
-                                                    <p className="text-sm">Hover over a category to see specialists</p>
-                                                </div>
+                                                )}
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
-                                </div>
-                                {/* /Right */}
+                                )}
                             </div>
                         </div>
                     </>

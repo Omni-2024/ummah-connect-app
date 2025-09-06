@@ -84,7 +84,7 @@ const CategoryAddEditPopup: React.FC<CategoryAddEditPopupProps> = ({
                     </p>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6 p-3">
                     <div className="space-y-2">
                         <Label htmlFor="name" className="text-sm font-medium text-gray-700">
                             {type} Name
