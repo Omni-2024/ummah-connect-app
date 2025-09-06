@@ -53,10 +53,10 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
                 </Button>
                 <Button
                   variant="unstyled"
-                  onClick={() => router.push("/courses")}
+                  onClick={() => router.push("/explore")}
                   className="border-2 border-emerald-500 text-emerald-600 px-8 py-6 rounded-xl transition-all duration-200 text-lg font-semibold hover:bg-emerald-500 hover:text-white hover:-translate-y-1 transform"
                 >
-                  Explore Courses
+                  Explore Services
                 </Button>
               </>
             ) : (
@@ -71,7 +71,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
                 </Button>
                 <Button
                   variant="unstyled"
-                  onClick={() => router.push("/courses")}
+                  onClick={() => router.push("/explore")}
                   className="border-2 border-emerald-500 text-color px-8 py-6 rounded-xl transition-all duration-200 text-lg font-semibold hover:bg-background-light hover:-translate-y-1 transform"
                 >
                   Discover New Paths
