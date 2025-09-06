@@ -8,6 +8,8 @@ import { useCurrentUser } from "@/lib/hooks/useUser"
 import { LoadingSkeleton } from "@/features/myprofile/LoadingSkeleton"
 import ProfileEditForm from "@/features/myprofile/ProfileEditForm"
 import ChangePasswordForm from "@/features/myprofile/ChangePasswordForm"
+import withAuth from "@/components/withAuth"
+import { UserRole } from "@/lib/constants"
 
 interface ProfileEditProps {
   router?: {
@@ -15,7 +17,7 @@ interface ProfileEditProps {
   }
 }
 
-export default function ProfileEdit({ router }: ProfileEditProps) {
+const ProfileEdit = ({ router }: ProfileEditProps) => {
   const { data: user, isFetched, isLoading: userLoading, refetch } = useCurrentUser()
 
   if (!isFetched || userLoading) {
@@ -51,4 +53,5 @@ export default function ProfileEdit({ router }: ProfileEditProps) {
       <Bottombar />
     </div>
   )
-}
+};
+export default withAuth(ProfileEdit, [UserRole.USER]);
