@@ -22,6 +22,7 @@ import ProfileMenuButton from "@/features/app/components/ProfileMenuButton"
 import HeroSection from "@/features/home/HeroSection"
 import FeaturesSection from "@/features/home/FeaturesSection"
 import CTASection from "@/features/home/CTASection"
+import Footer from "@/features/app/components/Footer"
 
 
 interface DashboardCardProps {
@@ -101,20 +102,8 @@ export default function HomePage() {
       {!isAuthenticated && <CTASection router={router} />}
 
 
-      <footer className="bg-slate-900 text-white py-12 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-3 mb-4 md:mb-0">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600"></div>
-              <span className="text-xl font-bold">Ummah Community</span>
-            </div>
-            <div className="text-slate-400">© 2025 Ummah Community. All rights reserved.</div>
-          </div>
-        </div>
-      </footer>
 
       <Bottombar/>
-
     </div>
   )
 }

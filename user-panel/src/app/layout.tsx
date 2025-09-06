@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/app/providers";
+import Footer from "@/features/app/components/Footer";
 
 
 export const metadata: Metadata = {
@@ -15,12 +16,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body >
-      <Providers>
+<html lang="en">
+  <body>
+    <Providers>
+      <div className="flex min-h-screen flex-col">
+        {/* Main content grows and pushes footer down */}
+        <main className="flex-grow">
           {children}
-      </Providers>
-      </body>
-    </html>
+        </main>
+        <Footer />
+      </div>
+    </Providers>
+  </body>
+</html>
+
   );
 }
