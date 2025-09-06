@@ -1,4 +1,5 @@
 
+"use client"
 import {ArrowRightIcon} from "@radix-ui/react-icons"
 import Button from "@/components/base/Button";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
