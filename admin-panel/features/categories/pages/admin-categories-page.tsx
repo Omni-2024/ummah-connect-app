@@ -2,7 +2,6 @@
 
 import { useCategories } from "@/hooks/useCategories"
 import Button from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Plus, AlertCircle, FolderOpen } from "lucide-react"
