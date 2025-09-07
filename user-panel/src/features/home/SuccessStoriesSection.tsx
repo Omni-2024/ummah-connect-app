@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect } from 'react';
 import { ArrowLeftIcon, ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react-icons";
 
@@ -5,6 +6,7 @@ import { ArrowLeftIcon, ArrowRightIcon, CheckCircledIcon } from "@radix-ui/react
 function SuccessStoriesSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(1); // Tracks number of visible stories
 
   const stories = [
     {
@@ -57,6 +59,20 @@ function SuccessStoriesSection() {
     }
   ];
 
+  // Update visibleCount based on window width
+  useEffect(() => {
+    const updateVisibleCount = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) setVisibleCount(3);
+      else if (width >= 768) setVisibleCount(2);
+      else setVisibleCount(1);
+    };
+
+    updateVisibleCount();
+    window.addEventListener('resize', updateVisibleCount);
+    return () => window.removeEventListener('resize', updateVisibleCount);
+  }, []);
+
   // Auto-play functionality
   useEffect(() => {
     if (!isAutoPlaying) return;
@@ -78,20 +94,19 @@ function SuccessStoriesSection() {
     setIsAutoPlaying(false);
   };
 
-  const goToSlide = (index: React.SetStateAction<number>) => {
+  const goToSlide = (index: number) => {
     setCurrentSlide(index);
     setIsAutoPlaying(false);
   };
 
-  // Get visible stories (3 at a time on desktop, 2 on tablet, 1 on mobile)
+  // Get visible stories
   const getVisibleStories = () => {
-    const visibleCount = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
     const stories_copy = [...stories, ...stories]; // Duplicate for seamless loop
     return stories_copy.slice(currentSlide, currentSlide + visibleCount);
   };
 
   return (
-    <section className="py-4 bg-white relative overflow-hidden">
+    <section className="py-4 bg-white relative overflow-hidden mb-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
@@ -103,7 +118,7 @@ function SuccessStoriesSection() {
           </p>
         </div>
 
-        {/* Carousel Container */}
+        {/* Carousel */}
         <div className="relative">
           {/* Navigation Buttons */}
           <button
@@ -113,7 +128,6 @@ function SuccessStoriesSection() {
           >
             <ArrowLeftIcon className="w-5 h-5 text-gray-600 group-hover:text-emerald-600" />
           </button>
-          
           <button
             onClick={nextSlide}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white border border-gray-200 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center group hover:border-emerald-300"
@@ -122,16 +136,12 @@ function SuccessStoriesSection() {
             <ArrowRightIcon className="w-5 h-5 text-gray-600 group-hover:text-emerald-600" />
           </button>
 
-          {/* Cards Container */}
+          {/* Cards */}
           <div className="mx-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {getVisibleStories().map((story, index) => (
-                <div 
-                  key={`${story.name}-${currentSlide}-${index}`} 
-                  className="group animate-fadeIn h-full"
-                >
+                <div key={`${story.name}-${currentSlide}-${index}`} className="group animate-fadeIn h-full">
                   <div className="bg-gradient-to-br from-emerald-50 to-white p-8 rounded-2xl border border-emerald-100 hover:shadow-xl transition-all duration-300 h-full flex flex-col min-h-[420px]">
-                    {/* Header */}
                     <div className="flex items-center mb-6 flex-shrink-0">
                       <div className="relative">
                         <img 
@@ -149,13 +159,11 @@ function SuccessStoriesSection() {
                         <p className="text-xs text-slate-500">{story.company}</p>
                       </div>
                     </div>
-                    
-                    {/* Quote - This takes up the remaining space */}
+
                     <blockquote className="text-slate-700 mb-6 leading-relaxed italic flex-grow text-sm">
                       "{story.quote}"
                     </blockquote>
-                    
-                    {/* Course Badge - Fixed at bottom */}
+
                     <div className="mt-auto flex-shrink-0">
                       <div className="inline-flex items-center px-3 py-2 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
                         <CheckCircledIcon className="w-3 h-3 mr-2" />
@@ -168,7 +176,7 @@ function SuccessStoriesSection() {
             </div>
           </div>
 
-          {/* Dots Indicator */}
+          {/* Dots */}
           <div className="flex justify-center mt-12 gap-2">
             {Array.from({ length: stories.length }, (_, index) => (
               <button
@@ -184,7 +192,7 @@ function SuccessStoriesSection() {
             ))}
           </div>
 
-          {/* Auto-play indicator */}
+          {/* Auto-play toggle */}
           <div className="flex justify-center mt-4">
             <button
               onClick={() => setIsAutoPlaying(!isAutoPlaying)}
