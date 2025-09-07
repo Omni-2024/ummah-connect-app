@@ -42,6 +42,9 @@ export class UserEntity extends BaseEntity implements AbstractUserEntity {
   @Column()
   name: string;
 
+  @Column({ nullable: true, default: null })
+  bio: string;
+
   @Index('email-index', { unique: true })
   @Column({ unique: true })
   email: string;
@@ -101,14 +104,14 @@ export class UserEntity extends BaseEntity implements AbstractUserEntity {
   @Column({ nullable: true, default: null, name: 'total_cme', type: 'real' })
   totalCme: number;
 
-  @Column({ nullable: true, default: null, name: 'total_courses' })
-  totalCourses: number;
+  @Column({ nullable: true, default: null, name: 'total_services' })
+  totalServices: number;
 
-  @Column({ nullable: true, default: null, name: 'total_courses_completed' })
-  totalCoursesCompleted: number;
+  @Column({ nullable: true, default: null, name: 'total_services_completed' })
+  totalServicesCompleted: number;
 
-  @Column({ nullable: true, default: null, name: 'total_active_courses' })
-  totalActiveCourses: number;
+  @Column({ nullable: true, default: null, name: 'total_active_services' })
+  totalActiveServices: number;
 
   @Column({ default: true, name: 'is_first_login' })
   isFirstLogin: boolean;
