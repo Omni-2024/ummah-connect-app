@@ -24,7 +24,7 @@ export function GigGrid({ activeTab, searchQuery, onCreateGig }: GigGridProps) {
     limit: 20,
   })
 
-  const services = servicesData?.services || []
+  const services = servicesData?.data || []
 
   const handleDeleteGig = (gigId: string) => {
     if (confirm("Are you sure you want to delete this gig?")) {
