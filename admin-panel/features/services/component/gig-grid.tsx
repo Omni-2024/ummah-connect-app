@@ -1,8 +1,8 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import Button from "@/components/ui/button"
+import { Card, CardContent } from "@/components/base/card"
+import { Badge } from "@/components/base/badge"
+import Button from "@/components/base/button"
 import { Plus, Edit, Trash2, Eye } from "lucide-react"
 import { useServices } from "@/hooks/useServices"
 

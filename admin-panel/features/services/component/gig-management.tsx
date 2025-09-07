@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import Button from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import Button from "@/components/base/button"
+import { Input } from "@/components/base/input"
 import { Search, Filter, Briefcase } from "lucide-react"
 import { GigGrid } from "./gig-grid"
 import { CreateGigWizard } from "./create-gig-wizard"

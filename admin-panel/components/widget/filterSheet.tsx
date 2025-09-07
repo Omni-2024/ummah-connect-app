@@ -1,5 +1,5 @@
 import { Close } from "@/assets/icons/close";
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import {
   Sheet,
   SheetContent,
@@ -7,7 +7,7 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
+} from "@/components/base/sheet";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 
 type FilterSheetProps = {

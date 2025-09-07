@@ -6,7 +6,7 @@ import { Toast } from "@/components/base/Toast";
 import LoadingError from "@/components/widget/loadingError";
 import AdvancedPagination from "@/components/widget/advancedPagination";
 import { ListEmptyStateWithSearch } from "@/components/widget/ListEmptyStateWithSearch";
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import { Plus } from "lucide-react";
 import { useGeneralUsers} from "@/lib/hooks/useGeneralUsers";
 import ViewUser from "@/components/popups/viewUser";

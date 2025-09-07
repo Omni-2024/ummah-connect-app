@@ -6,10 +6,10 @@ import { Plus, Users, GripVertical, Trash2 } from "lucide-react"
 import { Edit, MinusCirlce, TagRight,Trash } from "iconsax-react";
 
 
-import { Card, CardContent } from "@/components/ui/card"
-import Button from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
+import { Card, CardContent } from "@/components/base/card"
+import Button from "@/components/base/button"
+import { Badge } from "@/components/base/badge"
+import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/base/accordion"
 import type { CategoryData } from "@/types/data"
 
 import CategoryAddEditPopup from "../pages/CategoryAddEditPopup"

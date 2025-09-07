@@ -2,12 +2,12 @@
 
 import type React from "react"
 
-import Button from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { Badge } from "@/components/ui/badge"
+import Button from "@/components/base/button"
+import { Input } from "@/components/base/input"
+import { Label } from "@/components/base/label"
+import { Textarea } from "@/components/base/textarea"
+import { Switch } from "@/components/base/switch"
+import { Badge } from "@/components/base/badge"
 import { X, Plus } from "lucide-react"
 import { useRef, useState } from "react"
 import Image from "next/image"

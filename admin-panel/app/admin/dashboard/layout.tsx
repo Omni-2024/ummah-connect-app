@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import  Button  from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import  Button  from "@/components/base/button"
+import { Card } from "@/components/base/card"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,

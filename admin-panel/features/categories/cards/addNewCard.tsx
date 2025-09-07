@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { Card, CardContent } from "@/components/ui/card"
-import  Button  from "@/components/ui/button"
+import { Card, CardContent } from "@/components/base/card"
+import  Button  from "@/components/base/button"
 import { Plus } from "lucide-react"
 
 export enum AddNewCardType {

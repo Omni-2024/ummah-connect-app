@@ -6,7 +6,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/base/AlertDialog";
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import Spinner from "@/components/base/Spinner";
 
 type SimpleDialogProps = {

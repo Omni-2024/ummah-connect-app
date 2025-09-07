@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Button from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card"
+import Button from "@/components/base/button"
 import { X } from "lucide-react"
 import { WizardSteps } from "./wizard-steps"
 import { StepOne } from "@/features/services/component/pages/steps/step-one"

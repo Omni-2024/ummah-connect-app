@@ -2,8 +2,8 @@
 
 import React, {useState} from "react"
 
-import Button from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
+import Button from "@/components/base/button"
+import { Label } from "@/components/base/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import type { CreateServiceFnArgs } from "@/features/services/types/gig-types"
 import {useRouter} from "next/navigation";

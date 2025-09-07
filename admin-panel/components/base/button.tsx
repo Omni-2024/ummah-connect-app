@@ -2,7 +2,7 @@ import { cn } from "@/lib/className";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import Spinner from "./Spinner";
+import Spinner from "../ui/Spinner";
 
 const buttonVariants = cva(
     "inline-flex items-center gap-2 font-secondary justify-center whitespace-nowrap rounded-full text-sm transition-colors focus-visible:outline-none select-none ease-in focus-visible:ring-1 disabled:pointer-events-none cursor-pointer ring-primary-200",

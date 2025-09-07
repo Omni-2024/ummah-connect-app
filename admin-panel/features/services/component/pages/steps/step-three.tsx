@@ -1,8 +1,8 @@
 "use client"
 
-import Button from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import Button from "@/components/base/button"
+import { Card, CardContent } from "@/components/base/card"
+import { Badge } from "@/components/base/badge"
 import { CheckCircle, FileText, DollarSign } from "lucide-react"
 import type { CreateServiceFnArgs } from "@/features/services/types/gig-types"
 

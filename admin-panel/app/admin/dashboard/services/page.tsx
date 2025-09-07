@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import FilterTabs from "@/components/base/FilterTabs";
 import { ServicesPageTabs, ServicesPageTabTiles } from "@/lib/types/tabs";
 import Input from "@/components/base/form/Input";
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import { Setting4 } from "iconsax-react";
 import AdvancedPagination from "@/components/widget/advancedPagination";
 import { ListEmptyStateWithFilters } from "@/components/widget/listEmptyStateWithFilters";
@@ -15,9 +15,9 @@ import FilterSheet from "@/components/widget/filterSheet";
 import DivRenderer from "@/components/widget/renderDivs";
 import { CreateGigWizard } from "@/features/services/component/create-gig-wizard";
 import CourseCardSkeletonList from "@/features/services/component/skeleton/serviceCardSkeleton";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/base/card";
 import {Edit, Eye, Plus, Trash2} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/components/base/badge";
 import {useRouter} from "next/navigation";
 
 

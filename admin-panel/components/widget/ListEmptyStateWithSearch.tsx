@@ -1,4 +1,4 @@
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import { Filter, SearchX } from "lucide-react";
 
 export const ListEmptyStateWithSearch = ({
