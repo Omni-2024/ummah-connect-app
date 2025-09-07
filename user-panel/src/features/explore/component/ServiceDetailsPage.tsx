@@ -1,6 +1,6 @@
 "use client";
 import { useRouter, useParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useGeneralUser } from "@/lib/hooks/useUser";
 import { useServiceBySlug } from "@/lib/hooks/useServices";
 import { formatDurationFromSeconds } from "@/lib/helpers/formatUtils";
@@ -33,6 +33,7 @@ export default function ServiceDetailsPage() {
   const params = useParams();
   const slug = params?.slug as string;
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { serviceSlug } = useExploreState();
 
   const {
@@ -41,6 +42,25 @@ export default function ServiceDetailsPage() {
     error,
   } = useServiceBySlug(serviceSlug || slug || "");
   const { data: educator } = useGeneralUser(service?.provider?.id ?? undefined);
+
+  // Scroll detection effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      // You can adjust this threshold value as needed
+      const scrollThreshold = 100;
+      setIsScrolled(scrollPosition > scrollThreshold);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Check initial scroll position
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   function formatReadableHours(minutes: number): string {
     const hrs = Math.floor(minutes / 60);
@@ -186,23 +206,9 @@ export default function ServiceDetailsPage() {
             onBookmark={handleBookmark}
             onShare={handleShare}
             formatReadableHours={formatReadableHours}
-          />
-
-          {/* Mobile Buttons */}
-          <div className="flex gap-2 m-6 lg:hidden">
-            <Button
-              variant="primary"
-              onClick={handleBookmark}
-              className="flex-1"
-            >
-              <BookmarkIcon className="size-4 mr-1" />
-              {isBookmarked ? "Saved" : "Save"}
-            </Button>
-            <Button variant="primary" onClick={handleShare} className="flex-1">
-              <Share1Icon className="size-4 mr-1" />
-              Share
-            </Button>
-          </div>
+            // Pass the scroll state to ServiceSidebar if it contains pricing details
+            isScrolled={isScrolled}
+          />         
         </div>
       </div>
 
