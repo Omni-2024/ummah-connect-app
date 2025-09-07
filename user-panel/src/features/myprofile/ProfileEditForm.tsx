@@ -176,17 +176,17 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border">
-      <div className="p-6">
+    <div className="bg-white">
+      <div className="p-4 sm:p-6">
         {/* Profile Image Section */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Profile Picture</h2>
-          <div className="flex items-center space-x-6">
-            <div className="relative">
-              <div className="w-24 h-24 rounded-full border-3 border-gray-200 overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-500">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Profile Picture</h2>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+            <div className="relative self-center sm:self-auto">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 sm:border-3 border-gray-200 overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-500">
                 {!profileData.profileImage || avatarBroken ? (
                   <div className="w-full h-full flex items-center justify-center">
-                    <PersonIcon className="w-10 h-10 text-white" />
+                    <PersonIcon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                   </div>
                 ) : (
                   <Image
@@ -200,8 +200,8 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                   />
                 )}
               </div>
-              <label className="absolute -bottom-2 -right-2 bg-emerald-500 rounded-full p-2 cursor-pointer hover:bg-emerald-600 transition-colors shadow-lg">
-                <CameraIcon className="w-4 h-4 text-white" />
+              <label className="absolute -bottom-1 -right-1 sm:-bottom-2 sm:-right-2 bg-emerald-500 rounded-full p-1.5 sm:p-2 cursor-pointer hover:bg-emerald-600 transition-colors shadow-lg">
+                <CameraIcon className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                 <input
                   type="file"
                   accept="image/*"
@@ -210,17 +210,17 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                 />
               </label>
             </div>
-            <div>
-              <p className="font-medium text-gray-900 mb-1">Upload Profile Picture</p>
-              <p className="text-sm text-gray-600">JPG or PNG. Max size 3MB.</p>
+            <div className="text-center sm:text-left">
+              <p className="font-medium text-gray-900 mb-1 text-sm sm:text-base">Upload Profile Picture</p>
+              <p className="text-xs sm:text-sm text-gray-600">JPG or PNG. Max size 3MB.</p>
             </div>
           </div>
         </div>
 
         {/* Basic Information */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="mb-6 sm:mb-8">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Basic Information</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Full Name <span className="text-red-500">*</span>
@@ -269,10 +269,10 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
           </div>
         </div>
 
-        {/* Professional Information */}
-        {/* <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Professional Information</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Professional Information - Commented out as in original */}
+        {/* <div className="mb-6 sm:mb-8">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Professional Information</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <div>
               <Dropdown
                 label="Designation"
@@ -318,18 +318,18 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
         </div> */}
 
         {/* Save Button and Message */}
-        <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-4 sm:pt-6 border-t border-gray-200 gap-3 sm:gap-0">
           {saveMessage && (
-            <div className="flex items-center text-emerald-600">
-              <CheckIcon className="w-4 h-4 mr-2" />
+            <div className="flex items-center text-emerald-600 order-2 sm:order-1">
+              <CheckIcon className="w-4 h-4 mr-2 flex-shrink-0" />
               <span className="text-sm font-medium">{saveMessage}</span>
             </div>
           )}
-          <div className="ml-auto">
+          <div className="order-1 sm:order-2 sm:ml-auto">
             <button
               onClick={handleSaveProfile}
               disabled={isSavingProfile}
-              className="px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center"
+              className="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-lg font-medium hover:from-emerald-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center"
             >
               {isSavingProfile ? (
                 <>
