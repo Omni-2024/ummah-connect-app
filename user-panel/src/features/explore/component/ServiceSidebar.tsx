@@ -14,6 +14,7 @@ interface ServiceSidebarProps {
   onBookmark: () => void;
   onShare: () => void;
   formatReadableHours: (minutes: number) => string;
+  isScrolled?: boolean;
 }
 
 export default function ServiceSidebar({
@@ -24,10 +25,13 @@ export default function ServiceSidebar({
   onBookmark,
   onShare,
   formatReadableHours,
+  isScrolled = false,
 }: ServiceSidebarProps) {
   return (
     <div className="hidden lg:block lg:col-span-1 mt-6 lg:mt-0">
-      <div className="sticky top-16">
+      <div className={`sticky top-24 transition-all duration-500 ease-out ${
+        isScrolled ? 'mt-8' : 'mt-0'
+      }`}>
         <Card className="m-6 p-4 lg:m-0 bg-white lg:shadow-lg border border-gray-200">
           {/* Heading */}
           <h2 className="text-2xl font-bold text-gray-900 mb-6">
