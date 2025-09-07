@@ -1,4 +1,7 @@
-import {Checkbox} from "@/components/ui/checkbox";
+"use client";
+
+import { useState } from "react";
+import { Checkbox } from "@/components/ui/checkbox";
 import Label from "@/components/base/form/Label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
@@ -7,259 +10,148 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/base/rawAccordion";
-import {Slider} from "@/components/ui/slider";
+import { Slider } from "@/components/ui/slider";
 import { useServiceState } from "@/features/services/context/useServiceState";
 import { MAX_CME_POINTS } from "@/lib/constants";
 import { useCategories } from "@/lib/hooks/useCategories";
-// import { useEducators } from "@/lib/hooks/userEducators";
 
-// Category , SubCategory[], Specialist[]
-export type ServiceCategoryFilterData = [string, string[], string[]];
+// professionId, specialistIds[]
+export type ServiceCategoryFilterData = [string, string[]];
 
 type ServiceFilterProps = {
   categoryFilter: ServiceCategoryFilterData | [];
-  setCategoryFilter: React.Dispatch<
-    React.SetStateAction<ServiceCategoryFilterData | []>
-  >;
+  setCategoryFilter: React.Dispatch<React.SetStateAction<ServiceCategoryFilterData | []>>;
   filteredEducators: string[];
   setFilteredEducators: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
 const ServiceFilter: React.FC<ServiceFilterProps> = ({
-  categoryFilter,
-  setCategoryFilter,
-  filteredEducators,
-  setFilteredEducators,
-}) => {
+                                                       categoryFilter,
+                                                       setCategoryFilter,
+                                                       filteredEducators,
+                                                       setFilteredEducators,
+                                                     }) => {
   const { cmeUp, cmeDown, setCMEUp, setCMEDown } = useServiceState();
-  // const { data: educatorsData, isLoading: educatorsLoading } = useEducators({
-  //   limit: 20,
-  //   offset: 0,
-  //   search: "",
-  // });
+  const { data: categoriesData = [], isLoading: categoriesLoading } = useCategories();
 
-  const { data: categoriesData, isLoading: categoriesLoading } =
-    useCategories();
+  // Safely read current selection (since union allows [])
+  const selectedProfessionId = (Array.isArray(categoryFilter) ? categoryFilter[0] : undefined) as
+      | string
+      | undefined;
+  const selectedSpecialistIds = (Array.isArray(categoryFilter) ? categoryFilter[1] : []) as string[];
 
   return (
-    <div className="px-6 flex flex-col">
-      <Accordion type="multiple" className="w-full">
-        <AccordionItem value="category" disabled={categoriesLoading}>
+      <div className="px-6 flex flex-col bg-white">
+        <Accordion type="multiple" className="w-full bg-white">
+          {/* Category (Profession) */}
+          <AccordionItem value="category" disabled={categoriesLoading}>
+            <AccordionTrigger className="font-primary text-xl font-bold ">
+              Category
+            </AccordionTrigger>
+
+            <AccordionContent>
+              <div className="flex items-center gap-2 ">
+                {/* One-level accordion to keep per-profession expansion (optional) */}
+                <Accordion type="single" className="w-full" value={selectedProfessionId}>
+                  <RadioGroup
+                      value={selectedProfessionId}
+                      onValueChange={(value) => {
+                        // switching profession resets specialists
+                        setCategoryFilter([value, []]);
+                      }}
+                  >
+                      {categoriesData.map((profession) => {
+                          const inputId = `profession-${profession.id}`; // unique + matches htmlFor
+                          return (
+                              <AccordionItem value={profession.id} key={profession.id}>
+                                  <div className="flex items-center gap-2">
+                                      <RadioGroupItem value={profession.id} id={inputId} />
+                                      <Label htmlFor={inputId} className="cursor-pointer">
+                                          {profession.name}
+                                      </Label>
+                                  </div>
+
+                                  {/* Specialists directly under profession */}
+                                  <AccordionContent className="pt-2 pb-3">
+                                      {profession.specialists?.length ? (
+                                          <div className="flex flex-col gap-2 px-1">
+                                              {profession.specialists.map((specialist: any) => {
+                                                  const isChecked =
+                                                      selectedProfessionId === profession.id &&
+                                                      selectedSpecialistIds.includes(specialist.id);
+
+                                                  const specId = `spec-${profession.id}-${specialist.id}`;
+
+                                                  return (
+                                                      <div key={specialist.id} className="flex items-center gap-3">
+                                                          <Checkbox
+                                                              value={specialist.id}
+                                                              id={specId}
+                                                              checked={isChecked}
+                                                              onCheckedChange={(checked) => {
+                                                                  const want = Boolean(checked);
+                                                                  if (want) {
+                                                                      setCategoryFilter([
+                                                                          profession.id,
+                                                                          Array.from(new Set([...selectedSpecialistIds, specialist.id])),
+                                                                      ]);
+                                                                  } else {
+                                                                      setCategoryFilter([
+                                                                          profession.id,
+                                                                          selectedSpecialistIds.filter((i) => i !== specialist.id),
+                                                                      ]);
+                                                                  }
+                                                              }}
+                                                          />
+                                                          <label htmlFor={specId} className="font-normal truncate w-60">
+                                                              {specialist.name}
+                                                          </label>
+                                                      </div>
+                                                  );
+                                              })}
+                                          </div>
+                                      ) : (
+                                          <div className="text-sm text-muted-foreground px-1">No specialists available</div>
+                                      )}
+                                  </AccordionContent>
+                              </AccordionItem>
+                          );
+                      })}
+
+                  </RadioGroup>
+                </Accordion>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* CME Points (keep commented out if not needed)
+        <AccordionItem value="cme-points">
           <AccordionTrigger className="font-primary text-xl font-bold ">
-            Category
+            CME Points
           </AccordionTrigger>
-
-          <AccordionContent>
-            <div className="flex items-center gap-2">
-              <Accordion
-                type="single"
-                className="w-full"
-                value={categoryFilter[0] as string}
-              >
-                {/*<RadioGroup*/}
-                {/*  onValueChange={(value) => {*/}
-                {/*    setCategoryFilter([value, [], []]);*/}
-                {/*  }}*/}
-                {/*>*/}
-                {/*  {categoriesData?.map((category) => (*/}
-                {/*    <AccordionItem value={category.id} key={category.id}>*/}
-                {/*      <div className="flex justify-between items-center">*/}
-                {/*        <div>*/}
-                {/*          <RadioGroupItem*/}
-                {/*            value={category.id}*/}
-                {/*            key={category.id}*/}
-                {/*            id={category.id}*/}
-                {/*            label={category.name}*/}
-                {/*          />*/}
-                {/*        </div>*/}
-                {/*      </div>*/}
-
-                {/*      <AccordionContent className="pb-0">*/}
-                {/*        <Accordion type="multiple" className="px-3 py-2">*/}
-                {/*          {category.specialists.map((subCategory) => (*/}
-                {/*            <AccordionItem*/}
-                {/*              value={subCategory.id}*/}
-                {/*              key={subCategory.id}*/}
-                {/*            >*/}
-                {/*              <div className="flex  py-1 text-left items-center justify-between">*/}
-                {/*                <Checkbox*/}
-                {/*                  value={subCategory.id}*/}
-                {/*                  key={subCategory.id}*/}
-                {/*                  id={`${category.name}-${subCategory.id}`}*/}
-                {/*                  checked={*/}
-                {/*                    categoryFilter[0] === category.id &&*/}
-                {/*                    categoryFilter[1]?.includes(subCategory.id)*/}
-                {/*                  }*/}
-                {/*                  onCheckedChange={(checked) => {*/}
-                {/*                    if (checked) {*/}
-                {/*                      setCategoryFilter([*/}
-                {/*                        category.id,*/}
-                {/*                        [*/}
-                {/*                          ...(categoryFilter[1] ?? []),*/}
-                {/*                          subCategory.id,*/}
-                {/*                        ],*/}
-                {/*                        [*/}
-                {/*                          ...(categoryFilter[2] ?? []),*/}
-                {/*                          ...subCategory.specialist.map(*/}
-                {/*                            (i) => i.id*/}
-                {/*                          ),*/}
-                {/*                        ],*/}
-                {/*                      ]);*/}
-                {/*                    } else {*/}
-                {/*                      if (*/}
-                {/*                        categoryFilter[1]?.includes(*/}
-                {/*                          subCategory.id*/}
-                {/*                        )*/}
-                {/*                      ) {*/}
-                {/*                        setCategoryFilter([*/}
-                {/*                          category.id,*/}
-                {/*                          categoryFilter[1]?.filter(*/}
-                {/*                            (i) => i !== subCategory.id*/}
-                {/*                          ) ?? [],*/}
-                {/*                          categoryFilter[2]?.filter(*/}
-                {/*                            (c) =>*/}
-                {/*                              !subCategory.specialist*/}
-                {/*                                .map((i) => i.id)*/}
-                {/*                                .includes(c)*/}
-                {/*                          ) ?? [],*/}
-                {/*                        ]);*/}
-                {/*                      }*/}
-                {/*                    }*/}
-                {/*                  }}*/}
-                {/*                />*/}
-                {/*                <label*/}
-                {/*                  htmlFor={`${category.name}-${subCategory.id}`}*/}
-                {/*                  className="font-normal truncate w-60"*/}
-                {/*                >*/}
-                {/*                  {subCategory.name}*/}
-                {/*                </label>*/}
-                {/*                <AccordionTrigger className="font-primary text-base font-medium py-0.5">*/}
-                {/*                  {" "}*/}
-                {/*                </AccordionTrigger>*/}
-                {/*              </div>*/}
-                {/*              <AccordionContent className="pt-0 pb-2">*/}
-                {/*                {subCategory.specialist.map((specialist) => (*/}
-                {/*                  <div*/}
-                {/*                    key={specialist.id}*/}
-                {/*                    className="flex items-center px-3 gap-3"*/}
-                {/*                  >*/}
-                {/*                    <Checkbox*/}
-                {/*                      value={specialist.id}*/}
-                {/*                      id={`${subCategory.name}-${specialist.id}`}*/}
-                {/*                      checked={*/}
-                {/*                        categoryFilter[0] === category.id &&*/}
-                {/*                        categoryFilter[1]?.includes(*/}
-                {/*                          subCategory.id*/}
-                {/*                        ) &&*/}
-                {/*                        categoryFilter[2]?.includes(*/}
-                {/*                          specialist.id*/}
-                {/*                        )*/}
-                {/*                      }*/}
-                {/*                      onCheckedChange={(checked) => {*/}
-                {/*                        if (checked) {*/}
-                {/*                          setCategoryFilter([*/}
-                {/*                            category.id,*/}
-                {/*                            [*/}
-                {/*                              ...(categoryFilter[1] ?? []),*/}
-                {/*                              subCategory.id,*/}
-                {/*                            ],*/}
-                {/*                            [*/}
-                {/*                              ...(categoryFilter[2] ?? []),*/}
-                {/*                              specialist.id,*/}
-                {/*                            ],*/}
-                {/*                          ]);*/}
-                {/*                        } else {*/}
-                {/*                          if (*/}
-                {/*                            categoryFilter[2]?.includes(*/}
-                {/*                              specialist.id*/}
-                {/*                            )*/}
-                {/*                          ) {*/}
-                {/*                            setCategoryFilter([*/}
-                {/*                              category.id,*/}
-                {/*                              categoryFilter[1] ?? [],*/}
-                {/*                              categoryFilter[2]?.filter(*/}
-                {/*                                (i) => i !== specialist.id*/}
-                {/*                              ) ?? [],*/}
-                {/*                            ]);*/}
-                {/*                          }*/}
-                {/*                        }*/}
-                {/*                      }}*/}
-                {/*                    />*/}
-                {/*                    <label*/}
-                {/*                      htmlFor={`${subCategory.name}-${specialist.id}`}*/}
-                {/*                      className="font-normal truncate w-60 "*/}
-                {/*                    >*/}
-                {/*                      {specialist.name}*/}
-                {/*                    </label>*/}
-                {/*                  </div>*/}
-                {/*                ))}*/}
-                {/*              </AccordionContent>*/}
-                {/*            </AccordionItem>*/}
-                {/*          ))}*/}
-                {/*        </Accordion>*/}
-                {/*      </AccordionContent>*/}
-                {/*    </AccordionItem>*/}
-                {/*  ))}*/}
-                {/*</RadioGroup>*/}
-              </Accordion>
+          <AccordionContent className="pt-3 px-1">
+            <div className="flex justify-between pb-1">
+              <div className="text-sm font-primary">{cmeDown} Points</div>
+              <div className="text-sm font-primary">{cmeUp} Points</div>
             </div>
+            <Slider
+              min={0}
+              step={0.5}
+              max={MAX_CME_POINTS}
+              defaultValue={[cmeDown, cmeUp]}
+              onValueChange={(value) => {
+                setCMEDown(value[0]);
+                setCMEUp(value[1]);
+              }}
+              value={[cmeDown, cmeUp]}
+            />
           </AccordionContent>
         </AccordionItem>
+        */}
 
-        {/* CME Points */}
-        {/*<AccordionItem value="cme points">*/}
-        {/*  <AccordionTrigger className="font-primary text-xl font-bold ">*/}
-        {/*    CME Points*/}
-        {/*  </AccordionTrigger>*/}
-        {/*  <AccordionContent className="pt-3 px-1">*/}
-        {/*    <div className="flex justify-between pb-1">*/}
-        {/*      <div className="text-sm font-primary">{cmeDownLocal} Points</div>*/}
-        {/*      <div className="text-sm font-primary">{cmeUpLocal} Points</div>*/}
-        {/*    </div>*/}
-        {/*    <Slider*/}
-        {/*      min={0}*/}
-        {/*      step={0.5}*/}
-        {/*      max={MAX_CME_POINTS}*/}
-        {/*      defaultValue={[cmeDownLocal, cmeUpLocal]}*/}
-        {/*      onValueChange={(value) => {*/}
-        {/*        setCmeDownLocal(value[0]);*/}
-        {/*        setCmeUpLocal(value[1]);*/}
-        {/*      }}*/}
-        {/*      value={[cmeDownLocal, cmeUpLocal]}*/}
-        {/*    />*/}
-        {/*  </AccordionContent>*/}
-        {/*</AccordionItem>*/}
-
-        {/* Educators */}
-        {/*<AccordionItem value="educators" disabled={educatorsLoading}>*/}
-        {/*  <AccordionTrigger className="font-primary text-xl font-bold ">*/}
-        {/*    Educators*/}
-        {/*  </AccordionTrigger>*/}
-        {/*  <AccordionContent className="flex flex-col gap-3">*/}
-        {/*    {educatorsData?.data?.map((educator) => (*/}
-        {/*      <div key={educator.id} className="flex items-center gap-3">*/}
-        {/*        <Checkbox*/}
-        {/*          value={educator.id}*/}
-        {/*          id={educator.id}*/}
-        {/*          checked={filteredEducators.includes(educator.id)}*/}
-        {/*          onCheckedChange={(checked) => {*/}
-        {/*            if (checked)*/}
-        {/*              setFilteredEducators([...filteredEducators, educator.id]);*/}
-        {/*            else*/}
-        {/*              setFilteredEducators(*/}
-        {/*                filteredEducators.filter((i) => i !== educator.id)*/}
-        {/*              );*/}
-        {/*          }}*/}
-        {/*        />*/}
-        {/*        <Label htmlFor={educator.id} className="text-base font-medium">*/}
-        {/*          {educator.name}*/}
-        {/*        </Label>*/}
-        {/*      </div>*/}
-        {/*    ))}*/}
-        {/*  </AccordionContent>*/}
-        {/*</AccordionItem>*/}
-      </Accordion>
-    </div>
+          {/* Educators block omitted as per your comment */}
+        </Accordion>
+      </div>
   );
 };
 

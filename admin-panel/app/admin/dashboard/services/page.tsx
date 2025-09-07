@@ -148,8 +148,8 @@ export default function AdminGigsPage() {
             console.log(categoryFilter[0]);
             setProfession(categoryFilter[0]);
         }
-        if (categoryFilter[2] && categoryFilter[2]?.length > 0) {
-            setSpecialist(categoryFilter[2]);
+        if (categoryFilter[1] && categoryFilter[1]?.length > 0) {
+            setSpecialist(categoryFilter[1]);
         }
     };
 
@@ -173,7 +173,6 @@ export default function AdminGigsPage() {
         let count = 0;
         if (categoryFilter[0]) count++;
         if (categoryFilter[1] && categoryFilter[1]?.length > 0) count++;
-        if (categoryFilter[2] && categoryFilter[2]?.length > 0) count++;
         if (filteredEducators.length > 0) count++;
         return count;
     }, [categoryFilter, filteredEducators]);

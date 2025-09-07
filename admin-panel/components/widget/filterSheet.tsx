@@ -50,7 +50,7 @@ const FilterSheet: React.FC<FilterSheetProps> = (props) => {
 
           <Separator />
 
-          <div className="flex flex-col">{props.children}</div>
+          <div className="flex flex-col bg-white">{props.children}</div>
 
           <Separator className="mt-auto" />
 
