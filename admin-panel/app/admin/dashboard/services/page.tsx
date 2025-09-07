@@ -18,6 +18,7 @@ import CourseCardSkeletonList from "@/features/services/component/skeleton/servi
 import { Card, CardContent } from "@/components/ui/card";
 import {Edit, Eye, Plus, Trash2} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import {useRouter} from "next/navigation";
 
 
 
@@ -25,6 +26,7 @@ const ITEMS_PER_PAGE = 11;
 
 
 export default function AdminGigsPage() {
+    const router=useRouter()
     const [selectedTab, setSelectedTab] = useState(ServicesPageTabs.Published);
     const [tabPublished, setTabPublished] = useState<Boolean>(true);
 
@@ -247,7 +249,7 @@ export default function AdminGigsPage() {
 
             <Card
                 className="border-2 border-dashed border-gray-300 hover:border-[#669f9d] cursor-pointer transition-colors bg-white"
-                onClick={()=>setShowCreateWizard(true)}
+                onClick={()=>router.push("/admin/dashboard/services/create")}
             >
                 <CardContent className="flex flex-col items-center justify-center h-80 text-center">
                     <div className="w-16 h-16 bg-cyan-50 rounded-full flex items-center justify-center mb-4">
@@ -259,14 +261,14 @@ export default function AdminGigsPage() {
             </Card>
 
             <div className="grid grid-cols-[repeat(auto-fit,_minmax(377px,1fr))] gap-4 px-5 py-3 ">
-                {tabPublished && showCreateWizard && (
-                    // <AddNewCard
-                    //     name="new course"
-                    //     type={AddNewCardType.Link}
-                    //     link="/courses/create"
-                    // />
-                    <CreateGigWizard onClose={() => setShowCreateWizard(false)} />
-                )}
+                {/*{tabPublished && showCreateWizard && (*/}
+                {/*    // <AddNewCard*/}
+                {/*    //     name="new course"*/}
+                {/*    //     type={AddNewCardType.Link}*/}
+                {/*    //     link="/courses/create"*/}
+                {/*    // />*/}
+                {/*    <CreateGigWizard onClose={() => setShowCreateWizard(false)} />*/}
+                {/*)}*/}
                 {isLoading || !services ? (
                     <CourseCardSkeletonList />
                 ) : (
