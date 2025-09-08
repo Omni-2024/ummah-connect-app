@@ -1,0 +1,66 @@
+export const ADD_SERVICE_INPUTS = {
+  serviceTitle: {
+    name: "serviceTitle",
+    label: "service Title",
+    placeholder: "service title here",
+    title: "Enter service Title",
+    desc: "Provide a clear and concise title for your service.",
+  },
+  serviceDescription: {
+    name: "serviceDescription",
+    label: "service Description",
+    placeholder: "Type here...",
+    title: "Provide service Description",
+    desc: "Add a detailed description to inform learners about the service content.",
+  },
+
+  previewDescription: {
+    name: "previewDescription",
+    label: "Preview Description",
+    placeholder: "Type here...",
+    title: "Add Preview Description",
+    desc: "Provide a short preview description for quick service insights.",
+  },
+  coverImage: {
+    name: "coverImage",
+    label: "Cover Image",
+    placeholder: "Select or drag & drop image here",
+    title: "Upload Cover Image",
+    desc: "Upload an image that represents your service visually.",
+  },
+  learningPoints: {
+    name: "learningPoints",
+    label: "Learning Points",
+    placeholder: "Learning point here",
+    title: "Specify Learning Points",
+    desc: " List the key learning objectives. You can add up to six points.",
+  },
+  pricing: {
+    name: "pricing",
+    label: "Pricing",
+    placeholder: "Price here",
+    title: "Define service Pricing",
+    desc: "Set the price for your service in USD.",
+  },
+  discount: {
+    name: "discount",
+    label: "",
+    placeholder: "Percentage",
+    title: "Apply Discount Option",
+    desc: "",
+  },
+  cmePoints: {
+    name: "cmePoints",
+    label: "CME Points",
+    placeholder: "",
+    title: "Assign CME Points",
+    desc: "Specify the number of CME points learners can earn from this service.",
+  },
+  cmdId: {
+    name: "cmdId",
+    label: "CMD ID",
+    placeholder: "DHA/MTS/ACC/24-1273/A",
+    title: "Enter CME Accreditation ID",
+    desc: "Enter the unique CME ID for the service accreditation.",
+  },
+};

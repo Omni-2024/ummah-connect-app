@@ -13,14 +13,14 @@ export const PageSteps: PageStepType[] = [
     title: "Provider & Specialty",
     component: StepOne,
   },
-  // {
-  //   title: "Service Details",
-  //   component: StepTwo,
-  // },
-  // {
-  //   title: "Publish",
-  //   component: StepThree,
-  // },
+  {
+    title: "Service Details",
+    component: StepTwo,
+  },
+  {
+    title: "Publish",
+    component: StepThree,
+  },
 ] as const;
 
 export const createServicePages = PageSteps.map((step) => step.title);

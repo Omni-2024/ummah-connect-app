@@ -44,9 +44,6 @@ export const initialState: CreateServiceState = {
     pricing: 0,
     discount: 0,
     discountOn: false,
-    cmePoints: 0,
-    cmdId: "",
-    duration: 0,
   },
 };
 
@@ -130,9 +127,6 @@ export const resetCreateServiceStateFull = () => {
     pricing: 0,
     discount: 0,
     discountOn: false,
-    cmePoints: 0,
-    cmdId: "",
-    duration: 0,
   };
 
   // reset IDs

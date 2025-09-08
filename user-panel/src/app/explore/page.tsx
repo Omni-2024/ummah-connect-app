@@ -1,7 +1,7 @@
 "use client"
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { useExploreState } from "@/features/explore/context/exploreState";
+import { useExploreState } from "@/features/explore/context/useExploreState";
 import { useCategories } from "@/lib/hooks/useCategories";
 import { GetAllServiceParams } from "@/types";
 import { useServices } from "@/lib/hooks/useServices";
@@ -9,7 +9,7 @@ import { SkeletonServicesCard } from "@/features/explore/component/SkeletonCours
 import NoServicesFound from "@/features/explore/component/NoServicesFound";
 import ServiceCard from "@/features/app/components/ServiceCard";
 import CertificatBanner from "@/features/explore/component/CertificatBanner";
-import { setProfession, setProfessionName, setSpecialties } from "@/features/explore/context/useExploreState";
+import { setProfession, setProfessionName, setSpecialties } from "@/features/explore/context/exploreState";
 import FilterModal from "@/features/explore/component/search/FilterModal";
 import {
     Breadcrumb,

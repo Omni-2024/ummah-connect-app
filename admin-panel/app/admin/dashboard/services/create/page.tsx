@@ -4,6 +4,8 @@ import {useEffect, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
 import {PageSteps} from "@/features/services/constants/createServicePages";
 import SimpleDialog from "@/components/widget/simpleDialog";
+import withAuth from "@/components/withAuth";
+import {ADMIN_ROLES} from "@/lib/constants";
 
 const SuperAdminCreateService = () => {
     const router = useRouter();
@@ -43,13 +45,13 @@ const SuperAdminCreateService = () => {
 
     useEffect(() => {
         if (isDirty && showBackWarning) {
+            setIsDirty(false)
             setShowModal(true);
             setNextRoute(pathname);
         }
     }, [pathname, isDirty, showBackWarning]);
 
     useEffect(() => {
-        console.log("currentStep", currentStep);
         if (PageSteps[currentStep].title === "Publish" || currentStep === 0) {
             setShowBackWarning(false);
         } else setShowBackWarning(true);
@@ -78,5 +80,7 @@ const SuperAdminCreateService = () => {
 
 
 }
-
-export default SuperAdminCreateService;
+export default withAuth(
+    SuperAdminCreateService,
+    [ADMIN_ROLES.ADMIN, ADMIN_ROLES.OPERATIONAL_ADMIN, ADMIN_ROLES.ROOT]
+);

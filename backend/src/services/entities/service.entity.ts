@@ -35,14 +35,6 @@ export class Service extends BaseEntity implements AbstractServiceEntity {
   @Column()
   description: string;
 
-  @Column({
-    default: 0,
-    name: 'cme_points',
-    type: 'real',
-    nullable: true,
-  })
-  cmePoints: number;
-
   @Column({ name: 'cover_image_url' })
   coverImageUrl: string;
 
@@ -51,9 +43,6 @@ export class Service extends BaseEntity implements AbstractServiceEntity {
 
   @Column({ default: 0, type: 'float' })
   price: number;
-
-  @Column({ name: 'cme_id', nullable: true })
-  cmeId: string;
 
   @Column({
     name: 'total_review_score',

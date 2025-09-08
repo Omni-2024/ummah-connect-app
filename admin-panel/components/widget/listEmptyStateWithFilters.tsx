@@ -36,7 +36,7 @@ export const ListEmptyStateWithFilters = ({
         Reset Filters
       </Button>
     ) : (
-      <LinkButton href="/services/" variant="secondary">
+      <LinkButton href="/admin/dashboard/services/create" variant="secondary">
         <Plus className="w-4 h-4" />
         Add New {name}
       </LinkButton>

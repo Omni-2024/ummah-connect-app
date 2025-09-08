@@ -5,9 +5,9 @@ import { refreshTokenFn } from "./endpoints/authenticationFns";
 
 const Request = axios.create({
     baseURL: envs.backendBaseUrl,
-    headers: {
-        "Content-Type": "application/json",
-    },
+    // headers: {
+    //     "Content-Type": "application/json",
+    // },
 });
 
 const clearAuthStateAndRedirect = () => {

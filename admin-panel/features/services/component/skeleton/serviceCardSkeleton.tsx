@@ -28,7 +28,7 @@ const ServiceCardSkeleton = () => {
   );
 };
 
-const CourseCardSkeletonList = ({ count = 8 }: { count?: number }) => {
+const ServiceCardSkeletonList = ({ count = 8 }: { count?: number }) => {
   return (
     <>
       {[...Array(count)].map((_, index) => (
@@ -39,4 +39,4 @@ const CourseCardSkeletonList = ({ count = 8 }: { count?: number }) => {
   );
 };
 
-export default CourseCardSkeletonList;
+export default ServiceCardSkeletonList;

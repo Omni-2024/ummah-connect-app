@@ -186,7 +186,7 @@ export default function AdminDashboardLayout({
         </div>
 
         {/* Page content */}
-        <main className="py-8">
+        <main className="py-8 overflow-y-auto h-[calc(100vh-4rem)]">
           <div className="px-4 sm:px-6 lg:px-8">{children}</div>
         </main>
       </div>

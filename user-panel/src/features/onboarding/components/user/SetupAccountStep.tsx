@@ -59,7 +59,7 @@ const SetupAccountStep = () => {
     updateUserMutate(
         {
           id,
-          profileImage: uploadedImageKey, // store the R2 key
+          profileImage: uploadedImageKey,
           contactNumber,
           company,
           country,
@@ -106,7 +106,7 @@ const SetupAccountStep = () => {
     }
     if (file.size > MAX_IMAGE_BYTES) {
       const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
-      Toast.error(`Image too large (${sizeMB} MB). Max allowed is 2 MB.`);
+      Toast.error(`Image too large (${sizeMB} MB). Max allowed is 3 MB.`);
       setImage(null);
       setPreviewUrl(null);
       e.currentTarget.value = "";

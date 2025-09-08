@@ -97,3 +97,5 @@ export enum SubscriptionPlanType {
 
 export const NAV_LOGO_SRC = "/images/nav-logo.png";
 export const MAIN_LOGO_SRC = "/images/logo.png";
+export const MAX_IMAGE_BYTES = 3 * 1024 * 1024;
+

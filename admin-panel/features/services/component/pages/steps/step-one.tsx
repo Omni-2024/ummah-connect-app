@@ -1,22 +1,20 @@
 "use client"
 
-import React, {useState} from "react"
+import React, { useState } from "react"
 
-import Button from "@/components/base/button"
-import { Label } from "@/components/base/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { CreateServiceFnArgs } from "@/features/services/types/gig-types"
-import {useRouter} from "next/navigation";
-import {useCreateServiceState} from "@/features/services/context/useCreateServiceState";
-import {useCategories} from "@/hooks/useCategories";
+import { useRouter } from "next/navigation";
+import { useCreateServiceState } from "@/features/services/context/useCreateServiceState";
+import { useCategories } from "@/hooks/useCategories";
 import { useFormik } from "formik";
-import {addCategorySchema} from "@/features/services/validation/addService";
+import { addCategorySchema } from "@/features/services/validation/addService";
 import LoadingError from "@/components/widget/loadingError";
 import Spinner from "@/components/ui/Spinner";
-import {ArrowRight} from "lucide-react";
-import {useGeneralUsers} from "@/lib/hooks/useGeneralUsers";
+import { ArrowRight } from "lucide-react";
+import { useGeneralUsers } from "@/lib/hooks/useGeneralUsers";
 import Selector from "@/components/widget/selector";
 import ComboBoxWithManualSearch from "@/components/widget/ComboboxWithManualSearch";
+import ServiceEditorLayout from "@/features/services/layouts/ServiceEditorPageLayout";
+import { createServicePages } from "@/features/services/constants/createServicePages";
 
 
 
@@ -47,12 +45,12 @@ export function StepOne() {
     isError: providersError,
     error: providersErrorData,
     refetch: refetchProviders,
-  }=useGeneralUsers(
-      {
-        search,
-        limit:20,
-        offset:0
-      }
+  } = useGeneralUsers(
+    {
+      search,
+      limit: 20,
+      offset: 0
+    }
   )
 
   // const {
@@ -78,19 +76,19 @@ export function StepOne() {
     },
     validationSchema: addCategorySchema,
     onSubmit: (values) => {
-      updateCreateServiceState("categoryData", {
+       updateCreateServiceState("categoryData", {
         profession: formik.values.mainCategory,
         specialist:
-            formik.values.secondaryCategory === ""
-                ? null
-                : formik.values.secondaryCategory,
+          formik.values.secondaryCategory === ""
+            ? null
+            : formik.values.secondaryCategory,
         provider: formik.values.provider,
       });
       handleNext();
     },
   });
 
-  const onDraftHandle = () => {};
+  const onDraftHandle = () => { };
 
   // if (categoriesError || educatorsError)
   //   return (
@@ -109,38 +107,46 @@ export function StepOne() {
 
   if (categoriesError)
     return (
-        <LoadingError
-            error={
-                 categoriesErrorData.message
-            }
-            reload={() => {
-             refetchCategories();
-            }}
-        />
+      <LoadingError
+        error={
+          categoriesErrorData.message
+        }
+        reload={() => {
+          refetchCategories();
+        }}
+      />
     );
 
   if (categoriesLoading)
     return (
-        <div className="flex justify-center items-center h-80 w-full">
-          <Spinner size={40} />
-        </div>
+      <div className="flex justify-center items-center h-80 w-full">
+        <Spinner size={40} />
+      </div>
     );
 
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">Which provider and specialty best describe your gig?</h2>
-        <p className="text-gray-600">Select the provider and their area of expertise for this service</p>
-      </div>
+    <ServiceEditorLayout
+      onBack={() => router.push("/admin/dashboard/services")}
+      onDraft={onDraftHandle}
+      disabled={false}
+      onSubmit={formik.handleSubmit}
+      steps={createServicePages}
+    // activeAction={CreateCourseActiveActionType.SUBMIT}
+    >
+      {/*<div className="max-w-2xl mx-auto">*/}
+        {/*<div className="text-center mb-8">*/}
+        {/*  <h2 className="text-2xl font-bold text-gray-900 mb-2">Which provider and specialty best describe your gig?</h2>*/}
+        {/*  <p className="text-gray-600">Select the provider and their area of expertise for this service</p>*/}
+        {/*</div>*/}
 
-      <div className="min-h-[300px] mb-24">
-        <h2 className="text-black font-primary font-bold text-[25px] text-center pt-12 pb-11">
-          Which categories best describe your course?
-        </h2>
-        <form onSubmit={formik.handleSubmit}>
-          <div className="flex justify-center items-center gap-5 w-full">
-            <Selector
+        <div className="min-h-[300px] mb-24">
+          <h2 className="text-black font-primary font-bold text-[25px] text-center pt-12 pb-11">
+            Which categories best describe your course?
+          </h2>
+          <form onSubmit={formik.handleSubmit}>
+            <div className="flex justify-center items-center gap-5 w-full">
+              <Selector
                 items={categories?.map((i) => ({
                   value: i.id,
                   label: i.name,
@@ -156,24 +162,24 @@ export function StepOne() {
                 }}
                 error={
                   formik.touched.mainCategory
-                      ? formik.errors.mainCategory
-                      : undefined
+                    ? formik.errors.mainCategory
+                    : undefined
                 }
-            />
-            <ArrowRight />
-            <Selector
+              />
+              <ArrowRight />
+              <Selector
                 items={categories
-                    ?.filter((i) => i.id === formik.values.mainCategory)[0]
-                    ?.specialists?.map((i) => ({
-                      value: i.id,
-                      label: i.name,
-                    }))}
+                  ?.filter((i) => i.id === formik.values.mainCategory)[0]
+                  ?.specialists?.map((i) => ({
+                    value: i.id,
+                    label: i.name,
+                  }))}
                 name="subCategory"
                 placeholder="Select secondary category"
                 className="w-[300px]"
                 disabled={
-                    formik.values.mainCategory === "" ||
-                    formik.values.mainCategory == null
+                  formik.values.mainCategory === "" ||
+                  formik.values.mainCategory == null
                 }
                 value={formik.values.secondaryCategory ?? ""}
                 onValueChange={(value) => {
@@ -182,18 +188,18 @@ export function StepOne() {
                 }}
                 error={
                   formik.touched.secondaryCategory
-                      ? formik.errors.secondaryCategory
-                      : undefined
+                    ? formik.errors.secondaryCategory
+                    : undefined
                 }
-            />
-            {/*<ArrowRight />*/}
-          </div>
-          <div>
-            <h2 className="text-black font-primary font-bold text-[25px] text-center pt-24 pb-11">
-              Who is the provider for this service?
-            </h2>
-            <div className="flex w-full justify-center">
-              <ComboBoxWithManualSearch
+              />
+              {/*<ArrowRight />*/}
+            </div>
+            <div>
+              <h2 className="text-black font-primary font-bold text-[25px] text-center pt-24 pb-11">
+                Who is the provider for this service?
+              </h2>
+              <div className="flex w-full justify-center">
+                <ComboBoxWithManualSearch
                   items={providers?.data?.map((i) => ({
                     value: i.id,
                     label: i.name,
@@ -205,13 +211,12 @@ export function StepOne() {
                   onChange={(value) => formik.setFieldValue("provider", value)}
                   value={formik.values.provider}
                   error={formik.errors.provider}
-              />
+                />
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
-
-
-    </div>
+          </form>
+        </div>
+      {/*</div>*/}
+    </ServiceEditorLayout>
   )
 }
