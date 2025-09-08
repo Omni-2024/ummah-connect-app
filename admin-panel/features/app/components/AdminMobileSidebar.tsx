@@ -4,7 +4,7 @@ import { X, Shield } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import Button from "@/components/base/button"
-import { navigation } from "./navigation"
+import { navigation } from "../../../lib/navigation"
 import AdminSidebarFooter from "./AdminSidebarFooter"
 
 export default function AdminMobileSidebar({
@@ -26,7 +26,7 @@ export default function AdminMobileSidebar({
       />
       <div className="fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border flex flex-col">
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/admin-panel/public" className="flex items-center space-x-2">
             <div className="h-8 w-8 rounded-lg bg-destructive flex items-center justify-center">
               <Shield className="h-4 w-4 text-destructive-foreground" />
             </div>

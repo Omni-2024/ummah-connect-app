@@ -197,9 +197,9 @@
 
 "use client"
 import { useState } from "react"
-import AdminSidebar from "@/components/AdminSidebar"
-import AdminMobileSidebar from "@/components/AdminMobileSidebar"
-import AdminTopbar from "@/components/AdminTopbar"
+import AdminSidebar from "@/features/app/components/AdminSidebar"
+import AdminMobileSidebar from "@/features/app/components/AdminMobileSidebar"
+import AdminTopbar from "@/features/app/components/AdminTopbar"
 
 export default function AdminDashboardLayout({
   children,
