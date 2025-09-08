@@ -5,7 +5,7 @@ import {
     type QueryKey,
     type QueryFilters, QueryClientProvider,
 } from "@tanstack/react-query";
-import Toaster from "@/components/base/Toast";
+import Toaster from "@/components/base/toast";
 
 
 export const queryClient = new QueryClient({
@@ -36,7 +36,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                 <Toaster />
 
                 {children}
-                {/*<ReactQueryDevtools initialIsOpen={false} />*/}
             </QueryClientProvider>
     );
 }
