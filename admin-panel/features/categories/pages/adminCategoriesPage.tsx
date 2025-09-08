@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import { Plus, FolderOpen } from "lucide-react";
 import { useCategoriesState } from "@/features/categories/context/useCategoryState";
 import { addCategoryFn } from "@/lib/endpoints/categoriesFns";

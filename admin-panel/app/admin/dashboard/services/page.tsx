@@ -1,23 +1,24 @@
 "use client"
 import { useServiceState } from "@/features/services/context/useServiceState";
 import { useServices } from "@/hooks/useServices";
-import { GetAllServiceParams } from "@/lib/endpoints/serviceFns";
+import {GetAllServiceParams} from "@/lib/endpoints/serviceFns";
 import { useEffect, useMemo, useState } from "react";
 import FilterTabs from "@/components/base/FilterTabs";
 import { ServicesPageTabs, ServicesPageTabTiles } from "@/lib/types/tabs";
 import Input from "@/components/base/form/Input";
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import { Setting4 } from "iconsax-react";
 import AdvancedPagination from "@/components/widget/advancedPagination";
 import { ListEmptyStateWithFilters } from "@/components/widget/listEmptyStateWithFilters";
 import ServiceFilter, { ServiceCategoryFilterData } from "@/features/services/component/popups/serviceFilter";
 import FilterSheet from "@/components/widget/filterSheet";
 import DivRenderer from "@/components/widget/renderDivs";
-import { CreateGigWizard } from "@/features/services/component/create-gig-wizard";
-import CourseCardSkeletonList from "@/features/services/component/skeleton/serviceCardSkeleton";
-import { Card, CardContent } from "@/components/ui/card";
-import {Edit, Eye, Plus, Trash2} from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/base/card";
+import {Plus} from "lucide-react";
+import {useRouter} from "next/navigation";
+import ServiceCardSkeletonList from "@/features/services/component/skeleton/serviceCardSkeleton";
+import ServiceCard from "@/features/services/component/cards/ServiceCard";
+
 
 
 
@@ -25,6 +26,7 @@ const ITEMS_PER_PAGE = 11;
 
 
 export default function AdminGigsPage() {
+    const router=useRouter()
     const [selectedTab, setSelectedTab] = useState(ServicesPageTabs.Published);
     const [tabPublished, setTabPublished] = useState<Boolean>(true);
 
@@ -38,16 +40,9 @@ export default function AdminGigsPage() {
     const [currentPage, setCurrentPage] = useState(1);
 
 
-    const [showCreateWizard, setShowCreateWizard] = useState(false)
-
-
-
-
     const {
         limit,
         offset,
-        cmeUp,
-        cmeDown,
         search,
         setOffset,
         setSearch,
@@ -55,8 +50,6 @@ export default function AdminGigsPage() {
         setIsPublished,
         providers,
         setProviders,
-        setCMEUp,
-        setCMEDown,
         setProfession,
         setSpecialist,
         specialist,
@@ -72,8 +65,6 @@ export default function AdminGigsPage() {
             ({
                 limit: ITEMS_PER_PAGE,
                 offset: calculateOffset(currentPage),
-                cmeUp,
-                cmeDown,
                 search,
                 isPublished,
                 providers,
@@ -82,8 +73,6 @@ export default function AdminGigsPage() {
             }) as GetAllServiceParams,
         [
             currentPage,
-            cmeUp,
-            cmeDown,
             search,
             isPublished,
             providers,
@@ -97,7 +86,10 @@ export default function AdminGigsPage() {
         refetch: refetchServices,
     } = useServices(serviceParams);
 
-    console.log("Nan", services?.data)
+
+
+
+
 
     const totalServices = services?.meta?.total || 0;
 
@@ -113,10 +105,22 @@ export default function AdminGigsPage() {
         providers,
         profession,
         specialist,
-        cmeUp,
-        cmeDown,
         setOffset,
     ]);
+
+    useEffect(() => {
+        if (services?.data.length === 0 && currentPage > 1) {
+            const newPage = Math.min(currentPage - 1, totalPages);
+            setCurrentPage(newPage);
+            setOffset((newPage - 1) * limit);
+        }
+    }, [services?.data.length, currentPage, totalPages, limit, setOffset]);
+
+    const handlePageChange = (newPage: number) => {
+        const validPage = Math.min(newPage, totalPages);
+        setCurrentPage(validPage);
+        setOffset(calculateOffset(validPage));
+    };
 
     const onChangeSearch = (search: string) => {
         setSearchTerm(search);
@@ -126,16 +130,6 @@ export default function AdminGigsPage() {
         setOffset(0);
         setSearch(searchTerm);
     };
-
-    const handlePageChange = (newPage: number) => {
-        const validPage = Math.min(newPage, totalPages);
-        setCurrentPage(validPage);
-        setOffset(calculateOffset(validPage));
-    };
-
-    // useEffect(() => {
-    //     return clearFilters(false);
-    // }, []);
 
     const handleFilters = () => {
         setCurrentPage(1);
@@ -161,7 +155,6 @@ export default function AdminGigsPage() {
         setSearch("");
         setIsPublished(true);
         setProviders([]);
-        setCMEDown(0);
         setProfession("");
         setSpecialist([]);
         setSearchTerm("");
@@ -179,7 +172,6 @@ export default function AdminGigsPage() {
 
     const handleDeleteGig = (gigId: string) => {
         if (confirm("Are you sure you want to delete this gig?")) {
-            // TODO: Implement delete service function
             console.log("Delete service:", gigId)
         }
     }
@@ -192,10 +184,10 @@ export default function AdminGigsPage() {
                     onTabChange={(tab) => {
                         setSelectedTab(tab as ServicesPageTabs);
                         if (tab === ServicesPageTabs.Published) {
-                            setIsPublished(true); // Set to true for Published tab
+                            setIsPublished(true);
                             setTabPublished(true);
                         } else {
-                            setIsPublished(false); // Set to false for Draft tab
+                            setIsPublished(false);
                             setTabPublished(false);
                         }
                     }}
@@ -245,95 +237,36 @@ export default function AdminGigsPage() {
                 </div>
             )}
 
-            <Card
-                className="border-2 border-dashed border-gray-300 hover:border-[#669f9d] cursor-pointer transition-colors bg-white"
-                onClick={()=>setShowCreateWizard(true)}
-            >
-                <CardContent className="flex flex-col items-center justify-center h-80 text-center">
-                    <div className="w-16 h-16 bg-cyan-50 rounded-full flex items-center justify-center mb-4">
-                        <Plus className="h-8 w-8 text-[#669f9d] to-[#337f7c]" />
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Add new gig</h3>
-                    <p className="text-gray-500 text-sm">Create a new service offering</p>
-                </CardContent>
-            </Card>
+
 
             <div className="grid grid-cols-[repeat(auto-fit,_minmax(377px,1fr))] gap-4 px-5 py-3 ">
-                {tabPublished && showCreateWizard && (
-                    // <AddNewCard
-                    //     name="new course"
-                    //     type={AddNewCardType.Link}
-                    //     link="/courses/create"
-                    // />
-                    <CreateGigWizard onClose={() => setShowCreateWizard(false)} />
+                {tabPublished && (
+                    <Card
+                        className="border-2 border-dashed border-gray-300 hover:border-[#669f9d] cursor-pointer transition-colors bg-white"
+                        onClick={()=>router.push("/admin/dashboard/services/create")}
+                    >
+                        <CardContent className="flex flex-col items-center justify-center h-80 text-center">
+                            <div className="w-16 h-16 bg-cyan-50 rounded-full flex items-center justify-center mb-4">
+                                <Plus className="h-8 w-8 text-[#669f9d] to-[#337f7c]" />
+                            </div>
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">Add new gig</h3>
+                            <p className="text-gray-500 text-sm">Create a new service offering</p>
+                        </CardContent>
+                    </Card>
                 )}
                 {isLoading || !services ? (
-                    <CourseCardSkeletonList />
+                    <ServiceCardSkeletonList />
                 ) : (
                     services?.data.map((service) => (
-                        // <CourseCard
-                        //     key={course.id}
-                        //     course={course}
-                        //     refetchAll={refetchCourses}
-                        // />
-                        <Card key={service.id} className="bg-white border border-gray-200 hover:shadow-lg transition-shadow">
-                            <CardContent className="p-0">
-                                {/* Service Image */}
-                                <div className="relative">
-                                    <img
-                                        src={`/abstract-geometric-shapes.png?height=192&width=300&query=${encodeURIComponent(service.title)}`}
-                                        alt={service.title}
-                                        className="w-full h-48 object-cover rounded-t-lg"
-                                    />
-                                    <div className="absolute top-3 right-3 flex gap-2">
-                                        <Button size="icon" variant="secondary" className="h-8 w-8 bg-white/90 hover:bg-white">
-                                            <Eye className="h-4 w-4" />
-                                        </Button>
-                                        <Button size="icon" variant="secondary" className="h-8 w-8 bg-white/90 hover:bg-white">
-                                            <Edit className="h-4 w-4" />
-                                        </Button>
-                                        <Button
-                                            size="icon"
-                                            variant="secondary"
-                                            className="h-8 w-8 bg-white/90 hover:bg-white text-red-600"
-                                            onClick={() => handleDeleteGig(service.id)}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                    {/* Provider Avatar */}
-                                    <div className="absolute bottom-3 left-3">
-                                        <img
-                                            src={`/abstract-geometric-shapes.png?height=40&width=40&query=${encodeURIComponent(service.professionId + " avatar")}`}
-                                            alt={service.professionId}
-                                            className="w-10 h-10 rounded-full border-2 border-white"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Service Details */}
-                                <div className="p-4">
-                                    <Badge variant="secondary" className="text-xs mb-2 bg-gray-100 text-gray-700">
-                                        {service.specialtyId}
-                                    </Badge>
-                                    <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{service.title}</h3>
-                                    <p className="text-gray-600 text-sm mb-2">{service.professionId}</p>
-                                    <div className="flex items-center justify-between text-sm text-gray-500">
-                                        <span>Duration: {service.duration || "N/A"}</span>
-                                        <span className="font-medium text-gray-900">
-                                            {service.price ? `$${service.price}` : "Contact for price"}
-                                        </span>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
+                        <ServiceCard
+                          key={service.id}
+                          service={service}
+                          refetchAll={refetchServices}
+                        />
                     ))
                 )}
                 <DivRenderer />
             </div>
-
-
 
             {services?.data.length === 0 && (
                 <ListEmptyStateWithFilters

@@ -172,7 +172,7 @@
 //                 <Bell className="h-5 w-5" />
 //               </Button>
 //               <div className="h-6 w-px bg-border" />
-//               {isAuthenticated && 
+//               {isAuthenticated &&
 //               <div className="flex items-center space-x-2">
 //                 <div className="h-8 w-8 rounded-full bg-destructive/10 flex items-center justify-center">
 //                   <Shield className="h-4 w-4 text-destructive" />
@@ -180,7 +180,7 @@
 //                 <span className="text-sm font-medium text-foreground">{role}</span>
 //               </div>
 //               }
-              
+
 //             </div>
 //           </div>
 //         </div>

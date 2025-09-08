@@ -23,8 +23,6 @@ export class ServiceDetailService {
       if (service instanceof Service) {
         const {
           averageReviewScore,
-          cmeId,
-          cmePoints,
           coverImageUrl,
           description,
           discount,
@@ -50,7 +48,6 @@ export class ServiceDetailService {
           tagline,
           description,
           coverImageUrl,
-          cmePoints,
           provider: {
             id: '',
             name: '',
@@ -59,7 +56,6 @@ export class ServiceDetailService {
             profileImageUrl: '',
           },
           price,
-          cmeId,
           totalReviewScore,
           totalReviewCount,
           averageReviewScore,
@@ -110,8 +106,6 @@ export class ServiceDetailService {
       if (service instanceof Service) {
         const {
           averageReviewScore,
-          cmeId,
-          cmePoints,
           coverImageUrl,
           description,
           discount,
@@ -137,7 +131,6 @@ export class ServiceDetailService {
           tagline,
           description,
           coverImageUrl,
-          cmePoints,
           provider: {
             id: '',
             name: '',
@@ -146,7 +139,6 @@ export class ServiceDetailService {
             profileImageUrl: '',
           },
           price,
-          cmeId,
           totalReviewScore,
           totalReviewCount,
           averageReviewScore,

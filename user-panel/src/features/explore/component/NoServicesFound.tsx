@@ -1,7 +1,7 @@
 import Button from "@/components/base/Button";
 import Image from "next/image";
 import React from "react";
-import {useExploreState} from "@/features/explore/context/exploreState";
+import {useExploreState} from "@/features/explore/context/useExploreState";
 
 type NoServicesFoundProps = {
   onExploreMoreServices: () => void;

@@ -3,7 +3,7 @@
 import React from "react";
 import { ChevronDownIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import { useExploreState } from "@/features/explore/context/exploreState";
+import { useExploreState } from "@/features/explore/context/useExploreState";
 import type { CategoryData } from "@/types";
 
 type ExploreDropDownProps = {

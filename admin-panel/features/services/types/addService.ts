@@ -13,9 +13,6 @@ export type ServiceDetailsPageData = {
   pricing: number;
   discount: number;
   discountOn: boolean;
-  cmePoints: number;
-  cmdId: string;
-  duration: number;
 };
 
 export type addPageActions = {
@@ -31,7 +28,6 @@ export interface ServiceDetailsAPI {
   description: string;
   coverImageUrl: string;
 
-  cmePoints: number;
   provider: {
     id: string;
     createdAt: string;
@@ -44,7 +40,6 @@ export interface ServiceDetailsAPI {
     profileImageUrl: string;
   };
   price: number;
-  cmeId: string;
   totalReviewScore: string;
   totalReviewCount: string;
   averageReviewScore: string;

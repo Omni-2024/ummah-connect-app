@@ -53,6 +53,7 @@
     "crypto-js": "^4.2.0",
     "date-fns": "4.1.0",
     "embla-carousel-react": "8.5.1",
+    "formik": "^2.4.6",
     "framer-motion": "^12.23.12",
     "geist": "latest",
     "iconsax-react": "^0.0.8",
@@ -63,6 +64,7 @@
     "react": "^19",
     "react-day-picker": "9.8.0",
     "react-dom": "^19",
+    "react-dropzone": "^14.3.8",
     "react-hook-form": "^7.60.0",
     "react-hot-toast": "^2.6.0",
     "react-resizable-panels": "^2.1.7",
@@ -77,6 +79,7 @@
     "vaul": "^1.1.2",
     "vue": "latest",
     "vue-router": "latest",
+    "yup": "^1.7.0",
     "zod": "3.25.67"
   },
   "devDependencies": {

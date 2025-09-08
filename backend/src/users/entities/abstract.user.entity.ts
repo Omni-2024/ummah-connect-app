@@ -40,9 +40,9 @@ export declare abstract class AbstractUserEntity extends AbstractBaseEntity {
   contactNumber:string;
   averageScore: number;
   totalCme: number;
-  totalCourses: number;
-  totalCoursesCompleted: number;
-  totalActiveCourses: number;
+  totalServices: number;
+  totalServicesCompleted: number;
+  totalActiveServices: number;
   isFirstLogin: boolean;
   signinMethod: SigninMethod;
   otp: string;

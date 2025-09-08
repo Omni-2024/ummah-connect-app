@@ -9,8 +9,6 @@ export interface GetAllServiceParams {
   provider?: string;
   profession?: string;
   specialties?: string[];
-  cmeUp?: number;
-  cmeDown?: number;
   isPublished?: boolean;
   providers?: string[];
 }
@@ -85,11 +83,9 @@ export interface CreateServiceFnArgs {
   title: string;
   tagline: string;
   description: string;
-  cmePoints: number;
   coverImageUrl: string;
   providerId: string;
   price: number;
-  cmeId: string | null;
   specialtyId?: string | null;
   professionId: string;
   learningPoints: string[];
@@ -117,11 +113,9 @@ export interface UpdateServiceFnArgs {
   title?: string;
   tagline?: string;
   description?: string;
-  cmePoints?: number;
   coverImageUrl?: string;
   providerId?: string;
   price?: number;
-  cmeId?: string | null;
   specialtyId?: string | null;
   professionId?: string | null;
   learningPoints?: string[];
@@ -146,9 +140,6 @@ type GetAllServicesData = {
     pricing: number;
     discount: number;
     discountOn: boolean;
-    cmePoints: number;
-    cmdId: string;
-    duration: number;
   };
 };
 
@@ -177,8 +168,6 @@ export const getServiceFullDataFn = async (
     pricing: serviceDetails.data.price,
     discount: serviceDetails.data.discount,
     discountOn: serviceDetails.data.discountEnabled,
-    cmePoints: serviceDetails.data.cmePoints,
-    cmdId: serviceDetails.data.cmeId,
     duration: serviceDetails.data.duration,
   };
 

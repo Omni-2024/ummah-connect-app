@@ -11,7 +11,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/base/alert-dialog"
 import { Loader2 } from "lucide-react"
 
 interface RemoveDialogProps {

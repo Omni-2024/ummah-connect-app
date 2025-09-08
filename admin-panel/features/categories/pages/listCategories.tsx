@@ -8,10 +8,10 @@ import {
     AccordionItem,
     AccordionTrigger,
     AccordionContent,
-} from "@/components/ui/accordion";
-import { Card, CardContent } from "@/components/ui/card";
-import Button from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+} from "@/components/base/accordion";
+import { Card, CardContent } from "@/components/base/card";
+import Button from "@/components/base/button";
+import { Badge } from "@/components/base/badge";
 import { Plus, Users, GripVertical } from "lucide-react";
 import { Edit, Trash } from "iconsax-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";

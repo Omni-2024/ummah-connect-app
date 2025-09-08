@@ -1,16 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/components/base/checkbox";
 import Label from "@/components/base/form/Label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/base/radio-group";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/base/rawAccordion";
-import { Slider } from "@/components/ui/slider";
+import { Slider } from "@/components/base/slider";
 import { useServiceState } from "@/features/services/context/useServiceState";
 import { MAX_CME_POINTS } from "@/lib/constants";
 import { useCategories } from "@/lib/hooks/useCategories";

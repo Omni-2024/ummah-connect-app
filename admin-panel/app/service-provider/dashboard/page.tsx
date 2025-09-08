@@ -1,8 +1,8 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/base/card"
+import { Button } from "@/components/base/button"
+import { Badge } from "@/components/base/badge"
 import Link from "next/link"
 import { Plus, TrendingUp, Users, Star, DollarSign, Eye, MessageSquare, Briefcase, User } from "lucide-react"
 

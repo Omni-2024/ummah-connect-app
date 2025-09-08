@@ -1,6 +1,6 @@
 "use client"
 import withAuth from "@/components/withAuth";
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import Input from "@/components/base/form/Input";
 import { useRef, useState } from "react";
 import { ADMIN_ROLES } from "@/lib/constants";
