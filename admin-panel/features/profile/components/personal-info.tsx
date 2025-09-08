@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Button from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card"
+import Button from "@/components/base/button"
+import  Input  from "@/components/base/form/Input"
+import Label  from "@/components/base/form/Label"
+import  Textarea  from "@/components/base/form/Textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/base/select"
 import { Save, User, Mail, Calendar } from "lucide-react"
 
 export function PersonalInfo() {

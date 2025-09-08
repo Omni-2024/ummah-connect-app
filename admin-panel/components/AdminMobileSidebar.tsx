@@ -3,7 +3,7 @@ import Link from "next/link"
 import { X, Shield } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import Button from "@/components/ui/button"
+import Button from "@/components/base/button"
 import { navigation } from "./navigation"
 import AdminSidebarFooter from "./AdminSidebarFooter"
 

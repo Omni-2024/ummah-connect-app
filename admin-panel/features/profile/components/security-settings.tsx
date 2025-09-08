@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Button from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/base/card"
+import Button from "@/components/base/button"
+import { Input } from "@/components/base/input"
+import { Label } from "@/components/base/label"
+import  Switch  from "@/components/base/switch"
+import { Badge } from "@/components/base/badge"
 import { Shield, Key, Smartphone, AlertTriangle, Eye, EyeOff } from "lucide-react"
 
 export function SecuritySettings() {

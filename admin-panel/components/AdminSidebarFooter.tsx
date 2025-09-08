@@ -1,7 +1,7 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import Button from "@/components/ui/button";
+import Button from "@/components/base/button";
 import { useAuthState } from "@/features/auth/context/useAuthState";
 import { useCurrentUser } from "@/lib/hooks/useUserInfo";
 import { useRouter } from "next/navigation";

@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import Button from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/base/card"
+import Button from "@/components/base/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar"
+import { Badge } from "@/components/base/badge"
 import { Camera, Edit3, Shield, Star } from "lucide-react"
 
 export function ProfileHeader() {

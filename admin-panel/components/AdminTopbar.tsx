@@ -1,6 +1,6 @@
 "use client"
 import { Menu, Bell, Shield } from "lucide-react"
-import Button from "@/components/ui/button"
+import Button from "@/components/base/button"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useEffect, useState } from "react"
 

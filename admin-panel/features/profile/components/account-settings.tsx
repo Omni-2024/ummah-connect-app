@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import Button from "@/components/ui/button"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/base/card"
+import Button from "@/components/base/button"
+import  Switch  from "@/components/base/switch"
+import { Label } from "@/components/base/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/base/select"
+import { Badge } from "@/components/base/badge"
 import { Settings, Moon, Sun, Monitor, Palette, Database } from "lucide-react"
 
 export function AccountSettings() {

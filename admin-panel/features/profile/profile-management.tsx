@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/base/card"
 import { ProfileHeader } from "./components/profile-header"
 import { PersonalInfo } from "./components/personal-info"
 import { AccountSettings } from "./components/account-settings"

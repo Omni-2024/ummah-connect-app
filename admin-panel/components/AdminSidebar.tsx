@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Card } from "@/components/ui/card"
+import { Card } from "@/components/base/card"
 import { Shield } from "lucide-react"
 import { navigation } from "./navigation"
 import AdminSidebarFooter from "./AdminSidebarFooter"
