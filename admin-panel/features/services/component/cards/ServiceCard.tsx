@@ -1,26 +1,27 @@
-import {Card, CardContent} from "@/components/base/card";
+import { Card, CardContent } from "@/components/base/card";
 import envs from "@/lib/env";
 import Button from "@/components/base/button";
-import {Edit, Trash,Expand} from "lucide-react";
+import { Edit, Trash, Expand } from "lucide-react";
 import LinkButton from "@/components/base/LinkButton";
 import RemoveServiceDialog from "@/components/widget/removeServiceDialog";
 // import {Export, Trash} from "iconsax-react";
-import {Badge} from "@/components/base/badge";
-import {archiveServiceFn, Service} from "@/lib/endpoints/serviceFns";
-import {useGeneralUser} from "@/lib/hooks/useGeneralUsers";
-import {useMutation} from "@tanstack/react-query";
-import {Toast} from "@/components/base/toast";
-import {useState} from "react";
+import { Badge } from "@/components/base/badge";
+import { archiveServiceFn, Service } from "@/lib/endpoints/serviceFns";
+import { useGeneralUser } from "@/lib/hooks/useGeneralUsers";
+import { useMutation } from "@tanstack/react-query";
+import { Toast } from "@/components/base/toast";
+import { useState } from "react";
+import { useProfession } from "@/hooks/useProfessions";
 
 type ServiceCardProps = {
     service: Service;
     refetchAll: () => void;
 };
 
-const ProviderAvatar=({ providerId, alt }: { providerId: string; alt?: string })=>{
+const ProviderAvatar = ({ providerId, alt }: { providerId: string; alt?: string }) => {
     const { data: provider, isLoading } = useGeneralUser(providerId);
 
-    console.log("ttt",provider)
+    console.log("ttt", provider)
 
     const src = provider?.profileImage
         ? `${envs.imageBaseUrl}/${provider.profileImage}`
@@ -40,6 +41,9 @@ const ProviderAvatar=({ providerId, alt }: { providerId: string; alt?: string })
 const ServiceCard: React.FC<ServiceCardProps> = (props) => {
     const [imageError, setImageError] = useState(false);
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
+    const { data: provider } = useGeneralUser(props.service.providerId);
+    const { data: profession } = useProfession(props.service.professionId);
+
 
     const { mutate: softDeleteService, isPending: isSoftDeleteLoading } = useMutation({
         mutationFn: () => archiveServiceFn(props.service.id),
@@ -64,6 +68,11 @@ const ServiceCard: React.FC<ServiceCardProps> = (props) => {
             Toast.error("Failed to hard delete service");
         },
     });
+
+    const discountedPrice = props.service.discountEnabled
+        ? props.service.price - (props.service.price * props.service.discount) / 100
+        : props.service.price;
+
 
 
     return (
@@ -94,7 +103,7 @@ const ServiceCard: React.FC<ServiceCardProps> = (props) => {
                             className="w-10 px-0 shrink-0 rounded-lg border border-primary-500 text-primary-500"
                             title="View Service"
                         >
-                            <Expand  className="h-4 w-4" />
+                            <Expand className="h-4 w-4" />
                         </LinkButton>
                         <RemoveServiceDialog
                             enrollmentCount={props.service.enrollmentCount}
@@ -110,7 +119,7 @@ const ServiceCard: React.FC<ServiceCardProps> = (props) => {
                                 onClick={() => setRemoveDialogOpen(true)}
                                 title="Remove Service"
                             >
-                                <Trash  className="h-4 w-4" />
+                                <Trash className="h-4 w-4" />
                             </Button>
                         </RemoveServiceDialog>
                     </div>
@@ -123,15 +132,22 @@ const ServiceCard: React.FC<ServiceCardProps> = (props) => {
                 {/* Service Details */}
                 <div className="p-4">
                     <Badge variant="secondary" className="text-xs mb-2 bg-gray-100 text-gray-700">
-                        {props.service.specialtyId}
+                        {profession?.name}
                     </Badge>
                     <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">{props.service.title}</h3>
-                    <p className="text-gray-600 text-sm mb-2">{props.service.professionId}</p>
+                    <p className="text-gray-600 text-sm mb-2">{provider?.name}</p>
                     <div className="flex items-center justify-between text-sm text-gray-500">
-                        <span>Duration: {props.service.duration || "N/A"}</span>
-                        <span className="font-medium text-gray-900">
-                                            {props.service.price ? `$${props.service.price}` : "Contact for price"}
-                                        </span>
+                        <span>Enrollment count: {props.service.enrollmentCount || "N/A"}</span>
+                        <div className="flex items-baseline gap-2 mb-2">
+                            <span className="text-xl font-bold text-gray-900">
+                                ${discountedPrice}
+                            </span>
+                            {props.service.discountEnabled && (
+                                <span className="text-lg text-gray-400 line-through">
+                                    ${props.service.price}
+                                </span>
+                            )}
+                        </div>
                     </div>
                 </div>
             </CardContent>
