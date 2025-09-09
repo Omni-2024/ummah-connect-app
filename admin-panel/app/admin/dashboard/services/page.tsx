@@ -249,7 +249,7 @@ export default function AdminGigsPage() {
                             <div className="w-16 h-16 bg-cyan-50 rounded-full flex items-center justify-center mb-4">
                                 <Plus className="h-8 w-8 text-[#669f9d] to-[#337f7c]" />
                             </div>
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">Add new gig</h3>
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">Add new service</h3>
                             <p className="text-gray-500 text-sm">Create a new service offering</p>
                         </CardContent>
                     </Card>
