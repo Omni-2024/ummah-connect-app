@@ -4,6 +4,7 @@ import { ServiceRepository } from './service.repository';
 import { Service } from './entities/service.entity';
 import { ProfessionRepository } from '../categories/profession/profession.repository';
 import { SpecialistRepository } from '../categories/specialist/specialist.repository';
+import { ProviderRepository } from '../providers/providers.repository';
 
 
 @Injectable()
@@ -11,7 +12,8 @@ export class ServiceDetailService {
   constructor(
     private readonly serviceRepo: ServiceRepository,
     private readonly professionRepo:ProfessionRepository,
-    private readonly specialistRepo:SpecialistRepository
+    private readonly specialistRepo:SpecialistRepository,
+    private readonly providerRepo:ProviderRepository
 
   ) {}
 
@@ -51,9 +53,9 @@ export class ServiceDetailService {
           provider: {
             id: '',
             name: '',
-            designation: '',
+            designations: [],
             bio: '',
-            profileImageUrl: '',
+            profileImage: '',
           },
           price,
           totalReviewScore,
@@ -69,10 +71,10 @@ export class ServiceDetailService {
           isArchived
         };
 
-        // const educator = await this.educatorRepo.findOne({ id: educatorId });
-        // if (educator) {
-        //   serviceDetail.educator = { ...educator };
-        // }
+        const provider = await this.providerRepo.findOneById(providerId);
+        if (provider) {
+          serviceDetail.provider = { ...provider };
+        }
 
         const profession = await this.professionRepo.findOne({
           id: professionId,
@@ -134,9 +136,9 @@ export class ServiceDetailService {
           provider: {
             id: '',
             name: '',
-            designation: '',
+            designations: [],
             bio: '',
-            profileImageUrl: '',
+            profileImage: '',
           },
           price,
           totalReviewScore,
@@ -152,10 +154,10 @@ export class ServiceDetailService {
           isArchived
         };
 
-        // const educator = await this.educatorRepo.findOne({ id: educatorId });
-        // if (educator) {
-        //   courseDetail.educator = { ...educator };
-        // }
+        const provider = await this.providerRepo.findOneById(providerId);
+        if (provider) {
+          serviceDetail.provider = { ...provider };
+        }
 
         const profession = await this.professionRepo.findOne({
           id: professionId,

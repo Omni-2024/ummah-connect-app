@@ -15,6 +15,7 @@ import Selector from "@/components/widget/selector";
 import ComboBoxWithManualSearch from "@/components/widget/ComboboxWithManualSearch";
 import ServiceEditorLayout from "@/features/services/layouts/ServiceEditorPageLayout";
 import { createServicePages } from "@/features/services/constants/createServicePages";
+import {useGeneralProviders} from "@/lib/hooks/useGeneralProviders";
 
 
 
@@ -45,28 +46,14 @@ export function StepOne() {
     isError: providersError,
     error: providersErrorData,
     refetch: refetchProviders,
-  } = useGeneralUsers(
+  } = useGeneralProviders(
     {
       search,
       limit: 20,
       offset: 0
-    }
+    },
+    true
   )
-
-  // const {
-  //   data: educators,
-  //   isLoading: educatorsLoading,
-  //   isError: educatorsError,
-  //   error: educatorsErrorData,
-  //   refetch: refetchEducators,
-  // } = useProviders(
-  //     {
-  //       search,
-  //       limit: 20,
-  //       offset: 0,
-  //     },
-  //     true
-  // );
 
   const formik = useFormik({
     initialValues: {
