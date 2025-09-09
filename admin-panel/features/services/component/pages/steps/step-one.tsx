@@ -15,6 +15,7 @@ import Selector from "@/components/widget/selector";
 import ComboBoxWithManualSearch from "@/components/widget/ComboboxWithManualSearch";
 import ServiceEditorLayout from "@/features/services/layouts/ServiceEditorPageLayout";
 import { createServicePages } from "@/features/services/constants/createServicePages";
+import {useGeneralProviders} from "@/lib/hooks/useGeneralProviders";
 
 
 
@@ -45,28 +46,14 @@ export function StepOne() {
     isError: providersError,
     error: providersErrorData,
     refetch: refetchProviders,
-  } = useGeneralUsers(
+  } = useGeneralProviders(
     {
       search,
       limit: 20,
       offset: 0
-    }
+    },
+    true
   )
-
-  // const {
-  //   data: educators,
-  //   isLoading: educatorsLoading,
-  //   isError: educatorsError,
-  //   error: educatorsErrorData,
-  //   refetch: refetchEducators,
-  // } = useProviders(
-  //     {
-  //       search,
-  //       limit: 20,
-  //       offset: 0,
-  //     },
-  //     true
-  // );
 
   const formik = useFormik({
     initialValues: {
@@ -142,7 +129,7 @@ export function StepOne() {
 
         <div className="min-h-[300px] mb-24">
           <h2 className="text-black font-primary font-bold text-[25px] text-center pt-12 pb-11">
-            Which categories best describe your course?
+            Which categories best describe your service?
           </h2>
           <form onSubmit={formik.handleSubmit}>
             <div className="flex justify-center items-center gap-5 w-full">

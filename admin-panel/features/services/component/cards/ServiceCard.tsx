@@ -23,7 +23,7 @@ const ProviderAvatar=({ providerId, alt }: { providerId: string; alt?: string })
     console.log("ttt",provider)
 
     const src = provider?.profileImage
-        ? `${provider.profileImage}`
+        ? `${envs.imageBaseUrl}/${provider.profileImage}`
         : "/fallback-avatar.png";
 
     return (

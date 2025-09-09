@@ -1,19 +1,17 @@
 import { RegisterDto } from './dto/register.dto';
 import { UserEntity } from './entities/user.entity';
 import { ILike, Like, Repository } from 'typeorm';
-import { SigninMethod } from './entities/abstract.user.entity';
+import { SigninMethod, UserRole } from './entities/abstract.user.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
 import { PaginatedRequestDto } from './dto/base.dto';
 
-
 @Injectable()
-export  class UserRepository {
+export class UserRepository {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-
   ) {}
   async register(registerDto: RegisterDto, token: string): Promise<UserEntity> {
     try {
@@ -75,7 +73,7 @@ export  class UserRepository {
     }
   }
 
-  async setRefreshToken(userId: string, token: string ): Promise<void> {
+  async setRefreshToken(userId: string, token: string): Promise<void> {
     const result = await this.userRepository.update({ id: userId }, { token });
     if (!result.affected) {
       throw new NotFoundException('User not found');
@@ -83,10 +81,10 @@ export  class UserRepository {
   }
 
   async searchUsers({
-                      query,
-                      limit,
-                      offset,
-                    }: SearchUserDto): Promise<{ usersList: UserEntity[]; count: number }> {
+    query,
+    limit,
+    offset,
+  }: SearchUserDto): Promise<{ usersList: UserEntity[]; count: number }> {
     try {
       const options: FindOptions = {};
       if (limit && limit > 0) {
@@ -98,8 +96,14 @@ export  class UserRepository {
       const [usersList, count] = await this.userRepository.findAndCount({
         ...options,
         where: [
-          { email: Like(`%${query?.toLowerCase()}%`) },
-          { name: ILike(`%${query}%`) },
+          {
+            role: UserRole.USER,
+            email: Like(`%${query?.toLowerCase()}%`),
+          },
+          {
+            role: UserRole.USER,
+            name: ILike(`%${query}%`),
+          },
         ],
         order: {
           createdAt: 'DESC',
@@ -112,18 +116,21 @@ export  class UserRepository {
   }
 
   async getAllUsersAndCount({
-                              limit,
-                              offset,
-                            }: PaginatedRequestDto): Promise<{ usersList: UserEntity[]; count: number }> {
+    limit,
+    offset,
+  }: PaginatedRequestDto): Promise<{ usersList: UserEntity[]; count: number }> {
     try {
-      const options: FindOptions = {};
+      const options: FindOptions = {
+        order: { createdAt: 'DESC' },
+        where: { role: UserRole.USER },
+      };
       if ((limit && limit > 0) || (offset && offset > 0)) {
         options.take = limit;
         options.skip = offset;
       }
 
       options.order = {
-        createdAt: 'DESC', // Sorting by createdAt in descending order
+        createdAt: 'DESC',
       };
 
       const [usersList, count] =
@@ -133,7 +140,6 @@ export  class UserRepository {
       throw error;
     }
   }
-
 
   async retrieveUser(user: UserEntity) {
     try {
@@ -198,10 +204,6 @@ export  class UserRepository {
       throw error;
     }
   }
-
-
-
-
 }
 
 
@@ -210,5 +212,6 @@ interface FindOptions {
   skip?: number;
   order?: {
     createdAt?: 'ASC' | 'DESC';
-  }
+  };
+  where?: any;
 }

@@ -158,12 +158,13 @@ export class ProviderDto {
 
   name: string;
 
-  designation: string;
+  @IsArray()
+  designations: string[];
 
   @IsOptional()
   bio: string;
 
-  profileImageUrl: string;
+  profileImage: string;
 }
 
 

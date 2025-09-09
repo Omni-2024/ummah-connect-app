@@ -99,14 +99,14 @@ const ProfileDropdown = ({
                 </div>
               </button>
               <button
-                onClick={() => { router.push("/dashboard"); setProfileDropdownOpen(false); }}
+                onClick={() => { router.push("/my-purchases"); setProfileDropdownOpen(false); }}
                 className="flex items-center w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-emerald-600 transition-colors duration-200 group"
               >
                 <div className="w-8 h-8 rounded-lg bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center mr-3 transition-colors duration-200">
                   <DashboardIcon className="w-4 h-4 text-slate-600 group-hover:text-emerald-600" />
                 </div>
                 <div>
-                  <div className="font-medium">Dashboard</div>
+                  <div className="font-medium">My Purchases</div>
                   <div className="text-xs text-slate-500">Learning progress</div>
                 </div>
               </button>
