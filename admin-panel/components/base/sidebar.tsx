@@ -7,7 +7,7 @@ import { PanelLeftIcon } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/base/button"
+import  Button  from "@/components/base/button"
 import { Input } from "@/components/base/input"
 import { Separator } from "@/components/base/separator"
 import {
@@ -264,7 +264,7 @@ function SidebarTrigger({
     <Button
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
-      variant="ghost"
+      variant="primary"
       size="icon"
       className={cn("size-7", className)}
       onClick={(event) => {

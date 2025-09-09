@@ -1,4 +1,4 @@
-import {CategoryData, Profession} from "@/types";
+import {CategoryData} from "@/types";
 import Request from "@/lib/http";
 
 /** Get - '/category' - get all categories */

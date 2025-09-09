@@ -17,6 +17,7 @@ export function ProfileManagement() {
     { id: "security", label: "Security", component: SecuritySettings },
     { id: "notifications", label: "Notifications", component: NotificationPreferences },
   ]
+  const userId = "some-user-id";
 
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component || PersonalInfo
 
@@ -53,7 +54,7 @@ export function ProfileManagement() {
           </div>
         </CardHeader>
         <CardContent>
-          <ActiveComponent />
+          <ActiveComponent userId={userId}/>
         </CardContent>
       </Card>
     </div>

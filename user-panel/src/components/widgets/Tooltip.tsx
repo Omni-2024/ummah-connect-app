@@ -5,7 +5,7 @@ import {
   TooltipTrigger,
 } from "../base/Tooltip";
 import { TooltipContentProps } from "@radix-ui/react-tooltip";
-import { cn } from "@lib/className";
+import { cn } from "@/lib/className";
 
 interface Props {
   text?: string;

@@ -184,7 +184,15 @@ const SuperAdminEditService = () => {
     );
 };
 
-export default withAuth(
-    SuperAdminEditService,
-    [ADMIN_ROLES.ADMIN, ADMIN_ROLES.OPERATIONAL_ADMIN, ADMIN_ROLES.ROOT]
-);
+const Page = withAuth(SuperAdminEditService, [
+    ADMIN_ROLES.ADMIN,
+    ADMIN_ROLES.OPERATIONAL_ADMIN,
+    ADMIN_ROLES.ROOT,
+]);
+
+export default function EditServicePage(props: any) {
+    return <Page {...props} />;
+}
+
+
+

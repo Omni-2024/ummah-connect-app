@@ -80,7 +80,17 @@ const SuperAdminCreateService = () => {
 
 
 }
-export default withAuth(
-    SuperAdminCreateService,
-    [ADMIN_ROLES.ADMIN, ADMIN_ROLES.OPERATIONAL_ADMIN, ADMIN_ROLES.ROOT]
-);
+
+const Page = withAuth(SuperAdminCreateService, [
+    ADMIN_ROLES.ADMIN,
+    ADMIN_ROLES.OPERATIONAL_ADMIN,
+    ADMIN_ROLES.ROOT,
+]);
+
+export default function CreateServicePage(props: any) {
+    return <Page {...props} />;
+}
+
+
+
+

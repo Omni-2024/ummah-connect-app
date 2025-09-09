@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/base/input";
 import { Label } from "@/components/base/label";
 import Button from "@/components/base/button";
-import { Toast } from "@/components/base/Toast";
+import { Toast } from "@/components/base/toast";
 import { invalidateQueries } from "@/app/providers";
 import { useCategoriesState } from "@/features/categories/context/useCategoryState";
 

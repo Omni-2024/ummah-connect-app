@@ -2,7 +2,7 @@
 import withAuth from "@/components/withAuth";
 import Button from "@/components/base/button";
 import Input from "@/components/base/form/Input";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { ADMIN_ROLES } from "@/lib/constants";
 import ListUsers from "@/features/users/pages/listUsers";
 
@@ -55,7 +55,13 @@ const SuperAdminUsers = () => {
     );
 };
 
-export default withAuth(
-    SuperAdminUsers,
-    [ADMIN_ROLES.ADMIN, ADMIN_ROLES.OPERATIONAL_ADMIN, ADMIN_ROLES.ROOT]
-);
+const Page = withAuth(SuperAdminUsers, [
+    ADMIN_ROLES.ADMIN,
+    ADMIN_ROLES.OPERATIONAL_ADMIN,
+    ADMIN_ROLES.ROOT,
+]);
+
+export default function UsersPage(props: any) {
+    return <Page {...props} />;
+}
+

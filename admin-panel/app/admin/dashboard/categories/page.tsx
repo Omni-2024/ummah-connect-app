@@ -18,7 +18,13 @@ const  SuperAdminCategoriesDashboard=()=> {
     if (isLoading || !categories) return <CategoriesSkeletonList />;
     return <AdminCategoriesPage categories={categories} />
 }
-export default withAuth(
-    SuperAdminCategoriesDashboard,
-    [ADMIN_ROLES.ADMIN, ADMIN_ROLES.OPERATIONAL_ADMIN, ADMIN_ROLES.ROOT]
-);
+
+const Page = withAuth(SuperAdminCategoriesDashboard, [
+    ADMIN_ROLES.ADMIN,
+    ADMIN_ROLES.OPERATIONAL_ADMIN,
+    ADMIN_ROLES.ROOT,
+]);
+
+export default function CategoriesPage(props: any) {
+    return <Page {...props} />;
+}
