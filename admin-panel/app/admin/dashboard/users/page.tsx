@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { ADMIN_ROLES } from "@/lib/constants";
 import ListUsers from "@/features/users/pages/listUsers";
 
-const SuperAdminCategoriesDashboard = () => {
+const SuperAdminUsers = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -56,6 +56,6 @@ const SuperAdminCategoriesDashboard = () => {
 };
 
 export default withAuth(
-    SuperAdminCategoriesDashboard,
+    SuperAdminUsers,
     [ADMIN_ROLES.ADMIN, ADMIN_ROLES.OPERATIONAL_ADMIN, ADMIN_ROLES.ROOT]
 );

@@ -1,13 +1,11 @@
 "use client"
 
-import {useState, useEffect, useRef} from "react"
+import {useState, useRef} from "react"
 import  Button  from "@/components/base/button"
-import { Badge } from "@/components/base/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card"
-import { CheckCircle, XCircle, Clock, Mail, Phone, User } from "lucide-react"
 import Input from "@/components/base/form/Input";
-import ListUsers from "@/features/users/pages/listUsers";
 import ListProviders from "@/features/providers/pages/listProviders";
+import withAuth from "@/components/withAuth";
+import {ADMIN_ROLES} from "@/lib/constants";
 
 interface Provider {
   id: string
@@ -20,7 +18,7 @@ interface Provider {
   createdAt: string
 }
 
-export default function AdminProvidersPage() {
+const SuperAdminProviders = ()=> {
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -68,3 +66,8 @@ export default function AdminProvidersPage() {
       </div>
   );
 }
+
+export default withAuth(
+    SuperAdminProviders,
+    [ADMIN_ROLES.ADMIN, ADMIN_ROLES.OPERATIONAL_ADMIN, ADMIN_ROLES.ROOT]
+);
