@@ -1,20 +1,22 @@
-import DivRenderer from "@/components/widget/renderDivs";
-import { useEffect, useState } from "react";
-import RemoveDialog from "@/components/widget/removeDialog";
-import { useMutation } from "@tanstack/react-query";
-import { Toast } from "@/components/base/toast";
-import LoadingError from "@/components/widget/loadingError";
-import AdvancedPagination from "@/components/widget/advancedPagination";
-import { ListEmptyStateWithSearch } from "@/components/widget/ListEmptyStateWithSearch";
-import Button from "@/components/base/button";
-import { Plus } from "lucide-react";
-import { useGeneralUsers} from "@/lib/hooks/useGeneralUsers";
-import ViewUser from "@/components/popups/viewUser";
-import UserCardSkeletonList from "@/features/users/skeleton/user";
+import {useEffect, useState} from "react";
+import {useGeneralUsers} from "@/lib/hooks/useGeneralUsers";
+import {useMutation} from "@tanstack/react-query";
 import {deleteUserFn} from "@/lib/endpoints/usersFns";
+import {Toast} from "@/components/base/toast";
+import LoadingError from "@/components/widget/loadingError";
+import UserCardSkeletonList from "@/features/users/skeleton/user";
+import {ListEmptyStateWithSearch} from "@/components/widget/ListEmptyStateWithSearch";
+import Button from "@/components/base/button";
+import {Plus} from "lucide-react";
 import {UserCard} from "@/features/users/cards/userCard";
+import DivRenderer from "@/components/widget/renderDivs";
+import AdvancedPagination from "@/components/widget/advancedPagination";
+import ViewUser from "@/components/popups/viewUser";
+import RemoveDialog from "@/components/widget/removeDialog";
+import {useGeneralProviders} from "@/lib/hooks/useGeneralProviders";
+import {ProviderCard} from "@/features/providers/cards/providerCard";
 
-type ListUsersProps = {
+type ListProvidersProps = {
     search: string;
     clearSearch: () => void;
 };
@@ -26,10 +28,8 @@ enum PopupType {
     DeleteUser = "deleteUser",
     DeleteUserError = "deleteUserError",
 }
-
-const PAGE_SIZE = 10;
-
-const ListUsers: React.FC<ListUsersProps> = (props) => {
+const ListProviders: React.FC<ListProvidersProps> = (props) => {
+    const PAGE_SIZE = 10;
     const [popupType, setPopupType] = useState<PopupType | null>();
     const [selectedUser, setSelectedUser] = useState<string | null>(null);
     const [page, setPage] = useState(1);
@@ -40,7 +40,7 @@ const ListUsers: React.FC<ListUsersProps> = (props) => {
         error: userLoadingError,
         isError,
         refetch: refetchUsers,
-    } = useGeneralUsers({
+    } = useGeneralProviders({
         limit: PAGE_SIZE,
         offset: (page - 1) * PAGE_SIZE,
         search: props.search,
@@ -119,7 +119,7 @@ const ListUsers: React.FC<ListUsersProps> = (props) => {
         return (
             <div className="grid grid-cols-[repeat(auto-fit,_minmax(377px,1fr))] gap-4 py-12">
                 {userData.data.map((user) => (
-                    <UserCard
+                    <ProviderCard
                         key={user.id}
                         data={user}
                         onEdit={() => {
@@ -206,6 +206,7 @@ const ListUsers: React.FC<ListUsersProps> = (props) => {
             />
         </>
     );
-};
 
-export default ListUsers;
+}
+
+export default ListProviders;

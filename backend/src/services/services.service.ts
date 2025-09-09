@@ -95,8 +95,7 @@ export class ServiceService {
           findAllByProviderServiceDto,
         );
         return {
-          status: HttpStatus.OK,
-          data: { data: services, meta: { total, limit, offset } },
+          data: services, meta: { total, limit, offset }
         };
       }
       throw new NotFoundException('No services found');

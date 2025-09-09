@@ -13,7 +13,7 @@ export const useServices = (params: GetAllServiceParams) => {
   });
 };
 
-export const useCourseAllData = (id?: string) => {
+export const useServiceAllData = (id?: string) => {
   return useQuery({
     queryKey: ["serviceAllData", id],
     queryFn: () => getServiceFullDataFn(id ?? ""),
@@ -21,7 +21,7 @@ export const useCourseAllData = (id?: string) => {
   });
 };
 
-export const useCourseById = (id?: string) => {
+export const useServiceById = (id?: string) => {
   return useQuery({
     queryKey: ["serviceById", id],
     queryFn: () => getServiceDataFn(id ?? ""),
