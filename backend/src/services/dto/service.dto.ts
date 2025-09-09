@@ -1,5 +1,6 @@
 import { IsArray, IsBoolean, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PaginatedRequestDto } from '../../users/dto/base.dto';
+import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateServiceDto {
   @IsString()
@@ -12,9 +13,6 @@ export class CreateServiceDto {
   @IsString()
   description: string;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
-  cmePoints: number;
-
   @IsString()
   coverImageUrl: string;
 
@@ -23,9 +21,6 @@ export class CreateServiceDto {
 
   @IsNumber()
   price: number;
-
-  @IsString()
-  cmeId: string;
 
   @IsOptional()
   @IsInt()
@@ -43,10 +38,6 @@ export class CreateServiceDto {
   @IsString()
   specialtyId?: string;
 
-  @IsOptional()
-  @IsString()
-  typeId?: string;
-
   @IsString()
   professionId: string;
 
@@ -61,22 +52,25 @@ export class CreateServiceDto {
   @IsBoolean()
   discountEnabled: boolean;
 
-  @IsOptional()
-  @IsNumber()
-  duration?: number;
+  // @IsOptional()
+  // @IsNumber()
+  // duration?: number;
 
   @IsBoolean()
+  @IsOptional()
   isPublished: boolean;
 
   @IsBoolean()
+  @IsOptional()
   isArchived: boolean;
 
+  @IsOptional()
   @IsString()
   slug: string;
 }
 
 
-export class UpdateServiceDto extends CreateServiceDto {
+export class UpdateServiceDto extends PartialType(CreateServiceDto) {
 
   @IsString()
   id: string;
@@ -164,12 +158,13 @@ export class ProviderDto {
 
   name: string;
 
-  designation: string;
+  @IsArray()
+  designations: string[];
 
   @IsOptional()
   bio: string;
 
-  profileImageUrl: string;
+  profileImage: string;
 }
 
 
@@ -186,14 +181,10 @@ export class ServiceDetailDto {
 
   learningPoints: string[];
 
-  cmePoints: number;
-
   @IsOptional()
   provider: ProviderDto;
 
   price: number;
-
-  cmeId: string;
 
   totalReviewScore: number;
 

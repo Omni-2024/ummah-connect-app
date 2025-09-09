@@ -19,9 +19,6 @@ export abstract class AbstractServiceEntity extends AbstractBaseEntity {
   @IsString()
   description: string;
 
-  @IsNumber({ maxDecimalPlaces: 2 })
-  cmePoints: number;
-
   @IsUrl()
   coverImageUrl: string;
 
@@ -30,9 +27,6 @@ export abstract class AbstractServiceEntity extends AbstractBaseEntity {
 
   @IsString()
   price: number;
-
-  @IsString()
-  cmeId: string;
 
   @IsInt()
   totalReviewScore?: number;
@@ -49,10 +43,6 @@ export abstract class AbstractServiceEntity extends AbstractBaseEntity {
   @IsOptional()
   @IsString()
   specialtyId?: string;
-
-  @IsString()
-  @IsOptional()
-  typeId?: string;
 
   @IsString()
   professionId: string;

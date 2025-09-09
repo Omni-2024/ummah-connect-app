@@ -2,8 +2,8 @@
 
 import type React from "react"
 
-import { Card, CardContent } from "@/components/ui/card"
-import  Button  from "@/components/ui/button"
+import { Card, CardContent } from "@/components/base/card"
+import  Button  from "@/components/base/button"
 import { Plus } from "lucide-react"
 
 export enum AddNewCardType {
@@ -19,19 +19,19 @@ interface AddNewCardProps {
 
 const AddNewCard: React.FC<AddNewCardProps> = ({ name, className = "", onClick, type }) => {
     return (
-        <Card className="border-2 border-dashed border-border hover:border-primary/50 transition-all duration-200 hover:shadow-sm group">
+        <Card className="border-2 border-dashed border-dark-200 hover:border-primary/50 transition-all duration-200 hover:shadow-sm group">
             <CardContent className="p-0">
                 <Button
-                    variant="primary"
+                    variant="unstyled"
                     className={`w-full justify-center text-muted-foreground hover:text-primary group-hover:bg-primary/5 transition-all duration-200 ${className}`}
                     onClick={onClick}
                 >
                     <div className="flex flex-col items-center gap-2 py-4">
-                        <div className="p-3 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
-                            <Plus className="h-5 w-5 text-primary" />
+                        <div className="flex items-center p-3 text-dark-200 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors">
+                            <Plus className="h-5 w-5 text-primary mr-2" />
+                            <span className="font-medium"> Add {name}</span>
                         </div>
-                        <span className="font-medium">Add {name}</span>
-                        <span className="text-xs text-muted-foreground">Click to create new profession</span>
+                        {/*<span className="text-xs text-muted-foreground">Click to create new profession</span>*/}
                     </div>
                 </Button>
             </CardContent>

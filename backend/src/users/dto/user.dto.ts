@@ -18,6 +18,10 @@ export class UpdateUserDto {
   @IsString()
   name?: string;
 
+  @IsOptional()
+  @IsString()
+  bio?: string;
+
   @IsArray()
   @IsOptional()
   designations?: string[];

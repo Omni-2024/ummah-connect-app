@@ -5,7 +5,7 @@ import Searchbar from "@/components/widgets/Searchbar";
 import SearchResultsPreview from "./SearchHints";
 import { useServicesHints} from "@/lib/hooks/useServices";
 import { useDebounce } from "@uidotdev/usehooks";
-import { useExploreState } from "@/features/explore/context/exploreState";
+import { useExploreState } from "@/features/explore/context/useExploreState";
 
 type NavSearchbarProps = {
   onSearch?: () => void;

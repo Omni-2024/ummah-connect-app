@@ -26,7 +26,8 @@ export class UsersController {
       limit,
       offset,
       query,
-    });  }
+    });
+  }
 
   @Patch('/:id/retrieve')
   async retrieveUser(@Param('id') id: string) {

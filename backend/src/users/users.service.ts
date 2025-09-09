@@ -53,6 +53,7 @@ export class UsersService {
     }
   }
 
+
   async retrieveUser(id: string) {
     const user = await this.userRepo.findOneById(id);
     if (!user) {

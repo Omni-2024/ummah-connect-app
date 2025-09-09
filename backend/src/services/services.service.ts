@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import {
   CreateServiceDto,
   FindAllByProviderServiceDto,
@@ -30,7 +30,7 @@ export class ServiceService {
       const course = await this.serviceRepo.createService(createServiceDto);
       return  course ;
     } catch (e) {
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
+      throw new InternalServerErrorException(e.message);
     }
   }
 
@@ -48,9 +48,9 @@ export class ServiceService {
         const total = await this.serviceRepo.countAll();
         return { data: services, meta: { total, limit, offset  }, };
       }
-      return { status: HttpStatus.NOT_FOUND, error: 'No courses found' };
+      throw new NotFoundException('No services found');
     } catch (e) {
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
+      throw new InternalServerErrorException(e.message);
     }
   }
 
@@ -72,9 +72,9 @@ export class ServiceService {
           data: services, meta: { total, limit, offset  },
         };
       }
-      return { status: HttpStatus.NOT_FOUND, error: 'No courses found' };
+      throw new NotFoundException('No services found');
     } catch (e) {
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
+      throw new InternalServerErrorException(e.message);
     }
   }
 
@@ -99,9 +99,9 @@ export class ServiceService {
           data: { data: services, meta: { total, limit, offset } },
         };
       }
-      return { status: HttpStatus.NOT_FOUND, error: 'No courses found' };
+      throw new NotFoundException('No services found');
     } catch (e) {
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
+      throw new InternalServerErrorException(e.message);
     }
   }
 
@@ -113,9 +113,9 @@ export class ServiceService {
       if (service instanceof Service) {
         return  service ;
       }
-      return { status: HttpStatus.BAD_REQUEST, error: 'Course not found' };
+      throw new NotFoundException('No services found');
     } catch (e) {
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
+      throw new InternalServerErrorException(e.message);
     }
   }
 
@@ -127,9 +127,9 @@ export class ServiceService {
       if (service instanceof Service) {
         return service;
       }
-      return { status: HttpStatus.BAD_REQUEST, error: 'Course not found' };
+      throw new NotFoundException('No services found');
     } catch (e) {
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
+      throw new InternalServerErrorException(e.message);
     }
   }
 
@@ -141,7 +141,7 @@ export class ServiceService {
       if (service instanceof Service) {
         return service ;
       }
-      return { status: HttpStatus.BAD_REQUEST, error: 'Course not found' };
+      return { status: HttpStatus.BAD_REQUEST, error: 'Service not found' };
     } catch (e) {
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
     }
@@ -155,7 +155,7 @@ export class ServiceService {
         await this.serviceRepo.updateService(service);
         return { status: HttpStatus.OK };
       }
-      return { status: HttpStatus.BAD_REQUEST, error: 'Course not found' };
+      return { status: HttpStatus.BAD_REQUEST, error: 'Service not found' };
     } catch (e) {
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
     }

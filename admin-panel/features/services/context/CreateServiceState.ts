@@ -3,7 +3,7 @@ import type {
   CategoriesPageData,
 ServiceDetailsPageData} from "../types/addService";
 
-export const CREATE_COURSE_LAST_STEP = 5;
+export const CREATE_SERVICE_LAST_STEP = 2;
 
 
 
@@ -17,7 +17,7 @@ type CreateServiceState = {
   serviceId: string;
 
   categoryData: CategoriesPageData;
-  courseDetailsData: ServiceDetailsPageData;
+  serviceDetailsData: ServiceDetailsPageData;
 };
 
 export const initialState: CreateServiceState = {
@@ -35,7 +35,7 @@ export const initialState: CreateServiceState = {
     provider: "",
   },
 
-  courseDetailsData: {
+  serviceDetailsData: {
     serviceTitle: "",
     serviceDescription: "",
     coverImage: "",
@@ -44,84 +44,81 @@ export const initialState: CreateServiceState = {
     pricing: 0,
     discount: 0,
     discountOn: false,
-    cmePoints: 0,
-    cmdId: "",
-    duration: 0,
   },
 };
 
-export const createCourseState = proxy<CreateServiceState>(initialState);
+export const createServiceState = proxy<CreateServiceState>(initialState);
 
-type CreateCourseStateUpdate = Pick<
+type CreateServiceStateUpdate = Pick<
   CreateServiceState,
-  "categoryData" | "courseDetailsData"
+  "categoryData" | "serviceDetailsData"
 >;
 
 export const setServiceId = (serviceId: string) => {
-  createCourseState.serviceId = serviceId;
+  createServiceState.serviceId = serviceId;
 };
 
 export const setCurrentStep = (step: number) => {
-  createCourseState.currentStep = step;
+  createServiceState.currentStep = step;
 };
 export const handleNext = () => {
-  if (createCourseState.currentStep === CREATE_COURSE_LAST_STEP) {
+  if (createServiceState.currentStep === CREATE_SERVICE_LAST_STEP) {
     return;
   }
-  createCourseState.currentStep += 1;
+  createServiceState.currentStep += 1;
 };
 export const handleBack = () => {
-  if (createCourseState.currentStep === 0) {
-    createCourseState.showBackWarning = true;
+  if (createServiceState.currentStep === 0) {
+    createServiceState.showBackWarning = true;
     return;
   }
-  createCourseState.currentStep -= 1;
+  createServiceState.currentStep -= 1;
 };
 export const setShowBackWarning = (show: boolean) => {
-  createCourseState.showBackWarning = show;
+  createServiceState.showBackWarning = show;
 };
 
 export const handleIsSavedData = (isSaved: boolean) => {
-  createCourseState.isSavedData = isSaved;
+  createServiceState.isSavedData = isSaved;
 };
 
-export const updateCreateCourseState = async <
-  T extends keyof CreateCourseStateUpdate,
+export const updateCreateServiceState = async <
+  T extends keyof CreateServiceStateUpdate,
 >(
   page: T,
-  data: CreateCourseStateUpdate[T]
+  data: CreateServiceStateUpdate[T]
 ) => {
   if (page.endsWith("Data")) {
-    (createCourseState as CreateCourseStateUpdate)[page] = data;
+    (createServiceState as CreateServiceStateUpdate)[page] = data;
   }
 };
 
 
 export const setCoverImage = (coverImage: string) => {
-  createCourseState.courseDetailsData.coverImage = coverImage;
+  createServiceState.serviceDetailsData.coverImage = coverImage;
 };
 
 export const setLoading = (loading: boolean) => {
-  createCourseState.isLoading = loading;
+  createServiceState.isLoading = loading;
 };
 
-export const resetCreateCourseState = <T extends keyof CreateCourseStateUpdate>(
+export const resetCreateServiceState = <T extends keyof CreateServiceStateUpdate>(
   page: T
 ) => {
-  createCourseState[page] = initialState[page];
+  createServiceState[page] = initialState[page];
 };
 
-export const resetCreateCourseStateFull = () => {
-  createCourseState.currentStep = 0;
-  createCourseState.showBackWarning = false;
-  createCourseState.isEdit = false;
-  createCourseState.isSavedData = true;
-  createCourseState.categoryData = {
+export const resetCreateServiceStateFull = () => {
+  createServiceState.currentStep = 0;
+  createServiceState.showBackWarning = false;
+  createServiceState.isEdit = false;
+  createServiceState.isSavedData = true;
+  createServiceState.categoryData = {
     profession: "",
     specialist: "",
     provider: "",
   };
-  createCourseState.courseDetailsData = {
+  createServiceState.serviceDetailsData = {
     serviceTitle: "",
     serviceDescription: "",
     coverImage: "",
@@ -130,16 +127,13 @@ export const resetCreateCourseStateFull = () => {
     pricing: 0,
     discount: 0,
     discountOn: false,
-    cmePoints: 0,
-    cmdId: "",
-    duration: 0,
   };
 
   // reset IDs
-  createCourseState.serviceId = "";
-  createCourseState.isLoading = false;
+  createServiceState.serviceId = "";
+  createServiceState.isLoading = false;
 };
 
 export const setEditMode = (isEdit: boolean) => {
-  createCourseState.isEdit = isEdit;
+  createServiceState.isEdit = isEdit;
 };

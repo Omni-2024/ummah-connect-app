@@ -8,7 +8,7 @@ import {
 import Button from "@/components/base/Button";
 import Checkbox from "@/components/base/Checkbox";
 import Label from "@/components/base/form/Label";
-import { useExploreState } from "@/features/explore/context/exploreState";
+import { useExploreState } from "@/features/explore/context/useExploreState";
 import {useExploreFilters} from "@/features/explore/context/useExploreFilters";
 
 interface FilterModalProps {

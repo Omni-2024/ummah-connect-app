@@ -8,7 +8,7 @@ import IconButton from "@/components/base/IconButton";
 import { cn } from "@/lib/className";
 import { Cross1Icon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import {useExploreState} from "@/features/explore/context/exploreState";
+import {useExploreState} from "@/features/explore/context/useExploreState";
 
 interface Props {
   value?: string;

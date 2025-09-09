@@ -1,5 +1,5 @@
 import { Service, GetAllServiceParams, Meta } from "@/types";
-import Request, { catchAxiosErrorTyped } from "@/lib/http";
+import Request from "@/lib/http";
 
 
 

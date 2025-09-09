@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import  Button  from "@/components/base/button"
+import { Badge } from "@/components/base/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card"
 import { CheckCircle, XCircle, Clock, Mail, Phone, User } from "lucide-react"
 
 interface Provider {
@@ -189,7 +189,7 @@ export default function AdminProvidersPage() {
                         <CheckCircle className="w-4 h-4 mr-2" />
                         Approve
                       </Button>
-                      <Button onClick={() => handleProviderAction(provider.id, "reject")} variant="destructive">
+                      <Button onClick={() => handleProviderAction(provider.id, "reject")} variant="primary">
                         <XCircle className="w-4 h-4 mr-2" />
                         Reject
                       </Button>

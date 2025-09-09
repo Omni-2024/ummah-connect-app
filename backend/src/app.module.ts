@@ -11,6 +11,7 @@ import { SpecialistModule } from './categories/specialist/specialist.module';
 import { CategoryModule } from './categories/categories.module';
 import { ReviewModule } from './review/review.module';
 import { StorageModule } from './common/r2/storage.module';
+import { ProviderModule } from './providers/provider.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { StorageModule } from './common/r2/storage.module';
     ProfessionModule,
     SpecialistModule,
     ReviewModule,
-    StorageModule
+    StorageModule,
+    ProviderModule
   ],
 })
 export class AppModule {}

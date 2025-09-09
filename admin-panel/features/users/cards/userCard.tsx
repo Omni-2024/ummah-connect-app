@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Teacher } from "iconsax-react";
 import { useAvatarUrl } from "@/hooks/userAvatarUrl";
-import Button from "@/components/ui/button"
+import Button from "@/components/base/button"
 import {UserData} from "@/types/data";
 import {ArrowRight} from "lucide-react";
 

@@ -1,76 +1,33 @@
-import { proxy } from "valtio"
+import {useSnapshot} from "valtio";
+import {
+    exploreState, setLimit, setOffset, setProfession, setProfessionName,
+    setSearchTerm, setServiceId, setServiceSlug, setShowGiftServiceModal,
+    setShowServiceShareModal, setSpecialties
+} from "@/features/explore/context/exploreState";
 
-
-export type ExploreState = {
-    searchTerm?: string;
-    showGiftServiceModal?: boolean;
-    showServiceShareModal?: boolean;
-    showWatchIntroLessonModal?: boolean;
-    limit: number;
-    offset: number;
-    profession?: string;
-    professionName?: string;
-    specialties?:string[];
-    serviceId?: string;
-    serviceSlug?: string;
-}
-
-const initialState: ExploreState = {
-    searchTerm: "",
-    showGiftServiceModal: false,
-    showServiceShareModal: false,
-    showWatchIntroLessonModal: false,
-    limit: 9,
-    offset: 0,
-    profession: "",
-    professionName: "",
-    specialties: [],
-    serviceId: "",
-    serviceSlug: "",
-}
-
-export const exploreState = proxy<ExploreState>(initialState);
-
-export const setSearchTerm = (term: string) => {
-    exploreState.searchTerm = term;
-};
-
-export const setShowGiftServiceModal = (show: boolean) => {
-    exploreState.showGiftServiceModal = show;
-};
-
-export const setShowServiceShareModal = (show: boolean) => {
-    exploreState.showServiceShareModal = show;
-};
-
-export const setShowWatchIntroLessonModal = (show: boolean) => {
-    exploreState.showWatchIntroLessonModal = show;
-};
-
-export const setLimit = (limit: number) => {
-    exploreState.limit = limit;
-};
-
-export const setOffset = (offset: number) => {
-    exploreState.offset = offset;
-};
-
-export const setProfession = (profession: string) => {
-    exploreState.profession = profession;
-};
-
-export const setProfessionName = (professionName: string) => {
-    exploreState.professionName = professionName;
-};
-
-export const setSpecialties = (specialities: string[]) => {
-    exploreState.specialties = specialities;
-};
-
-export const setServiceId = (serviceId: string) => {
-    exploreState.serviceId = serviceId;
-};
-
-export const setServiceSlug = (serviceSlug: string) => {
-    exploreState.serviceSlug = serviceSlug;
+export const useExploreState = () => {
+    const snap = useSnapshot(exploreState);
+    return {
+        searchTerm: snap.searchTerm,
+        setSearchTerm:setSearchTerm,
+        showGiftServiceModal: snap.showGiftServiceModal,
+        setShowGiftServiceModal:setShowGiftServiceModal,
+        showServiceShareModal: snap.showServiceShareModal,
+        setShowServiceShareModal: setShowServiceShareModal,
+        showWatchIntroLessonModal: snap.showWatchIntroLessonModal,
+        limit: snap.limit,
+        setLimit: setLimit,
+        offset: snap.offset,
+        setOffset: setOffset,
+        profession: snap.profession,
+        setProfession: setProfession,
+        professionName:snap.professionName,
+        setProfessionName:setProfessionName,
+        specialties:snap.specialties,
+        setSpecialties:setSpecialties,
+        serviceId:snap.serviceId,
+        setServiceId:setServiceId,
+        serviceSlug:snap.serviceSlug,
+        setServiceSlug:setServiceSlug,
+    };
 };
