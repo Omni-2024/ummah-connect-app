@@ -99,10 +99,10 @@ export default function HomePage() {
       <HeroSection isAuthenticated={isAuthenticated} router={router} />
       <FeaturesSection/>
       {isAuthenticated && <RecommendedServicesSection router={router} />}
-      {isAuthenticated && <ContinueLearningSection />} 
+      {/* {isAuthenticated && <ContinueLearningSection />}  */}
       <IslamicValuesSection />     
       <IslamicLearningPathsSection />
-      <SuccessStoriesSection />
+      {/* <SuccessStoriesSection /> */}
       <Bottombar/>
 
     </div>
