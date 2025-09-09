@@ -82,20 +82,22 @@ export const changeUserStatusFn = async (data: {
 
 /** Update - '/user/:id' - update General User */
 export const updateUserFn = async (data: {
-  id: string;
-  name?: string;
-  designations?: string[];
-  interests?: string[];
-  profileImage?: string;
-  contactNumber?: string;
-  company?: string;
-  country?: string;
-  specializations?: string;
+  id: string
+  name?: string
+  designations?: string[]
+  interests?: string[]
+  profileImage?: string
+  contactNumber?: string
+  company?: string
+  country?: string
+  specializations?: string
+  bio?: string; // ✅ added bio
+
 }) => {
-  const res = await Request<UserData>({ // <-- change response type to UserData
+  const res = await Request<UserData>({
     method: "patch",
     url: `/api/user/${data.id}`,
     data,
-  });
-  return res.data;
-};
+  })
+  return res.data
+}

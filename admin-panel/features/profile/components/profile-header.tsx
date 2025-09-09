@@ -1,80 +1,102 @@
 "use client"
 
-import {useEffect, useState} from "react"
+import { useState } from "react"
 import { Card, CardContent } from "@/components/base/card"
-import Button from "@/components/base/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar"
 import { Badge } from "@/components/base/badge"
-import {Camera, Edit3, Save, Shield, Star} from "lucide-react"
-import {useAuthState} from "@/features/auth/context/useAuthState";
-import {useCurrentUser} from "@/hooks/useUserInfo";
-import {updateUserFn} from "@/lib/endpoints/usersFns";
+import { Shield, Star } from "lucide-react"
+import { PersonIcon, CameraIcon } from "@radix-ui/react-icons"
+import { useAuthState } from "@/features/auth/context/useAuthState"
+import { useCurrentUser } from "@/hooks/useUserInfo"
+import { updateUserFn } from "@/lib/endpoints/usersFns"
+import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns"
 
 export function ProfileHeader() {
-  const { role } = useAuthState();
-  const { data: profile, isLoading, refetch } = useCurrentUser();
-  const [isEditing, setIsEditing] = useState(false);
-  const [nameInput, setNameInput] = useState("");
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (profile?.name) setNameInput(profile.name);
-  }, [profile?.name]);
+  const { role } = useAuthState()
+  const { data: profile, isLoading, refetch } = useCurrentUser()
+  const [uploading, setUploading] = useState(false)
+  const [avatarBroken, setAvatarBroken] = useState(false)
 
   if (isLoading) {
-    return <div>Loading profile...</div>;
+    return <div>Loading profile...</div>
   }
 
-  const handleSave = async () => {
-    if (!profile) return;
-    setSaving(true);
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!profile || !e.target.files?.[0]) return
+
+    const file = e.target.files[0]
     try {
-      await updateUserFn({ id: profile.id, name: nameInput });
-      setIsEditing(false);
-      refetch();
+      setUploading(true)
+
+      // ✅ Use the same upload function as user panel
+      const uploadResult = await uploadPublicFn({ imageFile: file })
+
+      // ✅ Save uploaded image URL to DB
+      await updateUserFn({
+        id: profile.id,
+        profileImage: uploadResult.url,
+      })
+
+      refetch()
     } catch (err) {
-      console.error("Failed to update name:", err);
+      console.error("Image upload failed:", err)
     } finally {
-      setSaving(false);
+      setUploading(false)
     }
-  };
+  }
 
   return (
-    <Card className="bg-[#D3E4E3] border-[#3E6563]/50 shadow-lg">
+    <Card className="border-[#3E6563]/50 shadow-lg">
       <CardContent className="pl-8 pr-8 pt-16 pb-16">
         <div className="flex items-start space-x-6">
           {/* Avatar Section */}
           <div className="relative group">
-            <Avatar className="w-24 h-24 ring-4 ring-[#337f7c] transition-all duration-300 group-hover:ring-accent/40">
-              <AvatarImage src={profile?.profileImage ?? "/professional-admin-avatar.png"} />
-              <AvatarFallback className="bg-accent text-accent-foreground text-2xl font-bold">
-                {profile?.name?.[0] ?? "U"}
-              </AvatarFallback>
-            </Avatar>
-            <Button
-              size="icon"
-              variant="secondary"
-              className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300"
+            <div className="w-24 h-24 rounded-full border-4 border-[#337f7c] overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-500">
+              {(!profile?.profileImage || avatarBroken) ? (
+                <div className="w-full h-full flex items-center justify-center">
+                  <PersonIcon className="w-10 h-10 text-white" />
+                </div>
+              ) : (
+                <Avatar className="w-full h-full">
+                  <AvatarImage
+                    src={profile?.profileImage}
+                    alt="Profile"
+                    onError={() => setAvatarBroken(true)}
+                  />
+                  <AvatarFallback>
+                    <PersonIcon className="w-10 h-10 text-white" />
+                  </AvatarFallback>
+                </Avatar>
+              )}
+            </div>
+
+            {/* Upload button (floating on avatar) */}
+            <label
+              htmlFor="profileImageUpload"
+              className={`absolute -bottom-2 -right-2 bg-emerald-500 rounded-full p-2 cursor-pointer hover:bg-emerald-600 transition-colors shadow-lg ${
+                uploading ? "opacity-50 pointer-events-none" : ""
+              }`}
             >
-              <Camera className="w-4 h-4" />
-            </Button>
+              <CameraIcon className="w-4 h-4 text-white" />
+              <input
+                id="profileImageUpload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+                disabled={uploading}
+              />
+            </label>
           </div>
 
           {/* Profile Info */}
           <div className="flex-1 space-y-4">
             <div className="flex items-start justify-between">
               <div>
-                {/* Editable Name */}
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={nameInput}
-                    onChange={(e) => setNameInput(e.target.value)}
-                    className="text-2xl font-bold text-foreground border-b-2 border-[#337f7c] focus:outline-none focus:border-accent"
-                  />
-                ) : (
-                  <h2 className="text-2xl font-bold text-foreground">{profile?.name ?? "Unknown User"}</h2>
-                )}
+                {/* Name */}
+                <h2 className="text-2xl font-bold text-foreground">
+                  {profile?.name ?? "Unknown User"}
+                </h2>
 
                 {/* Email */}
                 <p className="text-muted-foreground">{profile?.email ?? "No email available"}</p>
@@ -98,17 +120,6 @@ export function ProfileHeader() {
                   )}
                 </div>
               </div>
-
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={isEditing ? handleSave : () => setIsEditing(true)}
-                className="bg-gradient-to-br from-[#669f9d] to-[#337f7c] hover:text-accent-foreground transition-colors"
-                disabled={saving}
-              >
-                {isEditing ? <Save className="w-4 h-4 mr-2" /> : <Edit3 className="w-4 h-4 mr-2" />}
-                {isEditing ? "Save" : "Edit Profile"}
-              </Button>
             </div>
 
             {/* Quick Stats */}
@@ -130,5 +141,5 @@ export function ProfileHeader() {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

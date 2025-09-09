@@ -4,18 +4,14 @@ import { useState } from "react"
 import { Card, CardContent, CardHeader } from "@/components/base/card"
 import { ProfileHeader } from "./components/profile-header"
 import { PersonalInfo } from "./components/personal-info"
-import { AccountSettings } from "./components/account-settings"
 import { SecuritySettings } from "./components/security-settings"
-import { NotificationPreferences } from "./components/notification-preferences"
 
 export function ProfileManagement() {
   const [activeTab, setActiveTab] = useState("personal")
 
   const tabs = [
     { id: "personal", label: "Personal Info", component: PersonalInfo },
-    { id: "account", label: "Account Settings", component: AccountSettings },
     { id: "security", label: "Security", component: SecuritySettings },
-    { id: "notifications", label: "Notifications", component: NotificationPreferences },
   ]
 
   const ActiveComponent = tabs.find((tab) => tab.id === activeTab)?.component || PersonalInfo
@@ -34,7 +30,7 @@ export function ProfileManagement() {
       <ProfileHeader />
 
       {/* Navigation Tabs */}
-      <Card className="bg-[#D3E4E3] backdrop-blur-sm border-[#337f7c]/50">
+      <Card className="backdrop-blur-sm border-[#337f7c]/50">
         <CardHeader className="pb-4">
           <div className="flex space-x-1 bg-muted/30 p-1 rounded-lg">
             {tabs.map((tab) => (
@@ -53,7 +49,7 @@ export function ProfileManagement() {
           </div>
         </CardHeader>
         <CardContent>
-          <ActiveComponent />
+          <ActiveComponent userId={""} />
         </CardContent>
       </Card>
     </div>

@@ -54,7 +54,7 @@ export function SecuritySettings({ userId }: { userId: string }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Password Settings */}
-        <Card className="bg-card/30 border-border/50">
+        <Card className="bg-card/30 border-[#337f7c]/50 shadow-lg">
           <CardHeader>
             <CardTitle className="text-base flex items-center">
               <Key className="w-4 h-4 mr-2 text-accent" />
@@ -78,7 +78,7 @@ export function SecuritySettings({ userId }: { userId: string }) {
                   type="button"
                   variant="secondary"
                   size="icon"
-                  className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-full px-3 bg-transparent hover:bg-transparent rounded-none border-none"
                   onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                 >
                   {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -101,7 +101,7 @@ export function SecuritySettings({ userId }: { userId: string }) {
                   type="button"
                   variant="secondary"
                   size="icon"
-                  className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-full px-3 bg-transparent hover:bg-transparent border-none"
                   onClick={() => setShowNewPassword(!showNewPassword)}
                 >
                   {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -124,7 +124,7 @@ export function SecuritySettings({ userId }: { userId: string }) {
                   type="button"
                   variant="secondary"
                   size="icon"
-                  className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                  className="absolute right-0 top-0 h-full px-3 bg-transparent hover:bg-transparent border-none"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
                   {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

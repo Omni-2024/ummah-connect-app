@@ -1,15 +1,14 @@
 "use client";
 
-import {useEffect, useState} from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card"
-import Button from "@/components/base/button"
-import  Input  from "@/components/base/form/Input"
-import Label  from "@/components/base/form/Label"
-import  Textarea  from "@/components/base/form/Textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/base/select"
-import { Save, User, Mail, Calendar } from "lucide-react"
-import {useCurrentUser} from "@/hooks/useUserInfo";
-import {updateUserFn} from "@/lib/endpoints/usersFns";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card";
+import Input from "@/components/base/form/Input";
+import Label from "@/components/base/form/Label";
+import Textarea from "@/components/base/form/Textarea";
+import { Mail, User } from "lucide-react";
+import { useCurrentUser } from "@/hooks/useUserInfo";
+import { updateUserFn } from "@/lib/endpoints/usersFns";
+import { EditInfoButton } from "../buttons/EditInfoButton";
 
 export function PersonalInfo() {
   const { data: profile, isLoading, refetch } = useCurrentUser();
@@ -28,7 +27,7 @@ export function PersonalInfo() {
       setFormData({
         name: profile.name ?? "",
         role: profile.role ?? "",
-        bio: "This is a placeholder bio", // random placeholder
+        bio: profile.bio ?? "This is a placeholder bio", // get bio from backend
         contactNumber: profile.contactNumber ?? "",
         email: profile.email ?? "",
       });
@@ -41,11 +40,12 @@ export function PersonalInfo() {
     if (!profile) return;
     setSaving(true);
     try {
+      // Include bio here
       await updateUserFn({
         id: profile.id,
         name: formData.name,
         contactNumber: formData.contactNumber,
-        // bio will be handled later
+        bio: formData.bio,
       });
       setIsEditing(false);
       refetch();
@@ -61,25 +61,15 @@ export function PersonalInfo() {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-foreground">Personal Information</h3>
-          <p className="text-sm text-muted-foreground">Update your personal details and profile information</p>
+          <p className="text-sm text-muted-foreground">
+            Update your personal details and profile information
+          </p>
         </div>
-        <Button
+        <EditInfoButton
+          isEditing={isEditing}
           onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
-          className="bg-accent hover:bg-accent/90 text-accent-foreground"
-          disabled={saving}
-        >
-          {isEditing ? (
-            <>
-              <Save className="w-4 h-4 mr-2" />
-              Save Changes
-            </>
-          ) : (
-            <>
-              <User className="w-4 h-4 mr-2" />
-              Edit Info
-            </>
-          )}
-        </Button>
+          saving={saving}
+        />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
