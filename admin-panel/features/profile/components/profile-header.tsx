@@ -1,11 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { Card, CardContent } from "@/components/base/card"
 import Button from "@/components/base/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar"
 import { Badge } from "@/components/base/badge"
-import { Camera, Edit3, Shield, Star } from "lucide-react"
+import {Camera, Edit3, Save, Shield, Star} from "lucide-react"
+import {useAuthState} from "@/features/auth/context/useAuthState";
+import {useCurrentUser} from "@/hooks/useUserInfo";
+import {updateUserFn} from "@/lib/endpoints/usersFns";
 
 export function ProfileHeader() {
   const { role } = useAuthState();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card"
 import Button from "@/components/base/button"
 import  Input  from "@/components/base/form/Input"
@@ -8,6 +8,8 @@ import Label  from "@/components/base/form/Label"
 import  Textarea  from "@/components/base/form/Textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/base/select"
 import { Save, User, Mail, Calendar } from "lucide-react"
+import {useCurrentUser} from "@/hooks/useUserInfo";
+import {updateUserFn} from "@/lib/endpoints/usersFns";
 
 export function PersonalInfo() {
   const { data: profile, isLoading, refetch } = useCurrentUser();
