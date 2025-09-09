@@ -17,7 +17,7 @@ import { Edit, Trash } from "iconsax-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import RemoveDialog from "@/components/widget/removeDialog";
 import { invalidateQueries } from "@/app/providers";
-import { Toast } from "@/components/base/Toast";
+import { Toast } from "@/components/base/toast";
 import {
     removeCategoryFn,
     removeSecondaryCategory,
@@ -86,7 +86,7 @@ export default function ListCategories({ categories }: Props) {
                 <Droppable droppableId="categories" direction="vertical">
                     {(dropProvided) => (
                         <div ref={dropProvided.innerRef}>
-\                            <Accordion type="multiple" className="w-full flex flex-col py-4 px-4">
+                          <Accordion type="multiple" className="w-full flex flex-col py-4 px-4">
                                 {ordered.map((category, index) => (
                                     <Draggable
                                         key={category.id}
