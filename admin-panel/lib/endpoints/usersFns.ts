@@ -79,3 +79,23 @@ export const changeUserStatusFn = async (data: {
     });
     return res.data.status === 200;
 };
+
+/** Update - '/user/:id' - update General User */
+export const updateUserFn = async (data: {
+  id: string;
+  name?: string;
+  designations?: string[];
+  interests?: string[];
+  profileImage?: string;
+  contactNumber?: string;
+  company?: string;
+  country?: string;
+  specializations?: string;
+}) => {
+  const res = await Request<UserData>({ // <-- change response type to UserData
+    method: "patch",
+    url: `/api/user/${data.id}`,
+    data,
+  });
+  return res.data;
+};

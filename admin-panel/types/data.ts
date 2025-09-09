@@ -5,6 +5,8 @@ export enum Roles {
 }
 
 export interface UserData {
+  bio: string;
+  contactNumber: string;
   id: string;
   createdAt: string;
   updatedAt: string;

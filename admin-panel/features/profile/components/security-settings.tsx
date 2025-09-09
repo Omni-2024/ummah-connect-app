@@ -8,13 +8,42 @@ import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { Shield, Key, Smartphone, AlertTriangle, Eye, EyeOff } from "lucide-react"
+import { toast } from "react-hot-toast" // optional for notifications
+import { changePasswordFn } from "@/lib/endpoints/authenticationFns"
 
-export function SecuritySettings() {
+export function SecuritySettings({ userId }: { userId: string }) {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false)
   const [showNewPassword, setShowNewPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true)
-  const [loginAlerts, setLoginAlerts] = useState(true)
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [isUpdating, setIsUpdating] = useState(false)
+
+  const handlePasswordUpdate = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error("All fields are required")
+      return
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("New passwords do not match")
+      return
+    }
+
+    setIsUpdating(true)
+    try {
+      // Replace OTP with real value if you implement 2FA or send via email
+      await changePasswordFn({ id: userId, oldPassword: currentPassword, newPassword, otp: "123456" })
+      toast.success("Password updated successfully!")
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to update password")
+    } finally {
+      setIsUpdating(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -42,6 +71,8 @@ export function SecuritySettings() {
                   type={showCurrentPassword ? "text" : "password"}
                   className="bg-input border-border/50 pr-10"
                   placeholder="Enter current password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
                 />
                 <Button
                   type="button"
@@ -54,6 +85,7 @@ export function SecuritySettings() {
                 </Button>
               </div>
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="newPassword">New Password</Label>
               <div className="relative">
@@ -62,6 +94,8 @@ export function SecuritySettings() {
                   type={showNewPassword ? "text" : "password"}
                   className="bg-input border-border/50 pr-10"
                   placeholder="Enter new password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                 />
                 <Button
                   type="button"
@@ -74,6 +108,7 @@ export function SecuritySettings() {
                 </Button>
               </div>
             </div>
+
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm New Password</Label>
               <div className="relative">
@@ -82,6 +117,8 @@ export function SecuritySettings() {
                   type={showConfirmPassword ? "text" : "password"}
                   className="bg-input border-border/50 pr-10"
                   placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 <Button
                   type="button"
@@ -94,79 +131,14 @@ export function SecuritySettings() {
                 </Button>
               </div>
             </div>
-            <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">Update Password</Button>
-          </CardContent>
-        </Card>
 
-        {/* Two-Factor Authentication */}
-        <Card className="bg-card/30 border-border/50">
-          <CardHeader>
-            <CardTitle className="text-base flex items-center">
-              <Smartphone className="w-4 h-4 mr-2 text-accent" />
-              Two-Factor Authentication
-              {twoFactorEnabled && (
-                <Badge variant="secondary" className="ml-2 bg-accent/10 text-accent border-accent/20">
-                  Enabled
-                </Badge>
-              )}
-            </CardTitle>
-            <CardDescription>Add an extra layer of security to your account</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-0.5">
-                <Label htmlFor="twoFactor">Enable 2FA</Label>
-                <p className="text-xs text-muted-foreground">Require authentication code for login</p>
-              </div>
-              <Switch id="twoFactor" checked={twoFactorEnabled} onCheckedChange={setTwoFactorEnabled} />
-            </div>
-            {twoFactorEnabled && (
-              <div className="space-y-3 pt-3 border-t border-border/50">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium">Authenticator App</span>
-                  <Badge variant="outline" className="border-accent/20 text-accent">
-                    Connected
-                  </Badge>
-                </div>
-                <Button variant="primary" size="sm" className="w-full bg-transparent">
-                  Reconfigure 2FA
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Security Alerts */}
-        <Card className="bg-card/30 border-border/50 lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-base flex items-center">
-              <Shield className="w-4 h-4 mr-2 text-accent" />
-              Security Alerts & Monitoring
-            </CardTitle>
-            <CardDescription>Configure security notifications and monitoring preferences</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="loginAlerts">Login Alerts</Label>
-                  <p className="text-xs text-muted-foreground">Get notified of new login attempts</p>
-                </div>
-                <Switch id="loginAlerts" checked={loginAlerts} onCheckedChange={setLoginAlerts} />
-              </div>
-              <div className="space-y-2">
-                <Label>Last Login</Label>
-                <p className="text-sm text-muted-foreground">Today at 2:30 PM from New York, USA</p>
-              </div>
-            </div>
-            <div className="pt-4 border-t border-border/50">
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <AlertTriangle className="w-4 h-4 text-amber-500" />
-                <span>
-                  Your account security score: <strong className="text-accent">Excellent</strong>
-                </span>
-              </div>
-            </div>
+            <Button
+              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+              onClick={handlePasswordUpdate}
+              disabled={isUpdating}
+            >
+              {isUpdating ? "Updating..." : "Update Password"}
+            </Button>
           </CardContent>
         </Card>
       </div>

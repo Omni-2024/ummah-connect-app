@@ -1,31 +1,59 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Button from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Save, User, Mail, Calendar } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Button from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Save, User, Mail } from "lucide-react";
+import { useCurrentUser } from "@/hooks/useUserInfo";
+import { updateUserFn } from "@/lib/endpoints/usersFns";
 
 export function PersonalInfo() {
-  const [isEditing, setIsEditing] = useState(false)
+  const { data: profile, isLoading, refetch } = useCurrentUser();
+  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    firstName: "Admin",
-    lastName: "User",
-    email: "admin@islamic.com",
-    phone: "+1 (555) 123-4567",
-    location: "New York, USA",
-    timezone: "America/New_York",
-    bio: "Experienced system administrator managing the Islamic community platform with dedication to serving our community members.",
-    joinDate: "January 2023",
-  })
+    name: "",
+    role: "",
+    bio: "",
+    contactNumber: "",
+    email: "",
+  });
+  const [saving, setSaving] = useState(false);
 
-  const handleSave = () => {
-    // Save logic here
-    setIsEditing(false)
-  }
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        name: profile.name ?? "",
+        role: profile.role ?? "",
+        bio: "This is a placeholder bio", // random placeholder
+        contactNumber: profile.contactNumber ?? "",
+        email: profile.email ?? "",
+      });
+    }
+  }, [profile]);
+
+  if (isLoading) return <div>Loading...</div>;
+
+  const handleSave = async () => {
+    if (!profile) return;
+    setSaving(true);
+    try {
+      await updateUserFn({
+        id: profile.id,
+        name: formData.name,
+        contactNumber: formData.contactNumber,
+        // bio will be handled later
+      });
+      setIsEditing(false);
+      refetch();
+    } catch (err) {
+      console.error("Failed to update profile:", err);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -37,6 +65,7 @@ export function PersonalInfo() {
         <Button
           onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
           className="bg-accent hover:bg-accent/90 text-accent-foreground"
+          disabled={saving}
         >
           {isEditing ? (
             <>
@@ -62,27 +91,24 @@ export function PersonalInfo() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">First Name</Label>
-                <Input
-                  id="firstName"
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                  disabled={!isEditing}
-                  className="bg-input border-[#337f7c]/20"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Last Name</Label>
-                <Input
-                  id="lastName"
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  disabled={!isEditing}
-                  className="bg-input border-[#337f7c]/20"
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                disabled={!isEditing}
+                className="bg-input border-[#337f7c]/20"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Input
+                id="role"
+                value={formData.role}
+                disabled
+                className="bg-muted border-[#337f7c]/20 text-muted-foreground"
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="bio">Bio</Label>
@@ -108,77 +134,28 @@ export function PersonalInfo() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="contactNumber">Contact Number</Label>
+              <Input
+                id="contactNumber"
+                value={formData.contactNumber}
+                onChange={(e) => setFormData({ ...formData, contactNumber: e.target.value })}
+                disabled={!isEditing}
+                className="bg-input border-[#337f7c]/20"
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                disabled={!isEditing}
+                disabled
                 className="bg-input border-[#337f7c]/20"
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
-              <Input
-                id="phone"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                disabled={!isEditing}
-                className="bg-input border-[#337f7c]/20"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="location">Location</Label>
-              <Input
-                id="location"
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                disabled={!isEditing}
-                className="bg-input border-[#337f7c]/20"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* System Information */}
-        <Card className="bg-card/30 border-[#337f7c]/50 lg:col-span-2 shadow-md">
-          <CardHeader>
-            <CardTitle className="text-base flex items-center">
-              <Calendar className="w-4 h-4 mr-2 text-accent" />
-              System Information
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="timezone">Timezone</Label>
-              <Select
-                value={formData.timezone}
-                onValueChange={(value) => setFormData({ ...formData, timezone: value })}
-                disabled={!isEditing}
-              >
-                <SelectTrigger className="bg-input border-[#337f7c]/20">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-white border-[#337f7c]/20">
-                  <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
-                  <SelectItem value="America/Chicago">Central Time (CT)</SelectItem>
-                  <SelectItem value="America/Denver">Mountain Time (MT)</SelectItem>
-                  <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Join Date</Label>
-              <Input value={formData.joinDate} disabled className="bg-muted border-[#337f7c]/20 text-muted-foreground" />
-            </div>
-            <div className="space-y-2">
-              <Label>Account Status</Label>
-              <Input value="Active" disabled className="bg-muted border-[#337f7c]/20 text-accent font-medium" />
             </div>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
+  );
 }

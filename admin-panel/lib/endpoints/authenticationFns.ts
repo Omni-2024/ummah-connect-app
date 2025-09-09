@@ -41,3 +41,58 @@ export const refreshTokenFn = async (refreshToken: string) => {
 
   return res.data;
 };
+
+/** Post - '/auth/forgot-password' - forgot password */
+export const forgotPasswordFn = async (email: string) => {
+  const res = await Request<ForgotPasswordFnRes>({
+    method: "post",
+    url: "/api/auth/forgot-password",
+    data: { email },
+  });
+  return res.data;
+};
+export interface ForgotPasswordFnRes { }
+
+/** Post - '/auth/reset-password' - reset password */
+export const resetPasswordFn = async (data: { token: string; password: string }) => {
+  const res = await Request<ResetPasswordFnRes>({
+    method: "post",
+    url: "/api/auth/reset-password",
+    data,
+  });
+  return res.data;
+};
+export interface ResetPasswordFnRes { }
+
+/** Post - '/auth/change-password' - change password */
+export const changePasswordFn = async (data: { id: string; oldPassword: string; newPassword: string; otp: string }) => {
+  const res = await Request<ChangePasswordFnRes>({
+    method: "post",
+    url: "/api/auth/change-password",
+    data,
+  });
+  return res.data;
+};
+export interface ChangePasswordFnRes { }
+
+/** Post - '/auth/set-password' - set password */
+export const setPasswordFn = async (data: { id: string; password: string; otp: string }) => {
+  const res = await Request<SetPasswordFnRes>({
+    method: "post",
+    url: "/api/auth/set-password",
+    data,
+  });
+  return res.data;
+};
+export interface SetPasswordFnRes { }
+
+/** Post - '/auth/send-otp' - send otp */
+export const sendOtpFn = async (email: string) => {
+  const res = await Request<SendOtpFnRes>({
+    method: "post",
+    url: "/api/auth/send-otp",
+    data: { email },
+  });
+  return res.data;
+};
+export interface SendOtpFnRes { }
