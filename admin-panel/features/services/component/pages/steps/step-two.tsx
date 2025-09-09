@@ -54,9 +54,9 @@ export function StepTwo() {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const { mutate: createServiceMutate, isPending: isCreateCoursePending } =
+  const { mutate: createServiceMutate, isPending: isCreateServicePending } =
       useMutation({ mutationFn: createServiceFn });
-  const { mutate: updateServiceMutate, isPending: isUpdateCoursePending } =
+  const { mutate: updateServiceMutate, isPending: isUpdateServicePending } =
       useMutation({ mutationFn: updateServiceFn });
 
   const { mutate: uploadPublicMutate, isPending: isUploadPublicPending } =
@@ -196,8 +196,8 @@ export function StepTwo() {
           onBack={onBackHandle}
           onDraft={onDraftHandle}
           disabled={
-              isCreateCoursePending ||
-              isUpdateCoursePending ||
+              isCreateServicePending ||
+              isUpdateServicePending ||
               isUploadPublicPending
               // isDeleteFilePending
           }

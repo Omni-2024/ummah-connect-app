@@ -3,7 +3,7 @@ import type {
   CategoriesPageData,
 ServiceDetailsPageData} from "../types/addService";
 
-export const CREATE_SERVICE_LAST_STEP = 2;
+export const CREATE_SERVICE_LAST_STEP = 3;
 
 
 

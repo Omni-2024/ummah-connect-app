@@ -87,10 +87,6 @@ export default function AdminGigsPage() {
     } = useServices(serviceParams);
 
 
-
-
-
-
     const totalServices = services?.meta?.total || 0;
 
     const totalPages = useMemo(() => {

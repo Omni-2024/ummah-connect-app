@@ -1,3 +1,4 @@
+"use client"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,6 +13,8 @@ import { cn } from "@/lib/className";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { TickCircle } from "iconsax-react";
 import {useCreateServiceState} from "@/features/services/context/useCreateServiceState";
+import {CREATE_SERVICE_LAST_STEP} from "@/features/services/context/CreateServiceState";
+import {useRouter} from "next/navigation";
 
 export enum CreateServiceActiveActionType {
   SUBMIT = "SUBMIT",
@@ -32,7 +35,10 @@ type ServiceEditorLayoutProps = {
 };
 
 const ServiceEditorLayout: React.FC<ServiceEditorLayoutProps> = (props) => {
+  const router=useRouter();
   const { currentStep, isSavedData, editMode } = useCreateServiceState();
+
+  console.log("current",currentStep,props.steps.length-1,props.steps.length-2)
 
 
   return (
@@ -59,19 +65,35 @@ const ServiceEditorLayout: React.FC<ServiceEditorLayoutProps> = (props) => {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <Button
-          variant="primary"
-          disabled={currentStep === 0 || props.disabled || !props.onDraft}
-          type="button"
-          className="w-40"
-          onClick={props.onDraft}
-        >
-          {props.activeAction === CreateServiceActiveActionType.DRAFT ? (
-            <Spinner color="white" />
-          ) : (
-            "Save as draft"
-          )}
-        </Button>
+        {
+          currentStep==CREATE_SERVICE_LAST_STEP-1 ?
+            <Button
+                variant="primary"
+                type="button"
+                className="w-48"
+                onClick={()=>router.push("/admin/dashboard/services")}
+            >
+              {props.activeAction === CreateServiceActiveActionType.DRAFT ? (
+                  <Spinner color="white" />
+              ) : (
+                  "Close without publish"
+              )}
+            </Button>
+              :
+              <Button
+                  variant="primary"
+                  disabled={currentStep === 0 || props.disabled || !props.onDraft}
+                  type="button"
+                  className="w-40"
+                  onClick={props.onDraft}
+              >
+                {props.activeAction === CreateServiceActiveActionType.DRAFT ? (
+                    <Spinner color="white" />
+                ) : (
+                    "Save as draft"
+                )}
+              </Button>
+        }
       </div>
 
       <form
@@ -137,9 +159,9 @@ const ServiceEditorLayout: React.FC<ServiceEditorLayoutProps> = (props) => {
               <Spinner color="white" />
             ) : props.activeAction === CreateServiceActiveActionType.SUBMIT ? (
               <Spinner color="white" />
-            ) : currentStep > props.steps.length - 1 ? (
-              "Done"
             ) : currentStep > props.steps.length - 2 ? (
+              "Done"
+            ) : currentStep > props.steps.length - 3 ? (
               "Save & publish"
             ) : currentStep === 0 ? (
               "Continue"
