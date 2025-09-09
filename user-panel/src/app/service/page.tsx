@@ -6,7 +6,7 @@ import {useParams, useRouter} from "next/navigation";
 import {IconButton} from "@radix-ui/themes";
 import ComingSoonToolTip from "@/components/widgets/ComingSoonToolTip";
 import {Gift} from "iconsax-react";
-import {useExploreState} from "@/features/explore/context/exploreState";
+import {useExploreState} from "@/features/explore/context/useExploreState";
 import useIsMobile from "@/lib/hooks/useIsMobile";
 import {useEffect, useState} from "react";
 import {useCurrentUser} from "@/lib/hooks/useUser";

@@ -22,7 +22,7 @@ import {
   Share1Icon,
 } from "@radix-ui/react-icons";
 import StudentCountLabel from "@/components/widgets/StudentCountLabel";
-import { useExploreState } from "@/features/explore/context/exploreState";
+import { useExploreState } from "@/features/explore/context/useExploreState";
 import ServiceHeader from "./ServiceHeader";
 import ServiceSidebar from "./ServiceSidebar";
 import ServiceContent from "./ServiceContent";

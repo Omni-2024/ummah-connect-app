@@ -1,8 +1,7 @@
-//app/service/[slug]
 "use client"
 import { useParams } from "next/navigation";
 import { useEffect } from "react";
-import { useExploreState } from "@/features/explore/context/exploreState";
+import { useExploreState } from "@/features/explore/context/useExploreState";
 import ServiceDetailsPage from "@/features/explore/component/ServiceDetailsPage";
 
 export default function Service() {
