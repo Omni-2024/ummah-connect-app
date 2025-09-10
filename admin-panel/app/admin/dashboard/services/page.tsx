@@ -280,6 +280,7 @@ export default function AdminGigsPage() {
                 />
             </div>
 
+                
             <FilterSheet
                 open={filterSheetOpen}
                 onClose={() => setFilterSheetOpen(false)}
