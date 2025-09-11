@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import Button from "@/components/base/button";
 import { Toast } from "@/components/base/toast";
-import {changeProviderRoleFn} from "@/lib/endpoints/providersFns";
+import { changeUserRoleFn } from "@/lib/endpoints/usersFns"; // <-- API for users
 
-interface EditProviderRolePopupProps {
+interface UserEditPopupProps {
   open: boolean;
-  currentRole: string; // frontend string e.g. "admin"
+  currentRole: string;
   userId: string | null;
   onClose: () => void;
   onUpdate: () => void; // refetch user list after update
@@ -16,11 +16,16 @@ interface EditProviderRolePopupProps {
 // Frontend role options
 const ROLES = [
   { label: "Admin", value: "admin" },
-  { label: "User", value: "user" },
+  { label: "Business Admin", value: "business_admin" },
 ];
 
+// Map frontend -> backend enums
+const ROLE_MAP: Record<string, string> = {
+  admin: "ADMIN",
+  business_admin: "BUSINESS_ADMIN",
+};
 
-export const EditProviderRolePopup: React.FC<EditProviderRolePopupProps> = ({
+export const UserEditPopup: React.FC<UserEditPopupProps> = ({
   open,
   currentRole,
   userId,
@@ -30,7 +35,7 @@ export const EditProviderRolePopup: React.FC<EditProviderRolePopupProps> = ({
   const [selectedRole, setSelectedRole] = useState(currentRole);
   const [loading, setLoading] = useState(false);
 
-  // Reset selected role whenever popup opens or currentRole changes
+  // Reset role when popup reopens
   useEffect(() => {
     if (open) setSelectedRole(currentRole);
   }, [open, currentRole]);
@@ -40,10 +45,10 @@ export const EditProviderRolePopup: React.FC<EditProviderRolePopupProps> = ({
   const handleSave = async () => {
     try {
       setLoading(true);
-      await changeProviderRoleFn(userId, selectedRole); // Map to backend enum
-      Toast.success("Role updated successfully");
-      onUpdate(); // refetch user list
-      onClose();  // close popup
+      await changeUserRoleFn(userId, selectedRole); // send enum to backend
+      Toast.success("User role updated successfully");
+      onUpdate();
+      onClose();
     } catch (err) {
       Toast.error("Failed to update role");
     } finally {
@@ -54,7 +59,7 @@ export const EditProviderRolePopup: React.FC<EditProviderRolePopupProps> = ({
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-[400px]">
-        <h2 className="text-lg font-bold mb-4">Edit Role</h2>
+        <h2 className="text-lg font-bold mb-4">Edit User Role</h2>
 
         <select
           className="w-full border rounded-md p-2 mb-4"
