@@ -1,22 +1,11 @@
-"use client"
-import { useParams } from "next/navigation";
-import { useEffect } from "react";
-import { useExploreState } from "@/features/explore/context/useExploreState";
-import ServiceDetailsPage from "@/features/explore/component/ServiceDetailsPage";
+import type { Metadata } from "next";
+import ServicePage from "@/app/service/[slug]/ServicePage";
 
-export default function Service() {
-    const params = useParams();
-    const { setServiceSlug } = useExploreState();
+export const metadata: Metadata = {
+    title: "Ummah Connect | Connecting the Islamic Community",
+    alternates: { canonical: "/service" },
+};
 
-    useEffect(() => {
-        let slug = params?.slug;
-        if (Array.isArray(slug)) {
-            slug = slug[0];
-        }
-        if (slug) {
-            setServiceSlug(slug);
-        }
-    }, [params, setServiceSlug]);
-
-    return <ServiceDetailsPage />;
+export default function Page() {
+    return <ServicePage />;
 }

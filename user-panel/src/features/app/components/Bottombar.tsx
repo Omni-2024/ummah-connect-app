@@ -5,7 +5,7 @@ import {usePathname} from "next/navigation";
 import { cn } from "@/lib/className";
 import { useAuthState } from "@/features/auth/context/useAuthState";
 
-const Bottombar = () => {
+const BottomBar = () => {
   const pathname = usePathname() || "/";
   const { isAuthenticated } = useAuthState();
 
@@ -84,4 +84,4 @@ const Bottombar = () => {
   );
 };
 
-export default Bottombar;
+export default BottomBar;
