@@ -5,6 +5,7 @@ export enum Roles {
 }
 
 export interface UserData {
+  languages: string[];
   bio: string;
   contactNumber: string;
   id: string;

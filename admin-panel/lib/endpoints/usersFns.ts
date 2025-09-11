@@ -1,4 +1,4 @@
-import type { UserData } from "@/types/data";
+import type { Roles, UserData } from "@/types/data";
 import Request from "@/lib/http";
 import type { R } from "@/lib/types/request";
 import { isAxiosError } from "axios";
@@ -90,8 +90,10 @@ export const updateUserFn = async (data: {
   contactNumber?: string
   company?: string
   country?: string
+  languages?: string[]
   specializations?: string
   bio?: string; // ✅ added bio
+  role?: Roles;
 
 }) => {
   const res = await Request<UserData>({
@@ -101,3 +103,5 @@ export const updateUserFn = async (data: {
   })
   return res.data
 }
+
+

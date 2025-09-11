@@ -95,4 +95,15 @@ export const sendOtpFn = async (email: string) => {
   });
   return res.data;
 };
+
+
 export interface SendOtpFnRes { }
+
+export const changeUserRoleFn = async (userId: string, role: string) => {
+  const res = await Request({
+    method: "PATCH",
+    url: `/api/provider/${userId}/change-role`, // adjust according to your backend
+    data: { role },
+  });
+  return res.data;
+};

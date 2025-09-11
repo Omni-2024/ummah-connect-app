@@ -14,14 +14,14 @@ type UserCardProps = { data: UserData; onEdit: () => void; onDelete: () => void;
 export const ProviderCard: React.FC<UserCardProps> = ({ data, ...props }) => {
     const [imageError, setImageError] = useState(false);
     const avatarSrc = useAvatarUrl(data?.profileImage);
-    const { data: profession } = useProfession(data.designations[0]);
+    // const { data: profession } = useProfession(data?.designations[0]);
     const serviceParams = useMemo(
         () =>
             ({
                provider:data.id
             }) as GetAllServiceParams,
         [
-            profession,
+            // profession,
             data
         ]
     );
@@ -61,7 +61,7 @@ export const ProviderCard: React.FC<UserCardProps> = ({ data, ...props }) => {
 
             <div className="pt-4 font-bold text-xl font-secondary">{data.name}</div>
 
-            <div className="text-dark-300 text-[13px]">{profession?.name}</div>
+            {/* <div className="text-dark-300 text-[13px]">{profession?.name}</div> */}
 
             <div className="text-dark-300 text-[13px] pt-4 line-clamp-3 mb-auto">
                 {data.bio ?? "Dr. Prachi Khare, an esteemed Oral and Maxillofacial Surgeon, Cosmetologist, and Hair Transplant Surgeon. Dr. Khare holds a Master’s degree in Oral and Maxillofacial Surgery (MDS), a Bachelor of Dental Surgery, a Fellowship in Medical Aesthetics and Cosmetology, and a Master’s in Hair Transplant. Her diverse qualifications highlight her comprehensive expertise in both surgical and aesthetic procedures."}
