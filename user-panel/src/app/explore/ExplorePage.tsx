@@ -8,7 +8,7 @@ import { useServices } from "@/lib/hooks/useServices";
 import { SkeletonServicesCard } from "@/features/explore/component/SkeletonCourseCard";
 import NoServicesFound from "@/features/explore/component/NoServicesFound";
 import ServiceCard from "@/features/app/components/ServiceCard";
-import CertificatBanner from "@/features/explore/component/CertificatBanner";
+import ServiceBanner from "@/features/explore/component/ServiceBanner";
 import { setProfession, setProfessionName, setSpecialties } from "@/features/explore/context/exploreState";
 import FilterModal from "@/features/explore/component/search/FilterModal";
 import {
@@ -117,7 +117,7 @@ export default function ExplorePage() {
                     6,
                     0,
                     <div key="banner" className="hidden w-full py-10 lg:block">
-                        <CertificatBanner />
+                        <ServiceBanner />
                     </div>,
                 );
             }
@@ -138,7 +138,7 @@ export default function ExplorePage() {
                 6,
                 0,
                 <div key="banner" className="hidden w-full py-10 lg:block">
-                    <CertificatBanner />
+                    <ServiceBanner />
                 </div>,
             );
         }
