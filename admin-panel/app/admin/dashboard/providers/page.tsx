@@ -7,16 +7,6 @@ import ListProviders from "@/features/providers/pages/listProviders";
 import withAuth from "@/components/withAuth";
 import {ADMIN_ROLES} from "@/lib/constants";
 
-interface Provider {
-  id: string
-  name: string
-  email: string
-  phone: string
-  category: string
-  description: string
-  status: "pending" | "approved" | "rejected"
-  createdAt: string
-}
 
 const SuperAdminProviders = ()=> {
   const [searchQuery, setSearchQuery] = useState("");

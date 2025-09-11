@@ -51,13 +51,14 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
     },
   });
 
-  const totalPages = Math.max(1, Math.ceil((userData?.meta.total ?? 0) / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil((userData?.meta?.total ?? 0) / PAGE_SIZE));
 
-  useEffect(() => {
-    if (userData?.data.length === 0 && page > 1) {
-      setPage((prev) => Math.min(prev - 1, totalPages));
-    }
-  }, [userData?.data.length, page, totalPages]);
+    useEffect(() => {
+        if ((userData?.data?.length ?? 0) === 0 && page > 1) {
+            setPage((prev) => Math.min(prev - 1, totalPages));
+        }
+    }, [userData?.data?.length, page, totalPages]);
+
 
   useEffect(() => {
     setPage(1);
@@ -70,7 +71,7 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
 
   return (
     <>
-      {userData.data.length === 0 ? (
+      {userData?.data?.length === 0 ? (
         search ? (
           <ListEmptyStateWithSearch
             name="user"
@@ -91,7 +92,7 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
         )
       ) : (
         <div className="grid grid-cols-[repeat(auto-fit,_minmax(377px,1fr))] gap-4 py-12">
-          {userData.data.map((user) => (
+          {userData?.data?.map((user) => (
             <ProviderCard
               key={user.id}
               data={user}

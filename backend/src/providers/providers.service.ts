@@ -71,7 +71,6 @@ export class ProvidersService {
     id: string,
     role: UserRole,
   ) {
-    try {
       const user = await this.providerRepo.changeRole(id, role);
 
       if (!user) {
@@ -83,15 +82,6 @@ export class ProvidersService {
       return {
         status: HttpStatus.OK,
       };
-    } catch (error) {
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: error.message,
-      };
-    }
   }
-
-
-
 
   }

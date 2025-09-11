@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Button from "@/components/base/button";
 import { Toast } from "@/components/base/toast";
-import { changeUserRoleFn } from "@/lib/endpoints/authenticationFns"; // API call
+import {changeProviderRoleFn} from "@/lib/endpoints/providersFns";
 
 interface EditProviderRolePopupProps {
   open: boolean;
@@ -19,11 +19,6 @@ const ROLES = [
   { label: "Business Admin", value: "business_admin" },
 ];
 
-// Map frontend role -> backend enum
-const ROLE_MAP: Record<string, string> = {
-  admin: "ADMIN",
-  business_admin: "BUSINESS_ADMIN",
-};
 
 export const EditProviderRolePopup: React.FC<EditProviderRolePopupProps> = ({
   open,
@@ -45,7 +40,7 @@ export const EditProviderRolePopup: React.FC<EditProviderRolePopupProps> = ({
   const handleSave = async () => {
     try {
       setLoading(true);
-      await changeUserRoleFn(userId, ROLE_MAP[selectedRole]); // Map to backend enum
+      await changeProviderRoleFn(userId, selectedRole); // Map to backend enum
       Toast.success("Role updated successfully");
       onUpdate(); // refetch user list
       onClose();  // close popup

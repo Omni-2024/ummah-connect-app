@@ -104,4 +104,13 @@ export const updateUserFn = async (data: {
   return res.data
 }
 
+export const changeUserRoleFn = async (userId: string, role: string) => {
+    const res = await Request({
+        method: "PATCH",
+        url: `/api/user/${userId}/change-role`, // adjust according to your backend
+        data: { role },
+    });
+    return res.data;
+};
+
 
