@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation"
 
 const MyProfile = () => {
   const { data: user, isFetched, isLoading: userLoading, refetch } = useCurrentUser()
-  const router = useRouter(); // ✅ Only one router
+  const router = useRouter();
 
   if (!isFetched || userLoading) {
     return (

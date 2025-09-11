@@ -29,7 +29,6 @@ type NavbarProps = {
   clearPage?: () => void;
 };
 
-/* ------------------------------ main ------------------------------- */
 
 export default function Navbar({ clearPage }: NavbarProps) {
   const router = useRouter();

@@ -13,9 +13,8 @@ export default function withAuth(Component: any, requiredRoles: UserRole[]) {
         const searchParams = useSearchParams();
 
         useEffect(() => {
-            // Redirect to login if not authenticated
             if (!isAuthenticated) {
-                logout(); // Clear local auth state
+                logout();
 
                 const callback = pathname;
                 const action = searchParams.get("_action");
@@ -48,12 +47,11 @@ export default function withAuth(Component: any, requiredRoles: UserRole[]) {
             }
         }, [isAuthenticated, isFirstLogin, role, pathname, searchParams, logout, router]);
 
-        // Optional: hide content while redirecting
         if (
             !isAuthenticated ||
             (requiredRoles.length > 0 && !requiredRoles.includes(role))
         ) {
-            return <p>Redirecting...</p>; // Or show a spinner
+            return <p>Redirecting...</p>;
         }
 
         return <Component {...props} />;

@@ -18,14 +18,6 @@ import FeaturesSection from "@/features/home/FeaturesSection"
 import IslamicLearningPathsSection from "@/features/home/IslamicLearningPathsSection"
 import IslamicValuesSection from "@/features/home/IslamicValuesSection"
 import RecommendedServicesSection from "@/features/home/RecommendedServicesSection"
-import type { Metadata } from "next";
-
-export const metadata:Metadata = {
-    title: "Home",
-    description:
-        "Discover halal and trusted services from the Ummah. Post requests, hire talent, and collaborate with confidence.",
-    alternates: { canonical: "/" },
-};
 
 export default function HomePage() {
   const { isAuthenticated } = useAuthState()
