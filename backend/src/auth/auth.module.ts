@@ -8,13 +8,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { UmmahCommunityGuard } from './guard/ummahCommunity.guard';
 import { UserPayloadService } from './user.payload.service';
 import { EmailModule } from '../common/email/email.module';
+import { StreamModule } from '../common/getStream/stream.module';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     JwtModule.register({}),
-    EmailModule
+    EmailModule,
+    StreamModule
   ],
   providers: [
     AuthService,

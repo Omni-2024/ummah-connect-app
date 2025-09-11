@@ -20,6 +20,7 @@ import { UserRepository } from '../users/user.repository';
 import { ServiceResponseDto } from '../common/types/service-response-dto';
 import { EmailService } from '../common/email/email.service';
 import { log } from 'console';
+import { StreamService } from '../common/getStream/stream.service';
 
 type AtCfg = { atSecret: string; atExpires: string };
 type RtCfg = { rtSecret: string; rtExpires: string };
@@ -37,7 +38,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly config: ConfigService,
     private readonly userRepo: UserRepository,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
+    private readonly streamService: StreamService,
 
 ) {
     this.accessToken = {
@@ -74,7 +76,10 @@ export class AuthService {
 
       const newUser:UserEntity = await this.userRepo.register(registerDto, emailToken);
 
-      const link =`${this.appBaseUrl}/verify-email?token=${emailToken}`
+      await this.streamService.upsertUser(newUser.id, newUser.name ?? email, newUser.role);
+
+
+    const link =`${this.appBaseUrl}/verify-email?token=${emailToken}`
 
 
       await this.emailService.sendEmailConformation(

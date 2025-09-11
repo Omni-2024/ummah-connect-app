@@ -12,6 +12,7 @@ import { CategoryModule } from './categories/categories.module';
 import { ReviewModule } from './review/review.module';
 import { StorageModule } from './common/r2/storage.module';
 import { ProviderModule } from './providers/provider.module';
+import { StreamModule } from './common/getStream/stream.module';
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { ProviderModule } from './providers/provider.module';
     SpecialistModule,
     ReviewModule,
     StorageModule,
-    ProviderModule
+    ProviderModule,
+    StreamModule
   ],
 })
 export class AppModule {}
