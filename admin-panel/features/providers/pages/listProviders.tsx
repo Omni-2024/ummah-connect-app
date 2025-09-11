@@ -12,7 +12,7 @@ import ViewUser from "@/components/popups/viewUser";
 import RemoveDialog from "@/components/widget/removeDialog";
 import { useGeneralProviders } from "@/lib/hooks/useGeneralProviders";
 import { deleteUserFn } from "@/lib/endpoints/usersFns";
-import { EditProviderRolePopup } from "@/features/providers/EditProviderPopup";
+import { EditProviderRolePopup } from "@/features/app/components/EditProviderPopup";
 
 type ListProvidersProps = {
   search: string;
