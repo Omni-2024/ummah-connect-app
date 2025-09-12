@@ -6,24 +6,24 @@ import { BookingCallDto, DirectChatDto, UpsertUserDto, VideoTokenDto, CallIdBody
 
 @Controller('stream')
 export class StreamController {
-  constructor(private readonly svc: StreamService) {}
+  constructor(private readonly streamService: StreamService) {}
 
   @Post('upsert-user')
   async upsertUser(@Body() dto: UpsertUserDto) {
-    const user = await this.svc.upsertUser(dto.id, dto.name, dto.role);
-    const chatToken = this.svc.createChatToken(dto.id);
+    const user = await this.streamService.upsertUser(dto.id, dto.name, dto.role);
+    const chatToken = this.streamService.createChatToken(dto.id);
     return { user, chatToken };
   }
 
   @Post('direct-channel')
   async direct(@Body() dto: DirectChatDto) {
-    const channelId = await this.svc.getOrCreateDirectChannel(dto.userId, dto.providerId);
+    const channelId = await this.streamService.getOrCreateDirectChannel(dto.userId, dto.providerId);
     return { channelId, type: 'messaging' };
   }
 
   @Post('booking-call')
   async createCall(@Body() dto: BookingCallDto) {
-    const { callId, type } = await this.svc.createBookingCall(dto);
+    const { callId, type } = await this.streamService.createBookingCall(dto);
     return { callId, type };
   }
 
@@ -31,7 +31,7 @@ export class StreamController {
   @HttpCode(200)
   async videoToken(@Body() dto: VideoTokenDto) {
     if (!dto.userId) throw new BadRequestException('userId is required');
-    const token = this.svc.createVideoToken(dto.userId, dto.role);
+    const token = this.streamService.createVideoToken(dto.userId, dto.role);
     return { token };
   }
 
@@ -39,10 +39,9 @@ export class StreamController {
   async getCall(@Param('meetingId') meetingId: string) {
     if (!meetingId) throw new BadRequestException('meetingId is required');
     try {
-      const callDetails = await this.svc.getCallDetails(meetingId);
+      const callDetails = await this.streamService.getCallDetails(meetingId);
       return { callDetails };
     } catch (e: any) {
-      // Stream gRPC NotFound => code 16 in some clients
       if (e?.code === 16) {
         return { message: 'Meeting not found in GetStream', error: e?.metadata };
       }
@@ -53,14 +52,14 @@ export class StreamController {
   @Post('recording/start')
   async startRecording(@Body() dto: CallIdBodyDto) {
     if (!dto.meetingId) throw new BadRequestException('meetingId is required');
-    await this.svc.startRecording(dto.meetingId);
+    await this.streamService.startRecording(dto.meetingId);
     return { message: 'Recording started' };
   }
 
   @Post('recording/stop')
   async stopRecording(@Body() dto: CallIdBodyDto) {
     if (!dto.meetingId) throw new BadRequestException('meetingId is required');
-    await this.svc.stopRecording(dto.meetingId);
+    await this.streamService.stopRecording(dto.meetingId);
     return { message: 'Recording stopped' };
   }
 }
