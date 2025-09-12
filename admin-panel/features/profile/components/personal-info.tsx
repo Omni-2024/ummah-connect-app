@@ -9,14 +9,15 @@ import { Mail, User } from "lucide-react";
 import { useCurrentUser } from "@/hooks/useUserInfo";
 import { updateUserFn } from "@/lib/endpoints/usersFns";
 import { EditInfoButton } from "../buttons/EditInfoButton";
-import { Dropdown } from "@/features/profile/buttons/Dropdown";   // ✅ Dropdown component
-import { COUNTRY_LIST, languages } from "@/lib/constants";        // ✅ Country & Language lists
-import { MultiSelectTags } from "../buttons/MultiSelect";
+import { Dropdown } from "@/features/profile/buttons/Dropdown";
+import { COUNTRY_LIST, languages as LANGUAGE_OPTIONS } from "@/lib/constants";
+import MultiLanguageSelect from "@/features/profile/buttons/MultiSelect";
+import {Toast} from "@/components/base/toast";
 
 export interface formType {
   name:string,
   country:string,
-languages: string[],
+  languages: string[],
   bio:string,
   contactNumber:string,
   email:string
@@ -40,8 +41,8 @@ export function PersonalInfo() {
     if (profile) {
       setFormData({
         name: profile.name,
-        country: profile.country,   
-        languages: profile.languages,   
+        country: profile.country,
+        languages: Array.isArray(profile.languages) ? profile.languages : [],
         bio: profile.bio,
         contactNumber: profile.contactNumber,
         email: profile.email,
@@ -63,9 +64,11 @@ export function PersonalInfo() {
         country: formData.country,   
         languages: formData.languages,   
       });
+      Toast.success("User details updated successfully");
       setIsEditing(false);
       refetch();
     } catch (err) {
+      Toast.error("User details updated failed");
       console.error("Failed to update profile:", err);
     } finally {
       setSaving(false);
@@ -125,13 +128,14 @@ export function PersonalInfo() {
 
             {/* Language */}
             <div className="space-y-2">
-            <MultiSelectTags
-              label="Languages"
-              options={languages}
-              value={formData.languages}
-              onChange={(newLangs) => setFormData({ ...formData, languages: newLangs })}
-              disabled={!isEditing}
-            />
+              <MultiLanguageSelect
+                  label="Languages"
+                  options={LANGUAGE_OPTIONS}
+                  value={formData.languages}
+                  onChange={(next) => setFormData({ ...formData, languages: next })}
+                  disabled={!isEditing}
+                  required
+              />
           </div>
 
             {/* Bio */}

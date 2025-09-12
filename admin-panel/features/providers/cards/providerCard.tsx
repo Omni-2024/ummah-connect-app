@@ -21,7 +21,6 @@ export const ProviderCard: React.FC<UserCardProps> = ({ data, ...props }) => {
                provider:data.id
             }) as GetAllServiceParams,
         [
-            // profession,
             data
         ]
     );

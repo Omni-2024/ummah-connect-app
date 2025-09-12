@@ -92,7 +92,7 @@ export const updateUserFn = async (data: {
   country?: string
   languages?: string[]
   specializations?: string
-  bio?: string; // ✅ added bio
+  bio?: string;
   role?: Roles;
 
 }) => {

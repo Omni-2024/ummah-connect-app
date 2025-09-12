@@ -50,7 +50,7 @@ export class UpdateUserDto {
   @IsOptional()
   contactNumber?: string;
 
-  @IsString()
+  @IsArray()
   @IsOptional()
   languages?: string[];
 }
