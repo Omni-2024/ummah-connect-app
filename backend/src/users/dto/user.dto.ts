@@ -49,4 +49,8 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   contactNumber?: string;
+
+  @IsArray()
+  @IsOptional()
+  languages?: string[];
 }

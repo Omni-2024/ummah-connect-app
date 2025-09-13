@@ -3,6 +3,7 @@ import { UserRepository } from './user.repository';
 import { ConfigService } from '@nestjs/config';
 import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
 import { UserEntity } from './entities/user.entity';
+import { UserRole } from './entities/abstract.user.entity';
 
 
 @Injectable()
@@ -150,6 +151,23 @@ export class UsersService {
         error: error.message,
       };
     }
+  }
+
+  async changeRole(
+    id: string,
+    role: UserRole,
+  ) {
+      const user = await this.userRepo.changeRole(id, role);
+
+      if (!user) {
+        return {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Provider not found',
+        };
+      }
+      return {
+        status: HttpStatus.OK,
+      };
   }
 
 

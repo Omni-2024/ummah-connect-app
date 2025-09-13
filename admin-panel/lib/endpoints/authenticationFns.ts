@@ -95,4 +95,8 @@ export const sendOtpFn = async (email: string) => {
   });
   return res.data;
 };
+
+
 export interface SendOtpFnRes { }
+
+

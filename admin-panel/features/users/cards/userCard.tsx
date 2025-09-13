@@ -5,6 +5,7 @@ import { useAvatarUrl } from "@/hooks/userAvatarUrl";
 import Button from "@/components/base/button"
 import {UserData} from "@/types/data";
 import {ArrowRight} from "lucide-react";
+import { UserEditPopup } from "@/features/app/components/EditUserPopup";
 
 type UserCardProps = { data: UserData; onEdit: () => void; onDelete: () => void; onViewDetails: () => void; };
 

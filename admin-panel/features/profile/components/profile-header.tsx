@@ -28,10 +28,8 @@ export function ProfileHeader() {
     try {
       setUploading(true)
 
-      // ✅ Use the same upload function as user panel
       const uploadResult = await uploadPublicFn({ imageFile: file })
 
-      // ✅ Save uploaded image URL to DB
       await updateUserFn({
         id: profile.id,
         profileImage: uploadResult.url,

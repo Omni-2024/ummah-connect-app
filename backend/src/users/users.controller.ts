@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
 import { RegisterDto } from './dto/register.dto';
 import { Roles } from '../auth/decorator/role.decorator';
 import { UserRole } from './entities/abstract.user.entity';
@@ -71,6 +71,16 @@ export class UsersController {
   ) {
     return await this.userService.changeStatus(id, body.status);
   }
+
+  @Roles([UserRole.ADMIN, UserRole.ROOT])
+  @Patch('/:id/change-role')
+  async changeRole(
+    @Param('id') id: string,
+    @Body() body: { role: UserRole },
+  ) {
+    return await this.userService.changeRole(id, body.role);
+  }
+
 
   // @Public()
   // @Post('verify-turnstile')
