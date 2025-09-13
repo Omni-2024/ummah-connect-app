@@ -52,7 +52,7 @@ export default function ServiceHeader({
       </div>
 
       {/* Title and Quick Info Card */}
-      <Card className="mb-6 p-6 lm:p-0 pt-0 bg-white shadow-none border-none ">
+      <Card className=" p-6 lm:p-0 pt-0 bg-white shadow-none border-none ">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div className="flex-1">
             <div className="mb-3 flex items-center gap-4 text-sm">
@@ -74,11 +74,11 @@ export default function ServiceHeader({
               {service.title}
             </h1>
 
-            <p className="text-lg text-gray-600 mb-4">
+            <p className="text-lg text-gray-600 ">
               {service.tagline}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+            {/* <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
               <div className="flex items-center gap-1">
                 <ClockIcon className="size-4" />
                 {formatReadableHours(service.duration)}
@@ -90,7 +90,7 @@ export default function ServiceHeader({
               <div className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
                 CME ID: {service.cmeId}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Mobile pricing preview */}

@@ -63,7 +63,7 @@ export default function ServiceSidebar({
           </Button>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
+          {/* <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="text-center p-3 bg-gray-50 rounded-lg">
               <div className="text-xl font-bold text-gray-900">
                 {formatReadableHours(service.duration)}
@@ -76,10 +76,10 @@ export default function ServiceSidebar({
               </div>
               <div className="text-xs text-gray-600">CME Points</div>
             </div>
-          </div>
+          </div> */}
 
           {/* Action Buttons */}
-          <div className="flex gap-2 mt-6 pt-4 border-t border-gray-200">
+          <div className="flex gap-2 pt-4 border-t border-gray-200">
             <Button
               variant="primary"
               onClick={onBookmark}
