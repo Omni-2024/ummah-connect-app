@@ -192,7 +192,7 @@ function RecommendedServicesSection({ router }: { router: AppRouterInstance }) {
 
         {/* Other Services - Responsive List */}
         <div className="space-y-3 sm:space-y-4">
-          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6 px-4 sm:px-0">More Recommended Services</h3>
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 sm:mb-6 px-4 sm:px-0">Recommended Services for You</h3>
           {otherServices.map((service) => (
             <div 
               key={service.id} 
