@@ -27,7 +27,7 @@ export default function AdminCategoriesPage({ categories }: { categories: Catego
 
     return (
         <div className="min-h-screen bg-background">
-            <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border shadow-sm">
+            <div className="top-50 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
                 <div className="container mx-auto px-6 py-4">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -42,7 +42,8 @@ export default function AdminCategoriesPage({ categories }: { categories: Catego
 
                         <Button
                             onClick={handleAddProfession}
-                            className="bg-gradient-to-br from-[#669f9d] to-[#337f7c] hover:bg-primary/90"
+                            variant="primary"
+                            className="bg-primary-500"
                         >
                             <Plus className="h-4 w-4 mr-2" />
                             Add Profession

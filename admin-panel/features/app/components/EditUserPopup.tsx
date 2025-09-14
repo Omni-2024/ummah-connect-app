@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import Button from "@/components/base/button";
 import { Toast } from "@/components/base/toast";
 import { changeUserRoleFn } from "@/lib/endpoints/usersFns"; // <-- API for users
+import { Dropdown } from "@/components/base/custom-dropdown";
+import { BriefcaseBusiness, Shield, UserCheck, UserCog } from "lucide-react";
+import { UserTick } from "iconsax-react";
 
 interface UserEditPopupProps {
   open: boolean;
@@ -15,8 +18,8 @@ interface UserEditPopupProps {
 
 // Frontend role options
 const ROLES = [
-  { label: "Admin", value: "admin" },
-  { label: "Business Admin", value: "business_admin" },
+  { label: "Admin", value: "admin", icon: <Shield className="w-4 h-4" /> },
+  { label: "Business Admin", value: "business_admin", icon: <BriefcaseBusiness className="w-4 h-4" /> },
 ];
 
 // Map frontend -> backend enums
@@ -58,20 +61,17 @@ export const UserEditPopup: React.FC<UserEditPopupProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-[400px]">
+      <div className="bg-white rounded-xl p-10 w-[400px]">
         <h2 className="text-lg font-bold mb-4">Edit User Role</h2>
 
-        <select
-          className="w-full border rounded-md p-2 mb-4"
+        {/* Reusable custom Dropdown in place of the native select */}
+        <Dropdown
+          options={ROLES}
           value={selectedRole}
-          onChange={(e) => setSelectedRole(e.target.value)}
-        >
-          {ROLES.map((role) => (
-            <option key={role.value} value={role.value}>
-              {role.label}
-            </option>
-          ))}
-        </select>
+          onChange={setSelectedRole}
+          placeholder="Select role"
+          className="mb-4"
+        />
 
         <div className="flex justify-end gap-2">
           <Button variant="secondary" onClick={onClose} disabled={loading}>

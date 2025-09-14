@@ -93,9 +93,9 @@ export default function CategoryAddEditModal() {
                 Cancel
               </Button>
               <Button
+                  variant="primary"
                   type="submit"
                   disabled={isPending || !name.trim()}
-                  className="flex-1 h-11 bg-gradient-to-br from-[#669f9d] to-[#337f7c] hover:from-cyan-600 hover:to-blue-700 text-white shadow-sm"
               >
                 {isPending ? "Saving..." : CTA[entity][action]}
               </Button>

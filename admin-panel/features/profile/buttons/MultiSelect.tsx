@@ -118,7 +118,7 @@ export default function MultiLanguageSelect({
                         type="button"
                         variant="outline"
                         className={cn(
-                            "h-10 w-full justify-between rounded-full border border-[#337f7c]/30 bg-accent/10 text-foreground",
+                            "h-10 w-full justify-between border border-[#337f7c]/30 bg-accent/10 text-foreground",
                             "hover:bg-accent/20",
                             disabled && "cursor-not-allowed opacity-60"
                         )}

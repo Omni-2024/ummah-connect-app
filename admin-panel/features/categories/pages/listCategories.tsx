@@ -197,7 +197,7 @@ function CategoryRow({
                                 </div>
 
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-gradient-to-br from-[#669f9d] to-[#337f7c] rounded-lg flex items-center justify-center shadow-sm">
+                                    <div className="w-10 h-10 bg-primary-500 rounded-lg flex items-center justify-center shadow-sm">
                                         <Users className="h-5 w-5 text-white" />
                                     </div>
 
@@ -215,7 +215,7 @@ function CategoryRow({
 
                             {/* Action buttons shouldn't toggle accordion */}
                             <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-                                <Badge variant="outline" className="bg-cyan-50 text-[#446576]">
+                                <Badge variant="outline" className="bg-primary-50 text-primary-700">
                                     {category.specialists?.length || 0} items
                                 </Badge>
 
@@ -242,7 +242,7 @@ function CategoryRow({
                                 <div key={s.id} className="group/spec">
                                     <div className="flex items-center justify-between p-3 bg-gradient-to-r from-slate-50 to-gray-50 rounded-lg border border-border/30 transition-all duration-200 group hover:shadow-sm">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-6 h-6 bg-gradient-to-br from-[#669f9d] to-[#337f7c] rounded-full flex items-center justify-center text-xs font-medium text-white shadow-sm">
+                                            <div className="w-6 h-6 bg-primary-300 rounded-full flex items-center justify-center text-xs font-medium text-white shadow-sm">
                                                 {idx + 1}
                                             </div>
                                             <div>
