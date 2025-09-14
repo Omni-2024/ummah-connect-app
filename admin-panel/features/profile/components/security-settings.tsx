@@ -142,7 +142,8 @@ export function SecuritySettings() {
             </div>
 
             <Button
-              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground"
+            variant="primary"
+              className="w-full"
               onClick={handlePasswordUpdate}
               disabled={isUpdating}
             >

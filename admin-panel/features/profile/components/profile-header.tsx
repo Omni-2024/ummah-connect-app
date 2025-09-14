@@ -102,7 +102,7 @@ export function ProfileHeader() {
                 <div className="flex items-center space-x-2 mt-2">
                   <Badge
                     variant="secondary"
-                    className="bg-[#337f7c]/10 text-[#337f7c] border-[#337f7c]/50"
+                    className="bg-primary-50 text-primary-700 border-primary-700"
                   >
                     <Shield className="w-3 h-3 mr-1" />
                     {role === "admin" ? "Admin" : "User"}
@@ -110,7 +110,7 @@ export function ProfileHeader() {
                   {profile?.verified && (
                     <Badge
                       variant="outline"
-                      className="bg-cyan-600 border-[#337f7c]/20 text-white"
+                      className="bg-primary-600 border-primary-50 text-white"
                     >
                       <Star className="w-3 h-3 mr-1" />
                       Verified

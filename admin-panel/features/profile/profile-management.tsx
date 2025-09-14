@@ -40,7 +40,7 @@ export function ProfileManagement() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-all duration-200 ${
                   activeTab === tab.id
-                    ? "bg-gradient-to-br from-[#669f9d] to-[#337f7c] text-white shadow-sm"
+                    ? "bg-secondary-500 text-white shadow-sm"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                 }`}
               >
