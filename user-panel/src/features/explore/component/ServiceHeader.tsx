@@ -24,6 +24,15 @@ export default function ServiceHeader({
   onEnroll,
   formatReadableHours,
 }: ServiceHeaderProps) {
+
+    const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
   return (
     <>
       {/* Compact Hero Section */}
@@ -104,24 +113,39 @@ export default function ServiceHeader({
       </Card>
 
       {/* Educator Info */}
-      {educator && (
-        <Card className="mb-6 p-4 bg-white shadow-none border-none lg:shadow-sm lg:border lg:border-gray-200">
-          <div className="flex items-center gap-3">
-            <div className="h-14 w-14 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white font-semibold text-lg">
-              {educator.name?.charAt(0) || "E"}
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 text-lg">
-                {educator.name}
-              </h3>
-              <p className="text-sm text-gray-600">Service Provider </p>
-            </div>
-            <Button variant="primary" size="sm">
-              View Profile
-            </Button>
-          </div>
-        </Card>
+{educator && (
+  <Card className="mb-6 p-4 bg-white shadow-none border-none lg:shadow-sm lg:border lg:border-gray-200">
+    <div className="flex items-center gap-3">
+      {educator.profileImage ? (
+        <img
+          src={
+            educator.profileImage
+            ? buildAvatarUrl(educator.profileImage)!!
+            : "/images/coverImage.png"
+          } 
+          alt={educator.name}
+          className="size-16 rounded-full object-cover"
+        />
+      ) : (
+        <div className="size-16 rounded-full bg-gray-100 flex items-center justify-center">
+          <span className="text-gray-600 font-medium">
+            {getInitials(educator.name)}
+          </span>
+        </div>
       )}
+      <div className="flex-1">
+        <h3 className="font-semibold text-gray-900 text-lg">
+          {educator.name}
+        </h3>
+        <p className="text-sm text-gray-600">Service Provider</p>
+      </div>
+      <Button variant="primary" size="sm">
+        View Profile
+      </Button>
+    </div>
+  </Card>
+)}
+
     </>
   );
 }

@@ -10,6 +10,7 @@ import {
   CheckCircledIcon,
   ArrowRightIcon
 } from "@radix-ui/react-icons";
+import { buildAvatarUrl } from "@/features/app/components/Navbar";
 
 interface ServiceContentProps {
   service: any;
@@ -84,7 +85,11 @@ export default function ServiceContent({ service, educator }: ServiceContentProp
             <div className="relative flex-shrink-0">
               {educator.profileImage ? (
                 <img
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/${educator.profileImage}`}
+                  src={
+                    educator.profileImage
+                    ? buildAvatarUrl(educator.profileImage)!!
+                    : "/images/coverImage.png"
+                  }                   
                   alt={educator.name}
                   className="size-16 rounded-full object-cover"
                 />
