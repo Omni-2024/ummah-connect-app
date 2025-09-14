@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useGeneralUser } from "@/lib/hooks/useUser";
 import { useProfession } from "@/lib/hooks/useProfessions";
 import { useSpecialists } from "@/lib/hooks/useSpecialists";
+import { useServicesByEducator } from "@/lib/hooks/useServices";
 import Navbar from "@/features/app/components/Navbar";
 import NavbarMobile, { NavbarTitle } from "@/features/app/components/Navbar.mobile";
 import Bottombar from "@/features/app/components/Bottombar";
@@ -24,7 +25,6 @@ import {
   PersonIcon,
   BookmarkFilledIcon,
   BookmarkIcon,
-
 } from "@radix-ui/react-icons";
 import { BuildingLibraryIcon } from "@heroicons/react/16/solid";
 
@@ -91,6 +91,11 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
   const { data: educator, isLoading, error } = useGeneralUser(providerId);
   const { data: designationData } = useProfession(educator?.designations?.[0] || "");
   const { data: specialistsData } = useSpecialists(educator?.designations?.[0] || "");
+  const { data: services, isLoading: servicesLoading } = useServicesByEducator({
+    limit: 10,
+    educator: providerId,
+  });
+
   const handleBack = () => {
     router.back();
   };
@@ -150,33 +155,30 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
     return stars;
   };
 
-  // Replace the existing getDesignationDisplay function
-const getDesignationDisplay = () => {
-  if (designationData?.name) {
-    return designationData.name;
-  }
-  return educator?.designations?.[0] || "Service Provider";
-};
+  const getDesignationDisplay = () => {
+    if (designationData?.name) {
+      return designationData.name;
+    }
+    return educator?.designations?.[0] || "Service Provider";
+  };
 
-// Replace the existing getInterestsDisplay function  
-const getInterestsDisplay = () => {
-  if (!educator?.interests || educator.interests.length === 0) {
-    return [];
-  }
-  
-  if (specialistsData) {
-    // Map interest IDs to their names from specialistsData
-    return educator.interests
-      .map(interestId => {
-        const specialist = specialistsData.find(s => s.id === interestId);
-        return specialist ? { id: interestId, name: specialist.name } : null;
-      })
-      .filter(item => item !== null);
-  }
-  
-  return educator.interests.map(id => ({ id, name: id }));
-};
-  // Helper function to clean and display languages
+  const getInterestsDisplay = () => {
+    if (!educator?.interests || educator.interests.length === 0) {
+      return [];
+    }
+    
+    if (specialistsData) {
+      return educator.interests
+        .map(interestId => {
+          const specialist = specialistsData.find(s => s.id === interestId);
+          return specialist ? { id: interestId, name: specialist.name } : null;
+        })
+        .filter(item => item !== null);
+    }
+    
+    return educator.interests.map(id => ({ id, name: id }));
+  };
+
   const getCleanedLanguages = (languages: string[]) => {
     if (!languages || languages.length === 0) {
       return [];
@@ -245,67 +247,6 @@ const getInterestsDisplay = () => {
     { id: "portfolio", label: "Portfolio" },
   ];
 
-  // Sample data for demonstration
-  const sampleServices = [
-    {
-      id: 1,
-      title: "Quran Recitation & Tajweed Classes",
-      description: "I will teach you proper Quran recitation with Tajweed rules. Perfect for beginners and intermediate learners.",
-      price: "$25",
-      duration: "1 hour",
-      rating: 4.9,
-      reviews: 156,
-      image: "/api/placeholder/300/200"
-    },
-    {
-      id: 2,
-      title: "Islamic Calligraphy Design",
-      description: "Beautiful Arabic calligraphy for your home, mosque, or business. Custom designs available.",
-      price: "$45",
-      duration: "3-5 days",
-      rating: 4.8,
-      reviews: 89,
-      image: "/api/placeholder/300/200"
-    },
-    {
-      id: 3,
-      title: "Wedding Nikah Ceremony Planning",
-      description: "Complete Islamic wedding ceremony planning according to Sunnah traditions.",
-      price: "$200",
-      duration: "Full service",
-      rating: 5.0,
-      reviews: 34,
-      image: "/api/placeholder/300/200"
-    }
-  ];
-
-  const sampleReviews = [
-    {
-      id: 1,
-      name: "Ahmed Hassan",
-      rating: 5,
-      date: "2 weeks ago",
-      country: "UAE",
-      comment: "Excellent service! Brother Maurizio helped me learn Tajweed perfectly. His patience and knowledge are remarkable. Highly recommended for anyone wanting to improve their Quran recitation."
-    },
-    {
-      id: 2,
-      name: "Fatima Al-Zahra",
-      rating: 5,
-      date: "1 month ago",
-      country: "Saudi Arabia",
-      comment: "Beautiful calligraphy work for our mosque. The attention to detail and Islamic authenticity was perfect. Will definitely work with him again."
-    },
-    {
-      id: 3,
-      name: "Muhammad Ali",
-      rating: 4,
-      date: "2 months ago",
-      country: "Pakistan",
-      comment: "Great experience overall. Very professional and knowledgeable about Islamic practices. The wedding planning service exceeded our expectations."
-    }
-  ];
-
   // Clean up the data for display
   const cleanedLanguages = getCleanedLanguages(educator.languages);
 
@@ -365,14 +306,13 @@ const getInterestsDisplay = () => {
                 <div className="flex-1 text-center sm:text-left">
                   <div className="mb-4">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">{educator.name}</h1>
-                     <p className="text-lg text-gray-600 mb-3">{getDesignationDisplay()}</p>                 
+                    <p className="text-lg text-gray-600 mb-3">{getDesignationDisplay()}</p>                 
                     <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
                       {educator.verified && (
                         <Badge className="bg-blue-100 text-blue-700 border-blue-200 px-3 py-1">
                           ✓ Verified Provider
                         </Badge>
                       )}
-                      {/* className="bg-green-100 text-green-700 border-green-200 px-3 py-1 */}
                       <Badge
                         className={`px-3 py-1 border 
                           ${educator.active
@@ -382,7 +322,6 @@ const getInterestsDisplay = () => {
                       >
                         {educator.active ? 'Online now' : 'Offline'}
                       </Badge>
-                     
                     </div>
 
                     {/* Rating & Stats */}
@@ -496,49 +435,95 @@ const getInterestsDisplay = () => {
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
                   <h2 className="text-2xl font-bold">My Services</h2>
-                  <p className="text-gray-600">{sampleServices.length} Services Available</p>
+                  <p className="text-gray-600">
+                    {services && services.data ? services.data.length : 0} Services Available
+                  </p>
                 </div>
                 
-                {sampleServices.map((service) => (
-                  <Card key={service.id} className="p-6 hover:shadow-lg transition-shadow">
-                    <div className="flex flex-col md:flex-row gap-6">
-                      <div className="md:w-48 flex-shrink-0">
-                        <div className="w-full h-32 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center">
-                          <span className="text-green-600 text-4xl">📖</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start mb-3">
-                          <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
-                          <div className="text-right">
-                            <p className="text-2xl font-bold text-green-600">Starting at {service.price}</p>
-                            <p className="text-sm text-gray-500">{service.duration}</p>
+                {servicesLoading ? (
+                  <div className="animate-pulse space-y-4">
+                    {[1, 2].map((index) => (
+                      <Card key={index} className="p-6">
+                        <div className="flex flex-col md:flex-row gap-6">
+                          <div className="md:w-48 flex-shrink-0">
+                            <div className="w-full h-32 bg-gray-300 rounded-lg"></div>
+                          </div>
+                          <div className="flex-1 space-y-3">
+                            <div className="h-6 bg-gray-300 rounded w-2/3"></div>
+                            <div className="h-4 bg-gray-300 rounded w-full"></div>
+                            <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                            <div className="flex gap-2">
+                              <div className="h-8 bg-gray-300 rounded w-24"></div>
+                              <div className="h-8 bg-gray-300 rounded w-24"></div>
+                            </div>
                           </div>
                         </div>
+                      </Card>
+                    ))}
+                  </div>
+                ) : services && services.data && services.data.length > 0 ? (
+                  services.data.map((service) => (
+                    <Card key={service.id} className="p-6 hover:shadow-lg transition-shadow">
+                      <div className="flex flex-col md:flex-row gap-6">
+                        <div className="md:w-48 flex-shrink-0">
+                          {service.coverImageUrl ? (
+                            <img
+                              src={`${process.env.NEXT_PUBLIC_API_URL}/${service.coverImageUrl}`}
+                              alt={service.title}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <div className="w-full h-32 bg-gradient-to-br from-green-100 to-green-200 rounded-lg flex items-center justify-center">
+                              <span className="text-green-600 text-4xl">📖</span>
+                            </div>
+                          )}
+                        </div>
                         
-                        <p className="text-gray-700 mb-4">{service.description}</p>
-                        
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            {renderStars(service.rating)}
-                            <span className="font-semibold">{service.rating}</span>
-                            <span className="text-gray-500">({service.reviews} reviews)</span>
+                        <div className="flex-1">
+                          <div className="flex justify-between items-start mb-3">
+                            <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
+                            <div className="text-right">
+                              <p className="text-2xl font-bold text-green-600">
+                                ${service.discountEnabled && service.discount > 0
+                                  ? (service.price * (1 - service.discount / 100)).toFixed(2)
+                                  : service.price.toFixed(2)}
+                              </p>
+                              {service.discountEnabled && service.discount > 0 && (
+                                <p className="text-sm text-red-500 line-through">
+                                  ${service.price.toFixed(2)}
+                                </p>
+                              )}
+                            </div>
                           </div>
                           
-                          <div className="flex gap-2">
-                            <Button size="sm" variant="primary">
-                              View Details
-                            </Button>
-                            <Button size="sm">
-                              Order Now
-                            </Button>
+                          <p className="text-gray-700 mb-4">{service.tagline}</p>
+                          
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              {renderStars(parseFloat(service.averageReviewScore) || 0)}
+                              <span className="font-semibold">{service.averageReviewScore || "0.0"}</span>
+                              <span className="text-gray-500">({service.totalReviewCount} reviews)</span>
+                            </div>
+                            
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="primary"
+                                onClick={() => router.push(`/services/${service.slug}`)}
+                              >
+                                View Details
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    </Card>
+                  ))
+                ) : (
+                  <Card className="p-6 text-center">
+                    <p className="text-gray-500">No services available at the moment.</p>
                   </Card>
-                ))}
+                )}
               </div>
             )}
 
@@ -598,7 +583,32 @@ const getInterestsDisplay = () => {
 
                 {/* Individual Reviews */}
                 <div className="space-y-4">
-                  {sampleReviews.map((review) => (
+                  {[
+                    {
+                      id: 1,
+                      name: "Ahmed Hassan",
+                      rating: 5,
+                      date: "2 weeks ago",
+                      country: "UAE",
+                      comment: "Excellent service! Brother Maurizio helped me learn Tajweed perfectly. His patience and knowledge are remarkable. Highly recommended for anyone wanting to improve their Quran recitation."
+                    },
+                    {
+                      id: 2,
+                      name: "Fatima Al-Zahra",
+                      rating: 5,
+                      date: "1 month ago",
+                      country: "Saudi Arabia",
+                      comment: "Beautiful calligraphy work for our mosque. The attention to detail and Islamic authenticity was perfect. Will definitely work with him again."
+                    },
+                    {
+                      id: 3,
+                      name: "Muhammad Ali",
+                      rating: 4,
+                      date: "2 months ago",
+                      country: "Pakistan",
+                      comment: "Great experience overall. Very professional and knowledgeable about Islamic practices. The wedding planning service exceeded our expectations."
+                    }
+                  ].map((review) => (
                     <Card key={review.id} className="p-6">
                       <div className="flex gap-4">
                         <div className="size-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
@@ -627,25 +637,6 @@ const getInterestsDisplay = () => {
               </div>
             )}
 
-            {activeTab === "portfolio" && (
-              <div className="space-y-6">
-                <h2 className="text-2xl font-bold">Portfolio & Past Work</h2>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                  {[1, 2, 3, 4].map((item) => (
-                    <Card key={item} className="overflow-hidden">
-                      <div className="h-48 bg-gradient-to-br from-green-100 via-blue-50 to-purple-100 flex items-center justify-center">
-                        <span className="text-4xl">🎨</span>
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-bold mb-2">Islamic Calligraphy Project {item}</h3>
-                        <p className="text-gray-600 text-sm">Beautiful Arabic calligraphy work for mosque decoration</p>
-                      </div>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Sidebar - Right Column */}
@@ -668,13 +659,13 @@ const getInterestsDisplay = () => {
                   Contact Me
                 </Button>
                 <Button 
-                    variant="primary"
-                    className="w-full flex items-center justify-center gap-2"
-                    onClick={() => setIsBookmarked(!isBookmarked)}
-                  >
-                    {isBookmarked ? <BookmarkFilledIcon className="size-4" /> : <BookmarkIcon className="size-4" />}
-                    Save
-                  </Button>
+                  variant="primary"
+                  className="w-full flex items-center justify-center gap-2"
+                  onClick={() => setIsBookmarked(!isBookmarked)}
+                >
+                  {isBookmarked ? <BookmarkFilledIcon className="size-4" /> : <BookmarkIcon className="size-4" />}
+                  Save
+                </Button>
               </div>
 
               {/* Contact Information */}
@@ -728,29 +719,25 @@ const getInterestsDisplay = () => {
                 {educator.company && (
                   <div className="flex items-center gap-3">
                     <BuildingLibraryIcon className="size-4 text-gray-400" />
-
-                  <div>
-                    <h4 className="text-xs font-medium text-gray-900">Organization</h4>
-                    <p className="text-sm text-gray-600">{educator.company || "Not specified"}</p>
-                  </div>
+                    <div>
+                      <h4 className="text-xs font-medium text-gray-900">Organization</h4>
+                      <p className="text-sm text-gray-600">{educator.company || "Not specified"}</p>
+                    </div>
                   </div>
                 )}
                 
                 {educator.specializations && (
                   <div className="flex items-center gap-3">
                     <StarFilledIcon className="size-4 text-gray-400" />
-                  <div>
-                    <h4 className="text-xs font-medium text-gray-900">Specializations</h4>
-                    <p className="text-sm text-gray-600">{educator.specializations || "Not specified"}kk</p>
-                  </div>
+                    <div>
+                      <h4 className="text-xs font-medium text-gray-900">Specializations</h4>
+                      <p className="text-sm text-gray-600">{educator.specializations || "Not specified"}</p>
+                    </div>
                   </div>
                 )}
                 
               </div>
             </Card>
-
-
-
           </div>
         </div>
       </div>
