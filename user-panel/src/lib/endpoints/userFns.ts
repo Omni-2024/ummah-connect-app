@@ -33,6 +33,11 @@ export const getUserByIdFn = async (id: string) => {
 };
 
 export interface GetUpdateUserByIdFnRes {
+  languages: string[];
+  totalServices: number | null;
+  totalServicesCompleted: number | null;
+  totalActiveServices: number | null;
+  bio: string;
   id: string;
   createdAt: string;
   updatedAt: string;
