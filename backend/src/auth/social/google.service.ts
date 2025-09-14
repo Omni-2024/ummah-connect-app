@@ -15,6 +15,7 @@ import { UserRepository } from '../../users/user.repository';
 import { GoogleUser } from '../../users/dto/login.dto';
 import { RegisterSocialDto } from '../../users/dto/register.dto';
 import { UserRole } from '../../users/entities/abstract.user.entity';
+import { StreamService } from '../../common/getStream/stream.service';
 
 
 @Injectable()
@@ -24,6 +25,8 @@ export class GoogleService implements SocialLogin {
     // private readonly stripeService: StripeService,
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+    private readonly streamService: StreamService,
+
   ) { }
 
   async getGoogleUserInfo(token: string) {
@@ -80,6 +83,8 @@ export class GoogleService implements SocialLogin {
           profileImage: googleUser.picture,
         };
         user = await this.userRepo.registerSocial(registerSocialDto);
+        await this.streamService.upsertUser(user.id, user.name ?? user.email, user.role);
+
         // const customer: CreateCustomerDto = {
         //   userId: user.id,
         //   email: user.email,
