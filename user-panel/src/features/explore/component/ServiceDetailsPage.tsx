@@ -195,7 +195,7 @@ export default function ServiceDetailsPage() {
               formatReadableHours={formatReadableHours}
             />
 
-            <ServiceContent service={service} />
+            <ServiceContent service={service} educator={educator} />
           </div>
 
           <ServiceSidebar
