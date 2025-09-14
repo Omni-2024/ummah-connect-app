@@ -27,6 +27,7 @@ import {
 
 } from "@radix-ui/react-icons";
 import { BuildingLibraryIcon } from "@heroicons/react/16/solid";
+import {useChat} from "@/components/getStream/chat/ChatContextProvider";
 
 // Enhanced Loading skeleton component
 function ProviderProfileSkeleton() {
@@ -91,14 +92,14 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
   const { data: educator, isLoading, error } = useGeneralUser(providerId);
   const { data: designationData } = useProfession(educator?.designations?.[0] || "");
   const { data: specialistsData } = useSpecialists(educator?.designations?.[0] || "");
+  const { setUserId } = useChat();
+
   const handleBack = () => {
     router.back();
   };
 
   const handleContact = () => {
-    if (educator?.email) {
-      window.location.href = `mailto:${educator.email}`;
-    }
+    setUserId(providerId)
   };
 
   const handleShare = () => {

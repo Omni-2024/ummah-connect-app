@@ -87,8 +87,6 @@ export default function HomePage() {
       <IslamicLearningPathsSection />
       {/* <SuccessStoriesSection /> */}
       <BottomBar />
-      <ChatWidgetWrapper />
-
     </div>
   )
 }

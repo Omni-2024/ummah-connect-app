@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import {NotificationSettingsPanel} from "@/components/getStream/notification-settings-panel";
 import {useChatNotifications} from "@/components/getStream/useChatNotifications";
 import {Menu, MessageCircle, Settings,User,CloseCircle} from "iconsax-react";
+import {Minimize, Minimize2} from "lucide-react";
 
 const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUserId: string }) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -93,9 +94,9 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={handleChatOpen}
-                                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-colors duration-200 relative"
+                                className="bg-primary-500 hover:bg-primary-400 text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-colors duration-200 relative"
                             >
-                                <MessageCircle color="black " width={25} size={24} />
+                                <MessageCircle color="white " width={25} size={24} />
 
                                 {/* Enhanced Notification Badge */}
                                 <AnimatePresence>
@@ -157,14 +158,14 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                             }`}
                         >
                             {/* Chat Header */}
-                            <div className="bg-blue-600 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
+                            <div className="bg-primary-500 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
                                 <div className="flex items-center gap-3 flex-1 min-w-0 pr-3">
                                     {isAdmin && (
                                         <button
                                             onClick={toggleChannelList}
-                                            className="hover:bg-blue-500 p-1 rounded transition-colors flex-shrink-0"
+                                            className="hover:bg-primary-400 p-1 rounded transition-colors flex-shrink-0"
                                         >
-                                            <Menu size={20} />
+                                            <Menu color="white" width={20} size={20} />
                                         </button>
                                     )}
                                     <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -178,10 +179,10 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                     {/* Settings Button */}
                                     <button
                                         onClick={() => setShowSettings(!showSettings)}
-                                        className="hover:bg-blue-500 p-2 rounded transition-colors relative"
+                                        className="hover:bg-primary-400 p-2 rounded transition-colors relative"
                                         title="Notification Settings"
                                     >
-                                        <Settings size={18} />
+                                        <Settings color="white" width={20} size={18} />
                                         {permissionStatus !== "granted" && (
                                             <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full" />
                                         )}
@@ -190,13 +191,13 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                     {!isMobile && (
                                         <button
                                             onClick={() => setIsMinimized(!isMinimized)}
-                                            className="hover:bg-blue-500 p-2 rounded transition-colors"
+                                            className="hover:bg-primary-400 p-2 rounded transition-colors"
                                         >
-                                            <CloseCircle size={18} />
+                                            <Minimize2 color="white" width={20} size={18} />
                                         </button>
                                     )}
-                                    <button onClick={() => setIsOpen(false)} className="hover:bg-blue-500 p-2 rounded transition-colors">
-                                        <CloseCircle size={18} />
+                                    <button onClick={() => setIsOpen(false)} className="hover:bg-primary-500 p-2 rounded transition-colors">
+                                        <CloseCircle color="white" width={20} size={18} />
                                     </button>
                                 </div>
                             </div>

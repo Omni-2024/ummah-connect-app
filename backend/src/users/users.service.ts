@@ -5,6 +5,7 @@ import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
 import { UserEntity } from './entities/user.entity';
 import { UserRole } from './entities/abstract.user.entity';
 import { ChangePasswordDtoNoOTP } from './dto/change-password-noOtp';
+import { StreamService } from '../common/getStream/stream.service';
 
 
 @Injectable()
@@ -14,6 +15,7 @@ export class UsersService {
   constructor(
     private readonly userRepo: UserRepository,
     private readonly configService: ConfigService,
+    private readonly streamService: StreamService,
   ) {}
 
   async findAll({
@@ -74,6 +76,8 @@ export class UsersService {
     updateUserDto: UpdateUserDto,
   ){
     const user = await this.userRepo.updateUser(updateUserDto);
+    await this.streamService.upsertUser(user.id, user.name ?? user.email, user.role);
+
     if (!user) {
       return {
         status: HttpStatus.NOT_FOUND,
