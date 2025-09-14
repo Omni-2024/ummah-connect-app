@@ -115,7 +115,7 @@ export default function ServiceHeader({
               <h3 className="font-semibold text-gray-900 text-lg">
                 {educator.name}
               </h3>
-              <p className="text-sm text-gray-600">Course Instructor</p>
+              <p className="text-sm text-gray-600">Service Provider</p>
             </div>
             <Button variant="primary" size="sm">
               View Profile

@@ -244,6 +244,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                 onChange={(e) => handleInputChange('email', e.target.value)}
                 className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
                 required
+                readOnly
               />
             </div>
 
