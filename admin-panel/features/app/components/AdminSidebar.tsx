@@ -38,8 +38,8 @@ export default function AdminSidebar() {
                         className={cn(
                           "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold transition-colors",
                           pathname === item.href
-                            ? "bg-gradient-to-br from-[#669f9d] to-[#337f7c] text-white"
-                            : "text-muted-foreground hover:bg-[#337f7c]/10 hover:text-foreground"
+                            ? "bg-primary-500 text-white"
+                            : "text-muted-foreground hover:bg-primary-100 hover:text-foreground"
                         )}
                       >
                         <Icon className="h-5 w-5 shrink-0" />

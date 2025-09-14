@@ -5,7 +5,7 @@ import LoadingError from "@/components/widget/loadingError";
 import UserCardSkeletonList from "@/features/users/skeleton/user";
 import { ListEmptyStateWithSearch } from "@/components/widget/ListEmptyStateWithSearch";
 import Button from "@/components/base/button";
-import { Plus } from "lucide-react";
+import { Plus, Users } from "lucide-react";
 import { ProviderCard } from "@/features/providers/cards/providerCard";
 import AdvancedPagination from "@/components/widget/advancedPagination";
 import ViewUser from "@/components/popups/viewUser";
@@ -71,28 +71,31 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
 
   return (
     <>
-      {userData?.data?.length === 0 ? (
+      {!userData?.data || userData.data.length === 0 ? (
         search ? (
           <ListEmptyStateWithSearch
-            name="user"
+            name="provider"
             searchQuery={search}
             onClear={clearSearch}
           />
         ) : (
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="mb-8 text-center">
-              <h2 className="mb-2 text-2xl font-semibold text-gray-900">No Providers Yet</h2>
-              <p className="text-gray-600">Start by adding your first provider</p>
+          <div className="flex flex-col items-center justify-center py-16 text-center space-y-4">
+            <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center">
+              <Users size={36} className="text-gray-400" />
             </div>
-            <Button onClick={() => setPopupType(PopupType.AddUser)}>
-              <Plus />
-              Add New Provider
-            </Button>
+
+            <h2 className="text-2xl font-semibold text-gray-900">
+              No Providers Available
+            </h2>
+
+            <p className="text-gray-600 max-w-sm">
+              There are currently no providers in the system.
+            </p>
           </div>
         )
       ) : (
         <div className="grid grid-cols-[repeat(auto-fit,_minmax(377px,1fr))] gap-4 py-12">
-          {userData?.data?.map((user) => (
+          {userData.data.map((user) => (
             <ProviderCard
               key={user.id}
               data={user}
