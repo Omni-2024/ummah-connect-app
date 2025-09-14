@@ -5,7 +5,7 @@ import { useGeneralUser } from "@/lib/hooks/useUser";
 import { useProfession } from "@/lib/hooks/useProfessions";
 import { useSpecialists } from "@/lib/hooks/useSpecialists";
 import { useServicesByEducator } from "@/lib/hooks/useServices";
-import Navbar from "@/features/app/components/Navbar";
+import Navbar, { buildAvatarUrl } from "@/features/app/components/Navbar";
 import NavbarMobile, { NavbarTitle } from "@/features/app/components/Navbar.mobile";
 import Bottombar from "@/features/app/components/Bottombar";
 import { Card } from "@/components/base/Card";
@@ -87,7 +87,6 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
 
   const { data: educator, isLoading, error } = useGeneralUser(providerId);
   const { data: designationData } = useProfession(educator?.designations?.[0] || "");
@@ -245,7 +244,6 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
     { id: "overview", label: "Overview" },
     { id: "services", label: "Services" },
     { id: "reviews", label: "Reviews" },
-    { id: "portfolio", label: "Portfolio" },
   ];
 
   // Clean up the data for display
@@ -282,7 +280,11 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
                 <div className="relative flex-shrink-0 mx-auto sm:mx-0">
                   {educator.profileImage ? (
                     <img
-                      src={`${process.env.NEXT_PUBLIC_API_URL}/${educator.profileImage}`}
+                      src={
+                        educator.profileImage
+                          ? buildAvatarUrl(educator.profileImage)!!
+                          : "/images/coverImage.png"
+                      }                      
                       alt={educator.name}
                       className="size-32 rounded-full object-cover border-4 border-white shadow-lg"
                     />
@@ -293,14 +295,6 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
                       </span>
                     </div>
                   )}
-                  {educator.verified && (
-                    <div className="absolute -bottom-1 -right-1 size-8 bg-green-500 rounded-full flex items-center justify-center border-3 border-white">
-                      <CheckCircledIcon className="size-5 text-white" />
-                    </div>
-                  )}
-                  <div className="absolute -top-1 -left-1 size-6 bg-yellow-400 rounded-full flex items-center justify-center">
-                    <span className="text-xs font-bold text-green-800">★</span>
-                  </div>
                 </div>
 
                 {/* Provider Info */}
