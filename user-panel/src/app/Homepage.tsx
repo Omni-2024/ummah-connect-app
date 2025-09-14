@@ -18,6 +18,7 @@ import FeaturesSection from "@/features/home/FeaturesSection"
 import IslamicLearningPathsSection from "@/features/home/IslamicLearningPathsSection"
 import IslamicValuesSection from "@/features/home/IslamicValuesSection"
 import RecommendedServicesSection from "@/features/home/RecommendedServicesSection"
+import {ChatWidgetWrapper} from "@/components/getStream/chat/ChatWidgetWrapper";
 
 export default function HomePage() {
   const { isAuthenticated } = useAuthState()
@@ -86,6 +87,7 @@ export default function HomePage() {
       <IslamicLearningPathsSection />
       {/* <SuccessStoriesSection /> */}
       <BottomBar />
+      <ChatWidgetWrapper />
 
     </div>
   )

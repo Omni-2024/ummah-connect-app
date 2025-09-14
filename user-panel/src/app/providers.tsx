@@ -8,6 +8,7 @@ import { Theme } from "@radix-ui/themes";
 import {GoogleOAuthProvider} from "@react-oauth/google";
 import envs from "@/lib/env";
 import {hydrateAuthFromStorage} from "@/features/auth/context/AuthState";
+import {ChatProvider} from "@/components/getStream/chat/ChatContextProvider";
 
 function makeQueryClient() {
     return new QueryClient({
@@ -26,11 +27,13 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
     return (
         <GoogleOAuthProvider clientId={envs.googleAuthClientId}>
-            <QueryClientProvider client={queryClient}>
-                <Toaster/>
-                <Theme>{children}</Theme>
-                {/*<ReactQueryDevtools initialIsOpen={false} />*/}
-            </QueryClientProvider>
+            <ChatProvider >
+                <QueryClientProvider client={queryClient}>
+                    <Toaster/>
+                    <Theme>{children}</Theme>
+                    {/*<ReactQueryDevtools initialIsOpen={false} />*/}
+                </QueryClientProvider>
+            </ChatProvider>
         </GoogleOAuthProvider>
     );
 }
