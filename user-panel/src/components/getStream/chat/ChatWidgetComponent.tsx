@@ -4,10 +4,10 @@ import { useState, useEffect } from "react"
 import { Chat, Channel, MessageList, MessageInput, Thread, Window } from "stream-chat-react"
 import { useChatClient } from "@/components/getStream/chat/useChatClient"
 import { motion, AnimatePresence } from "framer-motion"
-import {NotificationSettingsPanel} from "@/components/getStream/notification-settings-panel";
-import {useChatNotifications} from "@/components/getStream/useChatNotifications";
-import {Menu, MessageCircle, Settings,User,CloseCircle} from "iconsax-react";
-import {Minimize, Minimize2} from "lucide-react";
+import { NotificationSettingsPanel } from "@/components/getStream/notification-settings-panel";
+import { useChatNotifications } from "@/components/getStream/useChatNotifications";
+import { Menu, MessageCircle, Settings, User, CloseCircle } from "iconsax-react";
+import { Minimize, Minimize2 } from "lucide-react";
 
 const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUserId: string }) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -76,7 +76,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
             {isOpen && isMobile && (
                 <motion.div
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    animate={{ opacity: 0 }}
                     exit={{ opacity: 0 }}
                     className="fixed inset-0 bg-black/50 z-50 md:hidden"
                     onClick={() => setIsOpen(false)}
@@ -147,15 +147,14 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             transition={{ duration: 0.2, ease: "easeOut" }}
-                            className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${
-                                isMobile
+                            className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${isMobile
                                     ? "fixed inset-4 z-50"
                                     : isMinimized
                                         ? "w-80 h-14"
                                         : isAdmin
                                             ? "w-[900px] h-[650px] max-w-[95vw] max-h-[90vh]"
                                             : "w-96 h-[550px] max-w-[95vw] max-h-[90vh]"
-                            }`}
+                                }`}
                         >
                             {/* Chat Header */}
                             <div className="bg-primary-500 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
@@ -248,8 +247,8 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                         <h2 className="font-semibold text-gray-900">Channels</h2>
                                                                         {totalUnreadCount > 0 && (
                                                                             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                                        {totalUnreadCount}
-                                      </span>
+                                                                                {totalUnreadCount}
+                                                                            </span>
                                                                         )}
                                                                     </div>
                                                                     <button
@@ -276,11 +275,10 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                                     onClick={() => handleChannelSelect(ch)}
                                                                                     whileHover={{ scale: 1.02 }}
                                                                                     whileTap={{ scale: 0.98 }}
-                                                                                    className={`w-full text-left p-3 rounded-lg text-sm transition-all duration-200 relative ${
-                                                                                        channel?.id === ch.id || channel?.cid === ch.cid
+                                                                                    className={`w-full text-left p-3 rounded-lg text-sm transition-all duration-200 relative ${channel?.id === ch.id || channel?.cid === ch.cid
                                                                                             ? "bg-blue-100 border-l-4 border-blue-500 text-blue-900"
                                                                                             : "hover:bg-gray-100 text-gray-700"
-                                                                                    }`}
+                                                                                        }`}
                                                                                 >
                                                                                     <div className="flex items-center justify-between">
                                                                                         <div className="flex-1 min-w-0">
@@ -354,7 +352,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
 
                                                             {/* Message Input */}
                                                             <div className="flex-shrink-0 border-t border-gray-200 bg-white">
-                                                                <MessageInput  maxRows={8}/>
+                                                                <MessageInput maxRows={8} />
                                                             </div>
                                                         </div>
                                                     </Window>

@@ -12,6 +12,7 @@ import { getErrorMessage } from "@/lib/helpers/errors";
 import {UserRole} from "@/lib/constants";
 import envs from "@/lib/env";
 import crypto from 'crypto';
+import {useProviderChatState} from "@/features/provider/context/useProviderChatState";
 
 
 const apiKey = envs.streamApiKey;
@@ -21,6 +22,7 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
     const [channel, setChannel] = useState<StreamChannel | null>(null);
     const [allChannels, setAllChannels] = useState<StreamChannel[]>([]);
     const chatClientRef = useRef<StreamChat | null>(null);
+    const {isOneChat}=useProviderChatState()
 
     const { data: userData } = useGeneralUser(userId);
 
@@ -61,7 +63,6 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
                 { last_message_at: -1 },
                 { watch: true, state: true, limit: 30 }
             );
-
             // Keep only channels where the creator is currently active (per your API)
             const checks = channels.map(async (ch) => {
                 const creatorId = (ch.data?.created_by as { id?: string } | undefined)?.id;
@@ -105,14 +106,15 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
                 if (mounted) setClient(currentClient);
 
                 // 3) role-based logic
-                if (role === "business_admin") {
+                if (!isOneChat) {
                     const adminChannels = await fetchAdminChannels(currentClient);
+                    console.log("admin channel",adminChannels.length)
                     if (adminChannels.length > 0) {
                         await selectChannel(adminChannels[0]);
                     } else {
                         setChannel(null);
                     }
-                } else if (role === "user" && otherUserId) {
+                } else if (isOneChat && otherUserId) {
                     const sorted = [userId, otherUserId].sort();
                     console.log("name check",createChannelId(userId,otherUserId))
                     const channelId = createChannelId(userId,otherUserId);
@@ -158,6 +160,6 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
         channel,
         allChannels,
         selectChannel,
-        isAdmin: role === "business_admin",
+        isAdmin:!isOneChat ,
     };
 };

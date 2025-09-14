@@ -5,7 +5,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
-  NotFoundException,
+  NotFoundException, UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { SocialLogin } from '../auth.interface';
@@ -47,7 +47,6 @@ export class GoogleService implements SocialLogin {
   }
 
   async login(token: string) {
-    try {
       // Get user info from google
       const googleUser = await this.getGoogleUserInfo(token);
 
@@ -94,26 +93,13 @@ export class GoogleService implements SocialLogin {
         // await this.stripeService.createCustomer(customer);
       }
 
-      // Check the role of the user
       if (!await this.authService.checkRole(user, [UserRole.USER, UserRole.BUSINESS_ADMIN, UserRole.BUSINESS_USER])) {
-        return {
-          status: HttpStatus.UNAUTHORIZED,
-          error: 'Unauthorized access',
-        };
+        throw new UnauthorizedException('Unauthorized access');
       }
 
       const authToken=await this.authService.generateToken(user);
       
       // if user exists, generate token and login
       return authToken.data;
-    } catch (error) {
-      if (error instanceof BadRequestException) {
-        return { status: HttpStatus.BAD_REQUEST, error: error.message };
-      }
-      return {
-        status: HttpStatus.INTERNAL_SERVER_ERROR,
-        error: 'An unknown error occurred',
-      };
-    }
   }
 }
