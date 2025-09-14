@@ -1,8 +1,9 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { ConfigService } from '@nestjs/config';
 import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
 import { UserEntity } from './entities/user.entity';
+import { ChangePasswordDtoNoOTP } from './dto/change-password-noOtp';
 
 
 @Injectable()
@@ -153,6 +154,22 @@ export class UsersService {
   }
 
 
+  async changePassword(dto: ChangePasswordDtoNoOTP): Promise<{ message: string }> {
+  const { id, oldPassword, newPassword } = dto;
+
+  const user = await this.userRepo.findOneById(id);
+  if (!user) throw new NotFoundException("User not found");
+
+  const isMatch = await user.comparePassword(oldPassword);
+  if (!isMatch) throw new UnauthorizedException("Old password is incorrect");
+
+  user.password = newPassword;
+  await user.hashPassword();
+  await this.userRepo.save(user);   // ✅ now works
+
+  return { message: "Password updated successfully" };
+
+}
 
 
 

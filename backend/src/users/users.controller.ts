@@ -5,6 +5,7 @@ import { UserRole } from './entities/abstract.user.entity';
 import { UsersService } from './users.service';
 import { Public } from '../auth/decorator/public.decorator';
 import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
+import { ChangePasswordDtoNoOTP } from './dto/change-password-noOtp';
 
 
 @Controller('user')
@@ -72,6 +73,20 @@ export class UsersController {
     return await this.userService.changeStatus(id, body.status);
   }
 
+   // ✅ Updated change password route
+  @Patch('/:id/change-password')
+  async changePasswordNoOtp(
+    @Param('id') id: string,
+    @Body() body: { oldPassword: string; newPassword: string },
+  ) {
+    return this.userService.changePassword({
+      id,
+      oldPassword: body.oldPassword,
+      newPassword: body.newPassword,
+    });
+  }
+}
+
   // @Public()
   // @Post('verify-turnstile')
   // async verifyTurnstile(@Body() verifyTurnstileDto: any) {
@@ -84,4 +99,4 @@ export class UsersController {
   //   }
   // }
 
-}
+

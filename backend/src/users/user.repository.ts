@@ -13,6 +13,12 @@ export class UserRepository {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
+
+  // ✅ Expose save() for UsersService
+  async save(user: UserEntity): Promise<UserEntity> {
+    return this.userRepository.save(user);
+  }
+
   async register(registerDto: RegisterDto, token: string): Promise<UserEntity> {
     try {
       const newUser = this.userRepository.create(registerDto);
@@ -204,8 +210,20 @@ export class UserRepository {
       throw error;
     }
   }
-}
 
+  async changeRole(id: string, role: UserRole): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) {
+        throw new NotFoundException('Provider not found');
+      }
+      user.role = role;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+}
 
 interface FindOptions {
   take?: number;
