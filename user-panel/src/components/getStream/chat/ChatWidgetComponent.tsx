@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react"
 import { Chat, Channel, MessageList, MessageInput, Thread, Window } from "stream-chat-react"
 import { useChatClient } from "@/components/getStream/chat/useChatClient"
-import { useChatNotifications } from "@/hooks/useChatNotifications"
-import { NotificationSettingsPanel } from "@/components/notification-settings-panel"
-import { MessageCircle, Minimize2, X, Users, ChevronLeft, Menu, Settings } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import {NotificationSettingsPanel} from "@/components/getStream/notification-settings-panel";
+import {useChatNotifications} from "@/components/getStream/useChatNotifications";
+import {Menu, MessageCircle, Settings,User,CloseCircle} from "iconsax-react";
 
 const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUserId: string }) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -192,11 +192,11 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                             onClick={() => setIsMinimized(!isMinimized)}
                                             className="hover:bg-blue-500 p-2 rounded transition-colors"
                                         >
-                                            <Minimize2 size={18} />
+                                            <CloseCircle size={18} />
                                         </button>
                                     )}
                                     <button onClick={() => setIsOpen(false)} className="hover:bg-blue-500 p-2 rounded transition-colors">
-                                        <X size={18} />
+                                        <CloseCircle size={18} />
                                     </button>
                                 </div>
                             </div>
@@ -243,7 +243,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                             <div className="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex items-center gap-2">
-                                                                        <Users size={18} className="text-gray-600" />
+                                                                        <User size={18} className="text-gray-600" />
                                                                         <h2 className="font-semibold text-gray-900">Channels</h2>
                                                                         {totalUnreadCount > 0 && (
                                                                             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
@@ -255,7 +255,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                         onClick={() => setShowChannelList(false)}
                                                                         className="p-1 hover:bg-gray-200 rounded"
                                                                     >
-                                                                        <ChevronLeft size={18} />
+                                                                        <CloseCircle size={18} />
                                                                     </button>
                                                                 </div>
                                                                 <p className="text-xs text-gray-500 mt-1">{allChannels.length} active conversations</p>
@@ -308,7 +308,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                         })
                                                                     ) : (
                                                                         <div className="text-center py-8">
-                                                                            <Users size={48} className="text-gray-300 mx-auto mb-3" />
+                                                                            <User size={48} className="text-gray-300 mx-auto mb-3" />
                                                                             <p className="text-gray-500 text-sm">No active conversations</p>
                                                                         </div>
                                                                     )}
@@ -353,7 +353,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
 
                                                             {/* Message Input */}
                                                             <div className="flex-shrink-0 border-t border-gray-200 bg-white">
-                                                                <MessageInput  grow={true}/>
+                                                                <MessageInput  maxRows={8}/>
                                                             </div>
                                                         </div>
                                                     </Window>

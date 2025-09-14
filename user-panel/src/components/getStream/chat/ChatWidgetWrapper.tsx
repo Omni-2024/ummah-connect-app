@@ -2,11 +2,13 @@
 
 import { useChat } from '@/components/getStream/chat/ChatContextProvider';
 import FloatingChatWidget from '@/components/getStream/chat/ChatWidgetComponent';
-import { useAuth } from '@/contexts/AuthContexts';
+import {useGeneralUser} from "@/lib/hooks/useUser";
+import {useAuthState} from "@/features/auth/context/useAuthState";
 
 export const ChatWidgetWrapper = () => {
     const { userId } = useChat();
-    const { user: currentUser } = useAuth();
+    const {id}=useAuthState()
+    const { data: currentUser } = useGeneralUser(id);
 
     if ( !currentUser) {
         console.log("This is reaching")
@@ -15,7 +17,7 @@ export const ChatWidgetWrapper = () => {
 
     return (
         <FloatingChatWidget
-            userId={currentUser._id}
+            userId={currentUser.id}
             otherUserId={userId ?? ""}
         />
     );
