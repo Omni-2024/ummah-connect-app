@@ -1,4 +1,14 @@
+"use client"
+import {ChatWidgetWrapper} from "@/components/getStream/chat/ChatWidgetWrapper";
+import {useChat} from "@/components/getStream/chat/ChatContextProvider"
+import {useCurrentUser} from "@/lib/hooks/useUserInfo";
+import {useEffect} from "react";
 export default function AdminMessagesPage() {
+    const { setUserId } = useChat();
+    const { data: currentUser } = useCurrentUser()
+    useEffect(() => {
+        if (currentUser) setUserId(currentUser.id);
+    }, [currentUser]);
   return (
     <div className="space-y-6">
       <div>
@@ -8,9 +18,7 @@ export default function AdminMessagesPage() {
 
       <div className="bg-card p-8 rounded-lg border border-border text-center">
         <h2 className="text-xl font-semibold text-foreground mb-2">Message Center</h2>
-        <p className="text-muted-foreground">
-          This feature will be implemented soon. You'll be able to manage platform communications here.
-        </p>
+          <ChatWidgetWrapper />
       </div>
     </div>
   )

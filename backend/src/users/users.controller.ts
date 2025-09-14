@@ -35,7 +35,7 @@ export class UsersController {
     return await this.userService.retrieveUser(id);
   }
 
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_USER])
+  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
   @Patch('/:id')
   async updateUser(
     @Param('id') id: string,
@@ -45,20 +45,20 @@ export class UsersController {
   }
 
   // TODO: Should get user id from AuthGuard
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_USER])
+  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
   @Get('/:id')
   async getUser(@Param('id') id: string) {
     return await this.userService.getUser(id);
   }
 
   // TODO: Should get user id from AuthGuard
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_USER])
+  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
   @Delete('/:id/delete')
   async deleteCurrentUser(@Param('id') id: string) {
     return await this.userService.deleteCurrentUser(id);
   }
 
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_USER])
+  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
   @Delete('/:id')
   async deleteUser(@Param('id') id: string) {
     return await this.userService.deleteUser(id);

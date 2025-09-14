@@ -9,6 +9,7 @@ export enum ADMIN_ROLES {
   ADMIN = "admin",
   OPERATIONAL_ADMIN = "operational_admin",
   ROOT = "root",
+  BUSINESS_ADMIN = "business_admin",
 }
 
 export const USER_ROLE_LOGINS = {

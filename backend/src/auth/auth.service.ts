@@ -165,7 +165,7 @@ export class AuthService {
     const user = await this.userRepo.findOneByEmail(dto.email);
     if (!user) throw new NotFoundException('User not Found');
 
-    if (!(await this.checkRole(user, [UserRole.ROOT, UserRole.ADMIN, UserRole.OPERATIONAL_ADMIN])))
+    if (!(await this.checkRole(user, [UserRole.ROOT, UserRole.ADMIN, UserRole.BUSINESS_ADMIN])))
       throw new UnauthorizedException('Unauthorized access');
 
     if (!(await user.comparePassword(dto.password)))

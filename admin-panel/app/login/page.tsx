@@ -34,6 +34,7 @@ export default function AdminLoginPage() {
         ADMIN_ROLES.ADMIN,
         ADMIN_ROLES.OPERATIONAL_ADMIN,
         ADMIN_ROLES.ROOT,
+        ADMIN_ROLES.BUSINESS_ADMIN
       ]
 
       if (!allowedRoles.includes(data.role)) {

@@ -1,9 +1,22 @@
 import {
-  Body, Controller, Get, Param, Post, HttpCode, BadRequestException,
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Param,
+  Post,
 } from '@nestjs/common';
 import { StreamService } from './stream.service';
-import { BookingCallDto, DirectChatDto, UpsertUserDto, VideoTokenDto, CallIdBodyDto } from './dto/dto';
+import {
+  BookingCallDto,
+  CallIdBodyDto,
+  DirectChatDto,
+  UpsertUserDto,
+  VideoTokenDto,
+} from './dto/dto';
 import { Public } from '../../auth/decorator/public.decorator';
+import { UserRole } from '../../users/entities/abstract.user.entity';
 
 @Controller('stream')
 export class StreamController {
@@ -12,14 +25,21 @@ export class StreamController {
   @Post('upsert-user')
   @Public()
   async upsertUser(@Body() dto: UpsertUserDto) {
-    const user = await this.streamService.upsertUser(dto.id, dto.name, dto.role);
+    const user = await this.streamService.upsertUser(
+      dto.id,
+      dto.name,
+      dto.role === 'user' ? UserRole.USER : UserRole.ADMIN,
+    );
     const chatToken = this.streamService.createChatToken(dto.id);
     return { user, chatToken };
   }
 
   @Post('direct-channel')
   async direct(@Body() dto: DirectChatDto) {
-    const channelId = await this.streamService.getOrCreateDirectChannel(dto.userId, dto.providerId);
+    const channelId = await this.streamService.getOrCreateDirectChannel(
+      dto.userId,
+      dto.providerId,
+    );
     return { channelId, type: 'messaging' };
   }
 
@@ -45,7 +65,10 @@ export class StreamController {
       return { callDetails };
     } catch (e: any) {
       if (e?.code === 16) {
-        return { message: 'Meeting not found in GetStream', error: e?.metadata };
+        return {
+          message: 'Meeting not found in GetStream',
+          error: e?.metadata,
+        };
       }
       throw e;
     }
