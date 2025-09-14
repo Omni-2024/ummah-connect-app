@@ -29,6 +29,7 @@ export default function ServiceHeader({
       {/* Compact Hero Section */}
       <div className="relative mb-6">
         <div className="relative h-48 lg:h-56 lg:rounded-2xl overflow-hidden bg-gradient-to-br from-primary-100 to-secondary-100">
+          
           <img
             alt="service cover"
             src={
@@ -77,20 +78,6 @@ export default function ServiceHeader({
             <p className="text-lg text-gray-600 ">
               {service.tagline}
             </p>
-
-            {/* <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-              <div className="flex items-center gap-1">
-                <ClockIcon className="size-4" />
-                {formatReadableHours(service.duration)}
-              </div>
-              <div className="flex items-center gap-1">
-                <StarFilledIcon className="size-4" />
-                {service.cmePoints} CME Points
-              </div>
-              <div className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-medium">
-                CME ID: {service.cmeId}
-              </div>
-            </div> */}
           </div>
 
           {/* Mobile pricing preview */}
@@ -127,7 +114,7 @@ export default function ServiceHeader({
               <h3 className="font-semibold text-gray-900 text-lg">
                 {educator.name}
               </h3>
-              <p className="text-sm text-gray-600">Course Instructor</p>
+              <p className="text-sm text-gray-600">Service Provider </p>
             </div>
             <Button variant="primary" size="sm">
               View Profile
