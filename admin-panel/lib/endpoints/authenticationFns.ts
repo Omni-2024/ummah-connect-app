@@ -96,7 +96,19 @@ export const sendOtpFn = async (email: string) => {
   return res.data;
 };
 
-
 export interface SendOtpFnRes { }
 
+export const changePasswordNoOtpFn = async (
+  userId: string,
+  oldPassword: string,
+  newPassword: string
+) => {
+  if (!userId) throw new Error("User ID is missing");
 
+  const res = await Request({
+    method: "PATCH",
+    url: `/api/user/${userId}/change-password`,
+    data: { oldPassword, newPassword },
+  });
+  return res.data;
+};

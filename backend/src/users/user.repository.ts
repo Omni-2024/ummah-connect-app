@@ -13,6 +13,12 @@ export class UserRepository {
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
   ) {}
+
+  // ✅ Expose save() for UsersService
+  async save(user: UserEntity): Promise<UserEntity> {
+    return this.userRepository.save(user);
+  }
+
   async register(registerDto: RegisterDto, token: string): Promise<UserEntity> {
     try {
       const newUser = this.userRepository.create(registerDto);
@@ -218,7 +224,6 @@ export class UserRepository {
     }
   }
 }
-
 
 interface FindOptions {
   take?: number;
