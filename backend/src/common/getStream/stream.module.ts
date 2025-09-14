@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { StreamChat } from 'stream-chat';
 import { StreamClient } from '@stream-io/node-sdk';
 import { StreamService } from './stream.service';
+import { StreamController } from './stream.controller';
 
 @Module({
   imports: [ConfigModule],
@@ -27,6 +28,7 @@ import { StreamService } from './stream.service';
     },
     StreamService,
   ],
+  controllers:[StreamController],
   exports: [StreamService],
 })
 export class StreamModule {}

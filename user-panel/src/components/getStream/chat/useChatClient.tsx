@@ -10,8 +10,9 @@ import { getStreamChatTokenFn, type GetChatTokenParams } from "@/lib/endpoints/s
 import { Toast } from "@/components/base/Toast";
 import { getErrorMessage } from "@/lib/helpers/errors";
 import {UserRole} from "@/lib/constants";
+import envs from "@/lib/env";
 
-const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY_CHAT || "";
+const apiKey = envs.streamApiKey;
 
 export const useChatClient = (userId: string, otherUserId: string = "") => {
     const [client, setClient] = useState<StreamChat | null>(null);
@@ -107,7 +108,7 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
 
                     // Try to find the channel by id
                     const channels = await currentClient.queryChannels(
-                        { type: "messaging", id: { $eq: channelId } }, // correct id filter
+                        { type: "messaging", id: { $eq: channelId } },
                         {},
                         { watch: true, state: true }
                     );

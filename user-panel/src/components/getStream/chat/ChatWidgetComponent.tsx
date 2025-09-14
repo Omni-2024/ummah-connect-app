@@ -16,6 +16,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
     const [isMobile, setIsMobile] = useState(false)
     const { client, channel, isAdmin, selectChannel, allChannels } = useChatClient(userId, otherUserId)
 
+
     const {
         totalUnreadCount,
         channelUnreadCounts,
@@ -71,13 +72,12 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
 
     return (
         <>
-            {/* Mobile Overlay */}
             {isOpen && isMobile && (
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/50 z-40 md:hidden"
+                    className="fixed inset-0 bg-black/50 z-50 md:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}
@@ -95,7 +95,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                 onClick={handleChatOpen}
                                 className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-colors duration-200 relative"
                             >
-                                <MessageCircle size={24} />
+                                <MessageCircle color="black " width={25} size={24} />
 
                                 {/* Enhanced Notification Badge */}
                                 <AnimatePresence>
