@@ -5,13 +5,13 @@ import { StreamChat, Channel as StreamChannel } from "stream-chat";
 import "stream-chat-react/dist/css/v2/index.css";
 import { useMutation } from "@tanstack/react-query";
 
-import { useGeneralUser } from "@/lib/hooks/useUser";
 import { getStreamChatTokenFn, type GetChatTokenParams } from "@/lib/endpoints/streamFns";
-import { Toast } from "@/components/base/Toast";
+import { Toast } from "@/components/base/toast";
 import { getErrorMessage } from "@/lib/helpers/errors";
-import {UserRole} from "@/lib/constants";
+import {USER_ROLES} from "@/lib/constants";
 import envs from "@/lib/env";
 import crypto from 'crypto';
+import {useGeneralUser} from "@/lib/hooks/useGeneralUsers";
 
 
 const apiKey = envs.streamApiKey;
@@ -28,7 +28,7 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
         mutationFn: getStreamChatTokenFn,
     });
 
-    const role: UserRole | undefined = userData?.role as UserRole | undefined;
+    const role: USER_ROLES | undefined = userData?.role as USER_ROLES | undefined;
 
     const createChannelId = (userId: string, otherUserId: string) => {
         const sorted = [userId, otherUserId].sort();
@@ -112,31 +112,32 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
                     } else {
                         setChannel(null);
                     }
-                } else if (role === "user" && otherUserId) {
-                    const sorted = [userId, otherUserId].sort();
-                    console.log("name check",createChannelId(userId,otherUserId))
-                    const channelId = createChannelId(userId,otherUserId);
-
-                    // Try to find the channel by id
-                    const channels = await currentClient.queryChannels(
-                        { type: "messaging", id: { $eq: channelId } },
-                        {},
-                        { watch: true, state: true }
-                    );
-
-                    if (channels.length === 0) {
-                        const name = `${userData?.name ?? userId} & ${otherUserId} Chat`;
-                        const newChannel = currentClient.channel("messaging", channelId, {
-                            members: sorted,
-                            created_by_id: userId,
-                            name,
-                        });
-                        await newChannel.watch();
-                        setChannel(newChannel);
-                    } else {
-                        setChannel(channels[0]);
-                    }
                 }
+                // else if (role === "user" && otherUserId) {
+                //     const sorted = [userId, otherUserId].sort();
+                //     console.log("name check",createChannelId(userId,otherUserId))
+                //     const channelId = createChannelId(userId,otherUserId);
+                //
+                //     // Try to find the channel by id
+                //     const channels = await currentClient.queryChannels(
+                //         { type: "messaging", id: { $eq: channelId } },
+                //         {},
+                //         { watch: true, state: true }
+                //     );
+                //
+                //     if (channels.length === 0) {
+                //         const name = `${userData?.name ?? userId} & ${otherUserId} Chat`;
+                //         const newChannel = currentClient.channel("messaging", channelId, {
+                //             members: sorted,
+                //             created_by_id: userId,
+                //             name,
+                //         });
+                //         await newChannel.watch();
+                //         setChannel(newChannel);
+                //     } else {
+                //         setChannel(channels[0]);
+                //     }
+                // }
             } catch (e:any) {
                 console.error("Error initializing chat:", e);
                 Toast.error(getErrorMessage(e));

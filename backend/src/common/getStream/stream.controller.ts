@@ -3,12 +3,14 @@ import {
 } from '@nestjs/common';
 import { StreamService } from './stream.service';
 import { BookingCallDto, DirectChatDto, UpsertUserDto, VideoTokenDto, CallIdBodyDto } from './dto/dto';
+import { Public } from '../../auth/decorator/public.decorator';
 
 @Controller('stream')
 export class StreamController {
   constructor(private readonly streamService: StreamService) {}
 
   @Post('upsert-user')
+  @Public()
   async upsertUser(@Body() dto: UpsertUserDto) {
     const user = await this.streamService.upsertUser(dto.id, dto.name, dto.role);
     const chatToken = this.streamService.createChatToken(dto.id);

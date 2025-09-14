@@ -2,7 +2,7 @@
 
 import { useChat } from '@/components/getStream/chat/ChatContextProvider';
 import FloatingChatWidget from '@/components/getStream/chat/ChatWidgetComponent';
-import {useGeneralUser} from "@/lib/hooks/useUser";
+import {useGeneralUser} from "@/lib/hooks/useGeneralUsers";
 import {useAuthState} from "@/features/auth/context/useAuthState";
 
 export const ChatWidgetWrapper = () => {

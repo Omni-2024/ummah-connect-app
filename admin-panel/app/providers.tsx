@@ -6,6 +6,7 @@ import {
     type QueryFilters, QueryClientProvider,
 } from "@tanstack/react-query";
 import Toaster from "@/components/base/toast";
+import {ChatProvider} from "@/components/getStream/chat/ChatContextProvider";
 
 
 export const queryClient = new QueryClient({
@@ -32,8 +33,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     // ensure one client per browser tab
 
     return (
+
             <QueryClientProvider client={queryClient}>
+                <ChatProvider >
                 <Toaster />
+                </ChatProvider>
 
                 {children}
             </QueryClientProvider>

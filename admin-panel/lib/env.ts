@@ -5,6 +5,7 @@ const envs={
     secretKey: process.env.NEXT_PUBLIC_SECRET_KEY || "secretKey",
     disableAuthReDir: process.env.NEXT_PUBLIC_DISABLE_AUTH_REDIRECT === "true",
     imageBaseUrl: process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL || "",
+    streamApiKey: process.env.NEXT_PUBLIC_STREAM_API || ""
 }
 
 export default envs;
