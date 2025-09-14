@@ -4,3 +4,11 @@ export class RegisterDto {
   @IsEmail() email!: string;
   @MinLength(8) password!: string;
 }
+
+export class RegisterSocialDto {
+  email: string;
+
+  name: string;
+
+  profileImage: string;
+}

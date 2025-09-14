@@ -1,6 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from '../users/dto/login.dto';
+import { LoginDto, SocialType } from '../users/dto/login.dto';
 import { ServiceResponseDto } from '../common/types/service-response-dto';
 import { LoginResponseDto } from './types/login-response.dto';
 import { Public } from './decorator/public.decorator';
@@ -45,5 +45,11 @@ export class AuthController {
   @Post('verify-email')
   async verifyEmail(@Body() body: { token: string }) {
     return await this.auth.verifyEmail(body.token);
+  }
+
+  @Public()
+  @Post('social-login')
+  async socialLogin(@Body() socialDto: { accessToken: string; type: SocialType, name?: string }) {
+    return await this.auth.socialLogin(socialDto);
   }
 }

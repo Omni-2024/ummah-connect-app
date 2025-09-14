@@ -13,6 +13,7 @@ import { ReviewModule } from './review/review.module';
 import { StorageModule } from './common/r2/storage.module';
 import { ProviderModule } from './providers/provider.module';
 import { StreamModule } from './common/getStream/stream.module';
+import { SocialModule } from './auth/social/social.module';
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { StreamModule } from './common/getStream/stream.module';
     ReviewModule,
     StorageModule,
     ProviderModule,
-    StreamModule
+    StreamModule,
+    SocialModule
   ],
 })
 export class AppModule {}

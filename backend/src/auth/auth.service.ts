@@ -13,7 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from './types/jwt-payload.type';
 import { LoginResponseDto } from './types/login-response.dto';
 import { RegisterDto } from '../users/dto/register.dto';
-import { LoginDto } from '../users/dto/login.dto';
+import { LoginDto, SocialType } from '../users/dto/login.dto';
 import { SigninMethod, UserRole } from '../users/entities/abstract.user.entity';
 import { UserEntity } from '../users/entities/user.entity';
 import { UserRepository } from '../users/user.repository';
@@ -21,6 +21,7 @@ import { ServiceResponseDto } from '../common/types/service-response-dto';
 import { EmailService } from '../common/email/email.service';
 import { log } from 'console';
 import { StreamService } from '../common/getStream/stream.service';
+import { GoogleService } from './social/google.service';
 
 type AtCfg = { atSecret: string; atExpires: string };
 type RtCfg = { rtSecret: string; rtExpires: string };
@@ -40,8 +41,10 @@ export class AuthService {
     private readonly userRepo: UserRepository,
     private readonly emailService: EmailService,
     private readonly streamService: StreamService,
+    private readonly googleService: GoogleService,
 
-) {
+
+  ) {
     this.accessToken = {
       atSecret: this.config.get<string>('JWT_ACCESS_SECRET')!,
       atExpires: this.config.get<string>('JWT_ACCESS_EXPIRES') || '15m',
@@ -143,6 +146,19 @@ export class AuthService {
       const token = await  this.generateToken(user);
 
       return token.data
+  }
+
+  async socialLogin({
+                      accessToken,
+                      type,
+                      name,
+                    }: { accessToken: string; type: SocialType, name?: string }) {
+    switch (type) {
+      case SocialType.GOOGLE:
+        return this.googleService.login(accessToken);
+      default:
+        throw new Error('Invalid social type');
+    }
   }
 
   async loginAdmin(dto: LoginDto) {

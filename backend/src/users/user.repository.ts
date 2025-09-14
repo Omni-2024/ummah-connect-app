@@ -1,8 +1,8 @@
-import { RegisterDto } from './dto/register.dto';
+import { RegisterDto, RegisterSocialDto } from './dto/register.dto';
 import { UserEntity } from './entities/user.entity';
-import { ILike, Like, Repository } from 'typeorm';
+import { ILike, Like, QueryFailedError, Repository } from 'typeorm';
 import { SigninMethod, UserRole } from './entities/abstract.user.entity';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
 import { PaginatedRequestDto } from './dto/base.dto';
@@ -14,7 +14,6 @@ export class UserRepository {
     private readonly userRepository: Repository<UserEntity>,
   ) {}
 
-  // ✅ Expose save() for UsersService
   async save(user: UserEntity): Promise<UserEntity> {
     return this.userRepository.save(user);
   }
@@ -27,6 +26,27 @@ export class UserRepository {
       newUser.signinMethod = SigninMethod.EMAIL;
       return await this.userRepository.save(newUser);
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async registerSocial(
+    registerSocialDto: RegisterSocialDto,
+  ): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOneBy({
+        email: registerSocialDto.email,
+      });
+      if (user) {
+        return user;
+      }
+      const newUser = this.userRepository.create(registerSocialDto);
+      newUser.verified = true;
+      return await this.userRepository.save(newUser);
+    } catch (error) {
+      if (error instanceof QueryFailedError) {
+        throw new BadRequestException('Deleted user cannot be registered');
+      }
       throw error;
     }
   }
