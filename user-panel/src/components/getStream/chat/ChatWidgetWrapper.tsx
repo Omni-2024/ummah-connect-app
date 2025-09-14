@@ -18,7 +18,7 @@ export const ChatWidgetWrapper = () => {
     return (
         <FloatingChatWidget
             userId={currentUser.id}
-            otherUserId={currentUser.id ?? ""}
+            otherUserId={userId?? ""}
         />
     );
 };

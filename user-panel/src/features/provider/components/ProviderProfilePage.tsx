@@ -27,6 +27,7 @@ import {
   BookmarkIcon,
 } from "@radix-ui/react-icons";
 import { BuildingLibraryIcon } from "@heroicons/react/16/solid";
+import {useChat} from "@/components/getStream/chat/ChatContextProvider";
 
 // Enhanced Loading skeleton component
 function ProviderProfileSkeleton() {
@@ -91,6 +92,8 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
   const { data: educator, isLoading, error } = useGeneralUser(providerId);
   const { data: designationData } = useProfession(educator?.designations?.[0] || "");
   const { data: specialistsData } = useSpecialists(educator?.designations?.[0] || "");
+  const { setUserId } = useChat();
+
   const { data: services, isLoading: servicesLoading } = useServicesByEducator({
     limit: 10,
     educator: providerId,
@@ -101,9 +104,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
   };
 
   const handleContact = () => {
-    if (educator?.email) {
-      window.location.href = `mailto:${educator.email}`;
-    }
+    setUserId(providerId)
   };
 
   const handleShare = () => {
@@ -166,7 +167,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
     if (!educator?.interests || educator.interests.length === 0) {
       return [];
     }
-    
+
     if (specialistsData) {
       return educator.interests
         .map(interestId => {
@@ -175,7 +176,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
         })
         .filter(item => item !== null);
     }
-    
+
     return educator.interests.map(id => ({ id, name: id }));
   };
 
@@ -306,7 +307,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
                 <div className="flex-1 text-center sm:text-left">
                   <div className="mb-4">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">{educator.name}</h1>
-                    <p className="text-lg text-gray-600 mb-3">{getDesignationDisplay()}</p>                 
+                    <p className="text-lg text-gray-600 mb-3">{getDesignationDisplay()}</p>
                     <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-4">
                       {educator.verified && (
                         <Badge className="bg-blue-100 text-blue-700 border-blue-200 px-3 py-1">
@@ -478,7 +479,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
                             </div>
                           )}
                         </div>
-                        
+
                         <div className="flex-1">
                           <div className="flex justify-between items-start mb-3">
                             <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
@@ -495,16 +496,16 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
                               )}
                             </div>
                           </div>
-                          
+
                           <p className="text-gray-700 mb-4">{service.tagline}</p>
-                          
+
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                               {renderStars(parseFloat(service.averageReviewScore) || 0)}
                               <span className="font-semibold">{service.averageReviewScore || "0.0"}</span>
                               <span className="text-gray-500">({service.totalReviewCount} reviews)</span>
                             </div>
-                            
+
                             <div className="flex gap-2">
                               <Button
                                 size="sm"

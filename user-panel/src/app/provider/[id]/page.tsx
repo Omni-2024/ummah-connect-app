@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import ProviderProfilePage from "@/features/provider/components/ProviderProfilePage";
 import { Suspense } from "react";
+import {useChat} from "@/components/getStream/chat/ChatContextProvider";
 
 export const metadata: Metadata = {
     title: "Service Provider Profile | Ummah Connect",
@@ -33,7 +34,8 @@ function ProviderPageLoading() {
 }
 
 export default async function Page({ params }: PageProps) { // Changed: Made function async
-    const { id } = await params; // Changed: Await params before using
+    const { id } = await params;
+
 
     return (
         <Suspense fallback={<ProviderPageLoading />}>

@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/app/providers";
 import Footer from "@/features/app/components/Footer";
+import {ChatWidgetWrapper} from "@/components/getStream/chat/ChatWidgetWrapper";
+import React from "react";
 
 
 export const metadata: Metadata = {
@@ -23,6 +25,7 @@ export default function RootLayout({
         <main className="flex-grow">
           {children}
         </main>
+        <ChatWidgetWrapper />
         <Footer />
       </div>
     </Providers>
