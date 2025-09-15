@@ -5,7 +5,7 @@ import { StreamChat, Channel as StreamChannel } from "stream-chat";
 import "stream-chat-react/dist/css/v2/index.css";
 import { useMutation } from "@tanstack/react-query";
 
-import { useGeneralUser } from "@/lib/hooks/useUser";
+import {useCurrentUser, useGeneralUser} from "@/lib/hooks/useUser";
 import { getStreamChatTokenFn, type GetChatTokenParams } from "@/lib/endpoints/streamFns";
 import { Toast } from "@/components/base/Toast";
 import { getErrorMessage } from "@/lib/helpers/errors";
@@ -37,6 +37,15 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
         const combined = `${sorted[0]}_${sorted[1]}`;
         const hash = crypto.createHash('md5').update(combined).digest('hex');
         return `dm_${hash.substring(0, 50)}`;
+    };
+
+    const createChannelName = (currentUser: string, otherUser: string) => {
+        if (!currentUser || !otherUser) return "";
+
+        const currentUserData=useCurrentUser()
+        const otherData=useGeneralUser(otherUser)
+        // return `${otherUser.firstName || otherUser.name || otherUser.id}'s Chat`;
+        return `${currentUserData?.data?.name} & ${otherData?.data?.name} Chat`;
     };
 
 
@@ -116,8 +125,9 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
                     }
                 } else if (isOneChat && otherUserId) {
                     const sorted = [userId, otherUserId].sort();
-                    console.log("name check",createChannelId(userId,otherUserId))
                     const channelId = createChannelId(userId,otherUserId);
+                    const channelName = createChannelName(userId, otherUserId);
+
 
                     // Try to find the channel by id
                     const channels = await currentClient.queryChannels(
@@ -127,11 +137,10 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
                     );
 
                     if (channels.length === 0) {
-                        const name = `${userData?.name ?? userId} & ${otherUserId} Chat`;
                         const newChannel = currentClient.channel("messaging", channelId, {
                             members: sorted,
                             created_by_id: userId,
-                            name,
+                            name:channelName,
                         });
                         await newChannel.watch();
                         setChannel(newChannel);
