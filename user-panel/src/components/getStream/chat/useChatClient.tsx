@@ -135,8 +135,6 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
                         {},
                         { watch: true, state: true }
                     );
-                    console.log("Test1",channels)
-
 
                     if (channels.length === 0) {
                         const newChannel = currentClient.channel("messaging", channelId, {
