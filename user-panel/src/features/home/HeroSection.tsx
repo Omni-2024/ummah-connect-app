@@ -7,7 +7,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 export default function HeroSection({ isAuthenticated, router }: { isAuthenticated: boolean; router: AppRouterInstance }) {
   const stats = [
     { value: "10K+", label: "Muslim Learners" },
-    { value: "500+", label: "Islamic Courses" },
+    { value: "500+", label: "Islamic Services" },
     { value: "100+", label: "Certified Scholars" },
   ]
 

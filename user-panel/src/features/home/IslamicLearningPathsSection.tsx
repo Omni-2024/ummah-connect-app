@@ -78,7 +78,7 @@ export default function IslamicLearningPathsSection() {
                   <p className="text-slate-600 mb-4 text-sm leading-relaxed px-2">{path.description}</p>
                   <div className="flex items-center justify-center gap-2">
                     <span className={`${path.textColor} font-semibold text-sm`}>
-                      {path.courses} Courses
+                      {path.courses} Services
                     </span>
                     <ArrowRightIcon className={`w-4 h-4 ${path.textColor} group-hover:translate-x-1 transition-transform duration-300`} />
                   </div>
@@ -97,8 +97,8 @@ export default function IslamicLearningPathsSection() {
                   <p className="text-slate-600 mb-4 leading-relaxed text-sm lg:text-base">{path.description}</p>
                   <div className="flex items-center justify-between">
                     <span className={`${path.textColor} font-semibold text-sm lg:text-base`}>
-                      <span className="hidden lg:inline">{path.courses} Courses Available</span>
-                      <span className="lg:hidden">{path.courses} Courses</span>
+                      <span className="hidden lg:inline">{path.courses} Services Available</span>
+                      <span className="lg:hidden">{path.courses} Services</span>
                     </span>
                     <ArrowRightIcon className={`w-4 h-4 lg:w-5 lg:h-5 ${path.textColor} group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0`} />
                   </div>
