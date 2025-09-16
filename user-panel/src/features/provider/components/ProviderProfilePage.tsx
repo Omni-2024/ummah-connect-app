@@ -357,7 +357,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex-1 py-3 px-4 text-sm font-semibold rounded-lg transition-all duration-200 ${
                       activeTab === tab.id
-                        ? "bg-green-600 text-white shadow-lg transform scale-105"
+                        ? "bg-primary-500 text-white shadow-lg transform scale-105"
                         : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
                     }`}
                   >
@@ -647,19 +647,13 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
 
               <div className="space-y-3 mb-6">
                 <Button 
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3 font-semibold"
                   onClick={handleContact}
+
+                  variant="primary"
+                  className="w-full flex items-center justify-center gap-2"
                 >
                   <EnvelopeClosedIcon className="size-4 mr-2" />
                   Contact Me
-                </Button>
-                <Button 
-                  variant="primary"
-                  className="w-full flex items-center justify-center gap-2"
-                  onClick={() => setIsBookmarked(!isBookmarked)}
-                >
-                  {isBookmarked ? <BookmarkFilledIcon className="size-4" /> : <BookmarkIcon className="size-4" />}
-                  Save
                 </Button>
               </div>
 
