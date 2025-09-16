@@ -123,7 +123,7 @@ export default function ServiceContent({ service, educator }: ServiceContentProp
                       </div>
                     )}
                     {educator.totalServices && (
-                      <span>{educator.totalServices} courses</span>
+                      <span>{educator.totalServices} services</span>
                     )}
                     {educator.country && (
                       <div className="flex items-center gap-1">
