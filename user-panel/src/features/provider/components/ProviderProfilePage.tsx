@@ -504,7 +504,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
                               <Button
                                 size="sm"
                                 variant="primary"
-                                onClick={() => router.push(`/services/${service.slug}`)}
+                                onClick={() => router.push(`/service/${service.slug}`)}
                               >
                                 View Details
                               </Button>
