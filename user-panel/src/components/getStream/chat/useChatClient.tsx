@@ -23,6 +23,8 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
     const [allChannels, setAllChannels] = useState<StreamChannel[]>([]);
     const chatClientRef = useRef<StreamChat | null>(null);
     const {isOneChat}=useProviderChatState()
+    const { data: otherUserData } = useGeneralUser(otherUserId || "");
+    const currentUserData = useCurrentUser();
 
     const { data: userData } = useGeneralUser(userId);
 
@@ -39,13 +41,9 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
         return `dm_${hash.substring(0, 50)}`;
     };
 
-    const createChannelName = (currentUser: string, otherUser: string) => {
-        if (!currentUser || !otherUser) return "";
-
-        const currentUserData=useCurrentUser()
-        const otherData=useGeneralUser(otherUser)
-        // return `${otherUser.firstName || otherUser.name || otherUser.id}'s Chat`;
-        return `${currentUserData?.data?.name} & ${otherData?.data?.name} Chat`;
+    const createChannelName = () => {
+        if (!currentUserData?.data?.name || !otherUserData?.name) return "";
+        return `${currentUserData.data.name} & ${otherUserData.name} Chat`;
     };
 
 
@@ -114,6 +112,8 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
 
                 if (mounted) setClient(currentClient);
 
+
+
                 // 3) role-based logic
                 if (!isOneChat) {
                     const adminChannels = await fetchAdminChannels(currentClient);
@@ -124,10 +124,10 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
                         setChannel(null);
                     }
                 } else if (isOneChat && otherUserId) {
+
                     const sorted = [userId, otherUserId].sort();
                     const channelId = createChannelId(userId,otherUserId);
-                    const channelName = createChannelName(userId, otherUserId);
-
+                    const channelName = createChannelName();
 
                     // Try to find the channel by id
                     const channels = await currentClient.queryChannels(
@@ -135,6 +135,8 @@ export const useChatClient = (userId: string, otherUserId: string = "") => {
                         {},
                         { watch: true, state: true }
                     );
+                    console.log("Test1",channels)
+
 
                     if (channels.length === 0) {
                         const newChannel = currentClient.channel("messaging", channelId, {
