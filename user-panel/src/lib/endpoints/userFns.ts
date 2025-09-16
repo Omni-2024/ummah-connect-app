@@ -8,6 +8,7 @@ export const updateUserFn = async (data: {
   id: string;
   name?: string;
   designations?: string[];
+  languages?: string[];
   interests?: string[];
   profileImage?: string;
   contactNumber?: string;
