@@ -4,9 +4,10 @@ import { useState, useEffect } from "react"
 import { Chat, Channel, MessageList, MessageInput, Thread, Window } from "stream-chat-react"
 import { useChatClient } from "@/components/getStream/chat/useChatClient"
 import { motion, AnimatePresence } from "framer-motion"
-import {NotificationSettingsPanel} from "@/components/getStream/notification-settings-panel";
-import {useChatNotifications} from "@/components/getStream/useChatNotifications";
-import {Menu, MessageCircle, Settings,User,CloseCircle} from "iconsax-react";
+import { NotificationSettingsPanel } from "@/components/getStream/notification-settings-panel";
+import { useChatNotifications } from "@/components/getStream/useChatNotifications";
+import { Menu, MessageCircle, Settings, User, CloseCircle } from "iconsax-react";
+import { Minimize, Minimize2 } from "lucide-react";
 
 const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUserId: string }) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -146,15 +147,14 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             transition={{ duration: 0.2, ease: "easeOut" }}
-                            className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${
-                                isMobile
+                            className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${isMobile
                                     ? "fixed inset-4 z-50"
                                     : isMinimized
                                         ? "w-80 h-14"
                                         : isAdmin
                                             ? "w-[900px] h-[650px] max-w-[95vw] max-h-[90vh]"
                                             : "w-96 h-[550px] max-w-[95vw] max-h-[90vh]"
-                            }`}
+                                }`}
                         >
                             {/* Chat Header */}
                             <div className="bg-blue-600 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
@@ -164,7 +164,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                             onClick={toggleChannelList}
                                             className="hover:bg-blue-500 p-1 rounded transition-colors flex-shrink-0"
                                         >
-                                            <Menu size={20} />
+                                            <Menu color="white" size={20} />
                                         </button>
                                     )}
                                     <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -181,7 +181,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                         className="hover:bg-blue-500 p-2 rounded transition-colors relative"
                                         title="Notification Settings"
                                     >
-                                        <Settings size={18} />
+                                        <Settings color="white" size={18} />
                                         {permissionStatus !== "granted" && (
                                             <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full" />
                                         )}
@@ -192,11 +192,11 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                             onClick={() => setIsMinimized(!isMinimized)}
                                             className="hover:bg-blue-500 p-2 rounded transition-colors"
                                         >
-                                            <CloseCircle size={18} />
+                                            <Minimize2 color="white" size={18} />
                                         </button>
                                     )}
                                     <button onClick={() => setIsOpen(false)} className="hover:bg-blue-500 p-2 rounded transition-colors">
-                                        <CloseCircle size={18} />
+                                        <CloseCircle color="white" size={18} />
                                     </button>
                                 </div>
                             </div>
@@ -243,19 +243,19 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                             <div className="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex items-center gap-2">
-                                                                        <User size={18} className="text-gray-600" />
+                                                                        <User color="black" size={18} className="text-gray-600" />
                                                                         <h2 className="font-semibold text-gray-900">Channels</h2>
                                                                         {totalUnreadCount > 0 && (
                                                                             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                                        {totalUnreadCount}
-                                      </span>
+                                                                                {totalUnreadCount}
+                                                                            </span>
                                                                         )}
                                                                     </div>
                                                                     <button
                                                                         onClick={() => setShowChannelList(false)}
                                                                         className="p-1 hover:bg-gray-200 rounded"
                                                                     >
-                                                                        <CloseCircle size={18} />
+                                                                        <Menu color="black" size={18} />
                                                                     </button>
                                                                 </div>
                                                                 <p className="text-xs text-gray-500 mt-1">{allChannels.length} active conversations</p>
@@ -275,11 +275,10 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                                     onClick={() => handleChannelSelect(ch)}
                                                                                     whileHover={{ scale: 1.02 }}
                                                                                     whileTap={{ scale: 0.98 }}
-                                                                                    className={`w-full text-left p-3 rounded-lg text-sm transition-all duration-200 relative ${
-                                                                                        channel?.id === ch.id || channel?.cid === ch.cid
+                                                                                    className={`w-full text-left p-3 rounded-lg text-sm transition-all duration-200 relative ${channel?.id === ch.id || channel?.cid === ch.cid
                                                                                             ? "bg-blue-100 border-l-4 border-blue-500 text-blue-900"
                                                                                             : "hover:bg-gray-100 text-gray-700"
-                                                                                    }`}
+                                                                                        }`}
                                                                                 >
                                                                                     <div className="flex items-center justify-between">
                                                                                         <div className="flex-1 min-w-0">
@@ -353,7 +352,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
 
                                                             {/* Message Input */}
                                                             <div className="flex-shrink-0 border-t border-gray-200 bg-white">
-                                                                <MessageInput  maxRows={8}/>
+                                                                <MessageInput maxRows={8} />
                                                             </div>
                                                         </div>
                                                     </Window>
