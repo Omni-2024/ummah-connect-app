@@ -1,13 +1,24 @@
 "use client"
-import React from "react";
-import { useRouter } from "next/navigation";
+import React, {useEffect} from "react";
+import {usePathname, useRouter} from "next/navigation";
 import Link from "next/link";
 import Logo from "./Logo"; // Import the Logo component
 import { NAV_LOGO_SRC } from "@/lib/constants";
+import {useProviderChatState} from "@/features/provider/context/useProviderChatState";
 
 export default function Footer() {
   const router = useRouter();
+  const pathname = usePathname();
   const currentYear = new Date().getFullYear();
+  const { setIsOneChat } = useProviderChatState();
+
+  useEffect(() => {
+    if (pathname?.startsWith("/service/") || pathname?.startsWith("/provider/")) {
+      setIsOneChat(true);
+    } else {
+      setIsOneChat(false);
+    }
+  }, [pathname, setIsOneChat]);
 
   const handleNavigation = (path: string) => {
     router.push(path);

@@ -72,7 +72,7 @@ export const NotificationSettingsPanel = ({
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="bg-white border-b border-gray-200 shadow-sm"
+                    className="bg-white border-b border-gray-200 shadow-sm max-h-[70vh] overflow-y-auto rounded-b-lg"
                 >
                     <div className="p-6">
                         <div className="flex items-center justify-between mb-6">

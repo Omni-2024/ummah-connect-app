@@ -243,7 +243,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                             <div className="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex items-center gap-2">
-                                                                        <User size={18} className="text-gray-600" />
+                                                                        <User color="black" size={18} className="text-gray-600" />
                                                                         <h2 className="font-semibold text-gray-900">Channels</h2>
                                                                         {totalUnreadCount > 0 && (
                                                                             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
@@ -255,7 +255,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                         onClick={() => setShowChannelList(false)}
                                                                         className="p-1 hover:bg-gray-200 rounded"
                                                                     >
-                                                                        <CloseCircle size={18} />
+                                                                        <Menu color="black" size={18} />
                                                                     </button>
                                                                 </div>
                                                                 <p className="text-xs text-gray-500 mt-1">{allChannels.length} active conversations</p>
