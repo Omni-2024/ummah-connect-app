@@ -18,7 +18,7 @@ export default function AdminMessagesPage() {
 
       <div className="bg-card p-8 rounded-lg border border-border text-center">
         <h2 className="text-xl font-semibold text-foreground mb-2">Message Center</h2>
-          <ChatWidgetWrapper />
+          {/* <ChatWidgetWrapper /> */}
       </div>
     </div>
   )

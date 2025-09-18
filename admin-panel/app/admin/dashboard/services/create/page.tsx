@@ -85,6 +85,7 @@ const Page = withAuth(SuperAdminCreateService, [
     ADMIN_ROLES.ADMIN,
     ADMIN_ROLES.OPERATIONAL_ADMIN,
     ADMIN_ROLES.ROOT,
+    ADMIN_ROLES.BUSINESS_ADMIN
 ]);
 
 export default function CreateServicePage(props: any) {

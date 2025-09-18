@@ -7,7 +7,20 @@ import { motion, AnimatePresence } from "framer-motion"
 import { NotificationSettingsPanel } from "@/components/getStream/notification-settings-panel";
 import { useChatNotifications } from "@/components/getStream/useChatNotifications";
 import { Menu, MessageCircle, Settings, User, CloseCircle } from "iconsax-react";
-import { Minimize, Minimize2 } from "lucide-react";
+import { Minimize2 } from "lucide-react";
+
+// Push notification helper
+const requestNotificationPermission = async () => {
+    if (!("Notification" in window)) return false
+    const permission = await Notification.requestPermission()
+    return permission === "granted"
+}
+
+const showNotification = (title: string, options: NotificationOptions) => {
+    if (Notification.permission === "granted") {
+        new Notification(title, options)
+    }
+}
 
 const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUserId: string }) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -16,7 +29,6 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
     const [showSettings, setShowSettings] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
     const { client, channel, isAdmin, selectChannel, allChannels } = useChatClient(userId, otherUserId)
-
 
     const {
         totalUnreadCount,
@@ -32,16 +44,13 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
         permissionStatus,
         markNotificationsAsSeen,
         updateSettings,
-        requestNotificationPermission,
+        requestNotificationPermission: requestPerm,
         testNotification,
     } = useChatNotifications(client, allChannels, channel?.id || channel?.cid)
 
     // Check if mobile
     useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth < 768)
-        }
-
+        const checkMobile = () => setIsMobile(window.innerWidth < 768)
         checkMobile()
         window.addEventListener("resize", checkMobile)
         return () => window.removeEventListener("resize", checkMobile)
@@ -49,16 +58,37 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
 
     // Mark notifications as seen when chat is opened
     useEffect(() => {
-        if (isOpen) {
-            markNotificationsAsSeen()
-        }
+        if (isOpen) markNotificationsAsSeen()
     }, [isOpen, markNotificationsAsSeen])
+
+    // Push notifications for new messages
+    useEffect(() => {
+        if (!client || !channel) return
+
+        const handleNewMessage = (event: any) => {
+            const messageText = event.message.text
+            if (document.hidden) {
+                showNotification("New Message", { body: messageText })
+                // Optional: send to backend
+                fetch("/api/send-push", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        title: "New Message",
+                        body: messageText,
+                        url: window.location.href,
+                    }),
+                    headers: { "Content-Type": "application/json" },
+                }).catch(err => console.error("Push error:", err))
+            }
+        }
+
+        channel.on("message.new", handleNewMessage)
+        return () => channel.off("message.new", handleNewMessage)
+    }, [channel, client])
 
     if (!client || !channel) return null
 
-    const toggleChannelList = () => {
-        setShowChannelList(!showChannelList)
-    }
+    const toggleChannelList = () => setShowChannelList(!showChannelList)
 
     const handleChannelSelect = (ch: any) => {
         selectChannel(ch)
@@ -83,7 +113,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                 />
             )}
 
-            <div className="fixed bottom-4 right-4 z-50">
+            <div className="fixed top-6 right-60 z-50">
                 <AnimatePresence>
                     {!isOpen && (
                         <motion.div className="relative">
@@ -94,9 +124,9 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
                                 onClick={handleChatOpen}
-                                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-colors duration-200 relative"
+                                className="bg-primary-500 hover:bg-primary-700 text-white rounded-full p-2 shadow-lg flex items-center justify-center transition-colors duration-200 relative"
                             >
-                                <MessageCircle color="black " width={25} size={24} />
+                                <MessageCircle color="white " width={25} size={24} />
 
                                 {/* Enhanced Notification Badge */}
                                 <AnimatePresence>
@@ -147,22 +177,22 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             transition={{ duration: 0.2, ease: "easeOut" }}
-                            className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${isMobile
+                            className={`fixed bottom-0 right-0 bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${isMobile
                                     ? "fixed inset-4 z-50"
                                     : isMinimized
                                         ? "w-80 h-14"
                                         : isAdmin
-                                            ? "w-[900px] h-[650px] max-w-[95vw] max-h-[90vh]"
+                                            ? "w-[700px] h-[500px] max-w-[95vw] max-h-[90vh]"
                                             : "w-96 h-[550px] max-w-[95vw] max-h-[90vh]"
                                 }`}
                         >
                             {/* Chat Header */}
-                            <div className="bg-blue-600 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
+                            <div className="bg-primary-600 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
                                 <div className="flex items-center gap-3 flex-1 min-w-0 pr-3">
                                     {isAdmin && (
                                         <button
                                             onClick={toggleChannelList}
-                                            className="hover:bg-blue-500 p-1 rounded transition-colors flex-shrink-0"
+                                            className="hover:bg-primary-500 p-1 rounded transition-colors flex-shrink-0"
                                         >
                                             <Menu color="white" size={20} />
                                         </button>
@@ -190,7 +220,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                     {!isMobile && (
                                         <button
                                             onClick={() => setIsMinimized(!isMinimized)}
-                                            className="hover:bg-blue-500 p-2 rounded transition-colors"
+                                            className="hover:bg-primary-500 p-2 rounded transition-colors"
                                         >
                                             <Minimize2 color="white" size={18} />
                                         </button>
@@ -325,31 +355,10 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                 <Channel channel={channel}>
                                                     <Window>
                                                         <div className="flex flex-col h-full">
-                                                            {/* Custom Header */}
-                                                            <div className="flex-shrink-0 border-b border-gray-200 bg-white p-3">
-                                                                <div className="flex items-center justify-between">
-                                                                    <div className="flex items-center gap-3">
-                                                                        <div>
-                                                                            <h4 className="font-medium text-gray-900">
-                                                                                {channel.data?.name || "Support Chat"}
-                                                                            </h4>
-                                                                            <p className="text-xs text-gray-500">
-                                                                                {isAdmin ? "Admin Support" : "Customer Support"}
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div className="w-2 h-2 bg-green-400 rounded-full" />
-                                                                        <span className="text-xs text-gray-500">Online</span>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
                                                             {/* Messages Area */}
                                                             <div className="flex-1 overflow-hidden bg-gray-50 min-h-0">
                                                                 <MessageList />
                                                             </div>
-
                                                             {/* Message Input */}
                                                             <div className="flex-shrink-0 border-t border-gray-200 bg-white">
                                                                 <MessageInput maxRows={8} />

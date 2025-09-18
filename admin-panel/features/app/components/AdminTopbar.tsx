@@ -3,6 +3,8 @@ import { Menu, Bell, Shield } from "lucide-react"
 import Button from "@/components/base/button"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useEffect, useState } from "react"
+import { ChatWidgetWrapper } from "@/components/getStream/chat/ChatWidgetWrapper"
+import FloatingChatWidget from "@/components/getStream/chat/ChatWidgetComponent"
 
 export default function AdminTopbar({
   setSidebarOpen,
@@ -30,9 +32,7 @@ export default function AdminTopbar({
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
         <div className="flex flex-1" />
         <div className="flex items-center gap-x-4 lg:gap-x-6">
-          <Button variant="primary" size="sm">
-            <Bell className="h-5 w-5" />
-          </Button>
+            <ChatWidgetWrapper/>
           <div className="h-6 w-px bg-border" />
           {isAuthenticated && (
             <div className="flex items-center space-x-2">
