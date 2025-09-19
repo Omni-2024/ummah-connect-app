@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Toast } from "@/components/base/toast";
 import ServiceEditorLayout from "@/features/services/layouts/ServiceEditorPageLayout";
 import {useCreateServiceState} from "@/features/services/context/useCreateServiceState";
-import {addQuestionFn, updateQuestionFn} from "@/lib/endpoints/faqFns";
+import {addQuestionFn, removeQuestionFn, updateQuestionFn} from "@/lib/endpoints/faqFns";
 import AddNewCard, {AddNewCardType} from "@/features/categories/cards/addNewCard";
 import {addFAQSchema} from "@/features/services/validation/addService";
 import {createServicePages} from "@/features/services/constants/createServicePages";
@@ -27,6 +27,10 @@ const AddServiceFAQsPage = () => {
 
     const { mutate: updateFAQMutation, isPending: isUpdateFAQPending }= useMutation({
         mutationFn: updateQuestionFn,
+    });
+
+    const { mutate: deleteFAQMutation, isPending: isDeleteFAQPending }= useMutation({
+        mutationFn: removeQuestionFn,
     });
 
     const formik = useFormik({
@@ -102,8 +106,8 @@ const AddServiceFAQsPage = () => {
 
     const handleUpdateFAQ = (index: number, updatedFAQ: { question: string, answer: string }) => {
         const newFaqs = [...formik.values.faqs];
-        newFaqs[index] = { ...newFaqs[index], ...updatedFAQ }; // Update the FAQ at the specified index
-        formik.setFieldValue("faqs", newFaqs); // Update Formik state
+        newFaqs[index] = { ...newFaqs[index], ...updatedFAQ };
+        formik.setFieldValue("faqs", newFaqs);
     };
 
 
@@ -214,7 +218,8 @@ const AddServiceFAQsPage = () => {
                         {formik.errors.faqs}
                     </div>
                 )}
-            </div>        </ServiceEditorLayout>
+            </div>
+        </ServiceEditorLayout>
     );
 };
 
