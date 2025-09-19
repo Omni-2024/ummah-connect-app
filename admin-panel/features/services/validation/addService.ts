@@ -43,3 +43,14 @@ export const addServiceSchema = Yup.object().shape({
     cmePoints: Yup.number().default(0).required("CME points is required"),
     cmdId: Yup.string().nullable(),
 });
+
+export const addFAQSchema = Yup.object().shape({
+    faqs: Yup.array()
+        .of(
+            Yup.object().shape({
+                question: Yup.string().required("Question is required"),
+                answer: Yup.string().required("Answer is required"),
+            })
+        )
+        .min(4, "You must provide at least 4 FAQs"),
+});

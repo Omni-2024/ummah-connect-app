@@ -1,6 +1,7 @@
 import { setLimit, setOffset } from "@/features/services/context/ServiceState";
 import type { ServiceDetailsAPI } from "@/features/services/types/addService";
 import Request from "@/lib/http";
+import {getQuestionsFn, QuestionDBtype} from "@/lib/endpoints/faqFns";
 
 export interface GetAllServiceParams {
   limit?: number;
@@ -141,18 +142,19 @@ type GetAllServicesData = {
     discount: number;
     discountOn: boolean;
   };
+  faqData:QuestionDBtype[]
 };
 
 export const getServiceFullDataFn = async (
   id: string
 ): Promise<GetAllServicesData> => {
-  const [serviceDetails] = await Promise.all([
+  const [serviceDetails,_faqData] = await Promise.all([
     Request<ServiceDetailsAPI>({
       method: "get",
       url: `/api/service/detail/${id}`,
     }),
+    getQuestionsFn(id)
   ]);
-
   const categoryData = {
     profession: serviceDetails.data.profession?.id,
     specialist: serviceDetails.data.specialty?.id,
@@ -171,8 +173,10 @@ export const getServiceFullDataFn = async (
     duration: serviceDetails.data.duration,
   };
 
+  const faqData=_faqData
 
-  return { categoryData, detailsData };
+
+  return { categoryData, detailsData ,faqData};
 };
 
 export const archiveServiceFn = async (id: string) => {

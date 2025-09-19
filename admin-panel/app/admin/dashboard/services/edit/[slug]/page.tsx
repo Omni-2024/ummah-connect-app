@@ -12,7 +12,7 @@ import LoadingError from "@/components/widget/loadingError";
 import Spinner from "@/components/ui/Spinner";
 import SimpleDialog from "@/components/widget/simpleDialog";
 import {ADMIN_ROLES} from "@/lib/constants";
-import {setShowBackWarning} from "@/features/services/context/CreateServiceState";
+import {setFAQId, setShowBackWarning} from "@/features/services/context/CreateServiceState";
 
 function useServiceIdFromRoute() {
     const params = useParams();            // from next/navigation
@@ -140,6 +140,8 @@ const SuperAdminEditService = () => {
             specialist: data.categoryData?.specialist,
             provider: data.categoryData.provider,
         });
+        await updateCreateServiceState("faqData", data.faqData);
+        setFAQId(data.faqData[0].id)
         setIsLoading(false);
     };
 

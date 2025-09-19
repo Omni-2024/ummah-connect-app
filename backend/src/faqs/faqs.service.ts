@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { QuestionsRepository } from './faqs.repository';
 import {
   CreateFaqQuestionDto,
@@ -21,16 +21,16 @@ export class QuestionsService {
   }
 
   async findAllByService(
-    findAllAssessmentQuestionByCourseIdDto: FindAllFaqQuestionByServiceIdDto,
+    findAllFaqQuestionByServiceIdDto: FindAllFaqQuestionByServiceIdDto,
   ){
       const questions = await this.questionRepository.findAllByService(
-        findAllAssessmentQuestionByCourseIdDto,
+        findAllFaqQuestionByServiceIdDto,
       );
       if (!questions) {
-        return { status: HttpStatus.BAD_REQUEST, error: 'No question found' };
+        throw new NotFoundException('No faq found');
       }
       if (questions.length === 0) {
-        return { status: HttpStatus.NOT_FOUND, error: 'No question found' };
+        throw new NotFoundException('No faq found');
       }
       return  questions ;
   }
@@ -42,7 +42,7 @@ export class QuestionsService {
         findOneAssessmentQuestionDto,
       );
       if (!question) {
-        return { status: HttpStatus.NOT_FOUND, error: 'No question found' };
+        throw new NotFoundException('No faq found');
       }
       return  question ;
   }
@@ -53,7 +53,7 @@ export class QuestionsService {
     const { id: _ignore, ...data } = dto;
     const question = await this.questionRepository.update({ id, ...data });
     if (!question) {
-      return { status: HttpStatus.BAD_REQUEST, error: 'No question found' };
+      throw new NotFoundException('No faq found');
     }
       return  question ;
   }
@@ -65,7 +65,7 @@ export class QuestionsService {
         findOneAssessmentQuestionDto,
       );
       if (!question) {
-        return { status: HttpStatus.BAD_REQUEST, error: 'No question found' };
+        throw new NotFoundException('No faq found');
       }
       return question ;
   }

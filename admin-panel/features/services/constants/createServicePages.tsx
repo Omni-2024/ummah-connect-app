@@ -3,6 +3,7 @@ import {StepOne} from "@/features/services/component/pages/steps/step-one";
 import {StepTwo} from "@/features/services/component/pages/steps/step-two";
 import {StepFour} from "@/features/services/component/pages/steps/step-four";
 import {StepThree} from "@/features/services/component/pages/steps/step-three";
+import AddServiceFAQsPage from "@/features/services/component/pages/steps/step-faq";
 
 
 type PageStepType = {
@@ -17,6 +18,10 @@ export const PageSteps: PageStepType[] = [
   {
     title: "Service Details",
     component: StepTwo,
+  },
+  {
+    title: "Faq Details",
+    component: AddServiceFAQsPage,
   },
   {
     title: "Preview",

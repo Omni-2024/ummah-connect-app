@@ -2,8 +2,9 @@ import { proxy } from "valtio";
 import type {
   CategoriesPageData,
 ServiceDetailsPageData} from "../types/addService";
+import {QuestionDBtype} from "@/lib/endpoints/faqFns";
 
-export const CREATE_SERVICE_LAST_STEP = 3;
+export const CREATE_SERVICE_LAST_STEP = 4;
 
 
 
@@ -18,6 +19,9 @@ type CreateServiceState = {
 
   categoryData: CategoriesPageData;
   serviceDetailsData: ServiceDetailsPageData;
+
+  faqId: string | null;
+  faqData:QuestionDBtype[]
 };
 
 export const initialState: CreateServiceState = {
@@ -45,13 +49,16 @@ export const initialState: CreateServiceState = {
     discount: 0,
     discountOn: false,
   },
+
+  faqId: null,
+  faqData:[]
 };
 
 export const createServiceState = proxy<CreateServiceState>(initialState);
 
 type CreateServiceStateUpdate = Pick<
   CreateServiceState,
-  "categoryData" | "serviceDetailsData"
+  "categoryData" | "serviceDetailsData" |"faqData"
 >;
 
 export const setServiceId = (serviceId: string) => {
@@ -106,6 +113,10 @@ export const resetCreateServiceState = <T extends keyof CreateServiceStateUpdate
   page: T
 ) => {
   createServiceState[page] = initialState[page];
+};
+
+export const setFAQId = (faqId: string | null) => {
+  createServiceState.faqId = faqId;
 };
 
 export const resetCreateServiceStateFull = () => {

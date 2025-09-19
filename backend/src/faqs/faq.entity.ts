@@ -32,11 +32,11 @@ export class Question
   @VersionColumn({ name: '_v' })
   version: number;
 
-  @Column({ name: 'course_id', type: 'uuid' })
+  @Column({ name: 'service_id', type: 'uuid' })
   serviceId: string;
 
   @ManyToOne(() => Service, (service) => service.id, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'course_id' })
+  @JoinColumn({ name: 'service_id' })
   service: Service;
 
   @Column({ type: 'text' })

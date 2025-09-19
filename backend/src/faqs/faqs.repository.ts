@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { Question } from './faq.entity';
 import {
   CreateFaqQuestionDto,
@@ -28,12 +28,15 @@ export class QuestionsRepository {
   }
 
   async findAllByService(
-    findAllAssessmentQuestionByCourseIdDto: FindAllFaqQuestionByServiceIdDto,
+    findAllFaqQuestionByServiceIdDto: FindAllFaqQuestionByServiceIdDto,
   ): Promise<Question[] | null> {
     try {
-      return await this.questionRepository.findBy(
-        findAllAssessmentQuestionByCourseIdDto,
-      );
+      return await this.questionRepository.find({
+        where: {
+          serviceId: findAllFaqQuestionByServiceIdDto.serviceId,
+          deletedAt: IsNull(),
+        },
+      })
     } catch (e) {
       throw e;
     }

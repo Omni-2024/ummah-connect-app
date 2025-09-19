@@ -1,7 +1,7 @@
 import { useSnapshot } from "valtio";
 import {
   createServiceState, handleBack, handleNext, resetCreateServiceState,
-  resetCreateServiceStateFull, setCoverImage, setCurrentStep, setEditMode, setLoading,
+  resetCreateServiceStateFull, setCoverImage, setCurrentStep, setEditMode, setFAQId, setLoading,
   setServiceId, setShowBackWarning, updateCreateServiceState
 } from "@/features/services/context/CreateServiceState";
 
@@ -22,6 +22,10 @@ export const useCreateServiceState = () => {
     categoryData: snap.categoryData,
     serviceDetailsData: snap.serviceDetailsData,
     handleIsSavedData: snap.isSavedData,
+
+    faqId:snap.faqId,
+    faqData:snap.faqData,
+    setFAQId:setFAQId,
 
     // Actions
     setServiceId: setServiceId,
