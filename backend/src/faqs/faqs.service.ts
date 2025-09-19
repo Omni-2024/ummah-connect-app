@@ -38,7 +38,7 @@ export class QuestionsService {
   async findOne(
     findOneAssessmentQuestionDto: FindOneFaqQuestionDto,
   ) {
-      const question = await this.questionRepository.findOne(
+    const question = await this.questionRepository.findOne(
         findOneAssessmentQuestionDto,
       );
       if (!question) {

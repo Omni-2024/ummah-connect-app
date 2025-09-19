@@ -41,7 +41,7 @@ export default function ServiceDetailsPage() {
     isLoading,
     error,
   } = useServiceBySlug(serviceSlug || slug || "");
-  const { data: educator } = useGeneralUser(service?.provider?.id ?? undefined);
+  const { data: educator } = useGeneralUser(service?.serviceDetails?.data.id ?? undefined);
 
   // Scroll detection effect
   useEffect(() => {
@@ -76,7 +76,7 @@ export default function ServiceDetailsPage() {
 
   const handleEnroll = () => {
     if (service) {
-      console.log("Enrolling in service:", service.id);
+      console.log("Enrolling in service:", service.serviceDetails.data.id);
     }
   };
 
@@ -87,8 +87,8 @@ export default function ServiceDetailsPage() {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: service?.title,
-        text: service?.tagline,
+        title: service?.serviceDetails.data.title,
+        text: service?.serviceDetails.data.tagline,
         url: window.location.href,
       });
     } else {
@@ -150,9 +150,9 @@ export default function ServiceDetailsPage() {
     );
   }
 
-  const discountedPrice = service.discountEnabled
-    ? service.price - (service.price * service.discount) / 100
-    : service.price;
+  const discountedPrice = service.serviceDetails.data.discountEnabled
+    ? service.serviceDetails.data.price - (service.serviceDetails.data.price * service.serviceDetails.data.discount) / 100
+    : service.serviceDetails.data.price;
 
   return (
     <div className="min-h-screen w-full bg-white pb-16 lg:pb-0">
@@ -188,18 +188,18 @@ export default function ServiceDetailsPage() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             <ServiceHeader
-              service={service}
+              service={service.serviceDetails.data}
               educator={educator}
               discountedPrice={discountedPrice}
               onEnroll={handleEnroll}
               formatReadableHours={formatReadableHours}
             />
 
-            <ServiceContent service={service} educator={educator} />
+            <ServiceContent service={service.serviceDetails.data} educator={educator} />
           </div>
 
           <ServiceSidebar
-            service={service}
+            service={service.serviceDetails.data}
             discountedPrice={discountedPrice}
             isBookmarked={isBookmarked}
             onEnroll={handleEnroll}

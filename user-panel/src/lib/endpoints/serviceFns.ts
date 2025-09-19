@@ -1,5 +1,6 @@
 import { Service, GetAllServiceParams, Meta } from "@/types";
 import Request from "@/lib/http";
+import {getQuestionsFn} from "@/lib/endpoints/faqFns";
 
 
 
@@ -46,16 +47,20 @@ export const getOneServiceFn = async (id: string) => {
 /** Get - '/course/detail/slug/:slug' - get one course by slug */
 export const getOneServiceBySlugFn = async (slug: string) => {
   try {
-    const res = await Request<GetOneServiceDetailsFnRes>({
+    const _serviceDetails = await Request<GetOneServiceDetailsFnRes>({
       method: "get",
       url: `/api/service/detail/slug/${slug}`,
     });
-    return res.data;
+
+    const _faqData = await getQuestionsFn(_serviceDetails.data.id);
+
+    return { serviceDetails: _serviceDetails, faqData: _faqData };
   } catch (error) {
     console.error(error);
     return null;
   }
 };
+
 
 export interface GetOneServiceDetailsFnRes {
   id: string;
@@ -63,11 +68,8 @@ export interface GetOneServiceDetailsFnRes {
   tagline: string;
   description: string;
   coverImageUrl: string;
-  modules: Module[];
-  cmePoints: number;
   provider: Provider;
   price: number;
-  cmeId: string;
   totalReviewScore: string;
   totalReviewCount: string;
   averageReviewScore: string;
