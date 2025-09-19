@@ -92,6 +92,8 @@ const AddServiceFAQsPage = () => {
                          data:faqData
                         });
                     }
+                if (!next) Toast.success("Draft saved successfully");
+                if (next) handleNext();
         }
         }catch (error) {
             console.error(error);
