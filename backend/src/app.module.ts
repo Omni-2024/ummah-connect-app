@@ -14,6 +14,7 @@ import { StorageModule } from './common/r2/storage.module';
 import { ProviderModule } from './providers/provider.module';
 import { StreamModule } from './common/getStream/stream.module';
 import { SocialModule } from './auth/social/social.module';
+import { QuestionModule } from './faqs/faq.module';
 
 @Module({
   imports: [
@@ -44,7 +45,8 @@ import { SocialModule } from './auth/social/social.module';
     StorageModule,
     ProviderModule,
     StreamModule,
-    SocialModule
+    SocialModule,
+    QuestionModule
   ],
 })
 export class AppModule {}

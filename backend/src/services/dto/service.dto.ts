@@ -184,6 +184,7 @@ export class ServiceDetailDto {
   @IsOptional()
   provider: ProviderDto;
 
+
   price: number;
 
   totalReviewScore: number;
