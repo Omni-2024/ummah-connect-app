@@ -4,7 +4,7 @@ import Image from "next/image"
 import { buildAvatarUrl } from "@/features/app/components/Navbar"
 import { updateUserFn } from "@/lib/endpoints/userFns"
 import { getAllProfessionsFn, getAllSpecialistByProfessionIdFn } from "@/lib/endpoints/categoryFns"
-import { COUNTRY_LIST } from "@/lib/constants"
+import { COUNTRY_LIST, languages } from "@/lib/constants"
 import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns"
 import { Dropdown } from "@/features/myprofile/Dropdown"
 
@@ -30,7 +30,8 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
     interest: [] as string[],
     specialization: "",
     company: "",
-    country: ""
+    country: "",
+    languages: [] as string[],
   })
   
   const [isSavingProfile, setIsSavingProfile] = useState(false)
@@ -97,7 +98,8 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
         interest: Array.isArray(user.interests) ? user.interests : [],
         specialization: user.specializations || "",
         company: user.company || "",
-        country: user.country || ""
+        country: user.country || "",
+        languages: Array.isArray(user.languages) ? user.languages : [],
       }))
 
       if (user.designations && Array.isArray(user.designations) && user.designations.length > 0) {
@@ -134,6 +136,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
         company: profileData.company,
         country: profileData.country,
         specializations: profileData.specialization,
+        languages: profileData.languages,
       })
 
       // Reset the manual update flag after successful save
@@ -265,6 +268,17 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                 options={COUNTRY_LIST.map(c => c.value)}
                 onChange={(value) => handleInputChange('country', value as string)}
                 required
+              />
+            </div>
+
+            <div>
+              <Dropdown
+                label="Languages"
+                value={profileData.languages}
+                options={languages.map(l => l.label)}
+                onChange={(value) => handleInputChange('languages', value)}
+                multiple
+                // placeholder="Select languages you speak..."
               />
             </div>
           </div>

@@ -117,7 +117,9 @@ export default function Navbar({ clearPage }: NavbarProps) {
 
         </div>
         <div className="flex items-center justify-center gap-4">
-
+          <Link href="/start-selling">
+            <Button variant="unstyled">Become a Seller</Button>
+          </Link>
             <button
                 className="relative rounded-lg p-2 text-slate-600 transition-all duration-200 hover:bg-slate-50 hover:text-emerald-600"
                 aria-label="Notifications"

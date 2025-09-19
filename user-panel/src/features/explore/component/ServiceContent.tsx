@@ -75,7 +75,7 @@ export default function ServiceContent({ service, educator }: ServiceContentProp
 
             {/* Service Provider - Clean & Minimal */}
       {educator && (
-        <Card className="p-6">
+        <Card id="provider-section"  className="p-6 scroll-mt-24">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             About the Service Provider
           </h2>
@@ -100,9 +100,9 @@ export default function ServiceContent({ service, educator }: ServiceContentProp
                   </span>
                 </div>
               )}
-              {educator.verified && (
+              {/* {educator.verified && (
                 <CheckCircledIcon className="absolute -bottom-1 -right-1 size-5 text-green-500 bg-white rounded-full" />
-              )}
+              )} */}
             </div>
 
             {/* Provider Info */}
@@ -123,7 +123,7 @@ export default function ServiceContent({ service, educator }: ServiceContentProp
                       </div>
                     )}
                     {educator.totalServices && (
-                      <span>{educator.totalServices} courses</span>
+                      <span>{educator.totalServices} services</span>
                     )}
                     {educator.country && (
                       <div className="flex items-center gap-1">

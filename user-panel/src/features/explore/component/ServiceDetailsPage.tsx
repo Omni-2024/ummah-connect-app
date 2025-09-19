@@ -27,6 +27,7 @@ import ServiceHeader from "./ServiceHeader";
 import ServiceSidebar from "./ServiceSidebar";
 import ServiceContent from "./ServiceContent";
 import { SkeletonServiceDetailsPage } from "./SkeletonServiceDetailsPage";
+import ServiceFAQ from "./ServiceFAQ";
 
 export default function ServiceDetailsPage() {
   const router = useRouter();
@@ -196,6 +197,8 @@ export default function ServiceDetailsPage() {
             />
 
             <ServiceContent service={service.serviceDetails.data} educator={educator} />
+             {/* FAQ Section*/}
+            {/*<ServiceFAQ faqs={service.faqs} />*/}
           </div>
 
           <ServiceSidebar

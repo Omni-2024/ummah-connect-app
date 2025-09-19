@@ -139,9 +139,18 @@ export default function ServiceHeader({
         </h3>
         <p className="text-sm text-gray-600">Service Provider</p>
       </div>
-      <Button variant="primary" size="sm">
+      <Button
+        variant="primary"
+        size="sm"
+        onClick={() => {
+          document
+            .getElementById("provider-section")
+            ?.scrollIntoView({ behavior: "smooth", block: "start"  });
+        }}
+      >
         View Profile
       </Button>
+
     </div>
   </Card>
 )}

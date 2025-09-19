@@ -23,7 +23,7 @@ export default function CTASection({ router }: { router: AppRouterInstance }) {
             onClick={() => router.push("/courses")}
             className="border-2 border-white text-white px-8 py-4 rounded-xl hover:bg-white hover:text-emerald-600 transition-all duration-200 text-lg font-semibold"
           >
-            Browse Courses
+            Browse Services
           </button>
         </div>
       </div>

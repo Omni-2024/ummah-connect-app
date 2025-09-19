@@ -2,7 +2,11 @@ import { Service, GetAllServiceParams, Meta } from "@/types";
 import Request from "@/lib/http";
 import {getQuestionsFn} from "@/lib/endpoints/faqFns";
 
-
+export interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+}
 
 export const getAllServicesFn = async (params: GetAllServiceParams) => {
 //   const {
@@ -82,6 +86,7 @@ export interface GetOneServiceDetailsFnRes {
   enrollmentCount: string;
   slug: string;
   isArchived: boolean;
+  faqs?: FAQItem[];
 }
 
 export interface Module {

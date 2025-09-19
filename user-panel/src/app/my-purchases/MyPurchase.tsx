@@ -170,13 +170,13 @@ const MyPurchasesPage = () => {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">My Purchases</h1>
-          <p className="text-gray-600">Manage your purchased courses and track your progress</p>
+          <p className="text-gray-600">Manage your purchased services and track your progress</p>
         </div>
 
         {/* Filter Tabs */}
         <div className="flex gap-2 mb-6 overflow-x-auto">
           {[
-            { key: 'all', label: 'All Courses', count: mockPurchases.length },
+            { key: 'all', label: 'All Services', count: mockPurchases.length },
             { key: 'in_progress', label: 'In Progress', count: mockPurchases.filter(p => p.status === 'in_progress').length },
             { key: 'completed', label: 'Completed', count: mockPurchases.filter(p => p.status === 'completed').length },
             { key: 'not_started', label: 'Not Started', count: mockPurchases.filter(p => p.status === 'not_started').length },
@@ -203,14 +203,14 @@ const MyPurchasesPage = () => {
                 <PlayIcon className="size-8 text-gray-400" />
               </div>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">No courses found</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No Services found</h3>
             <p className="text-gray-600 mb-6">
               {selectedTab === 'all' 
-                ? "You haven't purchased any courses yet." 
-                : `No courses with "${selectedTab.replace('_', ' ')}" status.`}
+                ? "You haven't purchased any Services yet." 
+                : `No Services with "${selectedTab.replace('_', ' ')}" status.`}
             </p>
             <Button onClick={() => router.push('/explore')}>
-              Explore Courses
+              Explore Services
             </Button>
           </div>
         ) : (
@@ -369,7 +369,7 @@ const MyPurchasesPage = () => {
               <div className="text-2xl font-bold text-gray-900">
                 {mockPurchases.length}
               </div>
-              <div className="text-sm text-gray-600">Total Courses</div>
+              <div className="text-sm text-gray-600">Total Services</div>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-xl">
               <div className="text-2xl font-bold text-gray-900">

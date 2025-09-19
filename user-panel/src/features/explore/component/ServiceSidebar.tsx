@@ -32,9 +32,18 @@ export default function ServiceSidebar({
       <div className={`sticky top-24 transition-all duration-500 ease-out ${
         isScrolled ? 'mt-8' : 'mt-0'
       }`}>
-        <Card className="m-6 p-4 lg:m-0 bg-white lg:shadow-lg border border-gray-200">
+        <Card className="m-6 p-4 lg:m-0 bg-white lg:shadow-lg border border-gray-200 relative">
+          {/* Share Icon in Top Right Corner */}
+          <button
+            onClick={onShare}
+            className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 group"
+            title="Share"
+          >
+            <Share1Icon className="size-5 text-gray-600 group-hover:text-gray-900" />
+          </button>
+
           {/* Heading */}
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 pr-12">
             Pricing Details
           </h2>
 
@@ -61,42 +70,6 @@ export default function ServiceSidebar({
           >
             Enroll Now
           </Button>
-
-          {/* Quick Stats */}
-          {/* <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-xl font-bold text-gray-900">
-                {formatReadableHours(service.duration)}
-              </div>
-              <div className="text-xs text-gray-600">Duration</div>
-            </div>
-            <div className="text-center p-3 bg-gray-50 rounded-lg">
-              <div className="text-xl font-bold text-gray-900">
-                {service.cmePoints}
-              </div>
-              <div className="text-xs text-gray-600">CME Points</div>
-            </div>
-          </div> */}
-
-          {/* Action Buttons */}
-          <div className="flex gap-2 pt-4 border-t border-gray-200">
-            <Button
-              variant="primary"
-              onClick={onBookmark}
-              className="flex-1"
-            >
-              <BookmarkIcon className="size-4 mr-1" />
-              {isBookmarked ? "Saved" : "Save"}
-            </Button>
-            <Button
-              variant="primary"
-              onClick={onShare}
-              className="flex-1"
-            >
-              <Share1Icon className="size-4 mr-1" />
-              Share
-            </Button>
-          </div>
         </Card>
       </div>
     </div>
