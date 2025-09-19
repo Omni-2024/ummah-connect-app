@@ -99,9 +99,26 @@ const AddServiceFAQsPage = () => {
     };
 
     const handleRemoveFAQ = (index: number) => {
+        const faqToRemove = formik.values.faqs[index];
+
+        // Remove FAQ from the form state first
         const newFaqs = [...formik.values.faqs];
         newFaqs.splice(index, 1);
         formik.setFieldValue("faqs", newFaqs);
+
+        // Call delete mutation to remove from the backend as well
+        if (faqToRemove.id) {
+            deleteFAQMutation(faqToRemove.id, {
+                onSuccess: () => {
+                    Toast.success("FAQ deleted successfully");
+                },
+                onError: (error) => {
+                    Toast.error("Failed to delete FAQ");
+                    // Optionally re-add the FAQ back to form state if deletion fails
+                    formik.setFieldValue("faqs", [...formik.values.faqs, faqToRemove]);
+                },
+            });
+        }
     };
 
     const handleUpdateFAQ = (index: number, updatedFAQ: { question: string, answer: string }) => {
@@ -124,7 +141,7 @@ const AddServiceFAQsPage = () => {
         <ServiceEditorLayout
             onBack={onBackHandle}
             onDraft={onDraftHandle}
-            disabled={isCreateFAQPending}
+            disabled={isCreateFAQPending || isDeleteFAQPending ||isUpdateFAQPending}
             onSubmit={formik.handleSubmit}
             steps={createServicePages}
         >
