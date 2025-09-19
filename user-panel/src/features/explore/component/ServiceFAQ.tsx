@@ -15,36 +15,7 @@ interface ServiceFAQProps {
 export default function ServiceFAQ({ faqs }: ServiceFAQProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
-  // Default FAQs if none provided
-  const defaultFAQs: FAQItem[] = [
-    {
-      id: "1",
-      question: "How long do I have access to this service?",
-      answer: "You'll have lifetime access to all service materials once you enroll. This includes any future updates or additional content added to the service."
-    },
-    {
-      id: "2", 
-      question: "Is there a money-back guarantee?",
-      answer: "Yes, we offer a 30-day money-back guarantee. If you're not satisfied with the service for any reason, you can request a full refund within 30 days of enrollment."
-    },
-    {
-      id: "3",
-      question: "Do I need any prior experience?",
-      answer: "No prior experience is required. This service is designed to accommodate learners of all levels, from complete beginners to those looking to advance their skills."
-    },
-    {
-      id: "4",
-      question: "Will I receive a certificate upon completion?",
-      answer: "Yes, you'll receive a certificate of completion that you can add to your professional profile or resume once you finish all the service requirements."
-    },
-    {
-      id: "5",
-      question: "How can I contact the service provider?",
-      answer: "You can reach out to the service provider through the messaging system once you're enrolled, or use the contact information provided in their profile."
-    }
-  ];
-
-  const faqData = faqs && faqs.length > 0 ? faqs : defaultFAQs;
+  const faqData = faqs ;
 
   const toggleExpanded = (itemId: string) => {
     const newExpanded = new Set(expandedItems);

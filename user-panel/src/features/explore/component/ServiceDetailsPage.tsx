@@ -42,7 +42,7 @@ export default function ServiceDetailsPage() {
     isLoading,
     error,
   } = useServiceBySlug(serviceSlug || slug || "");
-  const { data: educator } = useGeneralUser(service?.serviceDetails?.data.id ?? undefined);
+  const { data: educator } = useGeneralUser(service?.serviceDetails?.data.provider.id ?? undefined);
 
   // Scroll detection effect
   useEffect(() => {
@@ -198,7 +198,7 @@ export default function ServiceDetailsPage() {
 
             <ServiceContent service={service.serviceDetails.data} educator={educator} />
              {/* FAQ Section*/}
-            {/*<ServiceFAQ faqs={service.faqs} />*/}
+            <ServiceFAQ faqs={service.faqData} />
           </div>
 
           <ServiceSidebar
