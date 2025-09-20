@@ -48,7 +48,7 @@ export default function EmailSentPage() {
               </p>
               <div className="bg-gray-50 rounded-lg p-4">
                 <p className="text-sm text-gray-700">Verification email sent to:</p>
-                <p className="font-semibold text-gray-900 break-all">{currentUser?.email || "your email address"}</p>
+                <p className="font-semibold text-gray-900 break-all">{email || "your email address"}</p>
               </div>
               <p className="text-sm text-gray-500">
                 Please click on the verification link in the email to complete your registration.
