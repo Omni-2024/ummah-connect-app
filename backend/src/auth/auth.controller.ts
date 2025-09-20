@@ -52,4 +52,42 @@ export class AuthController {
   async socialLogin(@Body() socialDto: { accessToken: string; type: SocialType, name?: string }) {
     return await this.auth.socialLogin(socialDto);
   }
+
+
+  @Public()
+  @Post('forgot-password')
+  async forgotPassword(@Body() body: { email: string }) {
+    return await this.auth.forgotPassword(body.email);
+  }
+
+
+  @Public()
+  @Post('reset-password')
+  async resetPassword(@Body() body: { password: string; token: string }) {
+    return await this.auth.resetPassword(body);
+  }
+
+  // TODO: Should get user id from AuthGuard
+  @Roles([UserRole.USER, UserRole.BUSINESS_USER])
+  @Post('change-password')
+  async changePassword(
+    @Body()
+    body: {
+      id: string;
+      oldPassword: string;
+      newPassword: string;
+      otp: string;
+    },
+  ) {
+    return await this.auth.changePassword(body);
+  }
+
+  // TODO: Should get user id from AuthGuard
+
+  @Post('set-password')
+  async setPassword(
+    @Body() body: { id: string; password: string; otp: string },
+  ) {
+    return await this.auth.setPassword(body);
+  }
 }

@@ -22,6 +22,9 @@ import { EmailService } from '../common/email/email.service';
 import { log } from 'console';
 import { StreamService } from '../common/getStream/stream.service';
 import { GoogleService } from './social/google.service';
+import { ChangePasswordDto } from '../users/dto/change-password.dto';
+import { ResetPasswordDto } from '../users/dto/reset-password.dto';
+import { SetPasswordDto } from '../users/dto/set-password.dto';
 
 type AtCfg = { atSecret: string; atExpires: string };
 type RtCfg = { rtSecret: string; rtExpires: string };
@@ -257,6 +260,144 @@ export class AuthService {
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: 'An unknown error occurred' };
     }
   }
+
+  async verifyOtp(
+    otp: string,
+    userOtp: string,
+    otpExpires: Date,
+  ): Promise<boolean> {
+    if (otp !== userOtp) {
+      return false;
+    }
+    if (new Date() > otpExpires) {
+      return false;
+    }
+    return true;
+  }
+
+  async forgotPassword(email: string) {
+      const user = await this.userRepo.findOneByEmail(email);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (user.signinMethod === SigninMethod.SOCIAL) {
+        return {
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'Please use social login to access your account',
+        };
+      }
+
+      const emailToken = await this.jwtService.signAsync(
+        { email },
+        { expiresIn: this.verifyExpires, secret: this.verifySecret },
+      );
+
+      user.token = emailToken;
+      await this.userRepo.update(user);
+
+      const link=`${this.appBaseUrl}/reset-password?token=${emailToken}`
+
+      const test=await this.emailService.sendEmailConformation(
+        {
+          name:user.name,
+          email,
+          link
+        })
+
+      return { status: HttpStatus.OK };
+  }
+
+  async resetPassword(
+    resetPasswordDto: ResetPasswordDto,
+  ){
+      const { password, token } = resetPasswordDto;
+      const { email } = await this.jwtService.verifyAsync(token, { secret:this.verifySecret });
+      const user = await this.userRepo.findOneByEmail(email);
+
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (user.signinMethod === SigninMethod.SOCIAL) {
+        return {
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'Please use social login to access your account',
+        };
+      }
+
+      if (user.token === token) {
+        user.password = password;
+        user.token = '';
+        user.signinMethod = SigninMethod.EMAIL;
+        await user.hashPassword();
+        await this.userRepo.update(user);
+        return { status: HttpStatus.OK };
+      }
+      return {
+        status: HttpStatus.NOT_ACCEPTABLE,
+        error:
+          'Your password reset link has expired. Please request a new one from the login page',
+      };
+
+  }
+
+  async changePassword(
+    changePasswordDto: ChangePasswordDto,
+  ) {
+      const { oldPassword, newPassword, id, otp } = changePasswordDto;
+      const user = await this.userRepo.findOneById(id);
+      if (!user) {
+        return { status: HttpStatus.NOT_FOUND, error: 'User not found' };
+      }
+
+      // TODO: verify otp
+      const isOtpValid = await this.verifyOtp(otp, user.otp, user.otpExpires);
+      if (!isOtpValid) {
+        return { status: HttpStatus.NOT_ACCEPTABLE, error: 'Invalid OTP' };
+      }
+
+      const isValid = await user.comparePassword(oldPassword);
+      if (!isValid) {
+        return { status: HttpStatus.NOT_ACCEPTABLE, error: 'Invalid Password' };
+      }
+      user.password = newPassword;
+      user.otp = '';
+      await user.hashPassword();
+      await this.userRepo.update(user);
+      return { status: HttpStatus.OK };
+  }
+
+  async setPassword(
+    setPasswordDto: SetPasswordDto,
+  ) {
+      const { password, id, otp } = setPasswordDto;
+      const user = await this.userRepo.findOneById(id);
+      if (!user) {
+        return { status: HttpStatus.NOT_FOUND, error: 'User not found' };
+      }
+
+      // If user is not a social user, they are not allowed to set password
+      if (user.signinMethod !== SigninMethod.SOCIAL) {
+        return {
+          status: HttpStatus.UNAUTHORIZED,
+          error: 'User is not allowed to set password',
+        };
+      }
+
+      // TODO: verify otp
+      const isOtpValid = await this.verifyOtp(otp, user.otp, user.otpExpires);
+      if (!isOtpValid) {
+        return { status: HttpStatus.NOT_ACCEPTABLE, error: 'Invalid OTP' };
+      }
+
+      user.password = password;
+      user.signinMethod = SigninMethod.EMAIL;
+      await user.hashPassword();
+      await this.userRepo.update(user);
+      return { status: HttpStatus.OK };
+  }
+
 
   async checkRole(user: UserEntity, roles: UserRole[]): Promise<boolean> {
     return roles.includes(user.role);
