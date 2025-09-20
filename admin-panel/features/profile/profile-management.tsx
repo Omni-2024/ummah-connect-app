@@ -50,7 +50,7 @@ export function ProfileManagement() {
           </div>
         </CardHeader>
         <CardContent>
-          <ActiveComponent userId={""} />
+          <ActiveComponent/>
         </CardContent>
       </Card>
     </div>
