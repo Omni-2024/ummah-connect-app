@@ -153,7 +153,7 @@ export function StepOne() {
                     : undefined
                 }
               />
-              <ArrowRight />
+                <ArrowRight className="w-6 h-6 text-primary-500 mb-4"/>
               <Selector
                 items={categories
                   ?.filter((i) => i.id === formik.values.mainCategory)[0]
