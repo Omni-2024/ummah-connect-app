@@ -463,7 +463,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
                         <div className="md:w-48 flex-shrink-0">
                           {service.coverImageUrl ? (
                             <img
-                              src={`${process.env.NEXT_PUBLIC_API_URL}/${service.coverImageUrl}`}
+                              src={buildAvatarUrl(service.coverImageUrl)!!}
                               alt={service.title}
                               className="w-full h-32 object-cover rounded-lg"
                             />

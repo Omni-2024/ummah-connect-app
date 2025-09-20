@@ -5,7 +5,6 @@ import {FormEvent} from "react"
 import  Input  from "@/components/base/form/Input"
 import  Textarea  from "@/components/base/form/Textarea"
 import  Switch  from "@/components/base/switch"
-import { useRef, useState } from "react"
 import {useCreateServiceState} from "@/features/services/context/useCreateServiceState";
 import {useMutation} from "@tanstack/react-query";
 import {updateServiceFn,createServiceFn} from "@/lib/endpoints/serviceFns";
@@ -49,10 +48,6 @@ export function StepTwo() {
     handleNext,
     handleBack,
   } = useCreateServiceState();
-
-  const [image, setImage] = useState<File | null>(null);
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const { mutate: createServiceMutate, isPending: isCreateServicePending } =
       useMutation({ mutationFn: createServiceFn });

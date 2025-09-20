@@ -51,7 +51,10 @@ const OnboardingRoute = () => {
                           stepId: "profession",
                           title: "Profession",
                         },
-                        { stepId: "interests", title: "Interests" },
+                        {
+                          stepId: "interests",
+                          title: "Interests"
+                        },
                         {
                           stepId: "setupAccount",
                           title: "Set Up Account",

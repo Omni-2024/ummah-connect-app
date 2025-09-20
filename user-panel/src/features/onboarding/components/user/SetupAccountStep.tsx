@@ -34,15 +34,12 @@ const SetupAccountStep = () => {
   const { id } = useAuthState();
   const { selectedDesignation, selectedInterests } = useOnboardingState();
 
-  // upload image -> returns { key, url }
   const { mutate: uploadPublicMutate, isPending: isUploadPending } =
       useMutation({ mutationFn: uploadPublicFn });
 
-  // update user
   const { mutate: updateUserMutate, isPending: isUpdateUserPending } =
       useMutation({ mutationFn: updateUserFn });
 
-  // preview management (avoid blob URL leaks)
   useEffect(() => {
     if (!image) {
       if (previewUrl) URL.revokeObjectURL(previewUrl);

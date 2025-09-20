@@ -123,7 +123,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
         const file = new File([blob], 'profile-image.jpg', { type: 'image/jpeg' })
         
         const uploadResult = await uploadPublicFn({ imageFile: file })
-        imageUrl = uploadResult.url
+        imageUrl = uploadResult.key
       }
 
       await updateUserFn({
