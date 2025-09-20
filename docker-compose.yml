@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+  # Postgres service
   postgres:
     image: postgres:14
     container_name: ummah-postgres
@@ -13,6 +14,41 @@ services:
       - "1000:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  # Backend service (NestJS)
+  backend:
+    build:
+      context: ./backend
+    container_name: ummah-backend
+    ports:
+      - "3035:3000"
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgres://admin:ummah-postgres@postgres:5432/ummah-connect
+    restart: always
+
+  # Frontend service (Next.js - User Panel)
+  user-panel:
+    build:
+      context: ./user-panel
+    container_name: ummah-frontend
+    ports:
+      - "3001:3000"
+    depends_on:
+      - backend
+    restart: always
+
+  # Admin Panel service (Next.js)
+  admin-panel:
+    build:
+      context: ./admin-panel
+    container_name: ummah-admin-panel
+    ports:
+      - "3002:3000"
+    depends_on:
+      - backend
+    restart: always
 
 volumes:
   pgdata:

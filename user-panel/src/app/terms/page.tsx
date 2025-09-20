@@ -11,10 +11,10 @@ import { useAppState } from "@/features/app/context/useAppState";
 import { useAuthState } from "@/features/auth/context/useAuthState";
 import { HambergerMenu, Notification } from "iconsax-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import {Suspense, useEffect} from "react";
 import ProfileMenuButton from "@/features/app/components/ProfileMenuButton";
 
-const TermsPage = () => {
+const TermsPageContent = () => {
   const { isAuthenticated } = useAuthState();
   const {
     setShowNavDrawer,
@@ -294,4 +294,12 @@ const TermsPage = () => {
   );
 };
 
-export default TermsPage;
+const TermsPageRoute = () => {
+  return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <TermsPageContent />
+      </Suspense>
+  );
+};
+
+export default TermsPageRoute;
