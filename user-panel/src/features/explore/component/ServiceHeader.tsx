@@ -35,34 +35,8 @@ export default function ServiceHeader({
   };
   return (
     <>
-      {/* Compact Hero Section */}
-      <div className="relative mb-6">
-        <div className="relative h-48 lg:h-56 lg:rounded-2xl overflow-hidden bg-gradient-to-br from-primary-100 to-secondary-100">
-          
-          <img
-            alt="service cover"
-            src={
-              service.coverImageUrl
-                ? buildAvatarUrl(service.coverImageUrl)!!
-                : "/images/coverImage.png"
-            }
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-20"></div>
-
-          {/* Discount badge */}
-          {service.discountEnabled && (
-            <div className="absolute top-4 right-4">
-              <Badge className="bg-red-500 text-white font-semibold px-3 py-1">
-                {service.discount}% OFF
-              </Badge>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Title and Quick Info Card */}
-      <Card className=" p-6 lm:p-0 pt-0 bg-white shadow-none border-none ">
+      {/* Title and Quick Info Card - Moved before image */}
+      <Card className=" p-6 lm:p-0 pt-0 bg-white shadow-none border-none mb-2 pb-2 lm:pl-0 ">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div className="flex-1">
             <div className="mb-3 flex items-center gap-4 text-sm">
@@ -111,6 +85,32 @@ export default function ServiceHeader({
           </div>
         </div>
       </Card>
+
+      {/* Compact Hero Section - Moved after title */}
+      <div className="relative mb-6">
+        <div className="relative h-48 lg:h-56 lg:rounded-2xl overflow-hidden bg-gradient-to-br from-primary-100 to-secondary-100">
+          
+          <img
+            alt="service cover"
+            src={
+              service.coverImageUrl
+                ? buildAvatarUrl(service.coverImageUrl)!!
+                : "/images/coverImage.png"
+            }
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-20"></div>
+
+          {/* Discount badge */}
+          {service.discountEnabled && (
+            <div className="absolute top-4 right-4">
+              <Badge className="bg-red-500 text-white font-semibold px-3 py-1">
+                {service.discount}% OFF
+              </Badge>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Educator Info */}
 {educator && (
