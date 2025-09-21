@@ -6,6 +6,7 @@ export interface FAQItem {
   id: string;
   question: string;
   answer: string;
+  order: number; // Added order field to interface
 }
 
 interface ServiceFAQProps {
@@ -15,7 +16,8 @@ interface ServiceFAQProps {
 export default function ServiceFAQ({ faqs }: ServiceFAQProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
-  const faqData = faqs ;
+  // Sort FAQs by order field before displaying
+  const faqData = faqs ? [...faqs].sort((a, b) => a.order - b.order) : [];
 
   const toggleExpanded = (itemId: string) => {
     const newExpanded = new Set(expandedItems);
