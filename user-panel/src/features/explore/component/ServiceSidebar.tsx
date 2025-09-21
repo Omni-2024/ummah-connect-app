@@ -53,7 +53,7 @@ export default function ServiceSidebar({
     setShowQuoteModal(true);
   };
 
-  const handleAskQuestion = () => {
+  const handleChat = () => {
     setShowContactOptions(false);
     if (providerId) {
       setUserId(providerId);
@@ -104,7 +104,7 @@ export default function ServiceSidebar({
             <Button onClick={onEnroll} className="w-full mb-4" size="lg">
               Enroll Now
             </Button>
-            
+
 
             {/* Contact Button with Dropdown */}
             <div className="relative z-20">
@@ -133,7 +133,7 @@ export default function ServiceSidebar({
                     <span className="font-medium text-gray-900">Get a Quote</span>
                   </button>
                   <button
-                    onClick={handleAskQuestion}
+                    onClick={handleChat}
                     className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-2 transition-colors duration-200"
                   >
                     <ChatBubbleIcon className="size-4 text-gray-600" />
