@@ -12,15 +12,15 @@ import {
 } from "lucide-react"
 
 export const navigation = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Users", href: "/admin/dashboard/users", icon: Users },
-  { name: "Providers", href: "/admin/dashboard/providers", icon: Users },
-  { name: "Categories", href: "/admin/dashboard/categories", icon: Tags },
-  { name: "Services", href: "/admin/dashboard/services", icon: Briefcase },
-  { name: "Orders", href: "/admin/dashboard/orders", icon: ShoppingCart },
-  { name: "Messages", href: "/admin/dashboard/messages", icon: MessageSquare },
-  { name: "Revenue", href: "/admin/dashboard/revenue", icon: DollarSign },
-  { name: "Analytics", href: "/admin/dashboard/analytics", icon: BarChart3 },
-  { name: "Reviews", href: "/admin/dashboard/reviews", icon: Star },
-  { name: "Profile", href: "/admin/dashboard/profile", icon: User },
+  { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Users", href: "/admin/users", icon: Users },
+  { name: "Providers", href: "/admin/providers", icon: Users },
+  { name: "Categories", href: "/admin/categories", icon: Tags },
+  { name: "Services", href: "/admin/services", icon: Briefcase },
+  { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { name: "Messages", href: "/admin/messages", icon: MessageSquare },
+  { name: "Revenue", href: "/admin/revenue", icon: DollarSign },
+  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  { name: "Reviews", href: "/admin/reviews", icon: Star },
+  { name: "Profile", href: "/admin/profile", icon: User },
 ]

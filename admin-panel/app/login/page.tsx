@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
       })
 
       Toast.success(`Welcome back, ${data.role}`)
-      router.push("/admin/dashboard")
+      router.push("/admin")
     },
     onError: (err) => {
       let emailError = ""

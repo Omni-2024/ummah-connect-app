@@ -48,7 +48,7 @@ const ServiceEditorLayout: React.FC<ServiceEditorLayoutProps> = (props) => {
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink
-                href="/admin/dashboard/services"
+                href="/admin/services"
                 className="text-dark-400 text-xl font-primary font-normal hover:underline"
               >
                 Back to service
@@ -71,7 +71,7 @@ const ServiceEditorLayout: React.FC<ServiceEditorLayoutProps> = (props) => {
                 variant="primary"
                 type="button"
                 className="w-48"
-                onClick={()=>router.push("/admin/dashboard/services")}
+                onClick={()=>router.push("/admin/services")}
             >
               {props.activeAction === CreateServiceActiveActionType.DRAFT ? (
                   <Spinner color="white" />
