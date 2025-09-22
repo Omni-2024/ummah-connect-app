@@ -28,6 +28,8 @@ import ServiceSidebar from "./ServiceSidebar";
 import ServiceContent from "./ServiceContent";
 import { SkeletonServiceDetailsPage } from "./SkeletonServiceDetailsPage";
 import ServiceFAQ from "./ServiceFAQ";
+import ShareServiceModal from "@/features/explore/component/ShareServiceModal";
+import {setServiceId, setShowServiceShareModal} from "@/features/app/context/AppState";
 
 export default function ServiceDetailsPage() {
   const router = useRouter();
@@ -81,20 +83,19 @@ export default function ServiceDetailsPage() {
     }
   };
 
+  useEffect(() => {
+    if (service) {
+      setServiceId(service.serviceDetails.data.id)
+    }
+  }, [service]);
+
+
   const handleBookmark = () => {
     setIsBookmarked(!isBookmarked);
   };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: service?.serviceDetails.data.title,
-        text: service?.serviceDetails.data.tagline,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-    }
+  const handleShareService = () => {
+    setShowServiceShareModal(true)
   };
 
   const handleContact = () => {
@@ -187,7 +188,7 @@ export default function ServiceDetailsPage() {
                 }`}
               />
             </IconButton>
-            <IconButton onClick={handleShare}>
+            <IconButton onClick={handleShareService}>
               <Share1Icon className="size-5" />
             </IconButton>
           </div>
@@ -219,7 +220,7 @@ export default function ServiceDetailsPage() {
             isBookmarked={isBookmarked}
             onEnroll={handleEnroll}
             onBookmark={handleBookmark}
-            onShare={handleShare}
+            onShare={handleShareService}
             onContact={handleContact}
             formatReadableHours={formatReadableHours}
             isScrolled={isScrolled}
@@ -228,6 +229,8 @@ export default function ServiceDetailsPage() {
           />         
         </div>
       </div>
+      <ShareServiceModal />
+
 
       <Bottombar />
     </div>

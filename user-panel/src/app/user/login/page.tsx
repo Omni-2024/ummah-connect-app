@@ -103,7 +103,7 @@ const UserLoginRoute = () => {
   // TODO: redirect to home if user is already authenticated
 
   return (
-      <main style={{ backgroundImage: "url(/images/textures/1.svg)" }}>
+      <main style={{ backgroundImage: "url(/images/pattern.jpg)" }}>
         <div className=" flex min-h-svh items-center justify-center">
           <AuthCardLayout childrenContainerClassName="flex-[1.1]" sliderContainerClassName="hidden lg:block">
             <div className="flex size-full flex-1 flex-col items-center space-y-12 py-4">
@@ -236,7 +236,7 @@ const SignUpFormValidationSchema = Yup.object().shape({
   password: Yup.string()
       .trim()
       .label("Password")
-      .min(5)
+      .min(8)
       .max(30)
       .required("Password is required"),
 });

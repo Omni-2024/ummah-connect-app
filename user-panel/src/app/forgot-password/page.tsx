@@ -16,7 +16,7 @@ function ForgotPasswordRoute() {
   }, []);
 
   return (
-      <main style={{ backgroundImage: "url(/images/textures/1.svg)" }}>
+      <main style={{ backgroundImage: "url(/images/pattern.jpg)" }}>
         <div className="hidden w-full items-center justify-center pt-6 md:flex">
           <img
               alt="logo"

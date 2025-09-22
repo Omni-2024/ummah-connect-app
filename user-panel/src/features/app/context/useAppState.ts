@@ -2,10 +2,10 @@
 
 import { useSnapshot } from 'valtio';
 import {
-  appState,
+  appState, setServiceId,
   setShowNavDrawer,
   setShowNotificationsModal,
-  setShowNotLoggedInNavModal,
+  setShowNotLoggedInNavModal, setShowServiceShareModal,
 } from './AppState';
 
 export const useAppState = () => {
@@ -14,7 +14,11 @@ export const useAppState = () => {
     showNotificationsModal: snap.showNotificationsModal,
     showNavDrawer: snap.showNavDrawer,
     showNotLoggedInNavModal: snap.showNotLoggedInNavModal,
+    showServiceShareModal:snap.showServiceShareModal,
+    serviceId:snap.serviceId,
     //
+    setServiceId:setServiceId,
+    setShowServiceShareModal:setShowServiceShareModal,
     setShowNotificationsModal: setShowNotificationsModal,
     setShowNavDrawer: setShowNavDrawer,
     setShowNotLoggedInNavModal: setShowNotLoggedInNavModal,

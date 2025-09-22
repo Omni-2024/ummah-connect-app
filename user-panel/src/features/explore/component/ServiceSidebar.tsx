@@ -10,7 +10,8 @@ import {
   FileTextIcon,
 } from "@radix-ui/react-icons";
 import { useChat } from "@/components/getStream/chat/ChatContextProvider";
-import QuoteRequestModal from "./QuoteRequestModal"; // Import the new component
+import QuoteRequestModal from "./QuoteRequestModal";
+import {useAppState} from "@/features/app/context/useAppState"; // Import the new component
 
 interface ServiceSidebarProps {
   service: any;
@@ -42,6 +43,7 @@ export default function ServiceSidebar({
   const { setUserId } = useChat();
   const [showContactOptions, setShowContactOptions] = useState(false);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const {setServiceId,setShowServiceShareModal}=useAppState()
 
   const handleContactClick = () => {
     setShowContactOptions(!showContactOptions);
@@ -61,6 +63,10 @@ export default function ServiceSidebar({
     onContact();
   };
 
+  const handleShareService = () => {
+    setShowServiceShareModal(true)
+  };
+
   return (
     <>
       {/* Desktop Sidebar */}
@@ -73,7 +79,7 @@ export default function ServiceSidebar({
           <Card className="p-4 lg:p-6 bg-white shadow-sm lg:shadow-lg border border-gray-200 relative overflow-visible">
             {/* Share Icon in Top Right Corner */}
             <button
-              onClick={onShare}
+              onClick={handleShareService}
               className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 group"
               title="Share"
             >

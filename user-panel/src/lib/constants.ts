@@ -19,6 +19,9 @@ export enum SIGNIN_METHOD {
   SOCIAL = "social",
 }
 
+export const APP_BASE_URL = process.env.NEXT_PUBLIC_MAIN_BASE_URL;
+
+
 export const COUNTRY_LIST = [
   { label: "Afghanistan", value: "Afghanistan" },
   { label: "Albania", value: "Albania" },

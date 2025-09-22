@@ -29,6 +29,7 @@
     "react-dom": "19.1.0",
     "react-hot-toast": "^2.6.0",
     "react-responsive-carousel": "^3.2.23",
+    "react-share": "^5.2.2",
     "stream-chat": "^9.19.1",
     "stream-chat-react": "^13.6.4",
     "tailwind-merge": "^2.3.8",
@@ -36,6 +37,7 @@
     "tailwindcss-animate": "^1.0.7",
     "usehooks-ts": "^3.1.1",
     "valtio": "^2.1.7",
+    "vaul": "^1.1.2",
     "yup": "^1.7.0"
   },
   "devDependencies": {

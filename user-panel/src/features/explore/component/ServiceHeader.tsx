@@ -71,6 +71,9 @@ export default function ServiceHeader({
       <Card className="p-6 pt-0 bg-white shadow-none border-none mb-4 pb-2 lg:pl-0">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
           <div className="flex-1">
+            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
+              {service.title}
+            </h1>
             <div className="mb-3 flex items-center gap-4 text-sm">
               <div className="flex items-center gap-1">
                 <StarFilledIcon className="size-4 text-yellow-500" />
@@ -85,11 +88,6 @@ export default function ServiceHeader({
                 count={Number(service.enrollmentCount)}
               />
             </div>
-
-            <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
-              {service.title}
-            </h1>
-
             <p className="text-lg text-gray-600">
               {service.tagline}
             </p>
