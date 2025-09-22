@@ -97,6 +97,16 @@ export default function ServiceDetailsPage() {
     }
   };
 
+  const handleContact = () => {
+    // Add your contact/chat functionality here
+    console.log("Opening contact/chat with provider:", service?.serviceDetails?.data.provider.id);
+    // For example, you might want to:
+    // - Open a chat modal
+    // - Navigate to a chat page
+    // - Show a contact form
+    // - etc.
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen w-full bg-white pb-16 lg:pb-0">
@@ -194,6 +204,8 @@ export default function ServiceDetailsPage() {
               discountedPrice={discountedPrice}
               onEnroll={handleEnroll}
               formatReadableHours={formatReadableHours}
+              onContact={handleContact}
+
             />
 
             <ServiceContent service={service.serviceDetails.data} educator={educator} />
@@ -208,9 +220,11 @@ export default function ServiceDetailsPage() {
             onEnroll={handleEnroll}
             onBookmark={handleBookmark}
             onShare={handleShare}
+            onContact={handleContact}
             formatReadableHours={formatReadableHours}
-            // Pass the scroll state to ServiceSidebar if it contains pricing details
             isScrolled={isScrolled}
+            providerId={service.serviceDetails.data.provider.id}
+            educator={educator}
           />         
         </div>
       </div>

@@ -8,17 +8,24 @@ import {
   PersonIcon, 
   GlobeIcon, 
   CheckCircledIcon,
-  ArrowRightIcon
+  ArrowRightIcon,
+  EnvelopeClosedIcon
 } from "@radix-ui/react-icons";
 import { buildAvatarUrl } from "@/features/app/components/Navbar";
+import { useChat } from "@/components/getStream/chat/ChatContextProvider";
 
 interface ServiceContentProps {
   service: any;
   educator?: any;
+  providerId?: string;
+
 }
 
-export default function ServiceContent({ service, educator }: ServiceContentProps) {
+export default function ServiceContent({ service, educator ,   providerId,
+}: ServiceContentProps) {
   const router = useRouter();
+  const { setUserId } = useChat();
+  
 
   const handleViewProfile = () => {
     if (educator?.id) {
@@ -33,6 +40,13 @@ export default function ServiceContent({ service, educator }: ServiceContentProp
       .join('')
       .toUpperCase()
       .slice(0, 2);
+  };
+
+    const handleChat = () => {
+    setShowContactOptions(false);
+    if (providerId) {
+      setUserId(providerId);
+    }
   };
 
   return (
@@ -150,10 +164,25 @@ export default function ServiceContent({ service, educator }: ServiceContentProp
                   {educator.bio}
                 </p>
               )}
+              <Button
+                onClick={handleChat}
+                variant="primary"
+                className="w-fit flex items-center justify-center gap-2 mt-4"
+              >
+                <EnvelopeClosedIcon className="size-4" />
+                
+                Contact Me
+
+                
+              </Button>
             </div>
           </div>
         </Card>
       )}
     </div>
   );
+}
+
+function setShowContactOptions(arg0: boolean) {
+  throw new Error("Function not implemented.");
 }
