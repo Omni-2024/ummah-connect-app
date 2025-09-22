@@ -23,10 +23,17 @@ export default function AdminDashboardLayout({
 
     if (hideChrome) {
         return (
-            <div className="h-[calc(100vh-4rem)] bg-white">
-                <AdminTopbar setSidebarOpen={setSidebarOpen} />
-                <main className="min-h-screen">{children}</main>
-            </div>
+            <div className="h-screen bg-white flex flex-col">
+                {/* Topbar fixed height */}
+                <div className="h-16">
+                    <AdminTopbar setSidebarOpen={setSidebarOpen} />
+                </div>
+
+                {/* Main scrollable area */}
+                <main className="flex-1 bg-white overflow-y-auto">
+                    {children}
+                </main>
+                </div>
         );
     }
 
