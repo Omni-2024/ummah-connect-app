@@ -1,6 +1,5 @@
 "use client"
-
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/base/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar"
 import { Badge } from "@/components/base/badge"
@@ -10,16 +9,18 @@ import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useCurrentUser } from "@/hooks/useUserInfo"
 import { updateUserFn } from "@/lib/endpoints/usersFns"
 import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns"
+import { Teacher } from "iconsax-react"
+import Image from "next/image";
+import { useAvatarUrl } from "@/hooks/userAvatarUrl"
 
 export function ProfileHeader() {
   const { role } = useAuthState()
   const { data: profile, isLoading, refetch } = useCurrentUser()
   const [uploading, setUploading] = useState(false)
   const [avatarBroken, setAvatarBroken] = useState(false)
+  const [imageError, setImageError] = useState(false);
+  const avatarSrc = useAvatarUrl(profile?.profileImage);
 
-  if (isLoading) {
-    return <div>Loading profile...</div>
-  }
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!profile || !e.target.files?.[0]) return
@@ -32,7 +33,7 @@ export function ProfileHeader() {
 
       await updateUserFn({
         id: profile.id,
-        profileImage: uploadResult.url,
+        profileImage: uploadResult.key,
       })
 
       refetch()
@@ -43,37 +44,40 @@ export function ProfileHeader() {
     }
   }
 
+  useEffect(() => setImageError(false), [profile?.profileImage]);
+
+    if (isLoading) {
+    return <div>Loading profile...</div>
+  }
+
+
   return (
     <Card className="border-[#3E6563]/50 shadow-lg">
       <CardContent className="pl-8 pr-8 pt-16 pb-16">
         <div className="flex items-start space-x-6">
           {/* Avatar Section */}
           <div className="relative group">
-            <div className="w-24 h-24 rounded-full border-4 border-[#337f7c] overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-500">
-              {(!profile?.profileImage || avatarBroken) ? (
-                <div className="w-full h-full flex items-center justify-center">
-                  <PersonIcon className="w-10 h-10 text-white" />
-                </div>
+            <div className="w-24 h-24 rounded-full border-4 border-[#337f7c] overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-500 relative">
+            {imageError ? (
+                <Teacher />
               ) : (
-                <Avatar className="w-full h-full">
-                  <AvatarImage
-                    src={profile?.profileImage}
-                    alt="Profile"
-                    onError={() => setAvatarBroken(true)}
-                  />
-                  <AvatarFallback>
-                    <PersonIcon className="w-10 h-10 text-white" />
-                  </AvatarFallback>
-                </Avatar>
+                <Image
+                  src={avatarSrc}
+                  alt={profile?.name ?? "User Avatar"}
+                  fill
+                  className="object-cover rounded-full"
+                  unoptimized
+                  onError={() => setImageError(true)}
+                />
               )}
             </div>
+
 
             {/* Upload button (floating on avatar) */}
             <label
               htmlFor="profileImageUpload"
-              className={`absolute -bottom-2 -right-2 bg-emerald-500 rounded-full p-2 cursor-pointer hover:bg-emerald-600 transition-colors shadow-lg ${
-                uploading ? "opacity-50 pointer-events-none" : ""
-              }`}
+              className={`absolute -bottom-2 -right-2 bg-emerald-500 rounded-full p-2 cursor-pointer hover:bg-emerald-600 transition-colors shadow-lg ${uploading ? "opacity-50 pointer-events-none" : ""
+                }`}
             >
               <CameraIcon className="w-4 h-4 text-white" />
               <input
