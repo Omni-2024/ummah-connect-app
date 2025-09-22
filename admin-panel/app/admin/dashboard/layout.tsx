@@ -23,7 +23,7 @@ export default function AdminDashboardLayout({
 
     if (hideChrome) {
         return (
-            <div className="h-[calc(100vh-4rem)] bg-background">
+            <div className="h-[calc(100vh-4rem)] bg-white">
                 <AdminTopbar setSidebarOpen={setSidebarOpen} />
                 <main className="min-h-screen">{children}</main>
             </div>
@@ -39,7 +39,7 @@ export default function AdminDashboardLayout({
             />
             <AdminSidebar />
             <div className="lg:pl-64">
-                <AdminTopbar setSidebarOpen={setSidebarOpen} />
+                <AdminTopbar setSidebarOpen={setSidebarOpen}/>
                 <main className="py-6 overflow-y-auto h-[calc(100vh-4rem)]">
                     <div className="px-4 sm:px-6 lg:px-8">{children}</div>
                 </main>

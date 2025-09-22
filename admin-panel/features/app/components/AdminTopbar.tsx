@@ -17,11 +17,11 @@ export default function AdminTopbar({
   if (!isClient) return null // Don't render on server
 
   return (
-    <div className="sticky border-b border-dark-50 top-0 z-40 flex h-20 shrink-0 items-center gap-x-4 pt-2  sm:gap-x-6 sm:px-6 lg:px-8">
+    <div className="bg-white sticky border-b border-dark-50 top-0 z-40 flex h-20 shrink-0 items-center gap-x-4 pt-2  sm:gap-x-6 sm:px-6 lg:px-8">
       <Button
         variant="primary"
         size="sm"
-        className="lg:hidden bg-transparent text-primary-900"
+        className="lg:hidden bg-white text-primary-900"
         onClick={() => setSidebarOpen(true)}
       >
         <Menu className="h-5 w-5" />
