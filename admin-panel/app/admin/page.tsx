@@ -244,7 +244,7 @@ export default function AdminDashboard() {
                 <CardDescription>Service providers awaiting approval</CardDescription>
               </div>
               <Button variant="secondary" size="sm" asChild>
-                <Link href="/admin/dashboard/providers">View All</Link>
+                <Link href="/admin/providers">View All</Link>
               </Button>
             </div>
           </CardHeader>
@@ -302,7 +302,7 @@ export default function AdminDashboard() {
                 <CardDescription>Latest platform activities and events</CardDescription>
               </div>
               <Button variant="secondary" size="sm" asChild>
-                <Link href="/admin/dashboard/analytics">View Analytics</Link>
+                <Link href="/admin/analytics">View Analytics</Link>
               </Button>
             </div>
           </CardHeader>
@@ -349,7 +349,7 @@ export default function AdminDashboard() {
             <div className="text-2xl font-bold mb-2">{stats.totalServices}</div>
             <p className="text-sm text-muted-foreground">Active service listings</p>
             <Button variant="secondary" size="sm" className="mt-3 bg-transparent" asChild>
-              <Link href="/admin/dashboard/services">Manage Services</Link>
+              <Link href="/admin/services">Manage Services</Link>
             </Button>
           </CardContent>
         </Card>
@@ -365,7 +365,7 @@ export default function AdminDashboard() {
             <div className="text-2xl font-bold mb-2">{stats.totalReviews}</div>
             <p className="text-sm text-muted-foreground">Average rating: {stats.averageRating}/5</p>
             <Button variant="secondary" size="sm" className="mt-3 bg-transparent" asChild>
-              <Link href="/admin/dashboard/reviews">Moderate Reviews</Link>
+              <Link href="/admin/reviews">Moderate Reviews</Link>
             </Button>
           </CardContent>
         </Card>
@@ -381,7 +381,7 @@ export default function AdminDashboard() {
             <div className="text-2xl font-bold mb-2">{stats.unreadMessages}</div>
             <p className="text-sm text-muted-foreground">Unread admin messages</p>
             <Button variant="secondary" size="sm" className="mt-3 bg-transparent" asChild>
-              <Link href="/admin/dashboard/messages">View Messages</Link>
+              <Link href="/admin/messages">View Messages</Link>
             </Button>
           </CardContent>
         </Card>

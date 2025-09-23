@@ -239,7 +239,7 @@ export default function AdminGigsPage() {
                 {tabPublished && (
                     <Card
                         className="border-2 border-dashed border-gray-300 hover:border-[#669f9d] cursor-pointer transition-colors bg-white"
-                        onClick={()=>router.push("/admin/dashboard/services/create")}
+                        onClick={()=>router.push("/admin/services/create")}
                     >
                         <CardContent className="flex flex-col items-center justify-center h-80 text-center">
                             <div className="w-16 h-16 bg-cyan-50 rounded-full flex items-center justify-center mb-4">

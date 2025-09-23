@@ -114,7 +114,7 @@ export function StepOne() {
 
   return (
     <ServiceEditorLayout
-      onBack={() => router.push("/admin/dashboard/services")}
+      onBack={() => router.push("/admin/services")}
       onDraft={onDraftHandle}
       disabled={false}
       onSubmit={formik.handleSubmit}

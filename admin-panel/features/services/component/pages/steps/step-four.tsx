@@ -28,7 +28,7 @@ export function StepFour() {
     const formik = useFormik({
         initialValues: {},
         onSubmit: () => {
-            router.push("/admin/dashboard/services");
+            router.push("/admin/services");
         },
     });
 
