@@ -213,7 +213,7 @@ export class ReviewService {
           reviewsWithUserData, meta: { total, limit, offset } ,
         };
       }
-      return { status: HttpStatus.NOT_FOUND, error: 'No reviews found' };
+      throw new NotFoundException('No reviews found');
   }
 
 
@@ -273,7 +273,6 @@ export class ReviewService {
       ) {
         const reviewsWithUserData = await Promise.all(
           reviews.map(async (review) => {
-            // Ensure userId is defined before querying the user repository
             if (review.userId) {
               const user = await this.userRepo.findOneById(review.userId);
               return {
@@ -282,14 +281,14 @@ export class ReviewService {
                 userImageUrl: user?.profileImage,
               };
             }
-            return review; // Return the review as is if userId is undefined
+            return review;
           }),
         );
         return {
          reviewsWithUserData, meta: { total, limit, offset }
         };
       }
-      return { status: HttpStatus.NOT_FOUND, error: 'No reviews found' };
+     throw new NotFoundException('No reviews found');
   }
 
 

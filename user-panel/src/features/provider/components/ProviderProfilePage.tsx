@@ -28,6 +28,8 @@ import {
 } from "@radix-ui/react-icons";
 import { BuildingLibraryIcon } from "@heroicons/react/16/solid";
 import {useChat} from "@/components/getStream/chat/ChatContextProvider";
+import {useReviewByProvider} from "@/lib/hooks/useReview";
+import {ReviewsPagination} from "@/features/explore/component/ReviewsPagination";
 
 // Enhanced Loading skeleton component
 function ProviderProfileSkeleton() {
@@ -87,6 +89,16 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("overview");
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [pageLimit, setPageLimit] = useState(4);
+  const [pageOffset, setPageOffset] = useState(0);
+  const [starFilter, setStarFilter] = useState<number>(0);
+
+  const {
+    data: reviewsData,
+    isLoading:isReviewLoading,
+    isError:isReviewError,
+    error:reviewError,
+  } = useReviewByProvider({ providerId, stars: 0, limit: pageLimit, offset: 0 });
 
   const { data: educator, isLoading, error } = useGeneralUser(providerId);
   const { data: designationData } = useProfession(educator?.designations?.[0] || "");
@@ -523,114 +535,109 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
             )}
 
             {activeTab === "reviews" && (
-              <div className="space-y-6">
-                {/* Review Summary */}
-                <Card className="p-6">
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className="text-center">
-                      <div className="text-6xl font-bold text-green-600 mb-2">4.9</div>
-                      <div className="flex justify-center mb-2">
-                        {renderStars(4.9)}
+                <div className="space-y-6">
+                  {/* Filter + Summary */}
+                  <Card className="p-6">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-bold">Reviews</h3>
+                        <p className="text-gray-600">
+                          {reviewsData?.meta?.total ?? 0} total review{(reviewsData?.meta?.total ?? 0) === 1 ? "" : "s"}
+                        </p>
                       </div>
-                      <p className="text-gray-600">156 reviews</p>
-                    </div>
-                    
-                    <div className="flex-1">
-                      <h3 className="font-bold mb-4">Rating Breakdown</h3>
-                      {[
-                        { stars: 5, count: 142, percentage: 91 },
-                        { stars: 4, count: 12, percentage: 8 },
-                        { stars: 3, count: 2, percentage: 1 },
-                        { stars: 2, count: 0, percentage: 0 },
-                        { stars: 1, count: 0, percentage: 0 }
-                      ].map((item) => (
-                        <div key={item.stars} className="flex items-center gap-3 mb-2">
-                          <span className="text-sm font-medium w-8">{item.stars} ★</span>
-                          <div className="flex-1 bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-yellow-400 h-2 rounded-full" 
-                              style={{ width: `${item.percentage}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm text-gray-600 w-8">{item.count}</span>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div className="text-center md:text-right">
-                      <div className="grid grid-cols-3 gap-4 text-sm">
-                        <div>
-                          <div className="text-lg font-bold text-green-600">5★</div>
-                          <div className="text-gray-600">Communication</div>
-                        </div>
-                        <div>
-                          <div className="text-lg font-bold text-green-600">5★</div>
-                          <div className="text-gray-600">Service Quality</div>
-                        </div>
-                        <div>
-                          <div className="text-lg font-bold text-green-600">5★</div>
-                          <div className="text-gray-600">Delivery</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
 
-                {/* Individual Reviews */}
-                <div className="space-y-4">
-                  {[
-                    {
-                      id: 1,
-                      name: "Ahmed Hassan",
-                      rating: 5,
-                      date: "2 weeks ago",
-                      country: "UAE",
-                      comment: "Excellent service! Brother Maurizio helped me learn Tajweed perfectly. His patience and knowledge are remarkable. Highly recommended for anyone wanting to improve their Quran recitation."
-                    },
-                    {
-                      id: 2,
-                      name: "Fatima Al-Zahra",
-                      rating: 5,
-                      date: "1 month ago",
-                      country: "Saudi Arabia",
-                      comment: "Beautiful calligraphy work for our mosque. The attention to detail and Islamic authenticity was perfect. Will definitely work with him again."
-                    },
-                    {
-                      id: 3,
-                      name: "Muhammad Ali",
-                      rating: 4,
-                      date: "2 months ago",
-                      country: "Pakistan",
-                      comment: "Great experience overall. Very professional and knowledgeable about Islamic practices. The wedding planning service exceeded our expectations."
-                    }
-                  ].map((review) => (
-                    <Card key={review.id} className="p-6">
-                      <div className="flex gap-4">
-                        <div className="size-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                          <span className="text-white font-bold">
-                            {review.name.split(' ').map(n => n[0]).join('')}
-                          </span>
-                        </div>
-                        
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between mb-2">
-                            <div>
-                              <h4 className="font-semibold">{review.name}</h4>
-                              <p className="text-sm text-gray-500">{review.country} • {review.date}</p>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              {renderStars(review.rating)}
-                            </div>
-                          </div>
-                          
-                          <p className="text-gray-700 leading-relaxed">{review.comment}</p>
-                        </div>
+                      {/* Star filter */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-600">Filter by stars:</span>
+                        {[0,5,4,3,2,1].map((s) => (
+                            <button
+                                key={s}
+                                onClick={() => setStarFilter(s)} // see local state below
+                                className={`px-3 py-1 rounded border text-sm ${
+                                    starFilter === s ? "bg-primary-500 text-white border-primary-600"
+                                        : "bg-white text-gray-700 hover:bg-gray-50"
+                                }`}
+                                title={s === 0 ? "All" : `${s} stars`}
+                            >
+                              {s === 0 ? "All" : `${s}★`}
+                            </button>
+                        ))}
                       </div>
-                    </Card>
-                  ))}
+                    </div>
+                  </Card>
+
+                  {/* Reviews list */}
+                  <div className="space-y-4">
+                    {isReviewLoading ? (
+                        [1,2,3,4].map((i)=>(
+                            <Card key={i} className="p-6 animate-pulse">
+                              <div className="flex gap-4">
+                                <div className="size-12 rounded-full bg-gray-200" />
+                                <div className="flex-1 space-y-2">
+                                  <div className="h-4 bg-gray-200 w-1/3 rounded" />
+                                  <div className="h-4 bg-gray-200 w-2/3 rounded" />
+                                  <div className="h-4 bg-gray-200 rounded" />
+                                </div>
+                              </div>
+                            </Card>
+                        ))
+                    ) : isReviewError ? (
+                        <Card className="p-6">
+                          <p className="text-red-600">Failed to load reviews.</p>
+                        </Card>
+                    ) : reviewsData?.data?.length ? (
+                        reviewsData.data.map((r) => (
+                            <Card key={r.id} className="p-6">
+                              <div className="flex gap-4">
+                                {/* Avatar */}
+                                {r.userImageUrl ? (
+                                    <img
+                                        src={buildAvatarUrl(r.userImageUrl)!!}
+                                        alt={r.userName ?? "User"}
+                                        className="size-12 rounded-full object-cover flex-shrink-0"
+                                    />
+                                ) : (
+                                    <div className="size-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                                      {(r.userName ?? "U").split(" ").map(w=>w[0]).join("").slice(0,2)}
+                                    </div>
+                                )}
+
+                                {/* Content */}
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <div>
+                                      <h4 className="font-semibold">{r.userName ?? "Anonymous"}</h4>
+                                      <p className="text-sm text-gray-500">
+                                        {(r.userName ?? "Unknown")} • {new Date(r.createdAt).toLocaleDateString()}
+                                      </p>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      {renderStars(r.stars)}
+                                      <span className="text-sm font-medium ml-1">{r.stars.toFixed(1)}</span>
+                                    </div>
+                                  </div>
+                                  <p className="text-gray-700 leading-relaxed">{r.description}</p>
+                                </div>
+                              </div>
+                            </Card>
+                        ))
+                    ) : (
+                        <Card className="p-6 text-center">
+                          <p className="text-gray-500">No reviews yet.</p>
+                        </Card>
+                    )}
+                  </div>
+
+                  {/* Pagination */}
+                  <ReviewsPagination
+                      total={reviewsData?.meta?.total ?? 0}
+                      limit={pageLimit}
+                      offset={pageOffset}
+                      onPageChange={(nextOffset) => setPageOffset(nextOffset)}
+                  />
                 </div>
-              </div>
             )}
+
 
           </div>
 
