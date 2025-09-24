@@ -74,23 +74,65 @@ export default function ServiceHeader({
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
               {service.title}
             </h1>
-            <div className="mb-3 flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <StarFilledIcon className="size-4 text-yellow-500" />
-                <span className="font-semibold">
-                  {service.averageReviewScore}
-                </span>
-                <span className="text-gray-600">
-                  ({service.totalReviewCount} reviews)
-                </span>
-              </div>
-              <StudentCountLabel
-                count={Number(service.enrollmentCount)}
-              />
-            </div>
-            <p className="text-lg text-gray-600">
+            <p className="text-base text-gray-600 mb-4">
               {service.tagline}
             </p>
+            
+            {/* Educator Info Section - Properly aligned */}
+            <div className="flex items-center gap-4 mb-4">
+              {/* Profile Image */}
+              <div className="flex-shrink-0">
+                {educator.profileImage ? (
+                  <img
+                    src={
+                      educator.profileImage
+                      ? buildAvatarUrl(educator.profileImage)!!
+                      : "/images/coverImage.png"
+                    } 
+                    alt={educator.name}
+                    className="size-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="size-12 rounded-full bg-gradient-to-br from-green-400 to-green-600  flex items-center justify-center">
+                    <span className="text-white font-medium text-sm">
+                      {getInitials(educator.name)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Educator Name and Details */}
+              <div className="flex-1 min-w-0">
+                <button
+                  onClick={() => {
+                    document
+                      .getElementById("provider-section")
+                      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                  className="text-left hover:text-primary-500 transition-colors duration-200 block mb-1"
+                >
+                  <h3 className="font-semibold text-gray-900 text-lg hover:underline transition-colors duration-200 truncate">
+                    {educator.name}
+                  </h3>
+                </button>
+                
+                {/* Rating and Student Count */}
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1">
+                    <StarFilledIcon className="size-4 text-yellow-500" />
+                    <span className="font-semibold text-gray-900">
+                      {service.averageReviewScore}
+                    </span>
+                    <span className="text-gray-600">
+                      ({service.totalReviewCount} reviews)
+                    </span>
+                  </div>
+                  <StudentCountLabel
+                    count={Number(service.enrollmentCount)}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Mobile pricing preview */}
@@ -182,48 +224,6 @@ export default function ServiceHeader({
           )}
         </div>
       </div>
-
-      {/* Educator Info */}
-      {educator && (
-        <Card className="mb-6 p-4 bg-white shadow-none border-none lg:shadow-sm lg:border lg:border-gray-200">
-          <div className="flex items-center gap-3">
-            {educator.profileImage ? (
-              <img
-                src={
-                  educator.profileImage
-                  ? buildAvatarUrl(educator.profileImage)!!
-                  : "/images/coverImage.png"
-                } 
-                alt={educator.name}
-                className="size-16 rounded-full object-cover"
-              />
-            ) : (
-              <div className="size-16 rounded-full bg-gray-100 flex items-center justify-center">
-                <span className="text-gray-600 font-medium">
-                  {getInitials(educator.name)}
-                </span>
-              </div>
-            )}
-            <div className="flex-1">
-              <h3 className="font-semibold text-gray-900 text-lg">
-                {educator.name}
-              </h3>
-              <p className="text-sm text-gray-600">Service Provider</p>
-            </div>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => {
-                document
-                  .getElementById("provider-section")
-                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
-              }}
-            >
-              View Profile
-            </Button>
-          </div>
-        </Card>
-      )}
 
       {/* Quote Request Modal */}
       <QuoteRequestModal
