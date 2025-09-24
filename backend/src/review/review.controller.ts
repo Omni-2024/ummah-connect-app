@@ -47,10 +47,26 @@ export class ReviewController {
     });
   }
 
+  @Public()
+  @Get('provider')
+  async getReviewByProvider(
+    @Param('providerId') providerId: string,
+    @Query('limit') limit?: number,
+    @Query('offset') offset?: number,
+    @Query('stars') stars?: number,
+  ) {
+    return await this.reviewService.getReviewByProvider({
+      limit,
+      offset,
+      providerId,
+      stars,
+    });
+  }
+
 
   @Public()
   @Get(':id')
-  async getReviewById(@Param('id') id: string): Promise<GetReviewResponseDto> {
+  async getReviewById(@Param('id') id: string) {
     return await this.reviewService.getReviewById(id);
   }
 
@@ -76,5 +92,7 @@ export class ReviewController {
   ): Promise<GetReviewResponseDto> {
     return await this.reviewService.getReviewByUserAndService(userId, serviceId);
   }
+
+
 
 }

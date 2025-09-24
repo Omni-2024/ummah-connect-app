@@ -112,7 +112,41 @@ export class ReviewRepository {
     return review;
   }
 
+  async getReviewByProvider({
+                             providerId,
+                             limit,
+                             offset,
+                             stars,
+                           }: {
+    providerId: string;
+    limit?: number;
+    offset?: number;
+    stars?: number;
+  }): Promise<{ reviewList: ReviewEntity[]; count: number }> {
+    try {
+      const options: FindOptions = {};
+      if (limit && limit > 0) {
+        options.take = limit;
+      }
+      if (offset && offset > 0) {
+        options.skip = offset;
+      }
 
+      const whereCondition: any = { providerId };
+      if (stars && stars > 0) {
+        whereCondition.stars = stars;
+      }
+
+      const [reviewList, count] = await this.reviewRepository.findAndCount({
+        ...options,
+        where: whereCondition,
+      });
+
+      return { reviewList, count };
+    } catch (error) {
+      throw error;
+    }
+  }
 
 
 }

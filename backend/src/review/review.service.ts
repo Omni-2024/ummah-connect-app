@@ -177,7 +177,6 @@ export class ReviewService {
     offset?: number;
     stars?: number;
   }) {
-    try {
       let reviews, total;
 
       const { reviewList, count } = await this.reviewRepo.findAllByServiceId({
@@ -211,14 +210,10 @@ export class ReviewService {
           }),
         );
         return {
-          status: HttpStatus.OK,
-          data: { data: reviewsWithUserData, meta: { total, limit, offset } },
+          reviewsWithUserData, meta: { total, limit, offset } ,
         };
       }
       return { status: HttpStatus.NOT_FOUND, error: 'No reviews found' };
-    } catch (e) {
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
-    }
   }
 
 
@@ -246,4 +241,56 @@ export class ReviewService {
         userImageUrl: user?.profileImage,
       }
   }
+
+
+  async getReviewByProvider({
+                                   providerId,
+                                   limit,
+                                   offset,
+                                   stars,
+                                 }: {
+    providerId: string;
+    limit?: number;
+    offset?: number;
+    stars?: number;
+  }) {
+      let reviews, total;
+
+      const { reviewList, count } = await this.reviewRepo.getReviewByProvider({
+        providerId,
+        limit,
+        offset,
+        stars,
+      });
+      reviews = reviewList;
+      total = count;
+
+      if (
+        reviews instanceof Array &&
+        reviews.length > 0 &&
+        reviews[0] instanceof ReviewEntity &&
+        total
+      ) {
+        const reviewsWithUserData = await Promise.all(
+          reviews.map(async (review) => {
+            // Ensure userId is defined before querying the user repository
+            if (review.userId) {
+              const user = await this.userRepo.findOneById(review.userId);
+              return {
+                ...review,
+                userName: user?.name,
+                userImageUrl: user?.profileImage,
+              };
+            }
+            return review; // Return the review as is if userId is undefined
+          }),
+        );
+        return {
+         reviewsWithUserData, meta: { total, limit, offset }
+        };
+      }
+      return { status: HttpStatus.NOT_FOUND, error: 'No reviews found' };
+  }
+
+
 }

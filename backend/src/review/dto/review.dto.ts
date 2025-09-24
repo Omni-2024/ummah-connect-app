@@ -24,6 +24,8 @@ export class GetReviewResponseDto {
 
   userId?: string;
 
+  providerId?:string;
+
   serviceId?: string;
 
   description?: string;

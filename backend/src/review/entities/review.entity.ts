@@ -27,6 +27,9 @@ export class ReviewEntity extends BaseEntity {
   @Column('uuid', { name: 'user_id', nullable: false })
   userId?: string;
 
+  @Column('uuid', { name: 'provider_id', nullable: false })
+  providerId?: string;
+
   @Column('uuid', { name: 'serviceId', nullable: true })
   serviceId?: string;
 
