@@ -72,9 +72,7 @@ export default function ServiceSidebar({
       {/* Desktop Sidebar */}
       <div className="hidden lg:block lg:col-span-1">
         <div
-          className={`sticky top-24 mt-32 transition-all duration-500 ease-out ${
-            isScrolled ? "mt-32" : "mt-24"
-          }`}
+          className={`sticky top-24  mt-auto transition-all duration-500 ease-out`}
         >
           <Card className="p-4 lg:p-6 bg-white shadow-sm lg:shadow-lg border border-gray-200 relative overflow-visible">
             {/* Share Icon in Top Right Corner */}
@@ -107,7 +105,7 @@ export default function ServiceSidebar({
             </div>
 
             {/* Enrollment Button */}
-            <Button onClick={onEnroll} className="w-full mb-4" size="lg">
+            <Button onClick={onEnroll} className="w-full mb-4">
               Enroll Now
             </Button>
 
@@ -116,8 +114,8 @@ export default function ServiceSidebar({
             <div className="relative z-20">
               <Button
                 onClick={handleContactClick}
-                variant="primary"
-                className="w-full flex items-center justify-center gap-2"
+                variant="secondary"
+                className="w-full"
               >
                 <EnvelopeClosedIcon className="size-4" />
                 Contact Me
