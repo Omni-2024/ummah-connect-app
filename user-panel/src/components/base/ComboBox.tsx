@@ -68,7 +68,7 @@ const ComboBox: React.FC<Props> = ({
           <Command className="w-full">
             <CommandInput placeholder="Search" />
 
-            <CommandList className="scrollbar-thin scrollbar-thumb-dark-100">
+            <CommandList className="scrollbar-thin scrollbar-thumb-dark-100 max-w-[400px]">
               <CommandEmpty>No results</CommandEmpty>
               <CommandGroup>
                 {items?.map((item) => (

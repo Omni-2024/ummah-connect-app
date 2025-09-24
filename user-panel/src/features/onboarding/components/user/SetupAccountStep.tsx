@@ -16,8 +16,8 @@ import { updateUserFn } from "@/lib/endpoints/userFns";
 import { useMutation } from "@tanstack/react-query";
 import { useAuthState } from "@/features/auth/context/useAuthState";
 import { Toast } from "@/components/base/Toast";
-import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns"; // ✅ use this
-import {COUNTRY_LIST, MAX_IMAGE_BYTES} from "@/lib/constants";
+import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns";
+import {COUNTRY_LIST, MAX_IMAGE_BYTES, languages} from "@/lib/constants";
 
 const SetupAccountStep = () => {
   const router = useRouter();
@@ -30,6 +30,7 @@ const SetupAccountStep = () => {
   const [contactNumber, setContactNumber] = useState("");
   const [company, setCompany] = useState("");
   const [country, setCountry] = useState("");
+  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
   const { id } = useAuthState();
   const { selectedDesignation, selectedInterests } = useOnboardingState();
@@ -62,6 +63,7 @@ const SetupAccountStep = () => {
           country,
           designations: [selectedDesignation?.id || ""],
           interests: selectedInterests.map((i) => i.id),
+          languages: selectedLanguages,
         },
         {
           onSuccess: () => router.push("/onboarding/finalizing"),
@@ -113,12 +115,21 @@ const SetupAccountStep = () => {
     setImage(file);
   };
 
+  const handleLanguageSelect = (value: string | string[]) => {
+    const selectedValue = Array.isArray(value) ? value[0] : value;
+    
+    // Only add if not already selected
+    if (selectedValue && !selectedLanguages.includes(selectedValue)) {
+      setSelectedLanguages(prev => [...prev, selectedValue]);
+    }
+  };
+
   return (
       <div className="w-screen pb-32 lg:w-auto lg:pb-0">
         <div className="w-full">
-          <h2 className="text-2xl font-bold lg:text-center">Let’s set up your profile</h2>
+          <h2 className="text-2xl font-bold lg:text-center">Let's set up your profile</h2>
           <p className="mt-2 text-sm text-dark-300 lg:mt-1 lg:text-center">
-            Select topics that interest you and we’ll make recommendations for you.
+            Select topics that interest you and we'll make recommendations for you.
           </p>
 
           <div className="flex flex-col flex-wrap items-center justify-center gap-8 py-6 lg:flex-row lg:gap-4 lg:px-4">
@@ -183,6 +194,37 @@ const SetupAccountStep = () => {
                     items={COUNTRY_LIST}
                 />
               </div>
+
+              <div className="w-full space-y-1">
+                <Label>Languages</Label>
+                <ComboBox
+                    onChange={handleLanguageSelect}
+                    placeholder="Select languages you speak"
+                    items={languages.map(lang => ({
+                      label: lang.label,
+                      value: lang.label
+                    }))}
+                />
+                {selectedLanguages.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {selectedLanguages.map((lang) => (
+                      <span
+                        key={lang}
+                        className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-dark-50 text-dark-600 border border-dark-100"
+                      >
+                        {lang}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedLanguages(prev => prev.filter(l => l !== lang))}
+                          className="ml-1 text-dark-400 hover:text-dark-600"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -206,7 +248,7 @@ const SetupAccountStep = () => {
                 rightIcon={<ArrowRightIcon className="size-4" color="white" />}
                 disabled={isUploadPending || isUpdateUserPending}
             >
-              {isUploadPending || isUpdateUserPending ? "Saving..." : "Let’s get started"}
+              {isUploadPending || isUpdateUserPending ? "Saving..." : "Let's get started"}
             </Button>
           </div>
         </div>
