@@ -91,11 +91,35 @@ export class ReviewRepository {
     }
   }
 
+  async getAverageReviewScoreForProvider(providerId: string): Promise<number> {
+    try {
+      const result = await this.reviewRepository
+        .createQueryBuilder('review')
+        .select('AVG(review.stars)', 'average')
+        .where('review.providerId = :providerId', { providerId })
+        .getRawOne();
+
+      return result?.average
+        ? parseFloat(parseFloat(result.average).toFixed(1))
+        : 0;
+    } catch (error) {
+      throw new BadRequestException('Failed to calculate average review score');
+    }
+  }
+
 
   async getReviewCount(serviceId: string) {
     return this.reviewRepository.count({
       where: {
         serviceId,
+      },
+    });
+  }
+
+  async getReviewCountProvider(providerId: string) {
+    return this.reviewRepository.count({
+      where: {
+        providerId,
       },
     });
   }

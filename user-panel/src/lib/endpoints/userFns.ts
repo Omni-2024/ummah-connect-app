@@ -66,6 +66,9 @@ export interface GetUpdateUserByIdFnRes {
   totalCoursesCompleted: number | null;
   totalActiveCourses: number | null;
   isFirstLogin: boolean;
+  totalReviewScore:number;
+  totalReviewCount:number;
+  averageReviewScore:number;
   signinMethod: SIGNIN_METHOD;
 }
 

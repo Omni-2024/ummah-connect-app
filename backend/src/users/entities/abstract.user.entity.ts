@@ -43,6 +43,9 @@ export declare abstract class AbstractUserEntity extends AbstractBaseEntity {
   totalServices: number;
   totalServicesCompleted: number;
   totalActiveServices: number;
+  totalReviewScore?: number;
+  totalReviewCount?: number;
+  averageReviewScore?: number;
   isFirstLogin: boolean;
   signinMethod: SigninMethod;
   otp: string;
