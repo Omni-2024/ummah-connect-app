@@ -1,5 +1,6 @@
 import {
-  getReviewByServiceId,
+  getReviewByProviderId,
+  getReviewByServiceId, ReviewByProviderIdReq,
   ReviewByServiceIdReq,
   viewReviewByUserAndServiceId,
 } from "@/lib/endpoints/reviewFns";
@@ -10,6 +11,14 @@ export const useReviewByService = (data: ReviewByServiceIdReq) => {
     queryKey: ["reviewByService", data],
     queryFn: () => getReviewByServiceId(data),
     enabled: !!data.serviceId,
+  });
+};
+
+export const useReviewByProvider = (data: ReviewByProviderIdReq) => {
+  return useQuery({
+    queryKey: ["reviewByProvider", data],
+    queryFn: () => getReviewByProviderId(data),
+    enabled: !!data.providerId,
   });
 };
 

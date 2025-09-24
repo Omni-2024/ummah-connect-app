@@ -20,6 +20,12 @@ export type ReviewByServiceIdReq = {
   limit: number;
   offset: number;
 };
+export type ReviewByProviderIdReq = {
+  providerId: string;
+  stars: number;
+  limit: number;
+  offset: number;
+};
 export const getReviewByServiceId = async (
   data: ReviewByServiceIdReq,
 ): Promise<WithPagination<Review>> => {
@@ -27,6 +33,26 @@ export const getReviewByServiceId = async (
     const res = await Request<WithPagination<Review>>({
       method: "get",
       url: "/api/review/service",
+      params: data,
+    });
+    return res.data;
+  } catch (e) {
+    if (isAxiosError(e)) {
+      if (e.response?.status === 404) {
+        return { data: [], meta: { total: 0, limit: 0, offset: 0 } };
+      }
+    }
+    throw e;
+  }
+};
+
+export const getReviewByProviderId = async (
+  data: ReviewByProviderIdReq,
+): Promise<WithPagination<Review>> => {
+  try {
+    const res = await Request<WithPagination<Review>>({
+      method: "get",
+      url: "/api/review/provider",
       params: data,
     });
     return res.data;
