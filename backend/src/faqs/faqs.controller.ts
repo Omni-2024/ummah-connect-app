@@ -12,6 +12,7 @@ import { Roles } from '../auth/decorator/role.decorator';
 import { UserRole } from '../users/entities/abstract.user.entity';
 import { QuestionsService } from './faqs.service';
 import { CreateFaqQuestionDto, UpdateFaqQuestionDto } from './dto/faq.dto';
+import { Public } from '../auth/decorator/public.decorator';
 
 @Controller('faq')
 export class QuestionController {
@@ -23,13 +24,13 @@ export class QuestionController {
     return await this.questionService.create(createQuestionDto);
   }
 
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
+  @Public()
   @Get()
   async findAll(@Query('serviceId') serviceId: string) {
     return await this.questionService.findAllByService({ serviceId });
   }
 
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
+  @Public()
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.questionService.findOne({ id });

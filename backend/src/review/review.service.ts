@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ReviewRepository } from './review.repository';
 import { CreateReviewDto, UpdateReviewDto } from './dto/review.dto';
 import { Service } from '../services/entities/service.entity';
+import { UserEntity } from '../users/entities/user.entity';
 import { ReviewEntity } from './entities/review.entity';
 import { UserRepository } from '../users/user.repository';
 
@@ -18,6 +19,8 @@ export class ReviewService {
     private readonly reviewRepo: ReviewRepository,
     @InjectRepository(Service)
     private serviceRepository: Repository<Service>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
     private readonly userRepo: UserRepository,
 
   ) {}
@@ -28,9 +31,11 @@ export class ReviewService {
     try {
       const review: any = await this.reviewRepo.createReview(createReviewDto);
 
-      const [averageScore, reviewCount] = await Promise.all([
+      const [averageScore, reviewCount,averageScoreProvider,reviewCountProvider] = await Promise.all([
         await this.reviewRepo.getAverageReviewScoreForService(review.serviceId),
         await this.reviewRepo.getReviewCount(review.serviceId),
+        await this.reviewRepo.getAverageReviewScoreForProvider(review.providerId),
+        await this.reviewRepo.getReviewCountProvider(review.serviceId),
       ]);
 
       const serviceResponse = await this.serviceRepository.findOne({
@@ -44,6 +49,11 @@ export class ReviewService {
       const updateServiceDto = {
         totalReviewCount: reviewCount,
         averageReviewScore: averageScore,
+      };
+
+      const updateProviderDto = {
+        totalReviewCount: reviewCountProvider,
+        averageReviewScore: averageScoreProvider,
       };
 
       // TODO
@@ -61,6 +71,11 @@ export class ReviewService {
       await this.serviceRepository.update(
         { id: review.serviceId },
         { ...updateServiceDto }
+      );
+
+      await this.userRepository.update(
+        { id: review.providerId },
+        { ...updateProviderDto }
       );
 
 
@@ -122,9 +137,11 @@ export class ReviewService {
     try {
       await this.reviewRepo.deleteReview(id);
 
-      const [averageScore, reviewCount] = await Promise.all([
-        this.reviewRepo.getAverageReviewScoreForService(review.serviceId),
+      const [averageScore, reviewCount,averageScoreProvider,reviewCountProvider] = await Promise.all([
+        await this.reviewRepo.getAverageReviewScoreForService(review.serviceId),
         await this.reviewRepo.getReviewCount(review.serviceId),
+        await this.reviewRepo.getAverageReviewScoreForProvider(review.providerId),
+        await this.reviewRepo.getReviewCountProvider(review.serviceId),
       ]);
 
       const serviceResponse = await this.serviceRepository.findOne({
@@ -141,9 +158,19 @@ export class ReviewService {
         averageReviewScore: averageScore,
       };
 
+      const updateProviderDto = {
+        totalReviewCount: reviewCountProvider,
+        averageReviewScore: averageScoreProvider,
+      };
+
       await this.serviceRepository.update(
         { id: review.serviceId },
         { ...updateServiceDto }
+      );
+
+      await this.userRepository.update(
+        { id: review.providerId },
+        { ...updateProviderDto }
       );
 
       // TODO

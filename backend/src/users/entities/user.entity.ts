@@ -136,4 +136,30 @@ export class UserEntity extends BaseEntity implements AbstractUserEntity {
 
   @Column({ nullable: true, default: null })
   stripeCustomerId: string;
+
+  @Column({
+    name: 'total_review_score',
+    default: 0,
+    type: 'bigint',
+    nullable: true,
+  })
+  totalReviewScore: number;
+
+  @Column({
+    name: 'total_review_count',
+    default: 0,
+    type: 'bigint',
+    nullable: true,
+  })
+  totalReviewCount: number;
+
+  @Column({
+    name: 'average_review_score',
+    type: 'decimal', // Change to 'decimal' or 'numeric'
+    precision: 4, // Total number of digits
+    scale: 1, // Number of digits after the decimal point
+    default: 0,
+    nullable: true,
+  })
+  averageReviewScore: number;
 }

@@ -1,4 +1,4 @@
-import { IsArray, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class PaginatedRequestDto {
   limit?: number;
@@ -53,4 +53,16 @@ export class UpdateUserDto {
   @IsArray()
   @IsOptional()
   languages?: string[];
+
+  @IsOptional()
+  @IsInt()
+  totalReviewScore?: number;
+
+  @IsOptional()
+  @IsInt()
+  totalReviewCount?: number;
+
+  @IsOptional()
+  @IsNumber({ maxDecimalPlaces: 2 })
+  averageReviewScore?: number;
 }

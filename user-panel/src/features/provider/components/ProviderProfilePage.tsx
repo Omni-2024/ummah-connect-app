@@ -334,8 +334,8 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
                     {/* Rating & Stats */}
                     <div className="flex items-center gap-4 justify-center sm:justify-start mb-4">
                       <div className="flex items-center gap-1">
-                        {renderStars(educator.averageScore || 4.9)}
-                        <span className="font-semibold text-lg ml-1">{educator.averageScore || "4.9"}</span>
+                        {renderStars(educator?.averageReviewScore || 4.9)}
+                        <span className="font-semibold text-lg ml-1">{educator.averageReviewScore || "4.9"}</span>
                         <span className="text-gray-500">(reviews)</span>
                       </div>
                     </div>
