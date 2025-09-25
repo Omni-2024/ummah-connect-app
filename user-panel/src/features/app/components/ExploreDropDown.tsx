@@ -89,7 +89,9 @@ const ExploreDropDown: React.FC<ExploreDropDownProps> = ({
                                             </div>
                                         ) : (
                                             <div className="space-y-1">
-                                                {exploreCategories.map((category) => {
+                                                {exploreCategories
+                                                    .sort((a, b) => a.order - b.order)
+                                                    .map((category) => {
                                                     const active = hoveredCategory === category.id;
                                                     return (
                                                         <button

@@ -13,6 +13,8 @@ import {
 } from "@radix-ui/react-icons";
 import { buildAvatarUrl } from "@/features/app/components/Navbar";
 import { useChat } from "@/components/getStream/chat/ChatContextProvider";
+import { MessageCircle } from "iconsax-react";
+import StudentCountLabel from "@/components/widgets/StudentCountLabel";
 
 interface ServiceContentProps {
   service: any;
@@ -90,93 +92,75 @@ export default function ServiceContent({ service, educator ,   providerId,
             {/* Service Provider - Clean & Minimal */}
       {educator && (
         <Card id="provider-section"  className="p-6 scroll-mt-24">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            About the Service Provider
-          </h2>
-          
-          <div className="flex gap-4">
-            {/* Profile Image */}
-            <div className="relative flex-shrink-0">
-              {educator.profileImage ? (
-                <img
-                  src={
-                    educator.profileImage
-                    ? buildAvatarUrl(educator.profileImage)!!
-                    : "/images/coverImage.png"
-                  }                   
-                  alt={educator.name}
-                  className="size-16 rounded-full object-cover"
-                />
-              ) : (
-                <div className="size-16 rounded-full bg-gray-100 flex items-center justify-center">
-                  <span className="text-gray-600 font-medium">
-                    {getInitials(educator.name)}
-                  </span>
-                </div>
-              )}
-              {/* {educator.verified && (
-                <CheckCircledIcon className="absolute -bottom-1 -right-1 size-5 text-green-500 bg-white rounded-full" />
-              )} */}
-            </div>
-
-            {/* Provider Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between">
-                <div className="min-w-0 flex-1">
-                  <h3 className="font-medium text-gray-900 truncate">
-                    {educator.name}
-                  </h3>
-                  <p className="text-sm text-gray-500 mb-2">Service Provider </p>
-                  
-                  {/* Simple stats */}
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    {educator.averageScore && (
-                      <div className="flex items-center gap-1">
-                        <StarFilledIcon className="size-4 text-yellow-500" />
-                        <span>{educator.averageScore}</span>
-                      </div>
-                    )}
-                    {educator.totalServices && (
-                      <span>{educator.totalServices} services</span>
-                    )}
-                    {educator.country && (
-                      <div className="flex items-center gap-1">
-                        <GlobeIcon className="size-4" />
-                        <span>{educator.country}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <Button 
-                  // variant="outline" 
-                  size="sm"
-                  onClick={handleViewProfile}
-                  className="ml-4"
-                >
-                  View Profile
-                </Button>
-              </div>
-
-              {/* Bio */}
-              {educator.bio && (
-                <p className="text-sm text-gray-600 mt-3 line-clamp-2">
-                  {educator.bio}
-                </p>
-              )}
-              <Button
-                onClick={handleChat}
-                variant="primary"
-                className="w-fit flex items-center justify-center gap-2 mt-4"
-              >
-                <EnvelopeClosedIcon className="size-4" />
-                
-                Contact Me
-
-                
-              </Button>
-            </div>
+{/* <div className="bg-white rounded-lg border border-gray-200 p-4"> */}
+      <h2 className="text-lg font-semibold text-gray-900 mb-3">
+        About the Service Provider
+      </h2>
+      
+      <div className="flex gap-4">
+        {/* Smaller Profile Image */}
+        <div className="flex-shrink-0">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+            <span className="text-white font-medium text-sm">
+              {getInitials(educator.name)}
+            </span>
           </div>
+        </div>
+
+        {/* Condensed Info */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between mb-2">
+            <div className="min-w-0 flex-1">
+              <button
+                onClick={handleViewProfile}
+                className="text-left hover:text-green-600 transition-colors duration-200"
+              >
+                <h3 className="font-semibold text-gray-900 hover:underline truncate">
+                  {educator.name}
+                </h3>
+              </button>
+              
+              {/* Inline stats - more compact */}
+              <div className="flex items-center gap-3 text-xs text-gray-600 mb-2">
+                <div className="flex items-center gap-1">
+                  <GlobeIcon className="w-4 h-4" />
+                  <span>{educator.country}</span>
+                </div>
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1">
+                    <StarFilledIcon className="size-4 text-yellow-500" />
+                    <span className="font-semibold text-gray-900">
+                      {service.averageReviewScore}
+                    </span>
+                    <span className="text-gray-600">
+                      ({service.totalReviewCount} reviews)
+                    </span>
+                  </div>
+                  {/* <StudentCountLabel
+                    count={Number(service.enrollmentCount)}
+                  /> */}
+                </div>
+              </div>
+            </div>
+            
+            {/* Contact button moved to top right */}
+            <Button
+              onClick={handleChat}
+              className=""
+              variant="secondary"
+            >
+              Contact Me
+            </Button>
+          </div>
+          
+          {/* Bio - single line with truncation */}
+          {educator.bio && (
+            <p className="text-sm text-gray-600 line-clamp-1">
+              {educator.bio}
+            </p>
+          )}
+        </div>
+      </div>
         </Card>
       )}
     </div>

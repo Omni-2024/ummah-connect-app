@@ -107,23 +107,7 @@ export default function QuoteRequestModal({
         <div className="p-4 sm:p-6">
           {/* Provider Info */}
           <div className="flex items-start gap-3 mb-6">
-            <div className="flex-shrink-0">
-              {educator.profileImage ? (
-                <div className="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-gray-100">
-                  <img
-                    src={buildAvatarUrl(educator.profileImage) || "/images/coverImage.png"} 
-                    alt={educator.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                  <span className="text-gray-600 font-medium text-sm">
-                    {getInitials(educator.name)}
-                  </span>
-                </div>
-              )}
-            </div>
+
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
                 {service.providerName || 'Service Provider'}
@@ -135,7 +119,7 @@ export default function QuoteRequestModal({
           </div>
 
           {/* Service Description */}
-          <div className="mb-6">
+          <div className="mb-4">
             <label className="block text-sm font-medium text-gray-900 mb-2">
               Describe the service you're looking to purchase - please be as detailed as possible:
             </label>
@@ -201,29 +185,34 @@ export default function QuoteRequestModal({
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
               {['24 Hours', '3 Days', '7 Days'].map((time) => (
-                <button
+                <Button
                   key={time}
                   onClick={() => setSelectedDeliveryTime(time)}
-                  className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                  variant={selectedDeliveryTime === time ? "primary" : "secondary"}
+                  size="sm"
+                  className={`rounded-lg ${
                     selectedDeliveryTime === time
-                      ? 'bg-blue-600 text-white border-blue-600'
+                      ? ''
                       : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
                   }`}
                 >
                   {time}
-                </button>
+                </Button>
               ))}
+              <Button
+                onClick={() => setSelectedDeliveryTime('other')}
+                variant={selectedDeliveryTime === 'other' ? "primary" : "secondary"}
+                size="sm"
+                className={`w-full rounded-lg ${
+                  selectedDeliveryTime === 'other'
+                    ? ''
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                }`}
+              >
+                <span>Other</span>
+              </Button>
             </div>
-            <button
-              onClick={() => setSelectedDeliveryTime('other')}
-              className={`w-full px-4 py-2 rounded-lg border text-sm font-medium transition-colors flex items-center justify-center gap-2 ${
-                selectedDeliveryTime === 'other'
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-              }`}
-            >
-              <span>Other</span>
-            </button>
+
             
             {selectedDeliveryTime === 'other' && (
               <input

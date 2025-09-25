@@ -64,7 +64,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
                 <Button
                   variant="unstyled"
                   onClick={() => router.push("/my-purchases")}
-                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-6 rounded-xl transition-all duration-200 text-lg font-semibold shadow-lg hover:-translate-y-1 hover:shadow-xl hover:text-white transform flex items-center gap-2"
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-6 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transform flex items-center gap-2"
                 >
                   Continue Learning
                   <ArrowRightIcon className="w-5 h-5" />
@@ -72,7 +72,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
                 <Button
                   variant="unstyled"
                   onClick={() => router.push("/explore")}
-                  className="border-2 border-emerald-500 text-color px-8 py-6 rounded-xl transition-all duration-200 text-lg font-semibold hover:bg-background-light hover:-translate-y-1 transform"
+                  className="border-2 border-emerald-500 text-color px-8 py-6 rounded-xl  text-lg font-semibold hover:bg-background-light hover:shadow-xl"
                 >
                   Discover New Paths
                 </Button>

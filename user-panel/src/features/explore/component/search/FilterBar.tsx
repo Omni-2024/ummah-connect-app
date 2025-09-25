@@ -77,7 +77,7 @@ const FilterBar = ({ resetPage }: { resetPage: () => void }) => {
                         </Label>
                     </div>
 
-                    {categories?.map((category) => {
+                    {categories?.sort((a, b) => a.order - b.order).map((category) => {
                         const active = profession === category.id;
                         return (
                             <div key={category.id} className="flex flex-col gap-1.5 py-1">
