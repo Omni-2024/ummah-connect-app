@@ -208,7 +208,6 @@ export class PaymentService {
     const previous = await this.previousPeriod({ start, end, topLimit, scope: { mode: 'GLOBAL' } });
 
     return {
-      status: HttpStatus.OK,
       data: this.compose(q, start, end, current, previous),
     };
   }
@@ -226,7 +225,6 @@ export class PaymentService {
     });
 
     return {
-      status: HttpStatus.OK,
       data: this.compose(q, start, end, current, previous),
     };
   }

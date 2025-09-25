@@ -57,7 +57,6 @@ export class ServiceService {
   async search(
     searchServiceDto: SearchServiceDto,
   ) {
-    try {
       const { services, count } = await this.serviceRepo.search(searchServiceDto);
 
       if (
@@ -73,15 +72,11 @@ export class ServiceService {
         };
       }
       throw new NotFoundException('No services found');
-    } catch (e) {
-      throw new InternalServerErrorException(e.message);
-    }
   }
 
   async findAllByProviders(
     findAllByProviderServiceDto: FindAllByProviderServiceDto,
   ){
-    try {
       const services = await this.serviceRepo.findServicesByProvider(
         findAllByProviderServiceDto,
       );
@@ -99,37 +94,26 @@ export class ServiceService {
         };
       }
       throw new NotFoundException('No services found');
-    } catch (e) {
-      throw new InternalServerErrorException(e.message);
-    }
   }
 
   async findOne(
     findOneServiceDto: FindOneServiceDto,
   ){
-    try {
       const service = await this.serviceRepo.getServiceById(findOneServiceDto);
       if (service instanceof Service) {
         return  service ;
       }
       throw new NotFoundException('No services found');
-    } catch (e) {
-      throw new InternalServerErrorException(e.message);
-    }
   }
 
   async update(
     updateServiceDto: UpdateServiceDto,
   ){
-    try {
       const service = await this.serviceRepo.updateService(updateServiceDto);
       if (service instanceof Service) {
         return service;
       }
       throw new NotFoundException('No services found');
-    } catch (e) {
-      throw new InternalServerErrorException(e.message);
-    }
   }
 
   async remove(

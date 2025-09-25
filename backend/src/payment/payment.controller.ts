@@ -13,6 +13,7 @@ import { Roles } from '../auth/decorator/role.decorator';
 import { UserRole } from '../users/entities/abstract.user.entity';
 import { CreatePaymentDto, UpdatePaymentDto } from 'src/users/dto/user.dto';
 import { PaymentStatsQueryDto } from './dto/payment-stats.dto';
+import { Public } from '../auth/decorator/public.decorator';
 
 @Controller('payment')
 export class PaymentController {
@@ -86,14 +87,14 @@ export class PaymentController {
         );
     }
 
-  @Roles([UserRole.BUSINESS_ADMIN, UserRole.ADMIN, UserRole.ROOT])
-  @Get('stats')
-  async getPaymentStats(@Query() query: PaymentStatsQueryDto) {
-    if (query.providerId) {
-      return this.paymentService.getProviderPaymentStats(query.providerId, query);
+  @Roles([UserRole.BUSINESS_ADMIN, UserRole.ADMIN, UserRole.ROOT])    @Get('stats/summary')
+    async getPaymentStats(@Query() query: PaymentStatsQueryDto) {
+      if (query.providerId) {
+        return this.paymentService.getProviderPaymentStats(query.providerId, query);
+      }
+      return this.paymentService.getGlobalPaymentStats(query);
     }
-    return this.paymentService.getGlobalPaymentStats(query);
-  }
+
 
 
 }

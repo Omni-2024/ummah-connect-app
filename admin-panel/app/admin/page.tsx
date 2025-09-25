@@ -22,6 +22,9 @@ import {
   CheckCircle,
   Clock,
 } from "lucide-react"
+import {useServices} from "@/hooks/useServices";
+import {useStats} from "@/hooks/usePayments";
+import {GetStatsParams} from "@/lib/endpoints/paymentFns";
 
 // Mock data - in real app, this would come from API/state
 const mockStats = {
@@ -112,6 +115,16 @@ export default function AdminDashboard() {
   const [pendingProviders, setPendingProviders] = useState<Provider[]>([])
   const [stats, setStats] = useState(mockStats)
   const [loading, setLoading] = useState(true)
+
+  const {
+    data: statsData,
+    isLoading,
+    refetch: refetchServices,
+  } = useStats({
+    scope: 'last_30d',
+    groupBy: 'day',
+    topLimit: 5,
+  } as GetStatsParams);
 
   useEffect(() => {
     fetchProviders()

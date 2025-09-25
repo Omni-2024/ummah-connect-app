@@ -25,7 +25,7 @@ export type AggregateReturn = {
     uniqueProviders: number;
   };
   topServices: Array<{ serviceId: string; serviceName: string | null; orders: number; revenue: number }>;
-  topProviders: Array<{ providerId: string; providerName: string | null; orders: number; revenue: number }>;
+  topProviders: Array<{ providerId: string;  orders: number; revenue: number }>;
   series: Array<{ period: string; revenue: number; paymentsCount: number }>;
 };
 
@@ -178,7 +178,7 @@ export class PaymentRepository {
     // -------- top providers --------
     const topProvidersRaw = await baseQB.clone()
       .select('s.providerId', 'providerId')
-      .addSelect('MAX(s.providerName)', 'providerName') // adjust if column differs
+      // .addSelect('MAX(s.providerName)', 'providerName') // adjust if column differs
       .addSelect('COUNT(*)', 'orders')
       .addSelect('COALESCE(SUM(p.amount), 0)', 'revenue')
       .where('s.providerId IS NOT NULL')
@@ -190,7 +190,7 @@ export class PaymentRepository {
 
     const topProviders = topProvidersRaw.map(r => ({
       providerId: r.providerId,
-      providerName: r.providerName,
+      // providerName: r.providerName,
       orders: Number(r.orders),
       revenue: Number(r.revenue),
     }));
