@@ -12,6 +12,7 @@ import { PaymentService } from './payment.service';
 import { Roles } from '../auth/decorator/role.decorator';
 import { UserRole } from '../users/entities/abstract.user.entity';
 import { CreatePaymentDto, UpdatePaymentDto } from 'src/users/dto/user.dto';
+import { PaymentStatsQueryDto } from './dto/payment-stats.dto';
 
 @Controller('payment')
 export class PaymentController {
@@ -84,6 +85,15 @@ export class PaymentController {
            userId,
         );
     }
+
+  @Roles([UserRole.BUSINESS_ADMIN, UserRole.ADMIN, UserRole.ROOT])
+  @Get('stats')
+  async getPaymentStats(@Query() query: PaymentStatsQueryDto) {
+    if (query.providerId) {
+      return this.paymentService.getProviderPaymentStats(query.providerId, query);
+    }
+    return this.paymentService.getGlobalPaymentStats(query);
+  }
 
 
 }

@@ -1,7 +1,14 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { PaymentRepository } from './payment.repository';
+import { AggregateReturn, PaymentRepository } from './payment.repository';
 import { PaymentEntity } from './payment.entity';
 import { CreatePaymentDto, UpdatePaymentDto } from '../users/dto/user.dto';
+import dayjs from 'dayjs';
+import {
+  GroupByType,
+  PaymentStatsQueryDto,
+  ScopeType,
+} from './dto/payment-stats.dto';
+
 
 
 @Injectable()
@@ -189,4 +196,114 @@ export class PaymentService {
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, error };
     }
   }
+
+  async getGlobalPaymentStats(q: PaymentStatsQueryDto) {
+    const { start, end } = this.resolveRange(q);
+    const topLimit = q.topLimit ?? 5;
+
+    const current = await this.paymentRepo.aggregateStats({
+      start, end, groupBy: q.groupBy, topLimit, scope: { mode: 'GLOBAL' },
+    });
+
+    const previous = await this.previousPeriod({ start, end, topLimit, scope: { mode: 'GLOBAL' } });
+
+    return {
+      status: HttpStatus.OK,
+      data: this.compose(q, start, end, current, previous),
+    };
+  }
+
+  async getProviderPaymentStats(providerId: string, q: PaymentStatsQueryDto) {
+    const { start, end } = this.resolveRange(q);
+    const topLimit = q.topLimit ?? 5;
+
+    const current = await this.paymentRepo.aggregateStats({
+      start, end, groupBy: q.groupBy, topLimit, scope: { mode: 'PROVIDER', providerId },
+    });
+
+    const previous = await this.previousPeriod({
+      start, end, topLimit, scope: { mode: 'PROVIDER', providerId },
+    });
+
+    return {
+      status: HttpStatus.OK,
+      data: this.compose(q, start, end, current, previous),
+    };
+  }
+
+  private async previousPeriod(args: { start: string; end: string; topLimit: number; scope: any }) {
+    const { start, end, topLimit, scope } = args;
+    const delta = new Date(end).getTime() - new Date(start).getTime();
+    const prevStart = new Date(new Date(start).getTime() - delta).toISOString();
+    const prevEnd = new Date(start).toISOString();
+    return this.paymentRepo.aggregateStats({
+      start: prevStart,
+      end: prevEnd,
+      groupBy: GroupByType.NONE,
+      topLimit,
+      scope,
+    });
+  }
+
+  private resolveRange(q: PaymentStatsQueryDto): { start: string; end: string } {
+    const now = dayjs();
+    switch (q.scope) {
+      case ScopeType.ALL:
+        return { start: '1970-01-01T00:00:00.000Z', end: now.add(1, 'minute').toISOString() };
+      case ScopeType.LAST_WEEK: {
+        const end = now.endOf('day');
+        const start = end.subtract(7, 'day').add(1, 'second');
+        return { start: start.toISOString(), end: end.toISOString() };
+      }
+      case ScopeType.LAST_30D: {
+        const end = now.endOf('day');
+        const start = end.subtract(30, 'day').add(1, 'second');
+        return { start: start.toISOString(), end: end.toISOString() };
+      }
+      case ScopeType.MONTH: {
+        const year = q.year ?? now.year();
+        const month = q.month ?? now.month() + 1;
+        const start = dayjs(`${year}-${String(month).padStart(2, '0')}-01`).startOf('month');
+        const end = start.endOf('month');
+        return { start: start.toISOString(), end: end.toISOString() };
+      }
+      case ScopeType.RANGE: {
+        const start = q.start ? dayjs(q.start) : now.startOf('day');
+        const end = q.end ? dayjs(q.end) : now.endOf('day');
+        return { start: start.toISOString(), end: end.toISOString() };
+      }
+      default: {
+        const end = now.endOf('day');
+        const start = end.subtract(30, 'day').add(1, 'second');
+        return { start: start.toISOString(), end: end.toISOString() };
+      }
+    }
+  }
+
+  private compose(
+    q: PaymentStatsQueryDto,
+    start: string,
+    end: string,
+    current: AggregateReturn,
+    previous: AggregateReturn,
+  ) {
+    return {
+      filters: { scope: q.scope, start, end, groupBy: q.groupBy },
+      totals: current.totals,
+      growth: {
+        usersPct: pct(previous.totals.uniqueUsers, current.totals.uniqueUsers),
+        paymentsPct: pct(previous.totals.paymentsCount, current.totals.paymentsCount),
+        revenuePct: pct(previous.totals.revenue, current.totals.revenue),
+      },
+      topServices: current.topServices,
+      topProviders: current.topProviders,
+      series: q.groupBy === GroupByType.NONE ? undefined : current.series,
+    };
+  }
+}
+
+function pct(prev: number, cur: number): number {
+    if (!prev && !cur) return 0;
+    if (!prev) return 100;
+    return Number((((cur - prev) / prev) * 100).toFixed(2));
 }
