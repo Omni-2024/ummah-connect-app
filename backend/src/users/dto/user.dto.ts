@@ -1,4 +1,6 @@
 import { IsArray, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateServiceDto } from '../../services/dto/service.dto';
 
 export class PaginatedRequestDto {
   limit?: number;
@@ -66,3 +68,45 @@ export class UpdateUserDto {
   @IsNumber({ maxDecimalPlaces: 2 })
   averageReviewScore?: number;
 }
+
+export class CreatePaymentDto {
+  @IsOptional()
+  @IsString()
+  userId?: string;
+
+  @IsOptional()
+  @IsString()
+  serviceId?: string;
+
+  @IsOptional()
+  @IsString()
+  serviceName?: string;
+
+  @IsString()
+  status: string;
+
+  @IsString()
+  receiptUrl: string;
+
+  @IsString()
+  last4: string;
+
+  @IsString()
+  paymentMethod: string;
+
+  @IsString()
+  paymentIntent: string;
+
+  @IsNumber()
+  amount: number;
+
+  @IsString()
+  chargeId: string;
+}
+
+export class UpdatePaymentDto extends PartialType(CreatePaymentDto) {
+
+  @IsString()
+  id: string;
+}
+
