@@ -210,7 +210,7 @@ export class ReviewService {
           }),
         );
         return {
-          reviewsWithUserData, meta: { total, limit, offset } ,
+          data:reviewsWithUserData, meta: { total, limit, offset } ,
         };
       }
       throw new NotFoundException('No reviews found');
@@ -285,7 +285,7 @@ export class ReviewService {
           }),
         );
         return {
-         reviewsWithUserData, meta: { total, limit, offset }
+         data:reviewsWithUserData, meta: { total, limit, offset }
         };
       }
      throw new NotFoundException('No reviews found');
