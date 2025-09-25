@@ -68,7 +68,7 @@ export interface StatsGrowth {
 
 export interface TopService {
   serviceId: string;
-  serviceName: string | null;
+  // serviceName: string | null;
   orders: number;
   revenue: number;
 }
@@ -98,6 +98,31 @@ export interface GetStatsData {
 export interface GetStatsFnRes {
   data: GetStatsData ;
 }
+const EMPTY_STATS: GetStatsFnRes = {
+  data: {
+    filters: {
+      scope: ScopeType.LAST_30D,
+      start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString(),
+      end: new Date().toISOString(),
+      groupBy: GroupByType.DAY,
+    },
+    totals: {
+      revenue: 0,
+      paymentsCount: 0,
+      registeredUsers: 0,
+      registeredProviders: 0,
+    },
+    growth: {
+      usersPct: 0,
+      providersPct: 0,
+      paymentsPct: 0,
+      revenuePct: 0,
+    },
+    topServices: [],
+    topProviders: [],
+    series: [],
+  },
+};
 
 export interface GetAllPaymentsFnRes {
   data: Payment[];
@@ -114,29 +139,7 @@ export const getStatsFn = async (params: GetStatsParams) => {
     return res.data;
   } catch (error) {
     console.error(error);
-    return { data: {
-        filters: {
-          scope: ScopeType.LAST_30D,
-          start: '',
-          end: '',
-          groupBy: GroupByType.DAY
-        },
-        totals: {
-          revenue: 0,
-          paymentsCount: 0,
-          uniqueUsers: 0,
-          uniqueProviders: 0
-        },
-        growth: {
-          usersPct: 0,
-          paymentsPct: 0,
-          revenuePct: 0
-        },
-        topServices: [],
-        topProviders: [],
-        series: []
-      }
-    };
+    return EMPTY_STATS
   }
 };
 
