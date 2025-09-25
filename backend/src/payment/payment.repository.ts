@@ -134,18 +134,18 @@ export class PaymentRepository {
   }
 
   async aggregateStats(args: AggregateArgs): Promise<AggregateReturn> {
-    const { start, end, groupBy, topLimit, scope } = args;
+      const { start, end, groupBy, topLimit, scope } = args;
 
-    // base payments query
-    const baseQB = this.paymentRepository
-      .createQueryBuilder('p')
-      .leftJoin(Service, 's', 's.id = p.service_id')
-      .where('p.created_at >= :start', { start })
-      .andWhere('p.created_at < :end', { end })
-      .andWhere('p.status = :ok', { ok: 'succeeded' });
+      // base payments query
+      const baseQB = this.paymentRepository
+        .createQueryBuilder('p')
+        .leftJoin(Service, 's', 's._id = p.service_id')
+        .where('p.created_at >= :start', { start })
+        .andWhere('p.created_at < :end', { end })
+        .andWhere('p.status = :ok', { ok: 'succeeded' });
 
-    if (scope.mode === 'PROVIDER') {
-      baseQB.andWhere('s.providerId = :providerId', { providerId: scope.providerId });
+      if (scope.mode === 'PROVIDER') {
+      baseQB.andWhere('s.provider_id = :providerId', { providerId: scope.providerId });
     }
 
     // payments-based totals (revenue, orders)
@@ -198,11 +198,11 @@ export class PaymentRepository {
 
     // top providers
     const topProvidersRaw = await baseQB.clone()
-      .select('s.providerId', 'providerId')
+      .select('s.provider_id', 'providerId')
       .addSelect('COUNT(*)', 'orders')
       .addSelect('COALESCE(SUM(p.amount), 0)', 'revenue')
-      .where('s.providerId IS NOT NULL')
-      .groupBy('s.providerId')
+      .andWhere('s.provider_id IS NOT NULL')
+      .groupBy('s.provider_id')
       .orderBy('revenue', 'DESC')
       .addOrderBy('orders', 'DESC')
       .limit(topLimit)
@@ -235,7 +235,6 @@ export class PaymentRepository {
 
     return { totals, topServices, topProviders, series };
   }
-
 }
 
 
