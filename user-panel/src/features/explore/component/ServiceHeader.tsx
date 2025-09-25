@@ -25,6 +25,16 @@ interface ServiceHeaderProps {
   providerId?: string;
 }
 
+export const getInitials = (name: string) => {
+  return name
+      .split(' ')
+      .map(word => word.charAt(0))
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+};
+
+
 export default function ServiceHeader({
   service,
   educator,
@@ -38,14 +48,6 @@ export default function ServiceHeader({
   const [showContactOptions, setShowContactOptions] = useState(false);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
 
-  const getInitials = (name: string) => {
-    return name
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   const handleContactClick = () => {
     setShowContactOptions(!showContactOptions);

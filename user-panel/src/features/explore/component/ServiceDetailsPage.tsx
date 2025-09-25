@@ -31,6 +31,7 @@ import ServiceFAQ from "./ServiceFAQ";
 import ShareServiceModal from "@/features/explore/component/ShareServiceModal";
 import {setServiceId, setShowServiceShareModal} from "@/features/app/context/AppState";
 import ReviewCarousel from "@/components/widgets/ReviewCarousel";
+import { useReviewByService} from "@/lib/hooks/useReview";
 
 export default function ServiceDetailsPage() {
   const router = useRouter();
@@ -39,13 +40,29 @@ export default function ServiceDetailsPage() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { serviceSlug } = useExploreState();
+  const [pageLimit, setPageLimit] = useState(4);
+  const [pageOffset, setPageOffset] = useState(0);
+  const [starFilter, setStarFilter] = useState<number>(0);
+
 
   const {
     data: service,
     isLoading,
     error,
   } = useServiceBySlug(serviceSlug || slug || "");
-  const { data: educator } = useGeneralUser(service?.serviceDetails?.data.provider.id ?? undefined);
+  const { data: educator,isLoading:educatorLoading } = useGeneralUser(service?.serviceDetails?.data.provider.id ?? undefined);
+
+  const serviceId  = service?.serviceDetails?.data?.id;
+
+
+  const {
+    data: reviews,
+    isLoading: reviewLoading,
+    error: reviewError,
+  } = useReviewByService(
+      { serviceId: serviceId!, stars: starFilter, limit: pageLimit, offset: pageOffset },
+  );
+
 
   // Scroll detection effect
   useEffect(() => {
@@ -109,7 +126,7 @@ export default function ServiceDetailsPage() {
     // - etc.
   };
 
-  if (isLoading) {
+  if (isLoading || educatorLoading ||reviewLoading) {
     return (
       <div className="min-h-screen w-full bg-white pb-16 lg:pb-0">
         <Navbar />
@@ -130,7 +147,7 @@ export default function ServiceDetailsPage() {
     );
   }
 
-  if (error || !service) {
+  if (error || !service || !educator || !reviews) {
     return (
       <div className="min-h-screen w-full bg-white pb-16 lg:pb-0">
         <Navbar />
@@ -209,7 +226,8 @@ export default function ServiceDetailsPage() {
               onContact={handleContact}
 
             />
-            {/*<ReviewCarousel/>*/}
+
+            <ReviewCarousel apiReviews={reviews.data}/>
 
             <ServiceContent service={service.serviceDetails.data} educator={educator} />
              {/* FAQ Section*/}
