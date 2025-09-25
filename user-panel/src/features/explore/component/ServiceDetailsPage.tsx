@@ -30,6 +30,7 @@ import { SkeletonServiceDetailsPage } from "./SkeletonServiceDetailsPage";
 import ServiceFAQ from "./ServiceFAQ";
 import ShareServiceModal from "@/features/explore/component/ShareServiceModal";
 import {setServiceId, setShowServiceShareModal} from "@/features/app/context/AppState";
+import ReviewCarousel from "@/components/widgets/ReviewCarousel";
 
 export default function ServiceDetailsPage() {
   const router = useRouter();
@@ -208,6 +209,7 @@ export default function ServiceDetailsPage() {
               onContact={handleContact}
 
             />
+            {/*<ReviewCarousel/>*/}
 
             <ServiceContent service={service.serviceDetails.data} educator={educator} />
              {/* FAQ Section*/}

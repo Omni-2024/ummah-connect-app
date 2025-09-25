@@ -160,7 +160,7 @@ export default function ServiceHeader({
 
       {/* Compact Hero Section - Moved after title */}
       <div className="relative mb-6">
-        <div className="relative h-48 lg:h-56 lg:rounded-2xl overflow-hidden bg-gradient-to-br from-primary-100 to-secondary-100">
+        <div className="relative h-48 lg:h-96 lg:rounded-2xl overflow-hidden bg-gradient-to-br from-primary-100 to-secondary-100">
           <img
             alt="service cover"
             src={
@@ -168,7 +168,7 @@ export default function ServiceHeader({
                 ? buildAvatarUrl(service.coverImageUrl)!!
                 : "/images/coverImage.png"
             }
-            className="w-full h-full object-cover"
+            className="w-full h-full"
           />
           <div className="absolute inset-0 bg-black bg-opacity-20"></div>
 
