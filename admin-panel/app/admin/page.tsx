@@ -8,6 +8,7 @@ import {
   ArrowDownRight,
   ArrowUpRight,
   Calendar,
+  ChevronDown,
   DollarSign,
   Download,
   Eye,
@@ -22,6 +23,10 @@ import {
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/base/card"
 import {Button} from "@/components/ui/button"
 import {Badge} from "@/components/base/badge"
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
+import {Input} from "@/components/base/input"
+import {Label} from "@/components/base/label"
 import {GetStatsParams, ScopeType} from "@/lib/endpoints/paymentFns";
 import {useGeneralUser} from "@/lib/hooks/useGeneralUsers";
 import {useStats} from "@/hooks/usePayments";
@@ -76,9 +81,94 @@ function FiltersPanel({
   onRefresh: () => void
 }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [monthPopoverOpen, setMonthPopoverOpen] = useState(false)
+  const [rangePopoverOpen, setRangePopoverOpen] = useState(false)
 
   const handleScopeChange = (scope: ScopeType) => {
-    onChange({ ...value, scope })
+    const newParams: GetStatsParams = { ...value, scope }
+    if (scope !== "month") {
+      delete newParams.month
+      delete newParams.year
+    }
+    if (scope !== "range") {
+      delete newParams.start
+      delete newParams.end
+    }
+    onChange(newParams)
+  }
+
+  const handleClearFilters = () => {
+    onChange({
+      scope: ScopeType.LAST_30D,
+      groupBy:"day",
+      topLimit: 5,
+    } as GetStatsParams)
+  }
+
+  const handleMonthChange = (month: number, year: number) => {
+    onChange({ ...value, month, year })
+    setMonthPopoverOpen(false)
+  }
+
+  const handleStartDateChange = (start: string) => {
+    onChange({ ...value, start })
+  }
+
+  const handleEndDateChange = (end: string) => {
+    onChange({ ...value, end })
+  }
+
+  const generateMonthOptions = () => {
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear()
+    const currentMonth = currentDate.getMonth()
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ]
+
+    const options = []
+
+    for (let i = 0; i <= currentMonth; i++) {
+      options.push({ month: i + 1, year: currentYear, label: `${months[i]} ${currentYear}` })
+    }
+
+    for (let i = 0; i < 12; i++) {
+      options.push({ month: i + 1, year: currentYear - 1, label: `${months[i]} ${currentYear - 1}` })
+    }
+
+    return options
+  }
+
+  const getSelectedMonthLabel = () => {
+    if (value.month && value.year) {
+      const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+      return `${months[value.month - 1]} ${value.year}`
+    }
+    return "Select Month"
+  }
+
+  const getSelectedRangeLabel = () => {
+    if (value.start && value.end) {
+      const startDate = new Date(value.start).toLocaleDateString()
+      const endDate = new Date(value.end).toLocaleDateString()
+      return `${startDate} - ${endDate}`
+    } else if (value.start) {
+      return `From ${new Date(value.start).toLocaleDateString()}`
+    } else if (value.end) {
+      return `Until ${new Date(value.end).toLocaleDateString()}`
+    }
+    return "Select Range"
   }
 
   return (
@@ -89,6 +179,15 @@ function FiltersPanel({
         </Button>
 
         <div className="flex items-center gap-2">
+          <Button
+              variant={value.scope === "all" ? "default" : "outline"}
+              size="sm"
+              onClick={() => handleScopeChange(ScopeType.ALL)}
+              className="gap-2"
+          >
+            <Calendar className="h-4 w-4" />
+            All
+          </Button>
           <Button
               variant={value.scope === "last_week" ? "default" : "outline"}
               size="sm"
@@ -107,16 +206,126 @@ function FiltersPanel({
             <Calendar className="h-4 w-4" />
             Last 30 days
           </Button>
-          <Button
-              variant={value.scope === "month" ? "default" : "outline"}
-              size="sm"
-              onClick={() => handleScopeChange(ScopeType.MONTH)}
-              className="gap-2"
-          >
-            <Calendar className="h-4 w-4" />
-            This Month
-          </Button>
+
+          <Popover open={monthPopoverOpen} onOpenChange={setMonthPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                  variant={value.scope === "month" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    if (value.scope !== "month") {
+                      handleScopeChange(ScopeType.MONTH)
+                    }
+                    setMonthPopoverOpen(true)
+                  }}
+                  className="gap-2"
+              >
+                <Calendar className="h-4 w-4" />
+                {value.scope === "month" ? getSelectedMonthLabel() : "Month"}
+                <ChevronDown className="h-3 w-3" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-4">
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Select Month</Label>
+                <Select
+                    value={value.month && value.year ? `${value.month}-${value.year}` : ""}
+                    onValueChange={(val) => {
+                      const [month, year] = val.split("-").map(Number)
+                      handleMonthChange(month, year)
+                    }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Choose a month" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {generateMonthOptions().map((option) => (
+                        <SelectItem key={`${option.month}-${option.year}`} value={`${option.month}-${option.year}`}>
+                          {option.label}
+                        </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          <Popover open={rangePopoverOpen} onOpenChange={setRangePopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                  variant={value.scope === "range" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    if (value.scope !== "range") {
+                      handleScopeChange(ScopeType.RANGE)
+                    }
+                    setRangePopoverOpen(true)
+                  }}
+                  className="gap-2"
+              >
+                <Calendar className="h-4 w-4" />
+                {value.scope === "range" ? getSelectedRangeLabel() : "Range"}
+                <ChevronDown className="h-3 w-3" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-4">
+              <div className="space-y-4">
+                <Label className="text-sm font-medium">Select Date Range</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="start-date" className="text-xs text-muted-foreground">
+                      From
+                    </Label>
+                    <Input
+                        id="start-date"
+                        type="date"
+                        value={value.start ? value.start.split("T")[0] : ""}
+                        onChange={(e) => {
+                          const isoDate = e.target.value ? new Date(e.target.value).toISOString() : ""
+                          handleStartDateChange(isoDate)
+                        }}
+                        className="text-sm"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="end-date" className="text-xs text-muted-foreground">
+                      To
+                    </Label>
+                    <Input
+                        id="end-date"
+                        type="date"
+                        value={value.end ? value.end.split("T")[0] : ""}
+                        onChange={(e) => {
+                          const isoDate = e.target.value ? new Date(e.target.value).toISOString() : ""
+                          handleEndDateChange(isoDate)
+                        }}
+                        className="text-sm"
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end gap-2 pt-2">
+                  <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        onChange({ ...value, start: undefined, end: undefined })
+                      }}
+                  >
+                    Clear
+                  </Button>
+                  <Button size="sm" onClick={() => setRangePopoverOpen(false)} disabled={!value.start && !value.end}>
+                    Apply
+                  </Button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
+
+        <Button variant="outline" size="sm" className="gap-2 bg-transparent" onClick={handleClearFilters}>
+          <RefreshCw className="h-4 w-4" />
+          Clear Filters
+        </Button>
 
         <Button variant="outline" size="sm" className="gap-2 bg-transparent">
           <Download className="h-4 w-4" />
@@ -174,7 +383,7 @@ function TopProviderRow({ item, index }: { item: any; index: number }) {
 
 export default function ModernAdminDashboard() {
   const [params, setParams] = useState<GetStatsParams>({
-    scope: "last_30d",
+    scope: ScopeType.LAST_30D,
     groupBy: "day",
     topLimit: 5,
   } as GetStatsParams)
@@ -254,8 +463,8 @@ export default function ModernAdminDashboard() {
                     <CardTitle className="text-destructive">Unable to load data</CardTitle>
                   </div>
                   <CardDescription>
-                    {typeof error === "string" ? error : "There was an error loading the analytics data."} Please try
-                    refreshing or adjusting your filters.
+                    {(error instanceof Error ? error.message : error ? String(error) : "There was an error loading the analytics data.")}{" "}
+                    Please try refreshing or adjusting your filters.
                   </CardDescription>
                 </CardHeader>
               </Card>
