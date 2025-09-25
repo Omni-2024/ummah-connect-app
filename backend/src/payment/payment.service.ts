@@ -18,12 +18,8 @@ export class PaymentService {
   async createPayment(
     createPaymentDto: CreatePaymentDto,
   ){
-    try {
       const payment = await this.paymentRepo.createPayment(createPaymentDto);
       return { status: HttpStatus.CREATED, data: payment };
-    } catch (error) {
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: error };
-    }
   }
 
   async getPaymentById(
