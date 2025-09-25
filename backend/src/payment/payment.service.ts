@@ -289,7 +289,8 @@ export class PaymentService {
       filters: { scope: q.scope, start, end, groupBy: q.groupBy },
       totals: current.totals,
       growth: {
-        usersPct: pct(previous.totals.uniqueUsers, current.totals.uniqueUsers),
+        usersPct: pct(previous.totals.registeredUsers, current.totals.registeredUsers),
+        providersPct: pct(previous.totals.registeredProviders, current.totals.registeredProviders),
         paymentsPct: pct(previous.totals.paymentsCount, current.totals.paymentsCount),
         revenuePct: pct(previous.totals.revenue, current.totals.revenue),
       },

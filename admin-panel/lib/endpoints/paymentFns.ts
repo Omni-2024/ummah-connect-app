@@ -53,14 +53,15 @@ export interface StatsFilters {
 }
 
 export interface StatsTotals {
-  revenue: number;         // same unit as your PaymentEntity.amount
+  revenue: number;
   paymentsCount: number;
-  uniqueUsers: number;
-  uniqueProviders: number; // for provider scope this will be 1 or 0
+  registeredUsers: number;
+  registeredProviders: number;
 }
 
 export interface StatsGrowth {
   usersPct: number;        // +/- %
+  providersPct: number;        // +/- %
   paymentsPct: number;     // +/- %
   revenuePct: number;      // +/- %
 }

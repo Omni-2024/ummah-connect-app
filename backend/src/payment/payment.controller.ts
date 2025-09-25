@@ -94,9 +94,6 @@ export class PaymentController {
       }
       return this.paymentService.getGlobalPaymentStats(query);
     }
-
-
-
 }
 
 

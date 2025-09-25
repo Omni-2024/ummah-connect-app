@@ -6,6 +6,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaymentEntity } from './payment.entity';
 import { Service } from '../services/entities/service.entity';
+import { UserEntity } from '../users/entities/user.entity';
+import { UserRole } from '../users/entities/abstract.user.entity';
 
 export type AggregateArgs = {
   start: string;
@@ -21,11 +23,11 @@ export type AggregateReturn = {
   totals: {
     revenue: number;
     paymentsCount: number;
-    uniqueUsers: number;
-    uniqueProviders: number;
+    registeredUsers: number;
+    registeredProviders: number;
   };
   topServices: Array<{ serviceId: string; serviceName: string | null; orders: number; revenue: number }>;
-  topProviders: Array<{ providerId: string;  orders: number; revenue: number }>;
+  topProviders: Array<{ providerId: string; orders: number; revenue: number }>;
   series: Array<{ period: string; revenue: number; paymentsCount: number }>;
 };
 
@@ -35,6 +37,8 @@ export class PaymentRepository {
   constructor(
     @InjectRepository(PaymentEntity)
     private readonly paymentRepository: Repository<PaymentEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepo: Repository<UserEntity>,
   ) { }
 
   async getPaymentById(id: string): Promise<any> {
@@ -132,6 +136,7 @@ export class PaymentRepository {
   async aggregateStats(args: AggregateArgs): Promise<AggregateReturn> {
     const { start, end, groupBy, topLimit, scope } = args;
 
+    // base payments query
     const baseQB = this.paymentRepository
       .createQueryBuilder('p')
       .leftJoin(Service, 's', 's.id = p.service_id')
@@ -143,20 +148,36 @@ export class PaymentRepository {
       baseQB.andWhere('s.providerId = :providerId', { providerId: scope.providerId });
     }
 
-    const totalsRaw = await baseQB.clone()
+    // payments-based totals (revenue, orders)
+    const payTotals = await baseQB.clone()
       .select('COALESCE(SUM(p.amount), 0)', 'revenue')
       .addSelect('COUNT(*)', 'paymentsCount')
-      .addSelect('COUNT(DISTINCT p.user_id)', 'uniqueUsers')
-      .addSelect('COUNT(DISTINCT s.providerId)', 'uniqueProviders')
-      .getRawOne();
+      .getRawOne<{ revenue: string | number; paymentsCount: string | number }>();
+
+    // registrations (ONLY thing we report for users/providers)
+    const [registeredUsers, registeredProviders] = await Promise.all([
+      this.userRepo
+        .createQueryBuilder('u')
+        .where('u.role = :role', { role: UserRole.USER })
+        .andWhere('u.created_at >= :start', { start })
+        .andWhere('u.created_at < :end', { end })
+        .getCount(),
+      this.userRepo
+        .createQueryBuilder('u')
+        .where('u.role = :role', { role: UserRole.BUSINESS_ADMIN })
+        .andWhere('u.created_at >= :start', { start })
+        .andWhere('u.created_at < :end', { end })
+        .getCount(),
+    ]);
 
     const totals = {
-      revenue: Number(totalsRaw?.revenue ?? 0),
-      paymentsCount: Number(totalsRaw?.paymentsCount ?? 0),
-      uniqueUsers: Number(totalsRaw?.uniqueUsers ?? 0),
-      uniqueProviders: Number(totalsRaw?.uniqueProviders ?? 0),
+      revenue: Number(payTotals?.revenue ?? 0),
+      paymentsCount: Number(payTotals?.paymentsCount ?? 0),
+      registeredUsers,
+      registeredProviders,
     };
 
+    // top services
     const topServicesRaw = await baseQB.clone()
       .select('p.service_id', 'serviceId')
       .addSelect('MAX(p.serviceName)', 'serviceName')
@@ -168,17 +189,16 @@ export class PaymentRepository {
       .limit(topLimit)
       .getRawMany();
 
-    const topServices = topServicesRaw.map(r => ({
-      serviceId: r.serviceId,
-      serviceName: r.serviceName,
+    const topServices = topServicesRaw.map((r: any) => ({
+      serviceId: r.serviceId as string,
+      serviceName: (r.serviceName as string) ?? null,
       orders: Number(r.orders),
       revenue: Number(r.revenue),
     }));
 
-    // -------- top providers --------
+    // top providers
     const topProvidersRaw = await baseQB.clone()
       .select('s.providerId', 'providerId')
-      // .addSelect('MAX(s.providerName)', 'providerName') // adjust if column differs
       .addSelect('COUNT(*)', 'orders')
       .addSelect('COALESCE(SUM(p.amount), 0)', 'revenue')
       .where('s.providerId IS NOT NULL')
@@ -188,14 +208,13 @@ export class PaymentRepository {
       .limit(topLimit)
       .getRawMany();
 
-    const topProviders = topProvidersRaw.map(r => ({
-      providerId: r.providerId,
-      // providerName: r.providerName,
+    const topProviders = topProvidersRaw.map((r: any) => ({
+      providerId: r.providerId as string,
       orders: Number(r.orders),
       revenue: Number(r.revenue),
     }));
 
-    // -------- time series --------
+    // time series
     let series: Array<{ period: string; revenue: number; paymentsCount: number }> = [];
     if (groupBy !== 'none') {
       const trunc = groupBy === 'day' ? 'day' : groupBy === 'week' ? 'week' : 'month';
@@ -207,7 +226,7 @@ export class PaymentRepository {
         .orderBy('period', 'ASC')
         .getRawMany();
 
-      series = seriesRaw.map(r => ({
+      series = seriesRaw.map((r: any) => ({
         period: (r.period as Date).toISOString().slice(0, 10),
         revenue: Number(r.revenue),
         paymentsCount: Number(r.paymentsCount),
@@ -216,7 +235,6 @@ export class PaymentRepository {
 
     return { totals, topServices, topProviders, series };
   }
-
 
 }
 
