@@ -59,7 +59,7 @@ export default function ReviewCarousel({ apiReviews }: { apiReviews?: Review[] }
     if (!top4.length) return null;
 
     return (
-        <div className="relative w-full my-16 ">
+        <div className="hidden sm:block w-full my-16 md:relative">
             <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl text-dark-450 font-semibold">What people loved about this service</h2>
                 <h2>See all reviews</h2>
