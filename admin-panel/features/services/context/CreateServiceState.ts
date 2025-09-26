@@ -141,6 +141,8 @@ export const resetCreateServiceStateFull = () => {
     discount: 0,
     discountOn: false,
   };
+  createServiceState.faqId=null;
+  createServiceState.faqData=[]
 
   // reset IDs
   createServiceState.serviceId = "";
