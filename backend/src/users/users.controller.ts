@@ -45,7 +45,8 @@ export class UsersController {
   }
 
   // TODO: Should get user id from AuthGuard
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
+  // @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
+  @Public()
   @Get('/:id')
   async getUser(@Param('id') id: string) {
     return await this.userService.getUser(id);
