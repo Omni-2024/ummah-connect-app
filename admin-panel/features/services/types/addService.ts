@@ -10,6 +10,7 @@ export type ServiceDetailsPageData = {
   coverImage: string;
   previewDescription: string;
   learningPoints: string[];
+  whyMe: string[];
   pricing: number;
   discount: number;
   discountOn: boolean;
@@ -56,6 +57,7 @@ export interface ServiceDetailsAPI {
   discountEnabled: boolean;
   duration: number;
   learningPoints: string[];
+  whyMe: string[];
   specialty: {
     id: string;
     createdAt: string;

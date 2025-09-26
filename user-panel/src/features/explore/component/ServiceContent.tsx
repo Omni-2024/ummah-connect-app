@@ -5,16 +5,10 @@ import Button from "@/components/base/Button";
 import Badge from "@/components/base/Badge";
 import { 
   StarFilledIcon, 
-  PersonIcon, 
-  GlobeIcon, 
-  CheckCircledIcon,
-  ArrowRightIcon,
-  EnvelopeClosedIcon
+  GlobeIcon,
 } from "@radix-ui/react-icons";
-import { buildAvatarUrl } from "@/features/app/components/Navbar";
 import { useChat } from "@/components/getStream/chat/ChatContextProvider";
-import { MessageCircle } from "iconsax-react";
-import StudentCountLabel from "@/components/widgets/StudentCountLabel";
+
 
 interface ServiceContentProps {
   service: any;
@@ -65,14 +59,13 @@ export default function ServiceContent({ service, educator ,   providerId,
         </p>
       </Card>
 
-      {/* Learning Points */}
-      {service.learningPoints && service.learningPoints.length > 0 && (
+      {service.whyMe && service.whyMe.length > 0 && (
         <Card className="p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            What You'll Learn
+            What Me?
           </h2>
           <div className="space-y-3">
-            {service.learningPoints.map((point: string, index: number) => (
+            {service.whyMe.map((point: string, index: number) => (
               <div
                 key={index}
                 className="flex items-start gap-3"

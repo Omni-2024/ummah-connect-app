@@ -55,6 +55,7 @@ export interface Service {
   specialtyId: string;
   professionId: string;
   learningPoints: string[];
+  whyMe: string[];
   discount: number;
   discountEnabled: boolean;
   duration: number;
@@ -90,6 +91,7 @@ export interface CreateServiceFnArgs {
   specialtyId?: string | null;
   professionId: string;
   learningPoints: string[];
+  whyMe: string[];
   discount: number;
   discountEnabled: boolean;
 }
@@ -120,6 +122,7 @@ export interface UpdateServiceFnArgs {
   specialtyId?: string | null;
   professionId?: string | null;
   learningPoints?: string[];
+  whyMe?: string[];
   discount?: number;
   discountEnabled?: boolean;
   duration?: number;
@@ -138,6 +141,7 @@ type GetAllServicesData = {
     coverImage: string;
     previewDescription: string;
     learningPoints: string[];
+    whyMe: string[];
     pricing: number;
     discount: number;
     discountOn: boolean;
@@ -167,6 +171,7 @@ export const getServiceFullDataFn = async (
     coverImage: serviceDetails.data.coverImageUrl,
     previewDescription: serviceDetails.data.tagline,
     learningPoints: serviceDetails.data.learningPoints,
+    whyMe: serviceDetails.data.whyMe,
     pricing: serviceDetails.data.price,
     discount: serviceDetails.data.discount,
     discountOn: serviceDetails.data.discountEnabled,

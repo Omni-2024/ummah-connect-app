@@ -33,6 +33,7 @@ export class ServiceDetailService {
           providerId,
           id,
           learningPoints,
+          whyMe,
           price,
           professionId,
           tagline,
@@ -66,6 +67,7 @@ export class ServiceDetailService {
           discountEnabled,
           duration,
           learningPoints,
+          whyMe,
           enrollmentCount,
           slug,
           isArchived
@@ -116,6 +118,7 @@ export class ServiceDetailService {
           providerId,
           id,
           learningPoints,
+          whyMe,
           price,
           professionId,
           tagline,
@@ -149,6 +152,7 @@ export class ServiceDetailService {
           discountEnabled,
           duration,
           learningPoints,
+          whyMe,
           enrollmentCount,
           slug,
           isArchived

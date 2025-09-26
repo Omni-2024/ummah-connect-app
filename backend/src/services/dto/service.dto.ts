@@ -45,6 +45,9 @@ export class CreateServiceDto {
   @IsArray()
   learningPoints: string[];
 
+  @IsArray()
+  whyMe: string[];
+
 
   @IsNumber()
   discount: number;
@@ -182,8 +185,10 @@ export class ServiceDetailDto {
   learningPoints: string[];
 
   @IsOptional()
-  provider: ProviderDto;
+  whyMe: string[];
 
+  @IsOptional()
+  provider: ProviderDto;
 
   price: number;
 

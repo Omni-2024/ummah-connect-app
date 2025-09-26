@@ -104,6 +104,29 @@ export default function ServiceSidebar({
               <p className="text-sm text-gray-600">One-time payment</p>
             </div>
 
+            {service.learningPoints && service.learningPoints.length > 0 && (
+                <Card className="p-0 mb-4 border-0 ">
+                  <h2 className="text-lg font-semibold text-dark-450  mb-4">
+                    Learning points
+                  </h2>
+                  <div className="space-y-3">
+                    {service.learningPoints.map((point: string, index: number) => (
+                        <div
+                            key={index}
+                            className="flex items-start gap-3"
+                        >
+                          <div className="size-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <span className="text-green-600 text-xs font-medium">
+                    ✓
+                  </span>
+                          </div>
+                          <span className="text-gray-700 text-sm">{point}</span>
+                        </div>
+                    ))}
+                  </div>
+                </Card>
+            )}
+
             {/* Enrollment Button */}
             <Button onClick={onEnroll} className="w-full mb-4">
               Enroll Now

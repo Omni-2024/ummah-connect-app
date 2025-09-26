@@ -50,6 +50,10 @@ export abstract class AbstractServiceEntity extends AbstractBaseEntity {
   @MinLength(1, { each: true })
   learningPoints: string[];
 
+  @IsOptional()
+  @MinLength(1, { each: true })
+  whyMe: string[];
+
   @IsNumber()
   discount: number;
 

@@ -30,6 +30,7 @@ interface FormValues {
   previewDescription: string;
   coverImage: string;
   learningPoints: string[];
+  whyMe: string[];
   pricing: number;
   discount: number;
   discountOn: boolean;
@@ -61,6 +62,8 @@ export function StepTwo() {
     await updateCreateServiceState("serviceDetailsData", {
       ...values,
       learningPoints: values.learningPoints.filter((point) => point !== ""),
+      whyMe: values.whyMe.filter((point) => point !== ""),
+
     });
   };
 
@@ -74,6 +77,7 @@ export function StepTwo() {
     specialtyId: serviceCategoryDataState.specialist,
     professionId: serviceCategoryDataState.profession,
     learningPoints: values.learningPoints.filter((point) => point !== ""),
+    whyMe: values.whyMe.filter((point) => point !== ""),
     discount: values.discount,
     discountEnabled: values.discountOn,
   });
@@ -132,6 +136,9 @@ export function StepTwo() {
       coverImage: serviceDetailsDataState.coverImage,
       learningPoints: Array.from({ length: 6 }).map(
           (_, index) => serviceDetailsDataState.learningPoints[index] || ""
+      ),
+      whyMe: Array.from({ length: 6 }).map(
+          (_, index) => serviceDetailsDataState.whyMe?.[index] || ""
       ),
       pricing: serviceDetailsDataState.pricing,
       discount: serviceDetailsDataState.discount,
@@ -292,6 +299,37 @@ export function StepTwo() {
                         Array.isArray(formik.errors.learningPoints)
                             ? formik.errors.learningPoints[index]
                             : formik.errors.learningPoints
+                      }
+                  />
+                </div>
+            ))}
+          </div>
+
+          {/* Why me */}
+          <div>
+            <LabelTooltip {...inputTitles.whyMe}>
+              <InputTooltipCard {...inputTitles.whyMe} />
+            </LabelTooltip>
+            <div className="text-dark-300 text-[13px] font-normal">
+              Please note that you can add up to six why me? points.
+            </div>
+          </div>
+          <div className="flex flex-col gap-4 w-full">
+            {formik.values.whyMe.map((point, index) => (
+                <div key={index} className="flex items-center gap-4 w-full">
+                  <div className="text-white font-medium flex justify-center items-center bg-primary-500 rounded-full h-8 w-8 shrink-0">
+                    {index + 1}
+                  </div>
+                  <Input
+                      {...inputTitles.whyMe}
+                      placeholder="Highlight your unique value (e.g., Experienced tutor, Flexible schedule)"
+                      value={point}
+                      name={`whyMe[${index}]`}
+                      onChange={formik.handleChange}
+                      error={
+                        Array.isArray(formik.errors.whyMe)
+                            ? formik.errors.whyMe[index]
+                            : formik.errors.whyMe
                       }
                   />
                 </div>

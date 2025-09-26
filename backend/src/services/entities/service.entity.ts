@@ -87,6 +87,9 @@ export class Service extends BaseEntity implements AbstractServiceEntity {
   @Column({ name: 'learning_points', type: 'jsonb' })
   learningPoints: string[];
 
+  @Column({ name: 'why_me', type: 'jsonb',nullable:true })
+  whyMe: string[];
+
   @Column({ default: 0, type: 'float' })
   discount: number;
 

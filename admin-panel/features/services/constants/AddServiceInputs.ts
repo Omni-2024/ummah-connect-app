@@ -35,6 +35,13 @@ export const ADD_SERVICE_INPUTS = {
     title: "Specify Learning Points",
     desc: " List the key learning objectives. You can add up to six points.",
   },
+  whyMe: {
+    name: "whyMe",
+    label: "Why Me?",
+    placeholder: "Highlight your unique value (e.g., Experienced tutor, Flexible schedule)",
+    title: "Why should users choose you?",
+    desc: "Showcase what makes you different. You can add up to six points.",
+  },
   pricing: {
     name: "pricing",
     label: "Pricing",

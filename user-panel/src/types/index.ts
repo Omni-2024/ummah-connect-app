@@ -19,6 +19,7 @@ export interface Service {
   typeId: string;
   professionId: string;
   learningPoints: string[];
+  whyMe: string[];
   discount: number;
   discountEnabled: boolean;
   duration: number;
