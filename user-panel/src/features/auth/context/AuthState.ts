@@ -23,8 +23,22 @@ const initialState: AuthState = {
   isHydrated: false,
 }
 
-const savedState = typeof window !== "undefined" && localStorage.getItem("authState")
-const parsedState = savedState ? { ...JSON.parse(savedState), isHydrated: false } : initialState
+const savedState =
+    typeof window !== "undefined" && localStorage.getItem("authState");
+
+let parsedState = initialState;
+
+if (savedState) {
+  const parsed = JSON.parse(savedState);
+  if (parsed.refreshToken.trim() !== "") {
+    parsedState = { ...parsed, isHydrated: false };
+  } else {
+    // fallback if refreshToken is empty
+    parsedState = initialState;
+  }
+} else {
+  parsedState = initialState;
+}
 
 export const authState = proxy<AuthState>(parsedState)
 
@@ -40,13 +54,15 @@ export function hydrateAuthFromStorage() {
     const raw = localStorage.getItem("authState");
     if (raw) {
       const parsed = JSON.parse(raw);
-      authState.isAuthenticated      = !!parsed.isAuthenticated;
-      authState.accessToken          = parsed.accessToken ?? "";
-      authState.refreshToken         = parsed.refreshToken ?? "";
-      authState.role                 = parsed.role ?? UserRole.NONE;
-      authState.id                   = parsed.id ?? "";
-      authState.isFirstLogin         = !!parsed.isFirstLogin;
-      authState.onboardingCompleted  = !!parsed.onboardingCompleted;
+      if (parsed.refreshToken.trim()!=""){
+        authState.isAuthenticated      = !!parsed.isAuthenticated;
+        authState.accessToken          = parsed.accessToken ?? "";
+        authState.refreshToken         = parsed.refreshToken ?? "";
+        authState.role                 = parsed.role ?? UserRole.NONE;
+        authState.id                   = parsed.id ?? "";
+        authState.isFirstLogin         = !!parsed.isFirstLogin;
+        authState.onboardingCompleted  = !!parsed.onboardingCompleted;
+      }
     }
   } finally {
     authState.isHydrated = true;
