@@ -95,7 +95,10 @@ export default function AdminLoginPage() {
   }
 
   return (
-     <div className="min-h-screen flex items-center justify-center bg-background px-4">
+     <div className="min-h-screen flex items-center justify-center bg-background px-4"
+          style={{
+            backgroundImage: "url('/images/pattern.jpg')",
+          }}>
       <div className="w-full max-w-2xl">
         <Card
           className="w-full p-10 border-none rounded-2xl"
