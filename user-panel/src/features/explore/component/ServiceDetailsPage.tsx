@@ -32,6 +32,7 @@ import ShareServiceModal from "@/features/explore/component/ShareServiceModal";
 import {setServiceId, setShowServiceShareModal} from "@/features/app/context/AppState";
 import ReviewCarousel from "@/components/widgets/ReviewCarousel";
 import { useReviewByService} from "@/lib/hooks/useReview";
+import Footer from "@/features/app/components/Footer";
 
 export default function ServiceDetailsPage() {
   const router = useRouter();
@@ -253,6 +254,7 @@ export default function ServiceDetailsPage() {
 
 
       <Bottombar />
+      <Footer />
     </div>
   );
 }

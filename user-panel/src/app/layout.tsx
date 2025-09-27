@@ -26,7 +26,7 @@ export default function RootLayout({
           {children}
         </main>
         <ChatWidgetWrapper />
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </Providers>
   </body>

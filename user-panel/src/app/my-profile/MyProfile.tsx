@@ -13,6 +13,7 @@ import { UserRole } from "@/lib/constants"
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import { IconButton } from "@radix-ui/themes"
 import { useRouter } from "next/navigation"
+import Footer from "@/features/app/components/Footer"
 
 const MyProfile = () => {
   const { data: user, isFetched, isLoading: userLoading, refetch } = useCurrentUser()
@@ -72,6 +73,7 @@ const MyProfile = () => {
       {/* Mobile Bottom Spacing */}
       <div className="h-10 sm:hidden bg-white"></div>
       <Bottombar />
+      <Footer/>
     </div>
   )
 }

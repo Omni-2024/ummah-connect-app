@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { useMutation } from "@tanstack/react-query"
 import { CheckCircledIcon, CrossCircledIcon, ArrowLeftIcon } from "@radix-ui/react-icons"
 import { verifyEmailFn } from "@/lib/endpoints/authenticationFns"
+import Footer from "@/features/app/components/Footer"
 
 export default function VerifyEmailPage() {
   const router = useRouter()
@@ -130,6 +131,7 @@ const {
           </div>
         </div>
       </main>
+      <Footer/>
     </div>
   )
 }
