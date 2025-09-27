@@ -5,6 +5,9 @@ import {
   Filter,
   RefreshCw,
   Calendar,
+  Timer,
+  History,
+  Infinity,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -97,15 +100,15 @@ export function FiltersPanel({
     <Popover open={filterOpen} onOpenChange={setFilterOpen}>
       <PopoverTrigger asChild>
         <div className="flex justify-end w-full">
-            <Button
+          <Button
             size="sm"
             variant="outline"
             className="flex items-center gap-2 rounded-md"
-            >
+          >
             <Filter className="h-4 w-4" /> Filters
-            </Button>
+          </Button>
         </div>
-        </PopoverTrigger>
+      </PopoverTrigger>
 
       <PopoverContent
         side="bottom"
@@ -124,51 +127,65 @@ export function FiltersPanel({
         {/* Quick Filters */}
         <div className="space-y-2">
           <span className="text-xs font-medium text-gray-500">Quick Filters</span>
-          <div className="grid grid-cols-2 gap-2">
-            {[{ scope: ScopeType.ALL, label: "All Time", desc: "Show all payments" }, 
-              { scope: ScopeType.LAST_WEEK, label: "Last 7 Days", desc: "Recent activity" }, 
-              { scope: ScopeType.LAST_30D, label: "Last 30 Days", desc: "This month's data" }].map((btn) => (
-              <Button
-                key={btn.scope}
-                size="sm"
-                onClick={() => handleScopeChange(btn.scope)}
-                className={`flex flex-col items-start p-6 rounded-lg text-left ${
-                  value.scope === btn.scope ? "bg-gray-200" : "bg-gray-50 border" 
-                }`}
-              >
-                <span className="font-medium text-sm">{btn.label}</span>
-                <span className="text-xs text-gray-400">{btn.desc}</span>
-              </Button>
-            ))}
+          <div className="grid grid-cols-2 gap-4">
+            {[{ scope: ScopeType.ALL, label: "All Time", desc: "Show all payments", icon: Infinity }, 
+              { scope: ScopeType.LAST_WEEK, label: "Last 7 Days", desc: "Recent activity", icon: Timer }, 
+              { scope: ScopeType.LAST_30D, label: "Last 30 Days", desc: "This month's data", icon: History }].map((btn) => {
+              const Icon = btn.icon
+              return (
+                <Button
+                  key={btn.scope}
+                  size="sm"
+                  onClick={() => handleScopeChange(btn.scope)}
+                  className={`flex flex-col items-start p-6 rounded-lg text-left ${
+                    value.scope === btn.scope ? "bg-primary-500 text-white" : "bg-primary-50 border"
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <Icon className={`h-4 w-4 ${value.scope === btn.scope ? "text-white" : "text-gray-500"}`} />
+                    <span className="font-medium text-sm">{btn.label}</span>
+                  </div>
+                  <span
+                    className={`text-xs ${
+                      value.scope === btn.scope ? "text-white" : "text-gray-400"
+                    }`}
+                  >
+                    {btn.desc}
+                  </span>
+                </Button>
+              )
+            })}
 
             {/* Month Dropdown */}
-                <Select
-                onValueChange={(val) => {
-                    const [m, y] = val.split("-").map(Number)
-                    handleMonthChange(m, y)
-                }}
-                value={
-                    value.scope === ScopeType.MONTH && value.month && value.year
-                    ? `${value.month}-${value.year}`
-                    : ""
-                }
-                >
-                <SelectTrigger className="w-full justify-between px-3 py-6 rounded-lg text-left bg-white border">
-                    <SelectValue placeholder="Pick a month" />
-                </SelectTrigger>
-                <SelectContent className="bg-white border rounded-md shadow-md">
-                    {generateMonthOptions().map((opt) => (
-                    <SelectItem
-                        key={`${opt.month}-${opt.year}`}
-                        value={`${opt.month}-${opt.year}`}
-                        className="bg-white hover:bg-gray-100 cursor-pointer"
-                    >
-                        {opt.label}
-                    </SelectItem>
-                    ))}
-                </SelectContent>
-                </Select>
-
+            <Select
+              onValueChange={(val) => {
+                const [m, y] = val.split("-").map(Number)
+                handleMonthChange(m, y)
+              }}
+              value={
+                value.scope === ScopeType.MONTH && value.month && value.year
+                  ? `${value.month}-${value.year}`
+                  : ""
+              }
+            >
+              <SelectTrigger className="w-full justify-between px-4 py-6 rounded-lg text-left bg-white border">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-gray-500" />
+                  <SelectValue placeholder="Pick a month"/>
+                </div>
+              </SelectTrigger>
+              <SelectContent className="bg-white border rounded-md shadow-md">
+                {generateMonthOptions().map((opt) => (
+                  <SelectItem
+                    key={`${opt.month}-${opt.year}`}
+                    value={`${opt.month}-${opt.year}`}
+                    className="bg-white hover:bg-gray-100 cursor-pointer"
+                  >
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -187,8 +204,10 @@ export function FiltersPanel({
                   value.scope === "range" ? "bg-gray-200" : "bg-gray-50 border"
                 }`}
               >
-                <span>{getSelectedRangeLabel()}</span>
-                <Calendar className="h-4 w-4" />
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-gray-500" />
+                  <span>{getSelectedRangeLabel()}</span>
+                </div>
               </Button>
             </PopoverTrigger>
 
@@ -234,4 +253,3 @@ export function FiltersPanel({
     </Popover>
   )
 }
-
