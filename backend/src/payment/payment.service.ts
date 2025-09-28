@@ -8,6 +8,7 @@ import {
   PaymentStatsQueryDto,
   ScopeType,
 } from './dto/payment-stats.dto';
+import { UpsertPaymentDto } from './dto/payment.dto';
 
 
 
@@ -177,7 +178,7 @@ export class PaymentService {
   // }
 
   async upsertPayment(
-    updatePaymentDto: UpdatePaymentDto,
+    updatePaymentDto: UpsertPaymentDto,
   ) {
     try {
       const updatedPayment = await this.paymentRepo.upsertPayment(updatePaymentDto);

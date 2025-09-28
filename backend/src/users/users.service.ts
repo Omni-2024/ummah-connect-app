@@ -193,6 +193,30 @@ export class UsersService {
 
 }
 
+  async updateCustomerId(
+    id: string,
+    stripeCustomerId: string,
+  ) {
+    try {
+      const user = await this.userRepo.updateCustomerId(id, stripeCustomerId);
+
+      if (!user) {
+        return {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User not found',
+        };
+      }
+      return {
+        status: HttpStatus.OK,
+      };
+    } catch (error) {
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: error.message,
+      };
+    }
+  }
+
 
 
 }

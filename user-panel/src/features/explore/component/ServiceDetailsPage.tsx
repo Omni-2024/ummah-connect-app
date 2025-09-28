@@ -1,5 +1,5 @@
 "use client";
-import { useRouter, useParams } from "next/navigation";
+import {useRouter, useParams, usePathname, useSearchParams} from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useGeneralUser } from "@/lib/hooks/useUser";
 import { useServiceBySlug } from "@/lib/hooks/useServices";
@@ -32,10 +32,14 @@ import ShareServiceModal from "@/features/explore/component/ShareServiceModal";
 import {setServiceId, setShowServiceShareModal} from "@/features/app/context/AppState";
 import ReviewCarousel from "@/components/widgets/ReviewCarousel";
 import { useReviewByService} from "@/lib/hooks/useReview";
+import {createLoginUrl} from "@/lib/helpers/urls";
+import {useAuthState} from "@/features/auth/context/useAuthState";
 
 export default function ServiceDetailsPage() {
-  const router = useRouter();
   const params = useParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const slug = params?.slug as string;
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -53,6 +57,8 @@ export default function ServiceDetailsPage() {
   const { data: educator,isLoading:educatorLoading } = useGeneralUser(service?.serviceDetails?.data.provider.id ?? undefined);
 
   const serviceId  = service?.serviceDetails?.data?.id;
+
+  const {isAuthenticated}=useAuthState()
 
 
   const {
@@ -99,6 +105,11 @@ export default function ServiceDetailsPage() {
     if (service) {
       console.log("Enrolling in service:", service.serviceDetails.data.id);
     }
+    if (!isAuthenticated) {
+      handleAuthRedirect("purchase");
+    }
+
+    router.push(`/checkout/service/${service?.serviceDetails.data.id}`);
   };
 
   useEffect(() => {
@@ -115,6 +126,12 @@ export default function ServiceDetailsPage() {
   const handleShareService = () => {
     setShowServiceShareModal(true)
   };
+
+  const handleAuthRedirect = (action: "enroll" | "purchase") => {
+    const currentPath = pathname + (searchParams.toString() ? `?${searchParams.toString()}` : '');
+    router.push(createLoginUrl(currentPath, action));
+  };
+
 
   const handleContact = () => {
     // Add your contact/chat functionality here

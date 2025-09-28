@@ -243,6 +243,22 @@ export class UserRepository {
       throw error;
     }
   }
+
+  async updateCustomerId(
+    id: string,
+    stripeCustomerId: string,
+  ): Promise<UserEntity> {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      user.stripeCustomerId = stripeCustomerId;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 interface FindOptions {

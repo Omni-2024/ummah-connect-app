@@ -62,7 +62,7 @@ export default function ServiceContent({ service, educator ,   providerId,
       {service.whyMe && service.whyMe.length > 0 && (
         <Card className="p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            What Me?
+            Why Me?
           </h2>
           <div className="space-y-3">
             {service.whyMe.map((point: string, index: number) => (
