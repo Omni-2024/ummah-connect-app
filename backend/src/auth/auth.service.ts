@@ -25,6 +25,8 @@ import { GoogleService } from './social/google.service';
 import { ChangePasswordDto } from '../users/dto/change-password.dto';
 import { ResetPasswordDto } from '../users/dto/reset-password.dto';
 import { SetPasswordDto } from '../users/dto/set-password.dto';
+import { CreateCustomerDto } from '../common/stripe/dto/strip.dto';
+import { StripeService } from '../common/stripe/stripe.service';
 
 type AtCfg = { atSecret: string; atExpires: string };
 type RtCfg = { rtSecret: string; rtExpires: string };
@@ -45,6 +47,7 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly streamService: StreamService,
     private readonly googleService: GoogleService,
+    private readonly stripeService:StripeService
 
 
   ) {
@@ -95,13 +98,12 @@ export class AuthService {
         link
       })
 
-      // const customer: CreateCustomerDto = {
-      //   userId: newUser.id,
-      //   email: newUser.email,
-      //   name: newUser.name,
-      // };
-      //
-      // await this.stripeService.createCustomer(customer);
+      const customer: CreateCustomerDto = {
+        userId: newUser.id,
+        email: newUser.email,
+        name: newUser.name,
+      };
+      await this.stripeService.createCustomer(customer);
 
       return { status: HttpStatus.CREATED };
   }

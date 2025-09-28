@@ -10,6 +10,7 @@ import { UserPayloadService } from './user.payload.service';
 import { EmailModule } from '../common/email/email.module';
 import { StreamModule } from '../common/getStream/stream.module';
 import { SocialModule } from './social/social.module';
+import { StripeModule } from '../common/stripe/stripe.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SocialModule } from './social/social.module';
     JwtModule.register({}),
     EmailModule,
     StreamModule,
+    StripeModule,
     forwardRef(() => SocialModule)
   ],
   providers: [
