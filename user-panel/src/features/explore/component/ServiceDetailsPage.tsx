@@ -45,7 +45,6 @@ export default function ServiceDetailsPage() {
   const [pageOffset, setPageOffset] = useState(0);
   const [starFilter, setStarFilter] = useState<number>(0);
 
-
   const {
     data: service,
     isLoading,
@@ -55,7 +54,6 @@ export default function ServiceDetailsPage() {
 
   const serviceId  = service?.serviceDetails?.data?.id;
 
-
   const {
     data: reviews,
     isLoading: reviewLoading,
@@ -64,19 +62,15 @@ export default function ServiceDetailsPage() {
       { serviceId: serviceId!, stars: starFilter, limit: pageLimit, offset: pageOffset },
   );
 
-
   // Scroll detection effect
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
-      // You can adjust this threshold value as needed
       const scrollThreshold = 100;
       setIsScrolled(scrollPosition > scrollThreshold);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    
-    // Check initial scroll position
     handleScroll();
 
     return () => {
@@ -108,7 +102,6 @@ export default function ServiceDetailsPage() {
     }
   }, [service]);
 
-
   const handleBookmark = () => {
     setIsBookmarked(!isBookmarked);
   };
@@ -118,24 +111,18 @@ export default function ServiceDetailsPage() {
   };
 
   const handleContact = () => {
-    // Add your contact/chat functionality here
     console.log("Opening contact/chat with provider:", service?.serviceDetails?.data.provider.id);
-    // For example, you might want to:
-    // - Open a chat modal
-    // - Navigate to a chat page
-    // - Show a contact form
-    // - etc.
   };
 
-  if (isLoading || educatorLoading ||reviewLoading) {
+  if (isLoading || educatorLoading || reviewLoading) {
     return (
-      <div className="min-h-screen w-full bg-white pb-16 lg:pb-0">
+      <div className="min-h-screen w-full bg-gray-50 pb-16 lg:pb-0">
         <Navbar />
         <NavbarMobile
-          className="px-4"
+          className="px-4 bg-white border-b border-gray-100"
           left={
             <div className="flex items-center gap-3">
-              <IconButton onClick={handleBack}>
+              <IconButton onClick={handleBack} className="hover:bg-gray-100">
                 <ArrowLeftIcon className="size-5" />
               </IconButton>
               <NavbarTitle title="Loading..." size="md" />
@@ -150,13 +137,13 @@ export default function ServiceDetailsPage() {
 
   if (error || !service || !educator || !reviews) {
     return (
-      <div className="min-h-screen w-full bg-white pb-16 lg:pb-0">
+      <div className="min-h-screen w-full bg-gray-50 pb-16 lg:pb-0">
         <Navbar />
         <NavbarMobile
-          className="px-4"
+          className="px-4 bg-white border-b border-gray-100"
           left={
             <div className="flex items-center gap-3">
-              <IconButton onClick={handleBack}>
+              <IconButton onClick={handleBack} className="hover:bg-gray-100">
                 <ArrowLeftIcon className="size-5" />
               </IconButton>
               <NavbarTitle title="Error" size="md" />
@@ -164,14 +151,17 @@ export default function ServiceDetailsPage() {
           }
         />
         <div className="container px-4 py-8">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="text-center bg-white rounded-xl p-8 shadow-sm">
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-2xl text-gray-400">!</span>
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
               Service Not Found
             </h2>
             <p className="text-gray-600 mb-6">
               The service you're looking for doesn't exist or has been removed.
             </p>
-            <Button onClick={() => router.push("/explore")}>
+            <Button onClick={() => router.push("/explore")} className="px-6">
               Explore Services
             </Button>
           </div>
@@ -186,13 +176,13 @@ export default function ServiceDetailsPage() {
     : service.serviceDetails.data.price;
 
   return (
-    <div className="min-h-screen w-full bg-white pb-16 lg:pb-0">
+    <div className="min-h-screen w-full bg-gray-50 pb-20 lg:pb-0">
       <Navbar />
       <NavbarMobile
-        className="px-4"
+        className="px-4 bg-white border-b border-gray-100 sticky top-0 z-40"
         left={
           <div className="flex items-center gap-3">
-            <IconButton onClick={handleBack}>
+            <IconButton onClick={handleBack} className="hover:bg-gray-100 transition-colors">
               <ArrowLeftIcon className="size-5" />
             </IconButton>
             <NavbarTitle title="Service" size="md" />
@@ -200,59 +190,128 @@ export default function ServiceDetailsPage() {
         }
         right={
           <div className="flex items-center gap-2">
-            <IconButton onClick={handleBookmark}>
+            <IconButton 
+              onClick={handleBookmark}
+              className="hover:bg-gray-100 transition-colors"
+            >
               <BookmarkIcon
                 className={`size-5 ${
                   isBookmarked ? "fill-primary-500 text-primary-500" : ""
                 }`}
               />
             </IconButton>
-            <IconButton onClick={handleShareService}>
+            <IconButton 
+              onClick={handleShareService}
+              className="hover:bg-gray-100 transition-colors"
+            >
               <Share1Icon className="size-5" />
             </IconButton>
           </div>
         }
       />
 
-      <div className="container py-4 lg:px-20 lg:py-10">
+      <div className="lg:container lg:py-10 lg:px-20">
         <div className="lg:grid lg:grid-cols-3 lg:gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <ServiceHeader
-              service={service.serviceDetails.data}
-              educator={educator}
-              discountedPrice={discountedPrice}
-              onEnroll={handleEnroll}
-              formatReadableHours={formatReadableHours}
-              onContact={handleContact}
+            {/* ServiceHeader - Contains title, educator info, image, and contact functionality */}
+            <div className="bg-white lg:bg-transparent px-4 lg:px-0">
+              <ServiceHeader
+                service={service.serviceDetails.data}
+                educator={educator}
+                discountedPrice={discountedPrice}
+                onEnroll={handleEnroll}
+                formatReadableHours={formatReadableHours}
+                onContact={handleContact}
+                providerId={service.serviceDetails.data.provider.id}
+              />
+            </div>
 
-            />
+            {/* Mobile content with proper spacing */}
+            <div className="px-4 lg:px-0 mt-4 space-y-4">
+              {/* Learning Points Section - Mobile Only (since desktop has it in sidebar) */}
+              {service.serviceDetails.data.learningPoints && service.serviceDetails.data.learningPoints.length > 0 && (
+                <Card className="lg:hidden p-4 bg-white">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Learning Points
+                  </h2>
+                  <div className="space-y-3">
+                    {service.serviceDetails.data.learningPoints.map((point: string, index: number) => (
+                      <div key={index} className="flex items-start gap-3">
+                        <div className="size-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <span className="text-green-600 text-xs font-medium">✓</span>
+                        </div>
+                        <span className="text-gray-700 text-sm">{point}</span>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
 
-            <ReviewCarousel apiReviews={reviews.data}/>
+              {/* Reviews Carousel */}
+              <ReviewCarousel apiReviews={reviews.data}/>
+              
+              {/* Service Content */}
+              <ServiceContent 
+                service={service.serviceDetails.data} 
+                educator={educator} 
+                providerId={service.serviceDetails.data.provider.id}
+              />
+              
+              {/* FAQ Section */}
+              <ServiceFAQ faqs={service.faqData} />
 
-            <ServiceContent service={service.serviceDetails.data} educator={educator} />
-             {/* FAQ Section*/}
-            <ServiceFAQ faqs={service.faqData} />
+              {/* Extra spacing for mobile bottom bar */}
+              <div className="lg:hidden h-6"></div>
+            </div>
           </div>
 
-          <ServiceSidebar
-            service={service.serviceDetails.data}
-            discountedPrice={discountedPrice}
-            isBookmarked={isBookmarked}
-            onEnroll={handleEnroll}
-            onBookmark={handleBookmark}
-            onShare={handleShareService}
-            onContact={handleContact}
-            formatReadableHours={formatReadableHours}
-            isScrolled={isScrolled}
-            providerId={service.serviceDetails.data.provider.id}
-            educator={educator}
-          />         
+          {/* Desktop Sidebar - Hidden on mobile */}
+          <div className="hidden lg:block lg:col-span-1">
+            <ServiceSidebar
+              service={service.serviceDetails.data}
+              discountedPrice={discountedPrice}
+              isBookmarked={isBookmarked}
+              onEnroll={handleEnroll}
+              onBookmark={handleBookmark}
+              onShare={handleShareService}
+              onContact={handleContact}
+              formatReadableHours={formatReadableHours}
+              isScrolled={isScrolled}
+              providerId={service.serviceDetails.data.provider.id}
+              educator={educator}
+            />
+          </div>
         </div>
       </div>
+
+      {/* Mobile bottom action bar */}
+      <div className="lg:hidden fixed bottom-16 left-0 right-0 p-4 bg-white border-t border-gray-200 z-30 shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="flex-1">
+            <div className="text-xs text-gray-500 mb-1">Price</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-lg font-bold text-gray-900">
+                ${discountedPrice.toFixed(2)}
+              </span>
+              {service.serviceDetails.data.discountEnabled && (
+                <span className="text-sm text-gray-400 line-through">
+                  ${service.serviceDetails.data.price.toFixed(2)}
+                </span>
+              )}
+            </div>
+          </div>
+          <Button
+            onClick={handleEnroll}
+            className="px-8 py-3 text-base font-semibold shadow-sm"
+            size="lg"
+          >
+            Enroll Now
+          </Button>
+        </div>
+      </div>
+
       <ShareServiceModal />
-
-
       <Bottombar />
       <Footer />
     </div>
