@@ -4,7 +4,6 @@ import Button from "@/components/base/Button";
 import {
   BookmarkIcon,
   Share1Icon,
-  EnvelopeClosedIcon,
   ChevronDownIcon,
   ChatBubbleIcon,
   FileTextIcon,
@@ -140,7 +139,7 @@ export default function ServiceSidebar({
                 variant="secondary"
                 className="w-full"
               >
-                <EnvelopeClosedIcon className="size-4" />
+                <ChatBubbleIcon  className="size-4" />
                 Contact Me
                 <ChevronDownIcon 
                   className={`size-4 transition-transform ${
