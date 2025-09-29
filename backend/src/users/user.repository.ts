@@ -259,6 +259,22 @@ export class UserRepository {
       throw error;
     }
   }
+
+  async updateTotalServices({ id }: { id: string }) {
+    try {
+
+      const user = await this.userRepository.findOneBy({ id });
+      console.log(user);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      user.totalServices += 1;
+      user.totalActiveServices += 1;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 interface FindOptions {

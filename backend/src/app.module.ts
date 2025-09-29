@@ -17,6 +17,7 @@ import { SocialModule } from './auth/social/social.module';
 import { QuestionModule } from './faqs/faq.module';
 import { PaymentModule } from './payment/payment.module';
 import { StripeModule } from './common/stripe/stripe.module';
+import { EnrollmentModule } from './enrollments/enrollment.module';
 
 @Module({
   imports: [
@@ -50,7 +51,8 @@ import { StripeModule } from './common/stripe/stripe.module';
     SocialModule,
     QuestionModule,
     PaymentModule,
-    StripeModule
+    StripeModule,
+    EnrollmentModule
   ],
 })
 export class AppModule {}

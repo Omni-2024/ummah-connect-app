@@ -14,6 +14,6 @@ import { ProviderModule } from '../providers/provider.module';
   ],
   controllers: [ServiceController],
   providers: [ServiceService, ServiceRepository, ServiceDetailService],
-  exports: [ServiceRepository]
+  exports: [ServiceRepository,ServiceService,ServiceDetailService]
 })
 export class ServiceModule {}
