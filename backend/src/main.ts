@@ -1,21 +1,10 @@
-// import { NestFactory } from '@nestjs/core';
-// import { AppModule } from './app.module';
-
-// async function bootstrap() {
-//   const app = await NestFactory.create(AppModule);
-//   await app.listen(process.env.PORT ?? 3000);
-// }
-// bootstrap();
-
-
-
-// src/main.ts
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { json, raw } from 'express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true,skipMissingProperties: true, }));
   app.setGlobalPrefix('api');
 

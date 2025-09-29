@@ -8,7 +8,6 @@ import {
   Req,
 } from '@nestjs/common';
 import type { RawBodyRequest } from '@nestjs/common';
-import type { Request } from 'express';
 import { StripeService } from './stripe.service';
 import { Public } from '../../auth/decorator/public.decorator';
 import { Roles } from '../../auth/decorator/role.decorator';
@@ -57,7 +56,7 @@ export class StripeController {
     @Req() request: RawBodyRequest<Request>,
     @Headers('stripe-signature') signature: string,
   ) {
-    const rawBody = request.rawBody;
+    const rawBody = request.rawBody ;
     return await this.stripeService.stripeWebhook({ rawBody, signature });
   }
 }

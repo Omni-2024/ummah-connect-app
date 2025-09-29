@@ -42,6 +42,7 @@ export class StripeService {
     const stripeSecret=this.configService.getOrThrow<string>('STRIPE_SECRET')
     this.stripe = new Stripe(stripeSecret);
     this.baseUrl = this.configService.getOrThrow<string>('APP_BASE_URL');
+    this.webhookSecret=this.configService.getOrThrow<string>('STRIPE_WEBHOOK_SECRET');
   }
 
   async createCustomer(customerRegisterDto: {
