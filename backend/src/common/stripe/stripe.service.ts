@@ -54,7 +54,7 @@ export class StripeService {
         customerRegisterDto.userId,
       );
 
-      if (!user.data.stripeCustomerId) {
+      if (!user.stripeCustomerId) {
         const customer = await this.stripe.customers.create({
           name: customerRegisterDto.name,
           email: customerRegisterDto.email,
@@ -76,15 +76,13 @@ export class StripeService {
   }){
     const { platform = 'legacy' } = createCheckoutDto;
 
-    console.log("teeeee",createCheckoutDto);
-
         //find user by id
       //need to remove any after updating common
       const user: any = await this.userService.getUser(
         createCheckoutDto.userId,
       );
 
-      const stripeCustomerId = user.data.stripeCustomerId;
+      const stripeCustomerId = user.stripeCustomerId;
 
       if (!stripeCustomerId) {
         return { status: HttpStatus.NOT_FOUND, error: 'Customer not found' };
@@ -188,7 +186,6 @@ export class StripeService {
   async sessionStatus(sessionStatus: {
     sessionId: string;
   }){
-    try {
       // Retrieve the Stripe session
       const session = await this.stripe.checkout.sessions.retrieve(
         sessionStatus.sessionId,
@@ -263,19 +260,12 @@ export class StripeService {
         },
       };
 
-      return { status: HttpStatus.OK, data: response };
-    } catch (error) {
-      return {
-        status: HttpStatus.UNAUTHORIZED,
-        error: error.message || 'Unknown error',
-      };
-    }
+      return  response ;
   }
 
   async createPaymentIntent(
     createPaymentIntentDto: CreateCheckoutDto,
   ) {
-    try {
       const user: UserEntity = await this.userRepo.findOneById(
         createPaymentIntentDto.userId,
       );
@@ -306,10 +296,7 @@ export class StripeService {
         },
       });
 
-      return { status: HttpStatus.CREATED, data: paymentIntent };
-    } catch (error) {
-      return { status: HttpStatus.UNAUTHORIZED, error: error };
-    }
+      return  paymentIntent ;
   }
 
   async handlePurchaseType(createCheckoutDto: CreateCheckoutDto): Promise<any> {

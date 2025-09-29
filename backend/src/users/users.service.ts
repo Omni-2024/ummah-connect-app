@@ -6,6 +6,8 @@ import { UserEntity } from './entities/user.entity';
 import { UserRole } from './entities/abstract.user.entity';
 import { ChangePasswordDtoNoOTP } from './dto/change-password-noOtp';
 import { StreamService } from '../common/getStream/stream.service';
+import { CreateCustomerDto } from '../common/stripe/dto/strip.dto';
+import { StripeService } from '../common/stripe/stripe.service';
 
 
 @Injectable()
@@ -16,6 +18,7 @@ export class UsersService {
     private readonly userRepo: UserRepository,
     private readonly configService: ConfigService,
     private readonly streamService: StreamService,
+    // private readonly stripeService: StripeService,
   ) {}
 
   async findAll({
@@ -77,6 +80,15 @@ export class UsersService {
   ){
     const user = await this.userRepo.updateUser(updateUserDto);
     await this.streamService.upsertUser(user.id, user.name ?? user.email, user.role);
+
+    // if (user.stripeCustomerId==null){
+    //   const customer: CreateCustomerDto = {
+    //     userId: user.id,
+    //     email: user.email,
+    //     name: user.name,
+    //   };
+    //   await this.stripeService.createCustomer(customer);
+    // }
 
     if (!user) {
       return {

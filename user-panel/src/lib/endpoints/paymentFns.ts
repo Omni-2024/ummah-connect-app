@@ -44,16 +44,16 @@ export const getSessionStatusFn = async (sessionId: string) => {
 export interface Session {
   status: "open" | "complete" | "error";
   metadata: {
-    course_id: string;
+    service_id: string;
     user_id: string;
-    course_name: string;
+    service_name: string;
   };
 }
 
 export interface Payment {
   userId: string;
   serviceId: string;
-  courseName: string;
+  serviceName: string;
   status: 'failed' | 'pending' | 'succeeded';
   receiptUrl: string;
   last4: string;
