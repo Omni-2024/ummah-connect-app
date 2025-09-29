@@ -22,6 +22,7 @@ import {
   ArrowRightIcon,
   PlayIcon,
 } from "@radix-ui/react-icons";
+import Footer from "@/features/app/components/Footer";
 
 export default function BecomeSellerPage() {
   const router = useRouter();
@@ -407,6 +408,7 @@ export default function BecomeSellerPage() {
       </div>
 
       <Bottombar />
+      <Footer />
     </div>
   );
 }

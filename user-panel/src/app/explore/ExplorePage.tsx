@@ -35,6 +35,7 @@ import Navbar from "@/features/app/components/Navbar";
 import NavbarMobile, {NavbarTitle} from "@/features/app/components/Navbar.mobile";
 import {Setting4} from "iconsax-react";
 import Bottombar from "@/features/app/components/Bottombar";
+import Footer from "@/features/app/components/Footer";
 
 export default function ExplorePage() {
 
@@ -342,6 +343,7 @@ export default function ExplorePage() {
                 </div>
             </div>
             <Bottombar/>
+            <Footer />
         </div>
     )
 

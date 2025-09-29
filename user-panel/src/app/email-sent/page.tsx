@@ -5,6 +5,8 @@ import { EnvelopeClosedIcon, ArrowLeftIcon, ReloadIcon } from "@radix-ui/react-i
 import { useRouter } from "next/navigation"
 import { useForgotPasswordState } from "@/features/auth/context/useForgotPasswordState"
 import {useCurrentUser} from "@/lib/hooks/useUser";
+import BottomBar from "@/features/app/components/Bottombar";
+import Footer from "@/features/app/components/Footer";
 
 export default function EmailSentPage() {
   const router = useRouter()
@@ -81,6 +83,8 @@ export default function EmailSentPage() {
               Contact our support team
             </button>
           </div>
+          <BottomBar/>
+          <Footer/>
         </div>
       </main>
     </div>

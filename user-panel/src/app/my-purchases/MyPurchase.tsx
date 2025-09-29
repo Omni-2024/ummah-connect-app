@@ -12,6 +12,7 @@ import IconButton from "@/components/base/IconButton";
 import { ArrowLeftIcon, StarFilledIcon, ClockIcon, PlayIcon, DownloadIcon, CalendarIcon } from "@radix-ui/react-icons";
 import { UserRole } from "@/lib/constants";
 import withAuth from "@/components/withAuth";
+import Footer from "@/features/app/components/Footer";
 
 const mockPurchases = [
   {
@@ -394,6 +395,7 @@ const MyPurchasesPage = () => {
       </div>
 
       <Bottombar />
+      <Footer/>
     </div>
   );
 };

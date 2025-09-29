@@ -24,6 +24,7 @@ import OverviewSection from "./OverviewSection";
 import ServicesSection from "./ServicesSection";
 import ReviewsSection from "./ReviewsSection";
 import Sidebar from "./Sidebar";
+import Footer from "@/features/app/components/Footer";
 
 interface ProviderProfilePageProps {
   providerId: string;
@@ -231,6 +232,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
         </div>
       </div>
       <Bottombar />
+      <Footer/>
     </div>
   );
 }
