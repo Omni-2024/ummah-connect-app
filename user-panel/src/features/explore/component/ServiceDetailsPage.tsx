@@ -1,10 +1,8 @@
 "use client";
-import {useRouter, useParams, usePathname, useSearchParams} from "next/navigation";
+import { useRouter, useParams, usePathname, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import { useGeneralUser } from "@/lib/hooks/useUser";
-import { useServiceBySlug } from "@/lib/hooks/useServices";
-import { formatDurationFromSeconds } from "@/lib/helpers/formatUtils";
-import { buildAvatarUrl } from "@/features/app/components/Navbar";
+import { useCurrentUser, useGeneralUser } from "@/lib/hooks/useUser";
+import { useServiceBySlug, useServiceEnrollmentStatus } from "@/lib/hooks/useServices";
 import Navbar from "@/features/app/components/Navbar";
 import NavbarMobile, {
   NavbarTitle,
@@ -12,14 +10,13 @@ import NavbarMobile, {
 import Bottombar from "@/features/app/components/Bottombar";
 import { Card, CardContent } from "@/components/base/Card";
 import Button from "@/components/base/Button";
-import Badge from "@/components/base/Badge";
 import IconButton from "@/components/base/IconButton";
 import {
   ArrowLeftIcon,
   StarFilledIcon,
   ClockIcon,
   BookmarkIcon,
-  Share1Icon,
+  Share1Icon, ArrowRightIcon,
 } from "@radix-ui/react-icons";
 import StudentCountLabel from "@/components/widgets/StudentCountLabel";
 import { useExploreState } from "@/features/explore/context/useExploreState";
@@ -29,12 +26,17 @@ import ServiceContent from "./ServiceContent";
 import { SkeletonServiceDetailsPage } from "./SkeletonServiceDetailsPage";
 import ServiceFAQ from "./ServiceFAQ";
 import ShareServiceModal from "@/features/explore/component/ShareServiceModal";
-import {setServiceId, setShowServiceShareModal} from "@/features/app/context/AppState";
+import { setServiceId, setShowServiceShareModal } from "@/features/app/context/AppState";
 import ReviewCarousel from "@/components/widgets/ReviewCarousel";
-import { useReviewByService} from "@/lib/hooks/useReview";
-import {createLoginUrl} from "@/lib/helpers/urls";
-import {useAuthState} from "@/features/auth/context/useAuthState";
+import { useReviewByService } from "@/lib/hooks/useReview";
+import { createLoginUrl } from "@/lib/helpers/urls";
+import { useAuthState } from "@/features/auth/context/useAuthState";
 import Footer from "@/features/app/components/Footer";
+import { ServiceEnrollmentStatus } from "@/lib/endpoints/serviceFns";
+import { enrollUserToServiceFn } from "@/lib/endpoints/enrollmentFns";
+import { useMutation } from "@tanstack/react-query";
+import { Toast } from "@/components/base/Toast";
+import { generateSlug } from "@/lib/helpers/strings";
 
 export default function ServiceDetailsPage() {
   const params = useParams();
@@ -54,11 +56,34 @@ export default function ServiceDetailsPage() {
     isLoading,
     error,
   } = useServiceBySlug(serviceSlug || slug || "");
-  const { data: educator,isLoading:educatorLoading } = useGeneralUser(service?.serviceDetails?.data.provider.id ?? undefined);
+  const { data: educator, isLoading: educatorLoading } = useGeneralUser(service?.serviceDetails?.data.provider.id ?? undefined);
 
-  const serviceId  = service?.serviceDetails?.data?.id;
+  const serviceId = service?.serviceDetails?.data?.id;
 
-  const {isAuthenticated}=useAuthState()
+  const { data: currentUser, isLoading: isCurrentUserLoading } =
+    useCurrentUser();
+
+  const { isAuthenticated } = useAuthState()
+
+  const {
+    data: enrollmentStatus,
+    isLoading: isEnrollmentStatusLoading,
+    isPending: isEnrollmentStatusPending,
+  } = useServiceEnrollmentStatus({
+    uid: currentUser?.id,
+    service: service?.serviceDetails.data,
+  });
+
+  const { mutate: enrollUser, isPending: isUserEnrolling } = useMutation({
+    mutationFn: enrollUserToServiceFn,
+    onSuccess: () => {
+      Toast.success("Enrolled successfully!");
+      // router.push(`/learn/${generateSlug(course?.title ?? "")}_${course?.id}`);
+    },
+    onError: () => {
+      Toast.error("Enrollment failed. Please try again.");
+    },
+  });
 
 
   const {
@@ -66,7 +91,7 @@ export default function ServiceDetailsPage() {
     isLoading: reviewLoading,
     error: reviewError,
   } = useReviewByService(
-      { serviceId: serviceId!, stars: starFilter, limit: pageLimit, offset: pageOffset },
+    { serviceId: serviceId!, stars: starFilter, limit: pageLimit, offset: pageOffset },
   );
 
   // Scroll detection effect
@@ -97,7 +122,7 @@ export default function ServiceDetailsPage() {
     router.back();
   };
 
-  const handleEnroll = () => {
+  const handlePurchaseNow = () => {
     if (service) {
       console.log("Enrolling in service:", service.serviceDetails.data.id);
     }
@@ -106,6 +131,92 @@ export default function ServiceDetailsPage() {
     }
 
     router.push(`/checkout/service/${service?.serviceDetails.data.id}`);
+  };
+
+  const goToService = () =>
+    router.push(`/learn/${generateSlug(service?.serviceDetails.data?.title ?? "")}_${service?.serviceDetails.data?.id}`);
+
+
+
+  const EnrollmentButton = () => {
+    if (isEnrollmentStatusLoading || isCurrentUserLoading || isLoading)
+      return (
+        <Button className="h-12 w-full" size="lg" disabled isLoading></Button>
+      );
+
+    if (!isAuthenticated && !service?.serviceDetails.data?.isArchived) {
+      if (service?.serviceDetails.data.price === 0)
+        return (
+          <Button
+            className="h-12 w-full"
+            size="lg"
+            onClick={() => handleAuthRedirect("enroll")}
+            isLoading={isAuthenticated ? isEnrollmentStatusPending : false}
+          >
+            Enroll now
+          </Button>
+        );
+      else
+        return (
+          <Button
+            className="h-12 w-full"
+            size="lg"
+            onClick={() => handleAuthRedirect("purchase")}
+            isLoading={isAuthenticated ? isEnrollmentStatusPending : false}
+          >
+            Purchase now
+          </Button>
+        );
+    }
+
+    if (enrollmentStatus === ServiceEnrollmentStatus.ENROLL_NOW && !service?.serviceDetails.data?.isArchived)
+      return (
+        <Button
+          className="h-12 w-full"
+          size="lg"
+          onClick={() => {
+            if (!isAuthenticated) return router.push("/user/login");
+            enrollUser({
+              serviceId: service?.serviceDetails.data?.id ?? "",
+              userId: currentUser?.id ?? "",
+            });
+          }}
+          disabled={isUserEnrolling}
+          isLoading={isUserEnrolling}
+        >
+          Enroll now <ArrowRightIcon className="size-4" />
+        </Button>
+      );
+
+    if (enrollmentStatus === ServiceEnrollmentStatus.PURCHASE_NOW)
+      return (
+        <Button
+          className="h-12 w-full"
+          size="lg"
+          onClick={handlePurchaseNow}
+          isLoading={isAuthenticated ? isEnrollmentStatusPending : false}
+        >
+          Purchase now
+        </Button>
+      );
+
+    if (enrollmentStatus === ServiceEnrollmentStatus.GO_TO_COURSE)
+      return (
+        <Button
+          className="h-12 w-full"
+          size="lg"
+          onClick={goToService}
+          isLoading={isEnrollmentStatusPending}
+        >
+          Go to Service <ArrowRightIcon className="size-4" />
+        </Button>
+      );
+
+    return (
+      <Button className="h-12 w-full" size="lg" disabled>
+        Enroll now
+      </Button>
+    );
   };
 
   useEffect(() => {
@@ -213,9 +324,8 @@ export default function ServiceDetailsPage() {
               className="hover:bg-gray-100 transition-colors"
             >
               <BookmarkIcon
-                className={`size-5 ${
-                  isBookmarked ? "fill-primary-500 text-primary-500" : ""
-                }`}
+                className={`size-5 ${isBookmarked ? "fill-primary-500 text-primary-500" : ""
+                  }`}
               />
             </IconButton>
             <IconButton
@@ -238,7 +348,7 @@ export default function ServiceDetailsPage() {
                 service={service.serviceDetails.data}
                 educator={educator}
                 discountedPrice={discountedPrice}
-                onEnroll={handleEnroll}
+                enrollmentButton={<EnrollmentButton />}
                 formatReadableHours={formatReadableHours}
                 onContact={handleContact}
                 providerId={service.serviceDetails.data.provider.id}
@@ -267,7 +377,7 @@ export default function ServiceDetailsPage() {
               )}
 
               {/* Reviews Carousel */}
-              <ReviewCarousel apiReviews={reviews.data}/>
+              <ReviewCarousel apiReviews={reviews.data} />
 
               {/* Service Content */}
               <ServiceContent
@@ -290,7 +400,7 @@ export default function ServiceDetailsPage() {
               service={service.serviceDetails.data}
               discountedPrice={discountedPrice}
               isBookmarked={isBookmarked}
-              onEnroll={handleEnroll}
+              enrollmentButton={<EnrollmentButton />}
               onBookmark={handleBookmark}
               onShare={handleShareService}
               onContact={handleContact}
@@ -319,13 +429,14 @@ export default function ServiceDetailsPage() {
               )}
             </div>
           </div>
-          <Button
-            onClick={handleEnroll}
-            className="px-8 py-3 text-base font-semibold shadow-sm"
-            size="lg"
-          >
-            Enroll Now
-          </Button>
+          {/*<Button*/}
+          {/*  onClick={handleEnroll}*/}
+          {/*  className="px-8 py-3 text-base font-semibold shadow-sm"*/}
+          {/*  size="lg"*/}
+          {/*>*/}
+          {/*  Enroll Now*/}
+          {/*</Button>*/}
+          <EnrollmentButton />
         </div>
       </div>
 

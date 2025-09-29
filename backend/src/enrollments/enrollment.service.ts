@@ -64,8 +64,7 @@ export class EnrollmentService {
         }
 
         if (
-          payment.status !== HttpStatus.OK ||
-          payment.data?.status !== 'succeeded'
+          payment?.status !== 'succeeded'
         ) {
           throw new BadRequestException('Payment not completed');
         }

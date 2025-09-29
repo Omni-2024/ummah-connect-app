@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {JSX, useState} from "react";
 import { Card } from "@/components/base/Card";
 import Button from "@/components/base/Button";
 import {
@@ -17,7 +17,7 @@ interface ServiceSidebarProps {
   service: any;
   discountedPrice: number;
   isBookmarked: boolean;
-  onEnroll: () => void;
+  enrollmentButton: JSX.Element;
   onBookmark: () => void;
   onShare: () => void;
   onContact: () => void;
@@ -32,7 +32,7 @@ export default function ServiceSidebar({
   discountedPrice,
   isBookmarked,
   educator,
-  onEnroll,
+  enrollmentButton,
   onBookmark,
   onShare,
   onContact,
@@ -128,13 +128,14 @@ export default function ServiceSidebar({
             )}
 
             {/* Enrollment Button */}
-            <Button onClick={onEnroll} className="w-full mb-4">
-              Enroll Now
-            </Button>
+            {/*<Button onClick={onEnroll} className="w-full mb-4">*/}
+            {/*  Enroll Now*/}
+            {/*</Button>*/}
+            {enrollmentButton}
 
 
             {/* Contact Button with Dropdown */}
-            <div className="relative z-20">
+            <div className="relative z-20 mt-4">
               <Button
                 onClick={handleContactClick}
                 variant="secondary"

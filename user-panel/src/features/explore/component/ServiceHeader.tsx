@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {JSX, useState} from "react";
 import { Card } from "@/components/base/Card";
 import Button from "@/components/base/Button";
 import Badge from "@/components/base/Badge";
@@ -19,7 +19,7 @@ interface ServiceHeaderProps {
   service: any;
   educator: any;
   discountedPrice: number;
-  onEnroll: () => void;
+  enrollmentButton: JSX.Element;
   onContact: () => void;
   formatReadableHours: (minutes: number) => string;
   providerId?: string;
@@ -38,7 +38,7 @@ export default function ServiceHeader({
   service,
   educator,
   discountedPrice,
-  onEnroll,
+  enrollmentButton,
   onContact,
   formatReadableHours,
   providerId,

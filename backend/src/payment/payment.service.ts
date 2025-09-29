@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { AggregateReturn, PaymentRepository } from './payment.repository';
 import { PaymentEntity } from './payment.entity';
 import { CreatePaymentDto, UpdatePaymentDto } from '../users/dto/user.dto';
@@ -115,11 +115,10 @@ export class PaymentService {
         total
       ) {
         return {
-          status: HttpStatus.OK,
           data: { data: payments, meta: { total, limit, offset } },
         };
       }
-      return { status: HttpStatus.NOT_FOUND, error: 'No payments found' };
+      throw new NotFoundException("payment not found")
     } catch (e) {
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
     }
@@ -131,7 +130,7 @@ export class PaymentService {
   ) {
     const payments = await this.paymentRepo.findAllByServiceId(serviceId);
     if (!payments || payments.length === 0) {
-      return { status: HttpStatus.NOT_FOUND };
+      throw new NotFoundException("payment not found")
     }
 
     return   payments ;
@@ -147,7 +146,7 @@ export class PaymentService {
       userId,
     );
     if (!payments) {
-      return { status: HttpStatus.NOT_FOUND };
+      throw new NotFoundException("payment not found")
     }
 
     return payments ;

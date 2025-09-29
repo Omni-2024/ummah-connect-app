@@ -1,6 +1,8 @@
 import { Service, GetAllServiceParams, Meta } from "@/types";
-import Request from "@/lib/http";
+import Request, {catchAxiosErrorTyped} from "@/lib/http";
 import {getQuestionsFn} from "@/lib/endpoints/faqFns";
+import {getEnrollmentStatusFn} from "@/lib/endpoints/enrollmentFns";
+import {getPaymentByIdFn} from "@/lib/endpoints/paymentFns";
 
 export interface FAQItem {
   id: string;
@@ -145,46 +147,46 @@ interface Specialty {
   typeId: string;
 }
 
-export enum CourseEnrollmentStatus {
+export enum ServiceEnrollmentStatus {
   PURCHASE_NOW = "PURCHASE_NOW",
   ENROLL_NOW = "ENROLL_NOW",
   GO_TO_COURSE = "GO_TO_COURSE",
 }
 
-// export const getCourseEnrollmentStatusFn = async ({
-//   uid,
-//   course,
-// }: {
-//   uid: string;
-//   course: GetOneServiceDetailsFnRes;
-// }) => {
-//   const [enrollError, enrollState] = await catchAxiosErrorTyped(
-//     getEnrollmentStatusFn({
-//       cid: course.id,
-//       uid: uid,
-//     }),
-//   );
-//   //
-//   const [paymentError, paymentState] = await catchAxiosErrorTyped(
-//     getPaymentByIdFn(uid, course.id),
-//   );
-//   //
-//   if (!enrollError && enrollState) {
-//     // User is enrolled
-//     return CourseEnrollmentStatus.GO_TO_COURSE;
-//   } else {
-//     if (course.price === 0) {
-//       // Free course
-//       return CourseEnrollmentStatus.ENROLL_NOW;
-//     } else {
-//       // Paid course
-//       if (!paymentError && paymentState) {
-//         // User has paid
-//         return CourseEnrollmentStatus.ENROLL_NOW;
-//       } else {
-//         // User has not paid
-//         return CourseEnrollmentStatus.PURCHASE_NOW;
-//       }
-//     }
-//   }
-// };
+export const getServiceEnrollmentStatusFn = async ({
+  uid,
+  service,
+}: {
+  uid: string;
+  service: GetOneServiceDetailsFnRes;
+}) => {
+  const [enrollError, enrollState] = await catchAxiosErrorTyped(
+    getEnrollmentStatusFn({
+      cid: service.id,
+      uid: uid,
+    }),
+  );
+  //
+  const [paymentError, paymentState] = await catchAxiosErrorTyped(
+    getPaymentByIdFn(uid, service.id),
+  );
+  //
+  if (!enrollError && enrollState) {
+    // User is enrolled
+    return ServiceEnrollmentStatus.GO_TO_COURSE;
+  } else {
+    if (service.price === 0) {
+      // Free course
+      return ServiceEnrollmentStatus.ENROLL_NOW;
+    } else {
+      // Paid course
+      if (!paymentError && paymentState) {
+        // User has paid
+        return ServiceEnrollmentStatus.ENROLL_NOW;
+      } else {
+        // User has not paid
+        return ServiceEnrollmentStatus.PURCHASE_NOW;
+      }
+    }
+  }
+};

@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import {
   getOneServiceBySlugFn,
-  getAllServicesFn, getOneServiceFn,
+  getAllServicesFn, getOneServiceFn, GetOneServiceDetailsFnRes, getServiceEnrollmentStatusFn,
 } from "@/lib/endpoints/serviceFns";
 import { GetAllServiceParams } from "@/types";
 
@@ -47,17 +47,17 @@ export const useServiceBySlug = (slug: string) => {
   });
 };
 
-// export const useCourseEnrollmentStatus = (params: {
-//   uid?: string;
-//   course?: GetOneCourseDetailsFnRes | null;
-// }) => {
-//   return useQuery({
-//     queryKey: ["enrollment-status-by-user", params],
-//     queryFn: () =>
-//       getCourseEnrollmentStatusFn({
-//         uid: params.uid ?? "",
-//         course: params.course as GetOneCourseDetailsFnRes,
-//       }),
-//     enabled: !!params.uid && !!params.course, // ! Should be enabled only when uid and course are present
-//   });
-// };
+export const useServiceEnrollmentStatus = (params: {
+  uid?: string;
+  service?: GetOneServiceDetailsFnRes | null;
+}) => {
+  return useQuery({
+    queryKey: ["enrollment-status-by-user", params],
+    queryFn: () =>
+      getServiceEnrollmentStatusFn({
+        uid: params.uid ?? "",
+        service: params.service as GetOneServiceDetailsFnRes,
+      }),
+    enabled: !!params.uid && !!params.service, // ! Should be enabled only when uid and course are present
+  });
+};
