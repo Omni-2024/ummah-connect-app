@@ -32,8 +32,8 @@ export interface GetStatsParams {
 
 export interface Payment {
   userId: string;
-  courseId: string;
-  courseName: string;
+  serviceId: string;
+  serviceName: string;
   status: 'failed' | 'pending' | 'succeeded';
   receiptUrl: string;
   last4: string;
@@ -176,8 +176,8 @@ export const getPaymentsByUserIdFn = async (
   //
 };
 
-// get payments by course id
-export const getPaymentsByCourseIdFn = async (id: string) => {
+// get payments by service id
+export const getPaymentsByServiceFn = async (id: string) => {
   try {
     const res = await Request<GetAllPaymentsFnRes>({
       method: "get",
@@ -202,11 +202,11 @@ export const getPaymentsByCourseIdFn = async (id: string) => {
   }
 };
 
-export const getPaymentByIdFn = async (userId: string, courseId: string) => {
+export const getPaymentByIdFn = async (userId: string, serviceId: string) => {
   const res = await Request<Payment>({
     method: "get",
     url: `/payment/single/payment`,
-    params: { userId, courseId },
+    params: { userId, serviceId },
   });
   return res.data;
 };
