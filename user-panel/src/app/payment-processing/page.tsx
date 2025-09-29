@@ -37,6 +37,7 @@ const PaymentProcessing = () => {
     // enroll user to the course once the session.status is complete
     useEffect(() => {
         if (session?.status === "complete" && service) {
+            router.push("/my-purchases")
             // enroll user to the course
             // enrollUser(
             //     {
