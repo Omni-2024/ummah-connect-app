@@ -8,6 +8,7 @@ export function SkeletonServiceDetailsPage() {
           {/* Main Content Skeleton */}
           <div className="lg:col-span-2">
             {/* Title and Quick Info Card - Comes FIRST like in ServiceHeader */}
+            {/* Title and Quick Info Card - Comes FIRST like in ServiceHeader */}
             <div className="bg-white lg:bg-transparent p-4 lg:p-6 pt-0 pb-2 lg:pl-0 mb-4 shadow-none border-none">
               <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
                 <div className="flex-1">
@@ -16,19 +17,25 @@ export function SkeletonServiceDetailsPage() {
                   {/* Tagline */}
                   <Skeleton className="h-5 w-full mb-4" />
                   
-                  {/* Educator Info Row */}
-                  <div className="flex items-center gap-4 mb-4">
-                    <Skeleton className="size-12 rounded-full flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <Skeleton className="h-6 w-32 mb-2" />
-                      <div className="flex items-center gap-4 text-sm">
-                        <div className="flex items-center gap-1">
-                          <Skeleton className="size-4 rounded-full" />
-                          <Skeleton className="h-4 w-8" />
-                          <Skeleton className="h-4 w-16" />
-                        </div>
-                        <Skeleton className="h-4 w-20" />
+                  {/* Educator Info Row - Avatar hidden on mobile */}
+                  <div className="flex-1 min-w-0">
+                    <Skeleton className="h-6 w-32 mb-2" />
+                    <div className="flex items-center gap-4 text-sm">
+                      <div className="flex items-center gap-1">
+                        <Skeleton className="size-4 rounded-full" />
+                        <Skeleton className="h-4 w-8" />
+                        <Skeleton className="h-4 w-16" />
                       </div>
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                    
+                    {/* Mobile pricing and contact button */}
+                    <div className="lg:hidden mt-3 pt-3 border-t border-gray-200 flex items-center justify-between gap-3">
+                      <div className="flex items-baseline gap-2">
+                        <Skeleton className="h-8 w-20" />
+                        <Skeleton className="h-4 w-16" />
+                      </div>
+                      <Skeleton className="h-10 w-28 rounded-lg flex-shrink-0" />
                     </div>
                   </div>
                 </div>
@@ -49,7 +56,7 @@ export function SkeletonServiceDetailsPage() {
             {/* Mobile Contact Button - Only visible on mobile */}
             <div className="lg:hidden mt-4 px-4">
               <div className="relative">
-                <Skeleton className="h-12 w-full rounded-lg" />
+                {/* <Skeleton className="h-12 w-full rounded-lg" /> */}
                 {/* Dropdown skeleton when expanded */}
                 <div className="absolute top-full right-0 mt-2 w-44 bg-white border border-gray-200 rounded-lg shadow-xl z-50 opacity-0">
                   <div className="p-2 space-y-1">
@@ -235,16 +242,7 @@ export function SkeletonServiceDetailsPage() {
 
       {/* Mobile Bottom Action Bar Skeleton */}
       <div className="lg:hidden fixed bottom-16 left-0 right-0 p-4 bg-white border-t border-gray-200">
-        <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <Skeleton className="h-3 w-8 mb-1" />
-            <div className="flex items-baseline gap-2">
-              <Skeleton className="h-6 w-16" />
-              <Skeleton className="h-4 w-12" />
-            </div>
-          </div>
-          <Skeleton className="h-12 w-24 rounded-lg" />
-        </div>
+          <Skeleton className="h-12 w-full rounded-lg" />
       </div>
 
       {/* Footer placeholder for mobile */}
