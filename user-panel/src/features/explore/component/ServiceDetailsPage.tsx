@@ -266,21 +266,23 @@ export default function ServiceDetailsPage() {
             </div>
           </div>
 
-          {/* Desktop Sidebar - Hidden on mobile */}
+         {/* Desktop Sidebar - Hidden on mobile */}
           <div className="hidden lg:block lg:col-span-1">
-            <ServiceSidebar
-              service={service.serviceDetails.data}
-              discountedPrice={discountedPrice}
-              isBookmarked={isBookmarked}
-              onEnroll={handleEnroll}
-              onBookmark={handleBookmark}
-              onShare={handleShareService}
-              onContact={handleContact}
-              formatReadableHours={formatReadableHours}
-              isScrolled={isScrolled}
-              providerId={service.serviceDetails.data.provider.id}
-              educator={educator}
-            />
+            <div className="sticky top-24 self-start">
+              <ServiceSidebar
+                service={service.serviceDetails.data}
+                discountedPrice={discountedPrice}
+                isBookmarked={isBookmarked}
+                onEnroll={handleEnroll}
+                onBookmark={handleBookmark}
+                onShare={handleShareService}
+                onContact={handleContact}
+                formatReadableHours={formatReadableHours}
+                isScrolled={isScrolled}
+                providerId={service.serviceDetails.data.provider.id}
+                educator={educator}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -288,7 +290,7 @@ export default function ServiceDetailsPage() {
       {/* Mobile bottom action bar */}
       <div className="lg:hidden fixed bottom-16 left-0 right-0 p-4 bg-white border-t border-gray-200 z-30 shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="flex-1">
+          {/* <div className="flex-1">
             <div className="text-xs text-gray-500 mb-1">Price</div>
             <div className="flex items-baseline gap-2">
               <span className="text-lg font-bold text-gray-900">
@@ -300,10 +302,10 @@ export default function ServiceDetailsPage() {
                 </span>
               )}
             </div>
-          </div>
+          </div> */}
           <Button
             onClick={handleEnroll}
-            className="px-8 py-3 text-base font-semibold shadow-sm"
+            className="w-full px-8 py-3 text-base font-semibold shadow-sm"
             size="lg"
           >
             Enroll Now
