@@ -7,8 +7,8 @@ interface ReviewsSectionProps {
   reviewsData: any;
   isReviewLoading: boolean;
   isReviewError: boolean;
-  starFilter: number;
-  setStarFilter: (stars: number) => void;
+  starFilter: number[]; // ✅ Updated: supports multiple filters
+  setStarFilter: (stars: number[]) => void; // ✅ Updated: accepts array
   pageLimit: number;
   pageOffset: number;
   setPageOffset: (offset: number) => void;
@@ -39,6 +39,7 @@ export default function ReviewsSection({
         isReviewLoading={isReviewLoading}
         isReviewError={isReviewError}
         buildAvatarUrl={buildAvatarUrl}
+        starFilter={starFilter} // ✅ Pass filter array
       />
       <ReviewsPagination
         total={reviewsData?.meta?.total ?? 0}
