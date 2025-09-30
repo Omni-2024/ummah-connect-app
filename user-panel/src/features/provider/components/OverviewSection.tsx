@@ -2,6 +2,7 @@ import { Card } from "@/components/base/Card";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { languages } from "@/lib/constants";
 
+// ==================== OVERVIEW SECTION ====================
 interface OverviewSectionProps {
   educator: any;
   getInterestsDisplay: () => { id: string; name: string }[];
@@ -25,53 +26,54 @@ export default function OverviewSection({
   const displayLanguages = cleanedLanguages.map(getLanguageName);
 
   return (
-    <div className="space-y-6">
-      <Card className="p-6">
-        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <PersonIcon className="size-5 text-green-600" />
+    <div className="space-y-4">
+      {/* About Me */}
+      <Card className="p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold mb-3 flex items-center gap-2">
+          <PersonIcon className="size-4 sm:size-5 text-green-600" />
           About Me
         </h2>
-        <div className="prose prose-gray max-w-none">
-          <p className="text-gray-700 leading-relaxed mb-4">
-            {educator.bio || "No biography provided yet."}
-          </p>
-        </div>
+        <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+          {educator.bio || "No biography provided yet."}
+        </p>
       </Card>
       
-      <Card className="p-6">
-        <h2 className="text-xl font-bold mb-4">Skills & Expertise</h2>
+      {/* Skills & Expertise */}
+      <Card className="p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold mb-3">Skills & Expertise</h2>
         {getInterestsDisplay().length > 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
             {getInterestsDisplay().map((interest) => (
               <div
                 key={interest.id}
-                className="bg-green-50 border border-green-200 rounded-lg p-3 text-center"
+                className="bg-green-50 border border-green-200 rounded-lg p-2 sm:p-3 text-center"
               >
-                <span className="text-green-700 font-medium text-sm">
+                <span className="text-green-700 font-medium text-xs sm:text-sm">
                   {interest.name}
                 </span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-gray-500 text-center text-sm py-6">
             No specializations listed yet.
           </p>
         )}
       </Card>
       
-      <Card className="p-6">
-        <h2 className="text-xl font-bold mb-4">Languages</h2>
+      {/* Languages */}
+      <Card className="p-4 sm:p-6">
+        <h2 className="text-lg sm:text-xl font-bold mb-3">Languages</h2>
         {displayLanguages.length > 0 ? (
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-2 sm:gap-4">
             {displayLanguages.map((language, index) => (
-              <div key={index} className="bg-gray-50 rounded-lg p-3 border">
-                <p className="font-semibold text-gray-900">{language}</p>
+              <div key={index} className="bg-gray-50 rounded-lg p-2 sm:p-3 border">
+                <p className="font-semibold text-gray-900 text-sm">{language}</p>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-center py-4">
+          <p className="text-gray-500 text-center text-sm py-4">
             No languages specified.
           </p>
         )}
