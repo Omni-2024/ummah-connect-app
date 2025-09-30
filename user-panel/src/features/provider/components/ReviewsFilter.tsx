@@ -3,7 +3,7 @@ import Button from "@/components/base/Button";
 
 interface ReviewsFilterProps {
   totalReviews: number;
-  starFilter: number | number[]; // Support both for backward compatibility
+  starFilter: number[];
   setStarFilter: (stars: number[]) => void;
   setPageOffset: (offset: number) => void;
 }
@@ -14,25 +14,20 @@ export default function ReviewsFilter({
   setStarFilter,
   setPageOffset,
 }: ReviewsFilterProps) {
-  // Normalize starFilter to an array
-  const normalizedStarFilter = Array.isArray(starFilter)
-    ? starFilter
-    : starFilter === 0
-    ? []
-    : [starFilter].filter((s): s is number => typeof s === "number");
-
   const handleFilterChange = (stars: number) => {
     let updatedFilters: number[];
+    
     if (stars === 0) {
-      // Selecting "All" clears all other filters
+      // Selecting "All" clears all filters
       updatedFilters = [];
-    } else if (normalizedStarFilter.includes(stars)) {
+    } else if (starFilter.includes(stars)) {
       // Deselect the star rating if already selected
-      updatedFilters = normalizedStarFilter.filter((s) => s !== stars);
+      updatedFilters = starFilter.filter((s) => s !== stars);
     } else {
-      // Add the star rating, excluding "All" (0)
-      updatedFilters = [...normalizedStarFilter.filter((s) => s !== 0), stars];
+      // Add the star rating to existing filters
+      updatedFilters = [...starFilter, stars];
     }
+    
     setStarFilter(updatedFilters);
     setPageOffset(0); // Reset pagination to first page
   };
@@ -40,6 +35,13 @@ export default function ReviewsFilter({
   const handleResetFilter = () => {
     setStarFilter([]); // Reset to show all reviews
     setPageOffset(0); // Reset pagination
+  };
+
+  const isActive = (stars: number) => {
+    if (stars === 0) {
+      return starFilter.length === 0;
+    }
+    return starFilter.includes(stars);
   };
 
   return (
@@ -57,8 +59,8 @@ export default function ReviewsFilter({
             <button
               key={s}
               onClick={() => handleFilterChange(s)}
-              className={`px-2 py-1 rounded border text-sm ${
-                normalizedStarFilter.includes(s) || (s === 0 && normalizedStarFilter.length === 0)
+              className={`px-2 py-1 rounded border text-sm transition-colors ${
+                isActive(s)
                   ? "bg-primary-500 text-white border-primary-600"
                   : "bg-white text-gray-700 hover:bg-gray-50 border-gray-300"
               }`}
@@ -67,15 +69,16 @@ export default function ReviewsFilter({
               {s === 0 ? "All" : `${s}★`}
             </button>
           ))}
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={handleResetFilter}
-            disabled={normalizedStarFilter.length === 0}
-            className="ml-1"
-          >
-            Reset
-          </Button>
+          {starFilter.length > 0 && (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={handleResetFilter}
+              className="ml-1"
+            >
+              Reset
+            </Button>
+          )}
         </div>
       </div>
     </Card>
