@@ -1,5 +1,6 @@
 import { Card } from "@/components/base/Card";
 import { PersonIcon } from "@radix-ui/react-icons";
+import { languages } from "@/lib/constants";
 
 interface OverviewSectionProps {
   educator: any;
@@ -7,7 +8,22 @@ interface OverviewSectionProps {
   cleanedLanguages: string[];
 }
 
-export default function OverviewSection({ educator, getInterestsDisplay, cleanedLanguages }: OverviewSectionProps) {
+export default function OverviewSection({ 
+  educator, 
+  getInterestsDisplay, 
+  cleanedLanguages 
+}: OverviewSectionProps) {
+  
+  // Convert language codes to full names
+  const getLanguageName = (code: string): string => {
+    const language = languages.find(
+      (lang) => lang.value.toLowerCase() === code.toLowerCase()
+    );
+    return language ? language.label : code;
+  };
+
+  const displayLanguages = cleanedLanguages.map(getLanguageName);
+
   return (
     <div className="space-y-6">
       <Card className="p-6">
@@ -21,6 +37,7 @@ export default function OverviewSection({ educator, getInterestsDisplay, cleaned
           </p>
         </div>
       </Card>
+      
       <Card className="p-6">
         <h2 className="text-xl font-bold mb-4">Skills & Expertise</h2>
         {getInterestsDisplay().length > 0 ? (
@@ -42,11 +59,12 @@ export default function OverviewSection({ educator, getInterestsDisplay, cleaned
           </p>
         )}
       </Card>
+      
       <Card className="p-6">
         <h2 className="text-xl font-bold mb-4">Languages</h2>
-        {cleanedLanguages.length > 0 ? (
+        {displayLanguages.length > 0 ? (
           <div className="flex flex-wrap gap-4">
-            {cleanedLanguages.map((language, index) => (
+            {displayLanguages.map((language, index) => (
               <div key={index} className="bg-gray-50 rounded-lg p-3 border">
                 <p className="font-semibold text-gray-900">{language}</p>
               </div>
