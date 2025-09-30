@@ -59,6 +59,7 @@ export interface GetAllServiceParams {
   profession?: string;
   specialties?: string[];
   isPopular?: boolean;
+  userId?:string
 }
 
 

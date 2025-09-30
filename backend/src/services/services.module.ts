@@ -6,11 +6,13 @@ import { ServiceDetailService } from './service.detail.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Service } from './entities/service.entity';
 import { ProviderModule } from '../providers/provider.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Service]),
-     ProviderModule
+    ProviderModule,
+    UsersModule
   ],
   controllers: [ServiceController],
   providers: [ServiceService, ServiceRepository, ServiceDetailService],

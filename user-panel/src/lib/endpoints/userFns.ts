@@ -3,10 +3,16 @@ import { getErrorMessage } from "@/lib/helpers/errors";
 import Request from "@/lib/http";
 import { AxiosError } from "axios";
 
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
+}
+
 /** Patch - '/user/{id}' - update user account */
 export const updateUserFn = async (data: {
   id: string;
   name?: string;
+  gender:Gender;
   designations?: string[];
   languages?: string[];
   interests?: string[];
@@ -49,6 +55,7 @@ export interface GetUpdateUserByIdFnRes {
   password: string | null;
   token: string | null;
   role: UserRole;
+  gender:Gender;
   salt: string | null;
   active: boolean;
   verified: boolean;

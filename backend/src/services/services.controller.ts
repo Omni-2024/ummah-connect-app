@@ -36,6 +36,7 @@ export class ServiceController {
     @Query('offset') offset?: number,
     @Query('search') search?: string,
     @Query('provider') providerId?: string,
+    @Query('userId') userId?: string,
     @Query('providers') providerIds?: string[],
     @Query('profession') professionId?: string,
     @Query('professions') professionIds?: string[],
@@ -58,7 +59,6 @@ export class ServiceController {
     if (isPopular === undefined) {
       isPopular = false;
     }
-
     if (providerId){
       return await this.serviceService.findAllByProviders({
         limit,
@@ -66,6 +66,7 @@ export class ServiceController {
         providerId,
         isPublished,
         isArchived,
+        userId
       })
     }
     else {
@@ -85,6 +86,7 @@ export class ServiceController {
         isArchived,
         providerIds,
         isPopular,
+        userId
       });
     }
   }

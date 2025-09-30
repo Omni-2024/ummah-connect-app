@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
-  Between,
+  Between, Brackets,
   FindManyOptions,
   FindOperator,
   ILike,
@@ -88,15 +88,32 @@ export class ServiceRepository {
 
   async countProviders({
                          providerId,
+                         isPublished,
+                         isArchived,
+                         requiredGender,
                        }: FindAllByProviderServiceDto): Promise<number> {
     try {
-      return await this.serviceRepository.count({
-        where: { providerId: providerId },
-      });
+      const qb = this.serviceRepository
+        .createQueryBuilder('s')
+        .select('COUNT(1)', 'cnt')
+        .where('s.providerId = :providerId', { providerId });
+
+      qb.andWhere('s.isPublished = :isPublished', { isPublished });
+      qb.andWhere('s.isArchived = :isArchived', { isArchived });
+
+      if (requiredGender) {
+        qb.innerJoin('user', 'p', 'p.id = s.providerId AND p.gender = :gender', {
+          gender: requiredGender,
+        });
+      }
+
+      const row = await qb.getRawOne<{ cnt: string }>();
+      return Number(row?.cnt ?? 0);
     } catch (error) {
-      return error;
+      throw error;
     }
   }
+
 
   async updateService(
     updateServiceDto: UpdateServiceDto,
@@ -145,86 +162,133 @@ export class ServiceRepository {
   }
 
   async findServicesByProvider({
-                                providerId,
-                                limit,
-                                offset,
-                                isPublished,
-                                isArchived,
-                              }: FindAllByProviderServiceDto): Promise<Service[] | null | Error> {
+                                 providerId,
+                                 limit,
+                                 offset,
+                                 isPublished,
+                                 isArchived,
+                                 requiredGender,
+                               }: FindAllByProviderServiceDto) {
     try {
-      const options: FindOptionsProvider = { where: { providerId, isPublished, isArchived } };
-      if ((limit && limit > 0) || (offset && offset > 0)) {
-        options.take = limit;
-        options.skip = offset;
+      const qb = this.serviceRepository
+        .createQueryBuilder('s')
+        .where('s.providerId = :providerId', { providerId });
+
+      // Optional filters (use DB-portable OR clauses)
+      qb.andWhere('s.isPublished = :isPublished', { isPublished });
+      qb.andWhere('s.isArchived = :isArchived', { isArchived });
+
+      // Manual join to provider table to filter by gender (no relation required)
+      if (requiredGender) {
+        qb.innerJoin(
+          'user',
+          'p',
+          `p._id::text = s.provider_id AND p.gender = :gender AND p.deleted_at IS NULL`,
+          { gender: requiredGender },
+        );
       }
-      // const [services, count] =
-      return await this.serviceRepository.find(options);
-      // return [services, count];
+
+      if (typeof offset === 'number' && offset > 0) qb.skip(offset);
+      if (typeof limit === 'number' && limit > 0) qb.take(limit);
+
+      qb.orderBy('s.createdAt', 'DESC');
+
+      const { entities } = await qb.getRawAndEntities();
+      return entities;
     } catch (error) {
-      return error;
+      throw error; // don't return Error objects, let callers catch
     }
   }
 
   async search({
                  limit,
-                 lowerCmeRange,
                  offset,
                  search,
                  professionId,
                  specialtyIds,
                  typeIds,
+                 lowerCmeRange,
                  upperCmeRange,
                  isPublished,
                  isArchived,
                  providerIds,
+                 requiredGender
                }: SearchServiceDto): Promise<{ services: Service[]; count: number }> {
     try {
-      const options: FindOptionsFilter = { where: { isPublished, isArchived } };
+      const qb = this.serviceRepository
+        .createQueryBuilder('s')
+        .where('1=1'); // base
+
+      // --- simple column filters ---
+      qb.andWhere('s.isPublished = :isPublished', { isPublished });
+      qb.andWhere('s.isArchived = :isArchived', { isArchived });
       if (professionId) {
-        options.where.professionId = professionId;
+        qb.andWhere('s.professionId = :professionId', { professionId });
       }
-      if (specialtyIds) {
-        options.where.specialtyId = In(specialtyIds);
+      if (specialtyIds?.length) {
+        qb.andWhere('s.specialtyId IN (:...specialtyIds)', { specialtyIds });
       }
-      if (typeIds) {
-        options.where.typeId = Array.isArray(typeIds)
-          ? In(typeIds)
-          : In([typeIds]);
+      if (typeIds?.length) {
+        qb.andWhere('s.typeId IN (:...typeIds)', { typeIds });
       }
-      if (providerIds) {
-        options.where.educatorId = Array.isArray(providerIds)
-          ? In(providerIds)
-          : In([providerIds]);
-      }
-      if (lowerCmeRange) {
-        options.where.cmePoints = MoreThanOrEqual(lowerCmeRange);
-      }
-      if (upperCmeRange) {
-        options.where.cmePoints = LessThanOrEqual(upperCmeRange);
-      }
-      if (lowerCmeRange && upperCmeRange) {
-        options.where.cmePoints = Between(lowerCmeRange, upperCmeRange);
-      }
-      if (search) {
-        options.where.title = ILike(`%${search.trim()}%`);
-      }
-      if ((limit && limit > 0) || (offset && offset > 0)) {
-        options.take = limit;
-        options.skip = offset;
+      if (providerIds?.length) {
+        // Use `providerId` (rename to your actual column; you had `educatorId` earlier)
+        qb.andWhere('s.providerId IN (:...providerIds)', { providerIds });
       }
 
-      // Add order by createdAt in order
-      options.order = {
-        createdAt: 'DESC',
-      };
+      // --- range filters (CME points or similar) ---
+      if (lowerCmeRange != null && upperCmeRange != null) {
+        qb.andWhere('s.cmePoints BETWEEN :l AND :u', {
+          l: lowerCmeRange,
+          u: upperCmeRange,
+        });
+      } else if (lowerCmeRange != null) {
+        qb.andWhere('s.cmePoints >= :l', { l: lowerCmeRange });
+      } else if (upperCmeRange != null) {
+        qb.andWhere('s.cmePoints <= :u', { u: upperCmeRange });
+      }
 
-      const [services, count] =
-        await this.serviceRepository.findAndCount(options);
+      // --- keyword search (ILIKE) ---
+      if (search?.trim()) {
+        const q = `%${search.trim()}%`;
+        qb.andWhere(
+          new Brackets((w) => {
+            w.where('s.title ILIKE :q', { q })
+              .orWhere('s.tagline ILIKE :q', { q })
+              .orWhere('s.description ILIKE :q', { q });
+          }),
+        );
+      }
+
+      // --- OPTIONAL GENDER FILTER (join user only when required) ---
+      if (requiredGender) {
+        // If provider_id is VARCHAR and user._id is UUID → cast to text
+        qb.innerJoin(
+          'user',
+          'p',
+          `p._id::text = s.providerId::text AND p.gender = :gender AND p.deleted_at IS NULL`,
+          { gender: requiredGender },
+        );
+        // If you've migrated service.provider_id to UUID, use:
+        // qb.innerJoin('user', 'p', `p._id = s.providerId AND p.gender = :gender AND p.deleted_at IS NULL`, { gender: requiredGender });
+      }
+
+      // --- soft delete protection (if you use DeleteDateColumn) ---
+      qb.andWhere('s.deleted_at IS NULL');
+
+      // --- order + paging ---
+      qb.orderBy('s.createdAt', 'DESC');
+      if (typeof offset === 'number' && offset > 0) qb.skip(offset);
+      if (typeof limit === 'number' && limit > 0) qb.take(limit);
+
+      const [services, count] = await qb.getManyAndCount();
       return { services, count };
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      throw err;
     }
   }
+
+
 }
 
 interface FindOptionsProvider extends FindOptions {

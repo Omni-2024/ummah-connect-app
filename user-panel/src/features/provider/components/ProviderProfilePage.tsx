@@ -25,6 +25,7 @@ import ServicesSection from "./ServicesSection";
 import ReviewsSection from "./ReviewsSection";
 import Sidebar from "./Sidebar";
 import Footer from "@/features/app/components/Footer";
+import {useAuthState} from "@/features/auth/context/useAuthState";
 
 interface ProviderProfilePageProps {
   providerId: string;
@@ -53,11 +54,13 @@ const {
   const { data: educator, isLoading, error } = useGeneralUser(providerId);
   const { data: designationData } = useProfession(educator?.designations?.[0] || "");
   const { data: specialistsData } = useSpecialists(educator?.designations?.[0] || "");
+  const {id}=useAuthState()
   const { setUserId } = useChat();
 
   const { data: services, isLoading: servicesLoading } = useServicesByEducator({
     limit: 10,
-    educator: providerId,
+    provider: providerId,
+    userId:id
   });
 
   const handleBack = () => {

@@ -36,6 +36,7 @@ import NavbarMobile, {NavbarTitle} from "@/features/app/components/Navbar.mobile
 import {Setting4} from "iconsax-react";
 import Bottombar from "@/features/app/components/Bottombar";
 import Footer from "@/features/app/components/Footer";
+import {useAuthState} from "@/features/auth/context/useAuthState";
 
 export default function ExplorePage() {
 
@@ -57,13 +58,15 @@ export default function ExplorePage() {
 
     } = useExploreState()
 
+    const {id}=useAuthState()
+
     const { data: categories } = useCategories();
 
     useEffect(() => {
         setOffset((currentPage - 1) * limit)
     }, [currentPage, limit]);
 
-    const serviceParams = { limit, offset } as GetAllServiceParams;
+    const serviceParams = { limit, offset,userId:id } as GetAllServiceParams;
 
     if (searchTerm) {
         serviceParams.search = searchTerm;

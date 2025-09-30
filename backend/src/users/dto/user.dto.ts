@@ -1,6 +1,7 @@
 import { IsArray, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateServiceDto } from '../../services/dto/service.dto';
+import { Gender } from '../entities/abstract.user.entity';
 
 export class PaginatedRequestDto {
   limit?: number;
@@ -19,6 +20,10 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   name?: string;
+
+  @IsOptional()
+  @IsString()
+  gender?: Gender;
 
   @IsOptional()
   @IsString()

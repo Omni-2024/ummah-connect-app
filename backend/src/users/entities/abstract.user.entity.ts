@@ -21,9 +21,15 @@ export enum SigninMethod {
   SOCIAL = 'social',
 }
 
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
+}
+
 export declare abstract class AbstractUserEntity extends AbstractBaseEntity {
   name: string;
   email: string;
+  gender:Gender;
   password: any;
   token: string;
   role: UserRole;

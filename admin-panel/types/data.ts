@@ -4,6 +4,11 @@ export enum Roles {
   Moderator = "moderator",
 }
 
+export enum Gender {
+  MALE = 'male',
+  FEMALE = 'female',
+}
+
 export interface UserData {
   languages: string[];
   bio: string;
@@ -17,6 +22,7 @@ export interface UserData {
   email: string;
   token: string;
   role: Roles;
+  gender:Gender;
   active: boolean;
   verified: boolean;
   stripeId: string | null;
@@ -43,45 +49,6 @@ export type QueryListResponse<T> = {
   meta: {
     total: number;
   };
-};
-
-export type CourseData = {
-  id: string;
-  title: string;
-  image: string;
-  category: string;
-  educator: string;
-  CME_points: number;
-  duration: string;
-  CME_Id: string;
-};
-
-export type WebinarData = {
-  id: string;
-  title: string;
-  image: string;
-  category: string;
-  educator: string;
-  CME_points: number;
-  duration: string;
-  CME_Id: string;
-};
-
-export type EducatorData = {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  version: number;
-  name: string;
-  designation: string;
-  bio: string;
-  profileImageUrl: string;
-  courseCount: number;
-  webinarCount: number;
-  enrollmentCount: string;
-  webinarEnrollmentCount: string;
-
 };
 
 export type SpecialistData = {

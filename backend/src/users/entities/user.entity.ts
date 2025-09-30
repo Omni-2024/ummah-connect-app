@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
-import { AbstractUserEntity, SigninMethod, UserRole } from './abstract.user.entity';
+import { AbstractUserEntity, Gender, SigninMethod, UserRole } from './abstract.user.entity';
 
 @Entity('user')
 export class UserEntity extends BaseEntity implements AbstractUserEntity {
@@ -58,6 +58,9 @@ export class UserEntity extends BaseEntity implements AbstractUserEntity {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role: UserRole;
+
+  @Column({ type: 'enum', enum: Gender, default: Gender.MALE})
+  gender: Gender;
 
   @Exclude({ toPlainOnly: true })
   @Column({ nullable: true, default: null })

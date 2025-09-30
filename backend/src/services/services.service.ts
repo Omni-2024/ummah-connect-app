@@ -9,14 +9,22 @@ import {
 import { ServiceRepository } from './service.repository';
 import { PaginatedRequestDto } from '../users/dto/base.dto';
 import { Service } from './entities/service.entity';
+import { ConfigService } from '@nestjs/config';
+import { UserRepository } from '../users/user.repository';
 
 @Injectable()
 export class ServiceService {
- constructor(
-   private readonly serviceRepo: ServiceRepository,
+  private readonly genderBase;
 
- ) {
- }
+  constructor(
+   private readonly serviceRepo: ServiceRepository,
+   private readonly userRepo: UserRepository,
+   private readonly configService: ConfigService,
+
+
+  ) {
+    this.genderBase=this.configService.getOrThrow<string>('GENDER_BASE')
+  }
 
   async create(
     createServiceDto: CreateServiceDto,
@@ -54,46 +62,57 @@ export class ServiceService {
     }
   }
 
-  async search(
-    searchServiceDto: SearchServiceDto,
-  ) {
-      const { services, count } = await this.serviceRepo.search(searchServiceDto);
+  async search(searchServiceDto: SearchServiceDto) {
+    const { limit, offset, userId } = searchServiceDto ;
 
-      if (
-        services instanceof Array &&
-        services.length > 0 &&
-        services[0] instanceof Service
-      ) {
-        const { limit, offset } = searchServiceDto;
-        const total = count;
+    const doGender = this.genderBase === "true" && !!userId;
 
-        return {
-          data: services, meta: { total, limit, offset  },
-        };
-      }
+    let requiredGender: string | undefined;
+    if (doGender) {
+      const user = await this.userRepo.findOneById(userId);
+      if (!user) throw new NotFoundException('User not found');
+      requiredGender = user.gender;
+    }
+
+    const { services, count } = await this.serviceRepo.search({
+      ...searchServiceDto,
+      requiredGender, // undefined -> no gender join, all providers allowed
+    });
+
+    if (!services.length) {
       throw new NotFoundException('No services found');
+    }
+
+    return { data: services, meta: { total: count, limit, offset } };
   }
 
-  async findAllByProviders(
-    findAllByProviderServiceDto: FindAllByProviderServiceDto,
-  ){
-      const services = await this.serviceRepo.findServicesByProvider(
-        findAllByProviderServiceDto,
-      );
-      if (
-        services instanceof Array &&
-        services.length > 0 &&
-        services[0] instanceof Service
-      ) {
-        const { limit, offset } = findAllByProviderServiceDto;
-        const total = await this.serviceRepo.countProviders(
-          findAllByProviderServiceDto,
-        );
-        return {
-          data: services, meta: { total, limit, offset }
-        };
-      }
+  async findAllByProviders(dto: FindAllByProviderServiceDto) {
+    const { limit, offset, userId } = dto;
+
+    let requiredGender: string | undefined;
+    if (this.genderBase==="true" && userId) {
+      const user = await this.userRepo.findOneById(userId);
+      if (!user) throw new NotFoundException('User not found');
+      requiredGender = user.gender;
+    }
+
+    // fetch with optional gender filter
+    const services = await this.serviceRepo.findServicesByProvider({
+      ...dto,
+      requiredGender,
+    });
+
+    if (!Array.isArray(services) || services.length === 0) {
       throw new NotFoundException('No services found');
+    }
+
+    // count with the same filters for consistent pagination
+    const total = await this.serviceRepo.countProviders({
+      ...dto,
+      requiredGender,
+    });
+
+    return { data: services, meta: { total, limit, offset } };
   }
 
   async findOne(

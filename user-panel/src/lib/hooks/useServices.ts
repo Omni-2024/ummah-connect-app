@@ -22,12 +22,13 @@ export const useServicesHints = (params: GetAllServiceParams) => {
 
 export const useServicesByEducator = (params: {
   limit: number;
-  educator: string;
+  provider: string;
+  userId:string
 }) => {
   return useQuery({
     queryKey: ["provider-services", params],
     queryFn: () => getAllServicesFn(params),
-    enabled: !!params.limit && !!params.educator,
+    enabled: !!params.limit && !!params.provider,
   });
 };
 
