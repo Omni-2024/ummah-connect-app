@@ -5,7 +5,6 @@ import Badge from "@/components/base/Badge";
 import {
   StarFilledIcon,
   ClockIcon,
-  EnvelopeClosedIcon,
   ChevronDownIcon,
   ChatBubbleIcon,
   FileTextIcon,
@@ -79,28 +78,7 @@ export default function ServiceHeader({
             </p>
             
             {/* Educator Info Section */}
-            <div className="flex items-center gap-4 mb-4">
-              <div className="flex-shrink-0">
-                {educator.profileImage ? (
-                  <img
-                    src={
-                      educator.profileImage
-                      ? buildAvatarUrl(educator.profileImage)!!
-                      : "/images/coverImage.png"
-                    } 
-                    alt={educator.name}
-                    className="size-12 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="size-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                    <span className="text-white font-medium text-sm">
-                      {getInitials(educator.name)}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0">
                 <button
                   onClick={() => {
                     document
@@ -114,7 +92,7 @@ export default function ServiceHeader({
                   </h3>
                 </button>
                 
-                <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-4 text-sm flex-wrap">
                   <div className="flex items-center gap-1">
                     <StarFilledIcon className="size-4 text-yellow-500" />
                     <span className="font-semibold text-gray-900">
@@ -128,8 +106,56 @@ export default function ServiceHeader({
                     count={Number(service.enrollmentCount)}
                   />
                 </div>
+
+                {/* Mobile pricing - visible only on mobile */}
+                <div className="lg:hidden mt-3 pt-3 border-t border-gray-200 flex items-center justify-between gap-3">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-2xl font-bold text-gray-900">
+                      ${discountedPrice.toFixed(2)}
+                    </span>
+                    {service.discountEnabled && (
+                      <span className="text-sm text-gray-400 line-through">
+                        ${service.price.toFixed(2)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="relative flex-shrink-0">
+                  <Button
+                    onClick={handleContactClick}
+                    variant="secondary"
+                    size="lg"
+                    className="px-4"
+                  >
+                    <ChatBubbleIcon  className="size-4 mr-2" />
+                    Contact
+                    <ChevronDownIcon 
+                      className={`size-4 ml-2 transition-transform ${
+                        showContactOptions ? 'rotate-180' : ''
+                      }`} 
+                    />
+                  </Button>
+
+                  {showContactOptions && (
+                    <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 min-w-[180px]">
+                      <button
+                        onClick={handleGetQuote}
+                        className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100 transition-colors duration-200"
+                      >
+                        <FileTextIcon className="size-4 text-gray-600" />
+                        <span className="font-medium text-gray-900">Get a Quote</span>
+                      </button>
+                      <button
+                        onClick={handleChat}
+                        className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-2 transition-colors duration-200"
+                      >
+                        <ChatBubbleIcon className="size-4 text-gray-600" />
+                        <span className="font-medium text-gray-900">Ask a Question</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+                </div>
               </div>
-            </div>
           </div>
 
           {/* Mobile pricing and action buttons - visible only on mobile */}
@@ -163,41 +189,7 @@ export default function ServiceHeader({
         </div>
       </div>
       <div className="lg:hidden mt-4">
-    <div className="relative">
-      <Button
-        onClick={handleContactClick}
-        variant="secondary"
-        size="lg"
-        className="px-4 w-full"
-      >
-        <EnvelopeClosedIcon className="size-4 mr-2" />
-        Contact
-        <ChevronDownIcon 
-          className={`size-4 ml-2 transition-transform ${
-            showContactOptions ? 'rotate-180' : ''
-          }`} 
-        />
-      </Button>
 
-      {showContactOptions && (
-        <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 min-w-[180px]">
-          <button
-            onClick={handleGetQuote}
-            className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-2 border-b border-gray-100 transition-colors duration-200"
-          >
-            <FileTextIcon className="size-4 text-gray-600" />
-            <span className="font-medium text-gray-900">Get a Quote</span>
-          </button>
-          <button
-            onClick={handleChat}
-            className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-2 transition-colors duration-200"
-          >
-            <ChatBubbleIcon className="size-4 text-gray-600" />
-            <span className="font-medium text-gray-900">Ask a Question</span>
-          </button>
-        </div>
-      )}
-    </div>
   </div>
 
 

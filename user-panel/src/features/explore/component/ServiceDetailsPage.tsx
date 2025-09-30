@@ -394,8 +394,10 @@ export default function ServiceDetailsPage() {
             </div>
           </div>
 
-          {/* Desktop Sidebar - Hidden on mobile */}
+         {/* Desktop Sidebar - Hidden on mobile */}
           <div className="hidden lg:block lg:col-span-1">
+              <div className="sticky top-24 self-start">
+
             <ServiceSidebar
               service={service.serviceDetails.data}
               discountedPrice={discountedPrice}
@@ -410,32 +412,33 @@ export default function ServiceDetailsPage() {
               educator={educator}
             />
           </div>
+          </div>
         </div>
       </div>
 
       {/* Mobile bottom action bar */}
       <div className="lg:hidden fixed bottom-16 left-0 right-0 p-4 bg-white border-t border-gray-200 z-30 shadow-lg">
         <div className="flex items-center gap-3">
-          <div className="flex-1">
-            <div className="text-xs text-gray-500 mb-1">Price</div>
-            <div className="flex items-baseline gap-2">
-              <span className="text-lg font-bold text-gray-900">
-                ${discountedPrice.toFixed(2)}
-              </span>
-              {service.serviceDetails.data.discountEnabled && (
-                <span className="text-sm text-gray-400 line-through">
-                  ${service.serviceDetails.data.price.toFixed(2)}
-                </span>
-              )}
-            </div>
-          </div>
-          {/*<Button*/}
-          {/*  onClick={handleEnroll}*/}
-          {/*  className="px-8 py-3 text-base font-semibold shadow-sm"*/}
-          {/*  size="lg"*/}
-          {/*>*/}
-          {/*  Enroll Now*/}
-          {/*</Button>*/}
+          {/*<div className="flex-1">*/}
+          {/*  <div className="text-xs text-gray-500 mb-1">Price</div>*/}
+          {/*  <div className="flex items-baseline gap-2">*/}
+          {/*    <span className="text-lg font-bold text-gray-900">*/}
+          {/*      ${discountedPrice.toFixed(2)}*/}
+          {/*    </span>*/}
+          {/*    {service.serviceDetails.data.discountEnabled && (*/}
+          {/*      <span className="text-sm text-gray-400 line-through">*/}
+          {/*        ${service.serviceDetails.data.price.toFixed(2)}*/}
+          {/*      </span>*/}
+          {/*    )}*/}
+          {/*  </div>*/}
+          {/*</div>*/}
+            {/*<Button*/}
+            {/*    onClick={handleEnroll}*/}
+            {/*    className="w-full px-8 py-3 text-base font-semibold shadow-sm"*/}
+            {/*    size="lg"*/}
+            {/*>*/}
+            {/*    Enroll Now*/}
+            {/*</Button>*/}
           <EnrollmentButton />
         </div>
       </div>

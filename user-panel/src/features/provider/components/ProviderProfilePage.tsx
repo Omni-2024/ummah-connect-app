@@ -36,13 +36,19 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [pageLimit, setPageLimit] = useState(4);
   const [pageOffset, setPageOffset] = useState(0);
-  const [starFilter, setStarFilter] = useState<number>(0);
+  const [starFilter, setStarFilter] = useState<number[]>([]);
 
-  const {
-    data: reviewsData,
-    isLoading: isReviewLoading,
-    isError: isReviewError,
-  } = useReviewByProvider({ providerId, stars: starFilter, limit: pageLimit, offset: pageOffset });
+
+const {
+  data: reviewsData,
+  isLoading: isReviewLoading,
+  isError: isReviewError,
+} = useReviewByProvider({
+  providerId,
+  stars: 0,  
+  limit: pageLimit,
+  offset: pageOffset,
+});
 
   const { data: educator, isLoading, error } = useGeneralUser(providerId);
   const { data: designationData } = useProfession(educator?.designations?.[0] || "");
