@@ -95,16 +95,18 @@ export default function ServicesSection({ services, servicesLoading, router, bui
                   </div>
                 </div>
                 <p className="text-gray-700 mb-4">{service.tagline}</p>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {renderStars(parseFloat(service.averageReviewScore) || 0)}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <div className="flex items-center gap-1">
+                      {renderStars(parseFloat(service.averageReviewScore) || 0)}
+                    </div>
                     <span className="font-semibold">{service.averageReviewScore || "0.0"}</span>
-                    <span className="text-gray-500">({service.totalReviewCount} reviews)</span>
+                    <span className="text-gray-500 whitespace-nowrap">({service.totalReviewCount} reviews)</span>
                   </div>
                   <div className="flex gap-2">
                     <Button
                       size="sm"
-                      variant="primary"
+                      variant="secondary"
                       onClick={() => router.push(`/service/${service.slug}`)}
                     >
                       View Details
