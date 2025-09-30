@@ -34,7 +34,7 @@ export default function ServiceFAQ({ faqs }: ServiceFAQProps) {
   }
 
   return (
-    <Card className="p-6 mt-6">
+    <Card className="p-0 !mt-6 !border-0 bg-transparent ">
       <h2 className="text-lg font-semibold text-gray-900 mb-4">
         Frequently Asked Questions
       </h2>
@@ -45,7 +45,7 @@ export default function ServiceFAQ({ faqs }: ServiceFAQProps) {
           const isLast = index === faqData.length - 1;
           
           return (
-            <div key={faq.id} className={`${!isLast ? 'border-b border-gray-100 pb-3' : ''}`}>
+            <div key={faq.id} className={`${!isLast ? 'border-b border-dark-400 pb-3' : ''}`}>
               <button
                 onClick={() => toggleExpanded(faq.id)}
                 className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-md p-2 -m-2 hover:bg-gray-50 transition-colors"

@@ -41,9 +41,9 @@ export default function ServiceContent({ service, educator, providerId }: Servic
   };
 
   return (
-    <div className="space-y-4 px-4 pb-6">
+    <div className="space-y-4  pb-6 !mt-8">
       {/* Course Description - Mobile Optimized */}
-      <Card className="p-4 sm:p-6">
+      <Card className="p-0 sm:p-0 !border-0 bg-transparent">
         <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4">
           About this Service
         </h2>
@@ -54,7 +54,7 @@ export default function ServiceContent({ service, educator, providerId }: Servic
 
       {/* Why Me Section - Mobile Optimized */}
       {service.whyMe && service.whyMe.length > 0 && (
-        <Card className="p-6">
+        <Card className="p-0 !border-0 bg-transparent mt-4">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">
             Why Me?
           </h2>
@@ -77,7 +77,7 @@ export default function ServiceContent({ service, educator, providerId }: Servic
 
       {/* Service Provider - Mobile First Design */}
       {educator && (
-        <Card id="provider-section" className="p-4 sm:p-6 scroll-mt-24">
+        <Card id="provider-section" className=" sm:p-0 scroll-mt-24 !border-0 bg-transparent !mt-12">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4">
             About the Service Provider
           </h2>
