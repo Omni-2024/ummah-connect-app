@@ -89,14 +89,14 @@ export default function ProviderHeader({ educator, getDesignationDisplay, buildA
                 <p className="font-bold text-xl text-gray-900">{educator.totalServices || "0"}</p>
                 <p className="text-sm text-gray-500">Total Services</p>
               </div>
-              <div>
+              {/* <div>
                 <p className="font-bold text-xl text-gray-900">{educator.totalServicesCompleted || "0"}</p>
                 <p className="text-sm text-gray-500">Services Completed</p>
               </div>
               <div>
                 <p className="font-bold text-xl text-gray-900">{educator.totalActiveServices || "0"}</p>
                 <p className="text-sm text-gray-500">Ongoing Services</p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
