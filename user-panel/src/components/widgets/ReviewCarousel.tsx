@@ -1,17 +1,12 @@
 "use client";
 
 import * as React from "react";
-import useEmblaCarousel from "embla-carousel-react";
-import Autoplay from "embla-carousel-autoplay";
-import type { EmblaOptionsType } from "embla-carousel";
 import * as Avatar from "@radix-ui/react-avatar";
-import { ChevronLeftIcon, ChevronRightIcon, StarFilledIcon } from "@radix-ui/react-icons";
+import { StarFilledIcon } from "@radix-ui/react-icons";
 import type { Review } from "@/lib/endpoints/reviewFns";
 import {buildAvatarUrl} from "@/features/app/components/Navbar";
 import {getInitials} from "@/features/explore/component/ServiceHeader";
 import {useGeneralUser} from "@/lib/hooks/useUser";
-
-const options: EmblaOptionsType = { loop: true, align: "start", dragFree: false };
 
 function timeAgo(iso?: string) {
     if (!iso) return "";
@@ -25,7 +20,7 @@ function timeAgo(iso?: string) {
     return `${m} min ago`;
 }
 
-export function pickTopReviews(all: Review[], limit = 4): Review[] {
+export function pickTopReviews(all: Review[], limit = 4, offset = 0): Review[] {
     return [...(all ?? [])]
         .sort((a, b) => {
             // 1) highest stars first
@@ -36,56 +31,56 @@ export function pickTopReviews(all: Review[], limit = 4): Review[] {
             // 3) newest last
             return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         })
-        .slice(0, limit);
+        .slice(offset, offset + limit);
 }
 
-export default function ReviewCarousel({ apiReviews }: { apiReviews?: Review[] }) {
-    const top4 = React.useMemo(() => pickTopReviews(apiReviews ?? [], 4), [apiReviews]);
+export default function ReviewCarousel({ 
+    apiReviews, 
+    onLoadMore 
+}: { 
+    apiReviews?: Review[];
+    onLoadMore?: () => void;
+}) {
+    const [currentOffset, setCurrentOffset] = React.useState(0);
+    const reviewsPerPage = 4;
+    
+    const displayedReviews = React.useMemo(() => 
+        pickTopReviews(apiReviews ?? [], reviewsPerPage, currentOffset), 
+        [apiReviews, currentOffset]
+    );
 
-    const autoplay = React.useRef(Autoplay({ delay: 14500, stopOnInteraction: true }));
-    const [emblaRef, emblaApi] = useEmblaCarousel(options, [autoplay.current]);
-    const [selectedIndex, setSelectedIndex] = React.useState(0);
+    const totalReviews = apiReviews?.length ?? 0;
+    const hasMore = currentOffset + reviewsPerPage < totalReviews;
 
-    React.useEffect(() => {
-        if (!emblaApi) return;
-        const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
-        emblaApi.on("select", onSelect);
-        emblaApi.on("reInit", onSelect);
-    }, [emblaApi]);
+    const handleSeeMore = () => {
+        setCurrentOffset(prev => prev + reviewsPerPage);
+        onLoadMore?.();
+    };
 
-    const scrollPrev = React.useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-    const scrollNext = React.useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-
-    if (!top4.length) return null;
+    if (!displayedReviews.length) return null;
 
     return (
-        <div className="hidden sm:block w-full my-16 md:relative">
+        <div className="- sm:block w-full my-16">
             <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl text-dark-450 font-semibold">What people loved about this service</h2>
-                <h2>See all reviews</h2>
-            </div>
-            <div className="flex items-end justify-end mb-2">
-                {top4.length > 1 && (
-                    <div className="flex items-center gap-2">
-                        <button onClick={scrollPrev} aria-label="Previous" className="rounded-full p-2 shadow hover:bg-gray-50 active:scale-95 transition">
-                            <ChevronLeftIcon className="h-5 w-5" />
-                        </button>
-                        <button onClick={scrollNext} aria-label="Next" className="rounded-full p-2 shadow hover:bg-gray-50 active:scale-95 transition">
-                            <ChevronRightIcon className="h-5 w-5" />
-                        </button>
-                    </div>
-                )}
             </div>
 
-            <div className="overflow-hidden" ref={emblaRef}>
-                <div className="flex">
-                    {top4.map((r) => (
-                        <div key={r.id} className="min-w-0 shrink-0 basis-full md:basis-[100%] lg:basis-[100%]" aria-roledescription="slide">
-                            <ReviewCard review={r} />
-                        </div>
-                    ))}
-                </div>
+            <div className="space-y-4">
+                {displayedReviews.map((r) => (
+                    <ReviewCard key={r.id} review={r} />
+                ))}
             </div>
+
+            {hasMore && (
+                <div className="flex justify-end mt-4">
+                    <button
+                        onClick={handleSeeMore}
+                        className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
+                    >
+                        See more reviews →
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
