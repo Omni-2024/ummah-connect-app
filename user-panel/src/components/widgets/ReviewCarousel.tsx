@@ -60,7 +60,7 @@ export default function ReviewCarousel({
     if (!displayedReviews.length) return null;
 
     return (
-        <div className="- sm:block w-full my-16">
+        <div className=" sm:block w-full my-16">
             <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl text-dark-450 font-semibold">What people loved about this service</h2>
             </div>
