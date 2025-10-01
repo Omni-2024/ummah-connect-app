@@ -85,6 +85,8 @@ export default function ServiceContent({ service, educator, providerId }: Servic
           {/* Mobile-First Layout */}
           <div className="space-y-4">
             {/* Top Row - Profile Info */}
+            <div className="flex items-center justify-between gap-4">
+
             <div className="flex items-center gap-3">
               {/* Profile Avatar */}
               <div className="flex-shrink-0">
@@ -111,12 +113,8 @@ export default function ServiceContent({ service, educator, providerId }: Servic
                   <GlobeIcon className="w-4 h-4" />
                   <span>{educator.country}</span>
                 </div>
-              </div>
-            </div>
 
-            {/* Stats Row - Mobile Optimized */}
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-1 min-w-0">
+                <div className="flex items-center gap-1 min-w-0 mt-1">
                 <StarFilledIcon className="size-4 text-yellow-500 flex-shrink-0" />
                 <span className="font-semibold text-gray-900 text-sm">
                   {service.averageReviewScore}
@@ -125,6 +123,8 @@ export default function ServiceContent({ service, educator, providerId }: Servic
                   ({service.totalReviewCount} reviews)
                 </span>
               </div>
+              </div>
+            </div>              
 
               {/* Contact Button - Prominent on Mobile */}
               <Button
