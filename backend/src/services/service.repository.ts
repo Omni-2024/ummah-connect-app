@@ -90,28 +90,39 @@ export class ServiceRepository {
                          providerId,
                          isPublished,
                          isArchived,
-                         requiredGender,
+                         doGender,
+                         hasUser,
+                         userGender,
                        }: FindAllByProviderServiceDto): Promise<number> {
-    try {
-      const qb = this.serviceRepository
-        .createQueryBuilder('s')
-        .select('COUNT(1)', 'cnt')
-        .where('s.providerId = :providerId', { providerId });
+    const qb = this.serviceRepository
+      .createQueryBuilder('s')
+      .select('COUNT(1)', 'cnt')
+      .where('s.providerId = :providerId', { providerId });
 
-      qb.andWhere('s.isPublished = :isPublished', { isPublished });
-      qb.andWhere('s.isArchived = :isArchived', { isArchived });
+    qb.andWhere('s.isPublished = :isPublished', { isPublished });
+    qb.andWhere('s.isArchived = :isArchived', { isArchived });
 
-      if (requiredGender) {
-        qb.innerJoin('user', 'p', 'p.id = s.providerId AND p.gender = :gender', {
-          gender: requiredGender,
-        });
+    qb.leftJoin(
+      'user',
+      'p',
+      `p._id::text = s.provider_id::text AND p.deleted_at IS NULL`
+    );
+
+    if (hasUser && userGender) {
+      if (doGender==="true") {
+        qb.andWhere('p.gender = :userGender', { userGender });
+      } else {
+        qb.andWhere(
+          '(COALESCE(p.same_gender_allow, false) = false OR p.gender = :userGender)',
+          { userGender },
+        );
       }
-
-      const row = await qb.getRawOne<{ cnt: string }>();
-      return Number(row?.cnt ?? 0);
-    } catch (error) {
-      throw error;
     }
+
+    qb.andWhere('s.deleted_at IS NULL');
+
+    const row = await qb.getRawOne<{ cnt: string }>();
+    return Number(row?.cnt ?? 0);
   }
 
 
@@ -167,37 +178,57 @@ export class ServiceRepository {
                                  offset,
                                  isPublished,
                                  isArchived,
-                                 requiredGender,
-                               }: FindAllByProviderServiceDto) {
-    try {
-      const qb = this.serviceRepository
-        .createQueryBuilder('s')
-        .where('s.providerId = :providerId', { providerId });
+                                 doGender,
+                                 hasUser,
+                                 userGender,
+                               }: FindAllByProviderServiceDto): Promise<Service[]> {
+    const qb = this.serviceRepository
+      .createQueryBuilder('s')
+      .where('s.providerId = :providerId', { providerId });
 
-      // Optional filters (use DB-portable OR clauses)
-      qb.andWhere('s.isPublished = :isPublished', { isPublished });
-      qb.andWhere('s.isArchived = :isArchived', { isArchived });
+    qb.andWhere('s.isPublished = :isPublished', { isPublished });
+    qb.andWhere('s.isArchived = :isArchived', { isArchived });
 
-      // Manual join to provider table to filter by gender (no relation required)
-      if (requiredGender) {
-        qb.innerJoin(
-          'user',
-          'p',
-          `p._id::text = s.provider_id AND p.gender = :gender AND p.deleted_at IS NULL`,
-          { gender: requiredGender },
+    // Join provider (user) to get gender / flags / best-seller
+    qb.leftJoin(
+      'user',
+      'p',
+      `p._id::text = s.provider_id::text AND p.deleted_at IS NULL`
+    );
+
+    // ----- Gender rules -----
+    if (hasUser && userGender) {
+      if (doGender==="true") {
+        // A) doGender true: strictly same gender only
+        qb.andWhere('p.gender = :userGender', { userGender });
+      } else {
+        // B) doGender false: if provider enforces same-gender, restrict; otherwise open to all
+        // COALESCE handles NULL as false (open)
+        qb.andWhere(
+          '(COALESCE(p.same_gender_allow, false) = false OR p.gender = :userGender)',
+          { userGender },
         );
       }
-
-      if (typeof offset === 'number' && offset > 0) qb.skip(offset);
-      if (typeof limit === 'number' && limit > 0) qb.take(limit);
-
-      qb.orderBy('s.createdAt', 'DESC');
-
-      const { entities } = await qb.getRawAndEntities();
-      return entities;
-    } catch (error) {
-      throw error; // don't return Error objects, let callers catch
     }
+    // C) No userId -> no gender predicate
+
+    // Soft delete protection
+    qb.andWhere('s.deleted_at IS NULL');
+
+    // ----- Ordering -----
+    // Best sellers (not expired) first, then title ASC, then createdAt DESC
+    qb.addSelect(
+      `CASE WHEN p.best_seller_expires IS NOT NULL AND p.best_seller_expires > NOW() THEN 1 ELSE 0 END`,
+      'best_seller_first'
+    );
+    qb.orderBy('best_seller_first', 'DESC')
+      .addOrderBy('s.title', 'ASC')
+      .addOrderBy('s.createdAt', 'DESC');
+
+    if (typeof offset === 'number' && offset > 0) qb.skip(offset);
+    if (typeof limit === 'number' && limit > 0) qb.take(limit);
+
+    return qb.getMany();
   }
 
   async search({
@@ -212,80 +243,82 @@ export class ServiceRepository {
                  isPublished,
                  isArchived,
                  providerIds,
-                 requiredGender
+                 doGender,
+                 hasUser,
+                 userGender,
                }: SearchServiceDto): Promise<{ services: Service[]; count: number }> {
-    try {
-      const qb = this.serviceRepository
-        .createQueryBuilder('s')
-        .where('1=1'); // base
+    const qb = this.serviceRepository
+      .createQueryBuilder('s')
+      .where('1=1');
 
-      // --- simple column filters ---
-      qb.andWhere('s.isPublished = :isPublished', { isPublished });
-      qb.andWhere('s.isArchived = :isArchived', { isArchived });
-      if (professionId) {
-        qb.andWhere('s.professionId = :professionId', { professionId });
-      }
-      if (specialtyIds?.length) {
-        qb.andWhere('s.specialtyId IN (:...specialtyIds)', { specialtyIds });
-      }
-      if (typeIds?.length) {
-        qb.andWhere('s.typeId IN (:...typeIds)', { typeIds });
-      }
-      if (providerIds?.length) {
-        // Use `providerId` (rename to your actual column; you had `educatorId` earlier)
-        qb.andWhere('s.providerId IN (:...providerIds)', { providerIds });
-      }
+    // simple filters (only apply when provided)
+    qb.andWhere('s.isPublished = :isPublished', { isPublished });
+    qb.andWhere('s.isArchived = :isArchived', { isArchived });
 
-      // --- range filters (CME points or similar) ---
-      if (lowerCmeRange != null && upperCmeRange != null) {
-        qb.andWhere('s.cmePoints BETWEEN :l AND :u', {
-          l: lowerCmeRange,
-          u: upperCmeRange,
-        });
-      } else if (lowerCmeRange != null) {
-        qb.andWhere('s.cmePoints >= :l', { l: lowerCmeRange });
-      } else if (upperCmeRange != null) {
-        qb.andWhere('s.cmePoints <= :u', { u: upperCmeRange });
-      }
+    if (professionId) qb.andWhere('s.professionId = :professionId', { professionId });
+    if (specialtyIds?.length) qb.andWhere('s.specialtyId IN (:...specialtyIds)', { specialtyIds });
+    if (typeIds?.length) qb.andWhere('s.typeId IN (:...typeIds)', { typeIds });
+    if (providerIds?.length) qb.andWhere('s.providerId IN (:...providerIds)', { providerIds });
 
-      // --- keyword search (ILIKE) ---
-      if (search?.trim()) {
-        const q = `%${search.trim()}%`;
-        qb.andWhere(
-          new Brackets((w) => {
-            w.where('s.title ILIKE :q', { q })
-              .orWhere('s.tagline ILIKE :q', { q })
-              .orWhere('s.description ILIKE :q', { q });
-          }),
-        );
-      }
-
-      // --- OPTIONAL GENDER FILTER (join user only when required) ---
-      if (requiredGender) {
-        // If provider_id is VARCHAR and user._id is UUID → cast to text
-        qb.innerJoin(
-          'user',
-          'p',
-          `p._id::text = s.providerId::text AND p.gender = :gender AND p.deleted_at IS NULL`,
-          { gender: requiredGender },
-        );
-        // If you've migrated service.provider_id to UUID, use:
-        // qb.innerJoin('user', 'p', `p._id = s.providerId AND p.gender = :gender AND p.deleted_at IS NULL`, { gender: requiredGender });
-      }
-
-      // --- soft delete protection (if you use DeleteDateColumn) ---
-      qb.andWhere('s.deleted_at IS NULL');
-
-      // --- order + paging ---
-      qb.orderBy('s.createdAt', 'DESC');
-      if (typeof offset === 'number' && offset > 0) qb.skip(offset);
-      if (typeof limit === 'number' && limit > 0) qb.take(limit);
-
-      const [services, count] = await qb.getManyAndCount();
-      return { services, count };
-    } catch (err) {
-      throw err;
+    // numeric ranges
+    if (lowerCmeRange != null && upperCmeRange != null) {
+      qb.andWhere('s.cmePoints BETWEEN :l AND :u', { l: lowerCmeRange, u: upperCmeRange });
+    } else if (lowerCmeRange != null) {
+      qb.andWhere('s.cmePoints >= :l', { l: lowerCmeRange });
+    } else if (upperCmeRange != null) {
+      qb.andWhere('s.cmePoints <= :u', { u: upperCmeRange });
     }
+
+    // keyword
+    if (search?.trim()) {
+      const q = `%${search.trim()}%`;
+      qb.andWhere(new Brackets(w => {
+        w.where('s.title ILIKE :q', { q })
+          .orWhere('s.tagline ILIKE :q', { q })
+          .orWhere('s.description ILIKE :q', { q });
+      }));
+    }
+
+    // join provider (user) to access gender / same_gender_allow / best_seller_expires
+    qb.leftJoin(
+      'user',
+      'p',
+      `p._id::text = s.provider_id::text AND p.deleted_at IS NULL`
+    );
+    // If migrated to UUID, use:  `p._id = s.provider_id AND p.deleted_at IS NULL`
+
+    // 3-condition gender logic
+    if (hasUser && userGender) {
+      if (doGender==="true") {
+        // A) doGender true → strictly same gender only
+        qb.andWhere('p.gender = :userGender', { userGender });
+      } else {
+        // B) doGender false → if provider enforces same gender, restrict; else open
+        qb.andWhere(
+          '(COALESCE(p.same_gender_allow, false) = false OR p.gender = :userGender)',
+          { userGender },
+        );
+      }
+    }
+    // C) no user → no gender predicate
+
+    // soft delete
+    qb.andWhere('s.deleted_at IS NULL');
+
+    // ordering: best sellers first, then title ASC, then createdAt DESC
+    qb.addSelect(
+      `CASE WHEN p.best_seller_expires IS NOT NULL AND p.best_seller_expires > NOW() THEN 1 ELSE 0 END`,
+      'best_seller_first'
+    );
+    qb.orderBy('best_seller_first', 'DESC')
+      .addOrderBy('s.title', 'ASC')
+      .addOrderBy('s.createdAt', 'DESC');
+
+    if (typeof offset === 'number' && offset > 0) qb.skip(offset);
+    if (typeof limit === 'number' && limit > 0) qb.take(limit);
+
+    const [services, count] = await qb.getManyAndCount();
+    return { services, count };
   }
 
 

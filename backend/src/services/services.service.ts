@@ -63,57 +63,67 @@ export class ServiceService {
   }
 
   async search(searchServiceDto: SearchServiceDto) {
-    const { limit, offset, userId } = searchServiceDto ;
+    const { limit, offset, userId } = searchServiceDto;
 
-    const doGender = this.genderBase === "true" && !!userId;
+    // normalize genderBase which might arrive as "true"/"false" strings
+    const doGender = this.genderBase
 
-    let requiredGender: string | undefined;
-    if (doGender) {
-      const user = await this.userRepo.findOneById(userId);
+    const hasUser = !!userId;
+
+    let userGender: string | undefined;
+    if (hasUser) {
+      const user = await this.userRepo.findOneById(userId!);
       if (!user) throw new NotFoundException('User not found');
-      requiredGender = user.gender;
+      userGender = user.gender; // 'male' | 'female' | ...
     }
 
     const { services, count } = await this.serviceRepo.search({
       ...searchServiceDto,
-      requiredGender, // undefined -> no gender join, all providers allowed
-    });
+      doGender,
+      hasUser,
+      userGender,        // undefined => no gender restrictions when no user
+    } as any);
 
-    if (!services.length) {
-      throw new NotFoundException('No services found');
-    }
+    if (!services.length) throw new NotFoundException('No services found');
 
     return { data: services, meta: { total: count, limit, offset } };
   }
 
+
   async findAllByProviders(dto: FindAllByProviderServiceDto) {
     const { limit, offset, userId } = dto;
 
-    let requiredGender: string | undefined;
-    if (this.genderBase==="true" && userId) {
-      const user = await this.userRepo.findOneById(userId);
+    // normalize genderBase possibly arriving as "true"/"false" strings
+    const doGender = this.genderBase
+
+    let userGender: string | undefined;
+    const hasUser = !!userId;
+
+    if (hasUser) {
+      const user = await this.userRepo.findOneById(userId!);
       if (!user) throw new NotFoundException('User not found');
-      requiredGender = user.gender;
+      userGender = user.gender; // e.g., 'male' | 'female' | ...
     }
 
-    // fetch with optional gender filter
     const services = await this.serviceRepo.findServicesByProvider({
       ...dto,
-      requiredGender,
-    });
+      doGender,
+      hasUser,
+      userGender,
+    } as any);
 
-    if (!Array.isArray(services) || services.length === 0) {
-      throw new NotFoundException('No services found');
-    }
+    if (!services.length) throw new NotFoundException('No services found');
 
-    // count with the same filters for consistent pagination
     const total = await this.serviceRepo.countProviders({
       ...dto,
-      requiredGender,
-    });
+      doGender,
+      hasUser,
+      userGender,
+    } as any);
 
     return { data: services, meta: { total, limit, offset } };
   }
+
 
   async findOne(
     findOneServiceDto: FindOneServiceDto,

@@ -33,6 +33,7 @@ export declare abstract class AbstractUserEntity extends AbstractBaseEntity {
   password: any;
   token: string;
   role: UserRole;
+  sameGenderAllow:boolean;
   salt: string;
   active: boolean;
   verified: boolean;
@@ -56,4 +57,5 @@ export declare abstract class AbstractUserEntity extends AbstractBaseEntity {
   signinMethod: SigninMethod;
   otp: string;
   otpExpires: Date;
+  bestSellerExpires?: Date;
 }

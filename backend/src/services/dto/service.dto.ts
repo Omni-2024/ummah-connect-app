@@ -108,6 +108,18 @@ export class FindAllByProviderServiceDto extends PaginatedRequestDto {
   @IsOptional()
   @IsString()
   requiredGender?: string;
+
+  @IsOptional()
+  @IsString()
+  doGender?: string;
+
+  @IsOptional()
+  @IsString()
+  userGender?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  hasUser?: boolean;
 }
 
 export class SearchServiceDto extends PaginatedRequestDto {
@@ -169,7 +181,17 @@ export class SearchServiceDto extends PaginatedRequestDto {
 
   @IsOptional()
   @IsString()
-  requiredGender?: string;
+  doGender?: string;
+
+  @IsOptional()
+  @IsString()
+  userGender?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  hasUser?: boolean;
+
+
 }
 
 export class ProviderDto {

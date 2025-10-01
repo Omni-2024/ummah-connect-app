@@ -69,6 +69,9 @@ export class UserEntity extends BaseEntity implements AbstractUserEntity {
   @Column({ default: true })
   active: boolean;
 
+  @Column({name: 'same_gender_allow', default: false })
+  sameGenderAllow: boolean;
+
   @Column({ default: false })
   verified: boolean;
 
@@ -136,6 +139,9 @@ export class UserEntity extends BaseEntity implements AbstractUserEntity {
 
   @Column({ name: 'otp_expires', nullable: true, default: null })
   otpExpires: Date;
+
+  @Column({ name: 'best_seller_expires', nullable: true, default: null })
+  bestSellerExpires: Date;
 
   @Column({ nullable: true, default: null })
   stripeCustomerId: string;
