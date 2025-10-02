@@ -1,12 +1,17 @@
 "use client";
 
 import * as React from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
+import type { EmblaOptionsType } from "embla-carousel";
 import * as Avatar from "@radix-ui/react-avatar";
-import { StarFilledIcon } from "@radix-ui/react-icons";
+import { ChevronLeftIcon, ChevronRightIcon, StarFilledIcon } from "@radix-ui/react-icons";
 import type { Review } from "@/lib/endpoints/reviewFns";
 import {buildAvatarUrl} from "@/features/app/components/Navbar";
 import {getInitials} from "@/features/explore/component/ServiceHeader";
-import {useGeneralUser} from "@/lib/hooks/useUser";
+import { useGeneralUser } from "@/lib/hooks/useUser";
+
+const options: EmblaOptionsType = { loop: true, align: "start", dragFree: false };
 
 function timeAgo(iso?: string) {
     if (!iso) return "";
@@ -20,93 +25,72 @@ function timeAgo(iso?: string) {
     return `${m} min ago`;
 }
 
-export function pickTopReviews(all: Review[], limit = 4, offset = 0): Review[] {
-    return [...(all ?? [])]
-        .sort((a, b) => {
-            // 1) highest stars first
-            if (b.stars !== a.stars) return b.stars - a.stars;
-            // 2) helpful votes next (treat undefined as 0)
-            // const hb = (b.helpful ?? 0) - (a.helpful ?? 0);
-            // if (hb !== 0) return hb;
-            // 3) newest last
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        })
-        .slice(offset, offset + limit);
-}
+export default function ReviewCarousel({ apiReviews, onSeeAllReviews }: { apiReviews?: Review[], onSeeAllReviews: () => void }) {
+    const [emblaRef, emblaApi] = useEmblaCarousel(options, [Autoplay({ delay: 14500, stopOnInteraction: true })]);
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-export default function ReviewCarousel({ 
-    apiReviews, 
-    onLoadMore 
-}: { 
-    apiReviews?: Review[];
-    onLoadMore?: () => void;
-}) {
-    const [currentOffset, setCurrentOffset] = React.useState(0);
-    const reviewsPerPage = 4;
-    
-    const displayedReviews = React.useMemo(() => 
-        pickTopReviews(apiReviews ?? [], reviewsPerPage, currentOffset), 
-        [apiReviews, currentOffset]
-    );
+    React.useEffect(() => {
+        if (!emblaApi) return;
+        const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
+        emblaApi.on("select", onSelect);
+        emblaApi.on("reInit", onSelect);
+    }, [emblaApi]);
 
-    const totalReviews = apiReviews?.length ?? 0;
-    const hasMore = currentOffset + reviewsPerPage < totalReviews;
+    const scrollPrev = React.useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+    const scrollNext = React.useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
-    const handleSeeMore = () => {
-        setCurrentOffset(prev => prev + reviewsPerPage);
-        onLoadMore?.();
-    };
-
-    if (!displayedReviews.length) return null;
+    if (!apiReviews?.length) return null;
 
     return (
-        <div className=" sm:block w-full my-16">
-            <div className="mb-4 flex items-center justify-between">
+            <div className="hidden sm:block w-full my-8">
+                <div className="mb-4 flex items-center justify-between px-4 sm:px-0">
                 <h2 className="text-xl text-dark-450 font-semibold">What people loved about this service</h2>
+                <button onClick={onSeeAllReviews} className="text-blue-600 hover:text-blue-800 font-medium">See all reviews</button>
+            </div>
+            <div className="flex items-end justify-end mb-2 px-4 sm:px-0">
+                {apiReviews.length > 1 && (
+                    <div className="flex items-center gap-2">
+                        <button onClick={scrollPrev} aria-label="Previous" className="rounded-full p-2 shadow hover:bg-gray-50 active:scale-95 transition">
+                            <ChevronLeftIcon className="h-5 w-5" />
+                        </button>
+                        <button onClick={scrollNext} aria-label="Next" className="rounded-full p-2 shadow hover:bg-gray-50 active:scale-95 transition">
+                            <ChevronRightIcon className="h-5 w-5" />
+                        </button>
+                    </div>
+                )}
             </div>
 
-            <div className="space-y-4">
-                {displayedReviews.map((r) => (
-                    <ReviewCard key={r.id} review={r} />
-                ))}
-            </div>
-
-            {hasMore && (
-                <div className="flex justify-end mt-4">
-                    <button
-                        onClick={handleSeeMore}
-                        className="text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors"
-                    >
-                        See more reviews →
-                    </button>
+            <div className="overflow-hidden" ref={emblaRef}>
+                <div className="flex">
+                    {apiReviews.map((r) => (
+                        <div key={r.id} className="min-w-0 shrink-0 basis-full" aria-roledescription="slide">
+                            <ReviewCard review={r} />
+                        </div>
+                    ))}
                 </div>
-            )}
+            </div>
         </div>
     );
 }
 
 function ReviewCard({ review }: { review: Review }) {
-    const {data}=useGeneralUser(review.userId)
+    const { data } = useGeneralUser(review.userId);
 
     return (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm mx-4 sm:mx-0">
             <div className="flex items-center gap-4">
                 <Avatar.Root className="h-12 w-12 shrink-0 rounded-full bg-violet-200 grid place-items-center text-white font-semibold">
                     {review.userImageUrl ? (
                         <img
-                            src={
-                                review.userImageUrl
-                                    ? buildAvatarUrl(review.userImageUrl)!!
-                                    : "/images/coverImage.png"
-                            }
+                            src={buildAvatarUrl(review.userImageUrl) ?? "/images/coverImage.png"}
                             alt={review.userName}
                             className="size-12 rounded-full object-cover"
                         />
                     ) : (
-                        <div className="size-12 rounded-full bg-gradient-to-br from-green-400 to-green-600  flex items-center justify-center">
-                    <span className="text-white font-medium text-sm">
-                      {getInitials(review.userName)}
-                    </span>
+                        <div className="size-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                            <span className="text-white font-medium text-sm">
+                                {getInitials(review.userName)}
+                            </span>
                         </div>
                     )}
                 </Avatar.Root>
