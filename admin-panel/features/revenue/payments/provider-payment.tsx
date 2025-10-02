@@ -167,61 +167,77 @@ export default function ProviderPayments() {
         </Select>
       </div>
 
-      {/* Payments List */}
-      {filteredPayments.length === 0 && (
-        <p className="text-muted-foreground text-sm">No payments found.</p>
-      )}
+      {/* Payments Grid */}
+<div
+  className="grid gap-4"
+  style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}
+>
+  {filteredPayments.length === 0 ? (
+    <Card className="border-primary-100 bg-primary-50 rounded-xl flex items-center justify-center p-10">
+      <CardContent className="text-center">
+        <p className="text-muted-foreground text-lg font-medium">No payments found</p>
+        <p className="text-sm text-gray-500 mt-1">
+          Try adjusting filters or check back later.
+        </p>
+      </CardContent>
+    </Card>
+  ) : (
+    filteredPayments.map(p => (
+      <Card
+        key={p.id}
+        className="border-primary-100 hover:border-primary/30 bg-primary-50 rounded-xl"
+      >
+        <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-primary-100">
+          <div className="flex items-center gap-3">
+            <Avatar>
+              <AvatarFallback>{p.providerName.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div>
+              <CardTitle className="text-lg font-bold text-primary">{p.serviceName}</CardTitle>
+              <p className="text-sm text-muted-foreground rounded-full pl-2 pr-2 w-fit text-primary-700 bg-primary-50 border border-primary-700">
+                {p.providerName}
+              </p>
+            </div>
+          </div>
+          <Badge
+            className={`${p.paidToProvider ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"}`}
+          >
+            {p.paidToProvider ? "Paid" : "Pending"}
+          </Badge>
+        </CardHeader>
 
-      <div className="flex flex-col gap-4">
-        {filteredPayments.map(p => (
-          <Card key={p.id} className="w-full border-primary-100 hover:border-primary/30 bg-primary-50 rounded-xl">
-            <CardHeader className="flex flex-row items-center justify-between pb-3 border-b border-primary-100">
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarFallback>{p.providerName.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <CardTitle className="text-lg font-bold text-primary">{p.serviceName}</CardTitle>
-                  <p className="text-sm text-muted-foreground rounded-full pl-2 pr-2 w-fit text-primary-700 bg-primary-50 border border-primary-700">{p.providerName}</p>
-                </div>
-              </div>
-              <Badge
-                className={`${p.paidToProvider ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"}`}
-              >
-                {p.paidToProvider ? "Paid" : "Pending"}
-              </Badge>
-            </CardHeader>
+        <CardContent className="pt-4 space-y-3">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Amount</span>
+            <span className="font-semibold text-lg">${(p.amount / 100).toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Date</span>
+            <span className="flex items-center gap-1">
+              <Calendar className="w-4 h-4" />
+              {dayjs(p.createdAt).format("MMM D, YYYY")}
+            </span>
+          </div>
 
-            <CardContent className="pt-4 space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Amount</span>
-                <span className="font-semibold text-lg">${(p.amount / 100).toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Date</span>
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-4 h-4" />
-                  {dayjs(p.createdAt).format("MMM D, YYYY")}
-                </span>
-              </div>
+          <div className="flex justify-end pt-2">
+            <Button
+              onClick={() => togglePayment(p)}
+              disabled={updatingId === p.id}
+              variant={p.paidToProvider ? "secondary" : "primary"}
+            >
+              {updatingId === p.id
+                ? "Updating..."
+                : p.paidToProvider
+                ? "Mark as Unpaid"
+                : "Mark as Paid"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    ))
+  )}
+</div>
 
-              <div className="flex justify-end pt-2">
-                <Button
-                  onClick={() => togglePayment(p)}
-                  disabled={updatingId === p.id}
-                  variant={p.paidToProvider ? "secondary" : "primary"}
-                >
-                  {updatingId === p.id
-                    ? "Updating..."
-                    : p.paidToProvider
-                    ? "Mark as Unpaid"
-                    : "Mark as Paid"}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
 
       {/* Load More */}
       {visibleCount < payments.length && (
