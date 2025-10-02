@@ -63,8 +63,8 @@ export default function ServiceDetailsPage() {
     const { serviceSlug } = useExploreState();
     const [pageLimit, setPageLimit] = useState(4);
     const [pageOffset, setPageOffset] = useState(0);
-    const [starFilter, setStarFilter] = useState<number>(0);
-
+    const [starFilter, setStarFilter] = useState(0);
+    
     const {
         data: service,
         isLoading,
@@ -96,6 +96,18 @@ export default function ServiceDetailsPage() {
         },
     });
 
+    // Fetch ALL reviews for statistics (unfiltered)
+    const {
+        data: allReviewsForStats,
+        isLoading: allReviewsLoading,
+    } = useReviewByService({
+        serviceId: serviceId!,
+        stars: 0, // 0 means get all reviews
+        limit: 1000, // High limit to get all reviews for statistics
+        offset: 0,
+    });
+
+    // Fetch filtered reviews for display
     const {
         data: reviews,
         isLoading: reviewLoading,
@@ -251,6 +263,32 @@ export default function ServiceDetailsPage() {
         console.log("Opening contact/chat with provider:", service?.serviceDetails.data.provider.id);
     };
 
+    // Calculate rating breakdown from ALL reviews (unfiltered)
+    const ratingBreakdown = React.useMemo(() => {
+        if (!allReviewsForStats?.data) return { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        
+        const breakdown = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        allReviewsForStats.data.forEach((review) => {
+            if (review.stars >= 1 && review.stars <= 5) {
+                breakdown[review.stars as keyof typeof breakdown]++;
+            }
+        });
+        return breakdown;
+    }, [allReviewsForStats?.data]);
+
+    // Calculate average rating from ALL reviews
+    const averageRating = React.useMemo(() => {
+        if (!allReviewsForStats?.data || allReviewsForStats.data.length === 0) return 0;
+        
+        const total = allReviewsForStats.data.reduce((sum, review) => sum + review.stars, 0);
+        return total / allReviewsForStats.data.length;
+    }, [allReviewsForStats?.data]);
+
+    const handleStarFilter = (stars: number) => {
+        setStarFilter(stars);
+        setPageOffset(0); // Reset pagination when filtering
+    };
+
     const handleSeeAllReviews = () => {
         setShowAllReviews(true);
         setTimeout(() => {
@@ -265,7 +303,7 @@ export default function ServiceDetailsPage() {
         }, 100);
     };
 
-    if (isLoading || educatorLoading || reviewLoading) {
+    if (isLoading || educatorLoading || reviewLoading || allReviewsLoading) {
         return (
             <div className="min-h-screen w-full bg-gray-50 pb-16 lg:pb-0">
                 <Navbar />
@@ -286,7 +324,7 @@ export default function ServiceDetailsPage() {
         );
     }
 
-    if (error || !service || !educator || !reviews) {
+    if (error || !service || !educator || !reviews || !allReviewsForStats) {
         return (
             <div className="min-h-screen w-full bg-gray-50 pb-16 lg:pb-0">
                 <Navbar />
@@ -403,8 +441,20 @@ export default function ServiceDetailsPage() {
 
                             <ServiceFAQ faqs={service.faqData} />
 
-                            <AllReviews reviews={reviews.data} ref={allReviewsRef} showOnDesktop={showAllReviews} />
-
+                            <AllReviews 
+                                reviews={reviews.data} 
+                                ref={allReviewsRef} 
+                                showOnDesktop={showAllReviews}
+                                totalReviews={allReviewsForStats?.data?.length || 0}
+                                onLoadMore={() => {
+                                    setPageOffset(prevOffset => prevOffset + pageLimit);
+                                }}
+                                isLoadingMore={reviewLoading}
+                                averageRating={averageRating}
+                                ratingBreakdown={ratingBreakdown}
+                                onStarFilter={handleStarFilter}
+                                activeStarFilter={starFilter}
+                            />
                             <div className="lg:hidden h-6"></div>
                         </div>
                     </div>
