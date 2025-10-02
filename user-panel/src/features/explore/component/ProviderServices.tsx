@@ -70,7 +70,7 @@ const ProviderServices: React.FC<ProviderServicesProps> = ({
   const hasMoreServices = otherServices.length > 3;
 
   return (
-    <div className="bg-white rounded-lg p-4 lg:p-6">
+    <div className="bg-white rounded-lg p-4 lg:p-6 lg:pl-0">
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-xl font-semibold text-gray-900">
