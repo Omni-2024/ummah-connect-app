@@ -37,6 +37,7 @@ import { Toast } from "@/components/base/Toast";
 import { generateSlug } from "@/lib/helpers/strings";
 import {buildAvatarUrl} from "@/features/app/components/Navbar";
 import {getInitials} from "@/features/explore/component/ServiceHeader";
+import ProviderServices from "./ProviderServices";
 
 function timeAgo(iso?: string) {
     if (!iso) return "";
@@ -455,6 +456,12 @@ export default function ServiceDetailsPage() {
                                 onStarFilter={handleStarFilter}
                                 activeStarFilter={starFilter}
                             />
+
+                            <ProviderServices
+                                providerId={service.serviceDetails.data.provider.id}
+                                currentServiceId={service.serviceDetails.data.id} providerName={""}                                // providerName={`${educator.firstName} ${educator.lastName}`}
+                                // providerAvatar={educator.profilePictureUrl}
+                                />
                             <div className="lg:hidden h-6"></div>
                         </div>
                     </div>
@@ -484,7 +491,7 @@ export default function ServiceDetailsPage() {
                     <EnrollmentButton />
                 </div>
             </div>
-
+            
             <ShareServiceModal />
             <Bottombar />
             <Footer />
