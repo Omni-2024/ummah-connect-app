@@ -8,6 +8,7 @@ import {
   GlobeIcon,
 } from "@radix-ui/react-icons";
 import { useChat } from "@/components/getStream/chat/ChatContextProvider";
+import { buildAvatarUrl } from "@/features/app/components/Navbar";
 
 interface ServiceContentProps {
   service: any;
@@ -40,6 +41,10 @@ export default function ServiceContent({ service, educator, providerId }: Servic
     }
   };
 
+    const profileImageUrl = educator?.profileImage 
+    ? buildAvatarUrl(educator.profileImage) 
+    : null;
+    
   return (
     <div className="space-y-4  pb-6 !mt-8">
       {/* Course Description - Mobile Optimized */}
@@ -88,13 +93,25 @@ export default function ServiceContent({ service, educator, providerId }: Servic
             <div className="flex items-center justify-between gap-4">
 
             <div className="flex items-center gap-3">
-              {/* Profile Avatar */}
-              <div className="flex-shrink-0">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                  <span className="text-white font-medium text-base sm:text-lg">
-                    {getInitials(educator.name)}
-                  </span>
-                </div>
+              {/* Profile Avatar */}                
+                <div className="flex-shrink-0">
+                  {educator.profileImage ? (
+                    <img
+                      src={
+                        educator.profileImage
+                          ? buildAvatarUrl(educator.profileImage)!!
+                          : "/images/coverImage.png"
+                      }
+                      alt={educator.name}
+                       className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover"
+                    />
+                  ) : (
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                    <span className="text-white font-medium text-base sm:text-lg">
+                        {getInitials(educator.name)}
+                      </span>
+                    </div>
+                  )}
               </div>
 
               {/* Name and Basic Info */}
