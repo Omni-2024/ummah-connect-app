@@ -13,6 +13,7 @@ import { Dropdown } from "@/features/profile/buttons/Dropdown";
 import { COUNTRY_LIST, languages as LANGUAGE_OPTIONS } from "@/lib/constants";
 import MultiLanguageSelect from "@/features/profile/buttons/MultiSelect";
 import {Toast} from "@/components/base/toast";
+import {Gender} from "@/types/data";
 
 export interface formType {
   name:string,
@@ -21,6 +22,8 @@ export interface formType {
   bio:string,
   contactNumber:string,
   email:string
+  gender:Gender
+  sameGenderAllow:boolean
 }
 
 
@@ -33,7 +36,9 @@ export function PersonalInfo() {
     languages: [],
     bio: "",
     contactNumber: "",
-    email: "", 
+    email: "",
+    gender:Gender.MALE,
+    sameGenderAllow:false
   });
   const [saving, setSaving] = useState(false);
 
@@ -46,6 +51,8 @@ export function PersonalInfo() {
         bio: profile.bio,
         contactNumber: profile.contactNumber,
         email: profile.email,
+       gender:profile.gender,
+       sameGenderAllow:profile.sameGenderAllow
       });
     }
   }, [profile]);
@@ -62,7 +69,9 @@ export function PersonalInfo() {
         contactNumber: formData.contactNumber,
         bio: formData.bio,
         country: formData.country,   
-        languages: formData.languages,   
+        languages: formData.languages,
+        gender:formData.gender,
+        sameGenderAllow:formData.sameGenderAllow
       });
       Toast.success("User details updated successfully");
       setIsEditing(false);

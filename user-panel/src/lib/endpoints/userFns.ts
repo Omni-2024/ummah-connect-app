@@ -12,7 +12,7 @@ export enum Gender {
 export const updateUserFn = async (data: {
   id: string;
   name?: string;
-  gender:Gender;
+  gender?:Gender;
   designations?: string[];
   languages?: string[];
   interests?: string[];
@@ -21,6 +21,7 @@ export const updateUserFn = async (data: {
   company?: string;
   country?: string;
   specializations?: string;
+  sameGenderAllow?: boolean;
 }) => {
   const res = await Request<GetUpdateUserByIdFnRes>({
     method: "patch",
@@ -63,7 +64,7 @@ export interface GetUpdateUserByIdFnRes {
   designations: string[];
   interests: string[];
   profileImage: string;
-  specializations: string; //added
+  specializations: string;
   company: string;
   country: string;
   contactNumber: string;
@@ -77,6 +78,7 @@ export interface GetUpdateUserByIdFnRes {
   totalReviewCount:number;
   averageReviewScore:number;
   signinMethod: SIGNIN_METHOD;
+  sameGenderAllow:boolean
 }
 
 /** Delete - '/user/{id}' - delete user account */

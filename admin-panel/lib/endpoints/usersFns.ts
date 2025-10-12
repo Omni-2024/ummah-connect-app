@@ -95,6 +95,7 @@ export const updateUserFn = async (data: {
   bio?: string;
   role?: Roles;
   gender?:Gender
+  sameGenderAllow?:boolean;
 
 }) => {
   const res = await Request<UserData>({

@@ -38,6 +38,7 @@ export interface UserData {
   totalCoursesCompleted: number | null;
   totalActiveCourses: number | null;
   isFirstLogin: boolean;
+  sameGenderAllow:boolean;
   subscription?: {
     title: string;
     description: string;
