@@ -48,7 +48,7 @@ export default function ServiceFAQ({ faqs }: ServiceFAQProps) {
             <div key={faq.id} className={`${!isLast ? 'border-b border-dark-400 pb-3' : ''}`}>
               <button
                 onClick={() => toggleExpanded(faq.id)}
-                className="w-full text-left focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 rounded-md p-2 -m-2 hover:bg-gray-50 transition-colors"
+                className="w-full text-left focus:outline-none rounded-md p-2 -m-2 hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="font-medium text-gray-900 text-sm pr-2">
