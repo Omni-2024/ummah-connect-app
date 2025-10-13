@@ -12,36 +12,27 @@ import { EditInfoButton } from "../buttons/EditInfoButton";
 import { Dropdown } from "@/features/profile/buttons/Dropdown";
 import { COUNTRY_LIST, languages as LANGUAGE_OPTIONS } from "@/lib/constants";
 import MultiLanguageSelect from "@/features/profile/buttons/MultiSelect";
-import {Toast} from "@/components/base/toast";
-import {Gender} from "@/types/data";
+import { Toast } from "@/components/base/toast";
+import { Gender } from "@/types/data";
 
 export interface formType {
-  name:string,
-  country:string,
-  languages: string[],
-  bio:string,
-  contactNumber:string,
-  email:string
-  gender:Gender
-  sameGenderAllow:boolean
+  name: string;
+  country: string;
+  languages: string[];
+  bio: string;
+  contactNumber: string;
+  email: string;
+  gender: Gender;
+  sameGenderAllow: boolean;
 }
-
 
 export function PersonalInfo() {
   const { data: profile, isLoading, refetch } = useCurrentUser();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<formType>({
-    name: "",
-    country: "",
-    languages: [],
-    bio: "",
-    contactNumber: "",
-    email: "",
-    gender:Gender.MALE,
-    sameGenderAllow:false
-  });
+  const [formData, setFormData] = useState<formType | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Initialize formData once profile is loaded
   useEffect(() => {
     if (profile) {
       setFormData({
@@ -51,13 +42,13 @@ export function PersonalInfo() {
         bio: profile.bio,
         contactNumber: profile.contactNumber,
         email: profile.email,
-       gender:profile.gender,
-       sameGenderAllow:profile.sameGenderAllow
+        gender: profile.gender,
+        sameGenderAllow: profile.sameGenderAllow,
       });
     }
   }, [profile]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || !formData) return <div>Loading...</div>;
 
   const handleSave = async () => {
     if (!profile) return;
@@ -68,19 +59,44 @@ export function PersonalInfo() {
         name: formData.name,
         contactNumber: formData.contactNumber,
         bio: formData.bio,
-        country: formData.country,   
+        country: formData.country,
         languages: formData.languages,
-        gender:formData.gender,
-        sameGenderAllow:formData.sameGenderAllow
+        gender: formData.gender,
+        sameGenderAllow: formData.sameGenderAllow, // ✅ always boolean
       });
       Toast.success("User details updated successfully");
       setIsEditing(false);
       refetch();
     } catch (err) {
-      Toast.error("User details updated failed");
-      console.error("Failed to update profile:", err);
+      Toast.error("User details update failed");
+      console.error(err);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleToggleSameGender = async () => {
+    if (!profile) return;
+
+    const newValue = !formData.sameGenderAllow;
+
+    // Optimistic UI update
+    setFormData((prev) => ({ ...prev!, sameGenderAllow: newValue }));
+
+    try {
+      await updateUserFn({
+        id: profile.id,
+        sameGenderAllow: newValue,
+      });
+      Toast.success(
+        newValue ? "Same gender interaction enabled" : "Same gender interaction disabled"
+      );
+      refetch();
+    } catch (err) {
+      Toast.error("Failed to update preference");
+      console.error(err);
+      // Rollback in case of error
+      setFormData((prev) => ({ ...prev!, sameGenderAllow: profile.sameGenderAllow }));
     }
   };
 
@@ -135,17 +151,29 @@ export function PersonalInfo() {
               />
             </div>
 
+            {/* Gender */}
+            <div className="space-y-2">
+              <Dropdown
+                label="Gender"
+                value={formData.gender}
+                options={[Gender.MALE, Gender.FEMALE]}
+                onChange={(value) => setFormData({ ...formData, gender: value as Gender })}
+                disabled={!isEditing}
+                required
+              />
+            </div>
+
             {/* Language */}
             <div className="space-y-2">
               <MultiLanguageSelect
-                  label="Languages"
-                  options={LANGUAGE_OPTIONS}
-                  value={formData.languages}
-                  onChange={(next) => setFormData({ ...formData, languages: next })}
-                  disabled={!isEditing}
-                  required
+                label="Languages"
+                options={LANGUAGE_OPTIONS}
+                value={formData.languages}
+                onChange={(next) => setFormData({ ...formData, languages: next })}
+                disabled={!isEditing}
+                required
               />
-          </div>
+            </div>
 
             {/* Bio */}
             <div className="space-y-2">
@@ -159,6 +187,24 @@ export function PersonalInfo() {
                 placeholder="Tell us about yourself..."
               />
             </div>
+
+            {/* Switch / Toggle */}
+            <div className="flex items-center space-x-3 mt-2">
+              <Label htmlFor="sameGenderAllow">Allow same gender interaction</Label>
+              <div
+                onClick={isEditing ? handleToggleSameGender : undefined}
+                className={`w-14 h-7 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition-colors ${
+                  formData.sameGenderAllow ? "bg-green-500" : "bg-gray-300"
+                }`}
+              >
+                <div
+                  className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
+                    formData.sameGenderAllow ? "translate-x-7" : ""
+                  }`}
+                />
+              </div>
+              <span>{formData.sameGenderAllow ? "ON" : "OFF"}</span>
+            </div>
           </CardContent>
         </Card>
 
@@ -171,7 +217,6 @@ export function PersonalInfo() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Contact Number */}
             <div className="space-y-2">
               <Label htmlFor="contactNumber">Contact Number</Label>
               <Input
@@ -182,8 +227,6 @@ export function PersonalInfo() {
                 className="bg-input border-[#337f7c]/20"
               />
             </div>
-
-            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <Input
