@@ -50,6 +50,7 @@ export function PersonalInfo() {
 
   if (isLoading || !formData) return <div>Loading...</div>;
 
+  // ✅ Only saves on clicking "Save Changes"
   const handleSave = async () => {
     if (!profile) return;
     setSaving(true);
@@ -62,7 +63,7 @@ export function PersonalInfo() {
         country: formData.country,
         languages: formData.languages,
         gender: formData.gender,
-        sameGenderAllow: formData.sameGenderAllow, // ✅ always boolean
+        sameGenderAllow: formData.sameGenderAllow, // ✅ includes the toggle now
       });
       Toast.success("User details updated successfully");
       setIsEditing(false);
@@ -75,29 +76,13 @@ export function PersonalInfo() {
     }
   };
 
-  const handleToggleSameGender = async () => {
-    if (!profile) return;
-
-    const newValue = !formData.sameGenderAllow;
-
-    // Optimistic UI update
-    setFormData((prev) => ({ ...prev!, sameGenderAllow: newValue }));
-
-    try {
-      await updateUserFn({
-        id: profile.id,
-        sameGenderAllow: newValue,
-      });
-      Toast.success(
-        newValue ? "Same gender interaction enabled" : "Same gender interaction disabled"
-      );
-      refetch();
-    } catch (err) {
-      Toast.error("Failed to update preference");
-      console.error(err);
-      // Rollback in case of error
-      setFormData((prev) => ({ ...prev!, sameGenderAllow: profile.sameGenderAllow }));
-    }
+  // ✅ Local toggle only (no DB calls)
+  const handleToggleSameGender = () => {
+    if (!isEditing) return;
+    setFormData((prev) => ({
+      ...prev!,
+      sameGenderAllow: !prev!.sameGenderAllow,
+    }));
   };
 
   return (
@@ -188,22 +173,67 @@ export function PersonalInfo() {
               />
             </div>
 
-            {/* Switch / Toggle */}
-            <div className="flex items-center space-x-3 mt-2">
-              <Label htmlFor="sameGenderAllow">Allow same gender interaction</Label>
-              <div
-                onClick={isEditing ? handleToggleSameGender : undefined}
-                className={`w-14 h-7 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition-colors ${
-                  formData.sameGenderAllow ? "bg-green-500" : "bg-gray-300"
-                }`}
-              >
-                <div
-                  className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
-                    formData.sameGenderAllow ? "translate-x-7" : ""
-                  }`}
-                />
+            {/* ✅ Same Gender Preference Section */}
+            <div className="mt-4 p-4 border rounded-xl bg-gradient-to-r from-[#e0f7f6] to-[#f0fffc] shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground flex items-center">
+                    <User className="w-4 h-4 mr-2 text-accent" />
+                    Same Gender Interaction
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Control whether people of the same gender can interact with your profile.
+                  </p>
+                </div>
+
+                {/* Toggle Switch */}
+                <button
+                  onClick={handleToggleSameGender}
+                  disabled={!isEditing}
+                  className={`relative inline-flex items-center h-8 w-16 rounded-full transition-all duration-300 focus:outline-none ${
+                    formData.sameGenderAllow ? "bg-green-500" : "bg-gray-400"
+                  } ${!isEditing ? "opacity-50 cursor-not-allowed" : ""}`}
+                >
+                  <span
+                    className={`absolute left-1 top-1 h-6 w-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                      formData.sameGenderAllow ? "translate-x-8" : ""
+                    }`}
+                  />
+                </button>
               </div>
-              <span>{formData.sameGenderAllow ? "ON" : "OFF"}</span>
+
+              {/* Status Badge */}
+              <div className="mt-3 flex items-center gap-2">
+                {formData.sameGenderAllow ? (
+                  <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Same gender interaction enabled
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Restricted to opposite gender only
+                  </div>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>
