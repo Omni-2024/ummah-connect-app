@@ -1,55 +1,50 @@
-"use client"
-import { useEffect, useState } from "react"
-import { Card, CardContent } from "@/components/base/card"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar"
-import { Badge } from "@/components/base/badge"
-import { Shield, Star } from "lucide-react"
-import { PersonIcon, CameraIcon } from "@radix-ui/react-icons"
-import { useAuthState } from "@/features/auth/context/useAuthState"
-import { useCurrentUser } from "@/hooks/useUserInfo"
-import { updateUserFn } from "@/lib/endpoints/usersFns"
-import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns"
-import { Teacher } from "iconsax-react"
+"use client";
+
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/base/card";
+import { Badge } from "@/components/base/badge";
+import { Shield, Star } from "lucide-react";
+import { CameraIcon } from "@radix-ui/react-icons";
+import { useAuthState } from "@/features/auth/context/useAuthState";
+import { useCurrentUser } from "@/hooks/useUserInfo";
+import { updateUserFn } from "@/lib/endpoints/usersFns";
+import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns";
+import { Teacher } from "iconsax-react";
 import Image from "next/image";
-import { useAvatarUrl } from "@/hooks/userAvatarUrl"
+import { useAvatarUrl } from "@/hooks/userAvatarUrl";
+import { ProfileHeaderSkeleton } from "../skeletons/profile-header-skeleton";
 
 export function ProfileHeader() {
-  const { role } = useAuthState()
-  const { data: profile, isLoading, refetch } = useCurrentUser()
-  const [uploading, setUploading] = useState(false)
-  const [avatarBroken, setAvatarBroken] = useState(false)
+  const { role } = useAuthState();
+  const { data: profile, isLoading, refetch } = useCurrentUser();
+  const [uploading, setUploading] = useState(false);
   const [imageError, setImageError] = useState(false);
   const avatarSrc = useAvatarUrl(profile?.profileImage);
 
-
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!profile || !e.target.files?.[0]) return
+    if (!profile || !e.target.files?.[0]) return;
 
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     try {
-      setUploading(true)
-
-      const uploadResult = await uploadPublicFn({ imageFile: file })
-
+      setUploading(true);
+      const uploadResult = await uploadPublicFn({ imageFile: file });
       await updateUserFn({
         id: profile.id,
         profileImage: uploadResult.key,
-      })
-
-      refetch()
+      });
+      refetch();
     } catch (err) {
-      console.error("Image upload failed:", err)
+      console.error("Image upload failed:", err);
     } finally {
-      setUploading(false)
+      setUploading(false);
     }
-  }
+  };
 
   useEffect(() => setImageError(false), [profile?.profileImage]);
 
-    if (isLoading) {
-    return <div>Loading profile...</div>
+  if (isLoading) {
+    return <ProfileHeaderSkeleton />;
   }
-
 
   return (
     <Card className="border-[#3E6563]/50 shadow-lg">
@@ -58,8 +53,8 @@ export function ProfileHeader() {
           {/* Avatar Section */}
           <div className="relative group">
             <div className="w-24 h-24 rounded-full border-4 border-[#337f7c] overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-500 relative">
-            {imageError ? (
-                <Teacher />
+              {imageError ? (
+                <Teacher className="w-full h-full p-4 text-white" />
               ) : (
                 <Image
                   src={avatarSrc}
@@ -72,12 +67,12 @@ export function ProfileHeader() {
               )}
             </div>
 
-
             {/* Upload button (floating on avatar) */}
             <label
               htmlFor="profileImageUpload"
-              className={`absolute -bottom-2 -right-2 bg-emerald-500 rounded-full p-2 cursor-pointer hover:bg-emerald-600 transition-colors shadow-lg ${uploading ? "opacity-50 pointer-events-none" : ""
-                }`}
+              className={`absolute -bottom-2 -right-2 bg-emerald-500 rounded-full p-2 cursor-pointer hover:bg-emerald-600 transition-colors shadow-lg ${
+                uploading ? "opacity-50 pointer-events-none" : ""
+              }`}
             >
               <CameraIcon className="w-4 h-4 text-white" />
               <input
@@ -101,7 +96,9 @@ export function ProfileHeader() {
                 </h2>
 
                 {/* Email */}
-                <p className="text-muted-foreground">{profile?.email ?? "No email available"}</p>
+                <p className="text-muted-foreground">
+                  {profile?.email ?? "No email available"}
+                </p>
 
                 <div className="flex items-center space-x-2 mt-2">
                   <Badge
@@ -132,7 +129,9 @@ export function ProfileHeader() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-accent">89</div>
-                <div className="text-sm text-muted-foreground">Active Providers</div>
+                <div className="text-sm text-muted-foreground">
+                  Active Providers
+                </div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-accent">156</div>
@@ -143,5 +142,5 @@ export function ProfileHeader() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

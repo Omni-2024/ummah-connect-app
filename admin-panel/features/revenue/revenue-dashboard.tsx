@@ -5,31 +5,40 @@ import {
   getStatsFn, 
   type GetStatsData, 
   type Payment, 
-  ScopeType // 👈 import this
+  ScopeType
 } from "@/lib/endpoints/paymentFns"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/base/card"
 import RevenueChart from "./components/revenue-chart"
 import TopList from "./components/revenue-top-list"
 import RecentPayments from "./components/recent-payments"
 import ProviderPayments from "./payments/provider-payment"
+import AdminDashboardSkeleton from "./skeleton/skeleton" // ✅ skeleton loader
 
 export default function RevenueDashboard() {
   const [stats, setStats] = useState<GetStatsData | null>(null)
   const [recentPayments, setRecentPayments] = useState<Payment[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
-      const statsRes = await getStatsFn({ scope: ScopeType.LAST_30D }) // ✅ fixed
-      setStats(statsRes.data)
+      try {
+        const statsRes = await getStatsFn({ scope: ScopeType.LAST_30D })
+        setStats(statsRes.data)
 
-      // Replace with real API call later
-      const dummyPayments: Payment[] = []
-      setRecentPayments(dummyPayments)
+        // Replace with real API call later
+        const dummyPayments: Payment[] = []
+        setRecentPayments(dummyPayments)
+      } catch (error) {
+        console.error("Failed to fetch dashboard data", error)
+      } finally {
+        setLoading(false)
+      }
     }
     fetchData()
   }, [])
 
-  if (!stats) return <p>Loading revenue data...</p>
+  // ✅ Show skeleton while loading (no text message)
+  if (loading || !stats) return <AdminDashboardSkeleton />
 
   return (
     <div className="space-y-6">
@@ -69,7 +78,7 @@ export default function RevenueDashboard() {
         </Card>
       </div>
 
-      {/* New Provider Payments Section */}
+      {/* Provider Payments */}
       <ProviderPayments />
 
       {/* Revenue Chart */}
@@ -77,16 +86,22 @@ export default function RevenueDashboard() {
 
       {/* Top Lists */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <TopList title="Top Services" items={stats.topServices.map(s => ({
-          name: s.serviceId, // replace with serviceName if available
-          orders: s.orders,
-          revenue: s.revenue,
-        }))} />
-        <TopList title="Top Providers" items={stats.topProviders.map(p => ({
-          name: p.providerName,
-          orders: p.orders,
-          revenue: p.revenue,
-        }))} />
+        <TopList
+          title="Top Services"
+          items={stats.topServices.map((s) => ({
+            name: s.serviceId, // replace with serviceName if available
+            orders: s.orders,
+            revenue: s.revenue,
+          }))}
+        />
+        <TopList
+          title="Top Providers"
+          items={stats.topProviders.map((p) => ({
+            name: p.providerName,
+            orders: p.orders,
+            revenue: p.revenue,
+          }))}
+        />
       </div>
 
       {/* Recent Payments */}

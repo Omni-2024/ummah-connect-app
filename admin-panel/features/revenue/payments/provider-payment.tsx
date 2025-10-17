@@ -7,14 +7,13 @@ import HttpRequest from "@/lib/http"
 import { getAllGeneralProvidersFn } from "@/lib/endpoints/providersFns"
 import { getAllServicesFn, Service } from "@/lib/endpoints/serviceFns"
 import type { UserData } from "@/types/data"
-import { getPaymentByIdFn } from "@/lib/endpoints/paymentFns"
-
 import { Input } from "@/components/base/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback } from "@/components/base/avatar"
 import { Badge } from "@/components/base/badge"
 import { Calendar } from "lucide-react"
 import dayjs from "dayjs"
+import ProviderPaymentsSkeleton from "../skeleton/ProviderCardSkeleton" // ✅ new skeleton
 
 type PaymentRecord = {
   id: string
@@ -78,17 +77,13 @@ export default function ProviderPayments() {
   const togglePayment = async (payment: PaymentRecord) => {
     setUpdatingId(payment.id)
     try {
-      // Toggle the status locally
       const newPaidStatus = !payment.paidToProvider
-
-      // Call your existing API via HttpRequest
       await HttpRequest({
         method: "patch",
         url: `/api/payment/${payment.id}`,
         data: { paidToProvider: newPaidStatus },
       })
 
-      // Update state safely without breaking PaymentRecord type
       setPayments(prev =>
         prev.map(p => (p.id === payment.id ? { ...p, paidToProvider: newPaidStatus } : p))
       )
@@ -99,7 +94,8 @@ export default function ProviderPayments() {
     }
   }
 
-  if (loading) return <p className="text-muted-foreground text-sm">Loading payments...</p>
+  // ✅ Use skeleton loader while fetching
+  if (loading) return <ProviderPaymentsSkeleton />
 
   // Filtering logic
   let filteredPayments = payments.filter(p =>
@@ -168,89 +164,86 @@ export default function ProviderPayments() {
       </div>
 
       {/* Payments Grid */}
-<div
-  className="grid gap-4"
-  style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}
->
-  {filteredPayments.map(p => (
-  <Card
-    key={p.id}
-    className="border-primary-100 hover:border-primary/30 bg-primary-50 rounded-xl flex flex-col justify-between h-full"
-  >
-    {/* Header Section with Fixed Height */}
-    <CardHeader className="flex flex-row items-start justify-between pb-3 border-b border-primary-100 min-h-[110px]">
-      <div className="flex items-start gap-3 w-full">
-        <Avatar>
-          <AvatarFallback>{p.providerName.charAt(0)}</AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col justify-between flex-1">
-          {/* Title area with fixed height */}
-          <div className="min-h-[48px] max-h-[48px] flex items-start overflow-hidden">
-  <CardTitle
-    className="text-md font-bold text-primary leading-snug line-clamp-2 break-words"
-    style={{
-      display: "-webkit-box",
-      WebkitLineClamp: 2,
-      WebkitBoxOrient: "vertical",
-      overflow: "hidden",
-      textOverflow: "ellipsis",
-      wordBreak: "break-word",
-    }}
-  >
-    {p.serviceName}
-  </CardTitle>
-</div>
-          <p className="text-sm text-muted-foreground rounded-full px-2 py-0.5 w-fit text-primary-700 bg-primary-50 border border-primary-700 mt-1">
-            {p.providerName}
-          </p>
-        </div>
-      </div>
-      <Badge
-        className={`${
-          p.paidToProvider ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"
-        }`}
+      <div
+        className="grid gap-4"
+        style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}
       >
-        {p.paidToProvider ? "Paid" : "Pending"}
-      </Badge>
-    </CardHeader>
+        {filteredPayments.map(p => (
+          <Card
+            key={p.id}
+            className="border-primary-100 hover:border-primary/30 bg-primary-50 rounded-xl flex flex-col justify-between h-full"
+          >
+            {/* Header */}
+            <CardHeader className="flex flex-row items-start justify-between pb-3 border-b border-primary-100 min-h-[110px]">
+              <div className="flex items-start gap-3 w-full">
+                <Avatar>
+                  <AvatarFallback>{p.providerName.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col justify-between flex-1">
+                  <div className="min-h-[48px] max-h-[48px] flex items-start overflow-hidden">
+                    <CardTitle
+                      className="text-md font-bold text-primary leading-snug line-clamp-2 break-words"
+                      style={{
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {p.serviceName}
+                    </CardTitle>
+                  </div>
+                  <p className="text-sm text-muted-foreground rounded-full px-2 py-0.5 w-fit text-primary-700 bg-primary-50 border border-primary-700 mt-1">
+                    {p.providerName}
+                  </p>
+                </div>
+              </div>
+              <Badge
+                className={`${
+                  p.paidToProvider ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"
+                }`}
+              >
+                {p.paidToProvider ? "Paid" : "Pending"}
+              </Badge>
+            </CardHeader>
 
-    {/* Body Section */}
-    <CardContent className="flex flex-col justify-between flex-grow pt-4">
-      <div className="space-y-3 flex-grow">
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Amount</span>
-          <span className="font-semibold text-lg">${(p.amount / 100).toFixed(2)}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Date</span>
-          <span className="flex items-center gap-1">
-            <Calendar className="w-4 h-4" />
-            {dayjs(p.createdAt).format("MMM D, YYYY")}
-          </span>
-        </div>
+            {/* Body */}
+            <CardContent className="flex flex-col justify-between flex-grow pt-4">
+              <div className="space-y-3 flex-grow">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Amount</span>
+                  <span className="font-semibold text-lg">${(p.amount / 100).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Date</span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-4 h-4" />
+                    {dayjs(p.createdAt).format("MMM D, YYYY")}
+                  </span>
+                </div>
+              </div>
+
+              {/* Button */}
+              <div className="pt-4 mt-auto">
+                <Button
+                  onClick={() => togglePayment(p)}
+                  disabled={updatingId === p.id}
+                  variant={p.paidToProvider ? "secondary" : "primary"}
+                  className="w-full"
+                >
+                  {updatingId === p.id
+                    ? "Updating..."
+                    : p.paidToProvider
+                    ? "Mark as Unpaid"
+                    : "Mark as Paid"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
-
-      {/* Button Fixed at Bottom */}
-      <div className="pt-4 mt-auto">
-        <Button
-          onClick={() => togglePayment(p)}
-          disabled={updatingId === p.id}
-          variant={p.paidToProvider ? "secondary" : "primary"}
-          className="w-full"
-        >
-          {updatingId === p.id
-            ? "Updating..."
-            : p.paidToProvider
-            ? "Mark as Unpaid"
-            : "Mark as Paid"}
-        </Button>
-      </div>
-    </CardContent>
-  </Card>
-))}
-
-</div>
-
 
       {/* Load More */}
       {visibleCount < payments.length && (

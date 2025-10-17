@@ -12,20 +12,20 @@ import { EditInfoButton } from "../buttons/EditInfoButton";
 import { Dropdown } from "@/features/profile/buttons/Dropdown";
 import { COUNTRY_LIST, languages as LANGUAGE_OPTIONS } from "@/lib/constants";
 import MultiLanguageSelect from "@/features/profile/buttons/MultiSelect";
-import {Toast} from "@/components/base/toast";
-import {Gender} from "@/types/data";
+import { Toast } from "@/components/base/toast";
+import { Gender } from "@/types/data";
+import PersonalInfoSkeleton from "../skeletons/personal-info-skeleton"; // 👈 new skeleton
 
 export interface formType {
-  name:string,
-  country:string,
-  languages: string[],
-  bio:string,
-  contactNumber:string,
-  email:string
-  gender:Gender
-  sameGenderAllow:boolean
+  name: string;
+  country: string;
+  languages: string[];
+  bio: string;
+  contactNumber: string;
+  email: string;
+  gender: Gender;
+  sameGenderAllow: boolean;
 }
-
 
 export function PersonalInfo() {
   const { data: profile, isLoading, refetch } = useCurrentUser();
@@ -37,8 +37,8 @@ export function PersonalInfo() {
     bio: "",
     contactNumber: "",
     email: "",
-    gender:Gender.MALE,
-    sameGenderAllow:false
+    gender: Gender.MALE,
+    sameGenderAllow: false,
   });
   const [saving, setSaving] = useState(false);
 
@@ -51,13 +51,14 @@ export function PersonalInfo() {
         bio: profile.bio,
         contactNumber: profile.contactNumber,
         email: profile.email,
-       gender:profile.gender,
-       sameGenderAllow:profile.sameGenderAllow
+        gender: profile.gender,
+        sameGenderAllow: profile.sameGenderAllow,
       });
     }
   }, [profile]);
 
-  if (isLoading) return <div>Loading...</div>;
+  // 🔄 Show skeleton while loading
+  if (isLoading) return <PersonalInfoSkeleton />;
 
   const handleSave = async () => {
     if (!profile) return;
@@ -68,16 +69,16 @@ export function PersonalInfo() {
         name: formData.name,
         contactNumber: formData.contactNumber,
         bio: formData.bio,
-        country: formData.country,   
+        country: formData.country,
         languages: formData.languages,
-        gender:formData.gender,
-        sameGenderAllow:formData.sameGenderAllow
+        gender: formData.gender,
+        sameGenderAllow: formData.sameGenderAllow,
       });
       Toast.success("User details updated successfully");
       setIsEditing(false);
       refetch();
     } catch (err) {
-      Toast.error("User details updated failed");
+      Toast.error("User details update failed");
       console.error("Failed to update profile:", err);
     } finally {
       setSaving(false);
@@ -138,14 +139,14 @@ export function PersonalInfo() {
             {/* Language */}
             <div className="space-y-2">
               <MultiLanguageSelect
-                  label="Languages"
-                  options={LANGUAGE_OPTIONS}
-                  value={formData.languages}
-                  onChange={(next) => setFormData({ ...formData, languages: next })}
-                  disabled={!isEditing}
-                  required
+                label="Languages"
+                options={LANGUAGE_OPTIONS}
+                value={formData.languages}
+                onChange={(next) => setFormData({ ...formData, languages: next })}
+                disabled={!isEditing}
+                required
               />
-          </div>
+            </div>
 
             {/* Bio */}
             <div className="space-y-2">
