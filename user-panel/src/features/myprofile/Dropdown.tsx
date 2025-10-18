@@ -9,6 +9,7 @@ interface DropdownProps {
   multiple?: boolean
   required?: boolean
   idToNameMap?: {[key: string]: string}
+  maxHeight?: string
 }
 
 export function Dropdown({ 
@@ -18,7 +19,8 @@ export function Dropdown({
   onChange, 
   multiple = false, 
   required = false, 
-  idToNameMap = {} 
+  idToNameMap = {},
+  maxHeight = "240px"
 }: DropdownProps) {
   const [isOpen, setIsOpen] = useState(false)
   
@@ -67,7 +69,10 @@ export function Dropdown({
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          <div 
+            className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg overflow-y-auto"
+            style={{ maxHeight }}
+          >
             {options.map((option) => {
               const isSelected = multiple 
                 ? Array.isArray(value) && value.includes(option)

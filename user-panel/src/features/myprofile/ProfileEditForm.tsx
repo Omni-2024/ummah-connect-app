@@ -252,12 +252,13 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Contact Number</label>
-              <input
-                type="tel"
-                value={profileData.contact}
-                onChange={(e) => handleInputChange('contact', e.target.value)}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
+              <Dropdown
+                label="Languages"
+                value={profileData.languages}
+                options={languages.map(l => l.label)}
+                onChange={(value) => handleInputChange('languages', value)}
+                multiple
+                maxHeight="200px"
               />
             </div>
 
@@ -268,17 +269,17 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                 options={COUNTRY_LIST.map(c => c.value)}
                 onChange={(value) => handleInputChange('country', value as string)}
                 required
+                maxHeight="200px"
               />
             </div>
 
             <div>
-              <Dropdown
-                label="Languages"
-                value={profileData.languages}
-                options={languages.map(l => l.label)}
-                onChange={(value) => handleInputChange('languages', value)}
-                multiple
-                // placeholder="Select languages you speak..."
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Contact Number</label>
+              <input
+                type="tel"
+                value={profileData.contact}
+                onChange={(e) => handleInputChange('contact', e.target.value)}
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
               />
             </div>
           </div>
@@ -296,6 +297,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                 onChange={(value) => handleInputChange('designation', value)}
                 multiple
                 idToNameMap={professionMap}
+                maxHeight="200px"
               />
             </div>
 
@@ -327,6 +329,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                 onChange={(value) => handleInputChange('interest', value)}
                 multiple
                 idToNameMap={specialistMap}
+                maxHeight="200px"
               />
             </div>
           </div>
