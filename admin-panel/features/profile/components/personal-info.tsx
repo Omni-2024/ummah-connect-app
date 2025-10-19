@@ -30,18 +30,10 @@ export interface formType {
 export function PersonalInfo() {
   const { data: profile, isLoading, refetch } = useCurrentUser();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<formType>({
-    name: "",
-    country: "",
-    languages: [],
-    bio: "",
-    contactNumber: "",
-    email: "",
-    gender: Gender.MALE,
-    sameGenderAllow: false,
-  });
+  const [formData, setFormData] = useState<formType | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // Initialize formData once profile is loaded
   useEffect(() => {
     if (profile) {
       setFormData({
@@ -60,6 +52,7 @@ export function PersonalInfo() {
   // 🔄 Show skeleton while loading
   if (isLoading) return <PersonalInfoSkeleton />;
 
+  // ✅ Only saves on clicking "Save Changes"
   const handleSave = async () => {
     if (!profile) return;
     setSaving(true);
@@ -72,17 +65,26 @@ export function PersonalInfo() {
         country: formData.country,
         languages: formData.languages,
         gender: formData.gender,
-        sameGenderAllow: formData.sameGenderAllow,
+        sameGenderAllow: formData.sameGenderAllow, // ✅ includes the toggle now
       });
       Toast.success("User details updated successfully");
       setIsEditing(false);
       refetch();
     } catch (err) {
       Toast.error("User details update failed");
-      console.error("Failed to update profile:", err);
+      console.error(err);
     } finally {
       setSaving(false);
     }
+  };
+
+  // ✅ Local toggle only (no DB calls)
+  const handleToggleSameGender = () => {
+    if (!isEditing) return;
+    setFormData((prev) => ({
+      ...prev!,
+      sameGenderAllow: !prev!.sameGenderAllow,
+    }));
   };
 
   return (
@@ -136,6 +138,18 @@ export function PersonalInfo() {
               />
             </div>
 
+            {/* Gender */}
+            <div className="space-y-2">
+              <Dropdown
+                label="Gender"
+                value={formData.gender}
+                options={[Gender.MALE, Gender.FEMALE]}
+                onChange={(value) => setFormData({ ...formData, gender: value as Gender })}
+                disabled={!isEditing}
+                required
+              />
+            </div>
+
             {/* Language */}
             <div className="space-y-2">
               <MultiLanguageSelect
@@ -160,6 +174,69 @@ export function PersonalInfo() {
                 placeholder="Tell us about yourself..."
               />
             </div>
+
+            {/* ✅ Same Gender Preference Section */}
+            <div className="mt-4 p-4 border rounded-xl bg-gradient-to-r from-[#e0f7f6] to-[#f0fffc] shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-sm font-semibold text-foreground flex items-center">
+                    <User className="w-4 h-4 mr-2 text-accent" />
+                    Same Gender Interaction
+                  </h4>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Control whether people of the same gender can interact with your profile.
+                  </p>
+                </div>
+
+                {/* Toggle Switch */}
+                <button
+                  onClick={handleToggleSameGender}
+                  disabled={!isEditing}
+                  className={`relative inline-flex items-center h-8 w-16 rounded-full transition-all duration-300 focus:outline-none ${
+                    formData.sameGenderAllow ? "bg-green-500" : "bg-gray-400"
+                  } ${!isEditing ? "opacity-50 cursor-not-allowed" : ""}`}
+                >
+                  <span
+                    className={`absolute left-1 top-1 h-6 w-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
+                      formData.sameGenderAllow ? "translate-x-8" : ""
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Status Badge */}
+              <div className="mt-3 flex items-center gap-2">
+                {formData.sameGenderAllow ? (
+                  <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Same gender interaction enabled
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Restricted to opposite gender only
+                  </div>
+                )}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
@@ -172,7 +249,6 @@ export function PersonalInfo() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Contact Number */}
             <div className="space-y-2">
               <Label htmlFor="contactNumber">Contact Number</Label>
               <Input
@@ -183,8 +259,6 @@ export function PersonalInfo() {
                 className="bg-input border-[#337f7c]/20"
               />
             </div>
-
-            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
               <Input
