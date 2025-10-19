@@ -30,7 +30,16 @@ export interface formType {
 export function PersonalInfo() {
   const { data: profile, isLoading, refetch } = useCurrentUser();
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<formType | null>(null);
+  const [formData, setFormData] = useState<formType>({
+      name: "",
+      country: "",
+      languages: [],
+      bio: "",
+      contactNumber: "",
+      email: "",
+      gender:Gender.MALE,
+      sameGenderAllow:false
+  });
   const [saving, setSaving] = useState(false);
 
   // Initialize formData once profile is loaded
