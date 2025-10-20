@@ -64,8 +64,8 @@ export default function ServiceDetailsPage() {
     const { serviceSlug } = useExploreState();
     const [pageLimit, setPageLimit] = useState(4);
     const [pageOffset, setPageOffset] = useState(0);
-    const [starFilter, setStarFilter] = useState(0);
-    
+    const [starFilter, setStarFilter] = useState<number[]>([]);
+
     const {
         data: service,
         isLoading,
@@ -115,7 +115,7 @@ export default function ServiceDetailsPage() {
         error: reviewError,
     } = useReviewByService({
         serviceId: serviceId!,
-        stars: starFilter,
+        stars: starFilter.length === 1 ? starFilter[0] : 0,
         limit: pageLimit,
         offset: pageOffset,
     });
@@ -285,9 +285,9 @@ export default function ServiceDetailsPage() {
         return total / allReviewsForStats.data.length;
     }, [allReviewsForStats?.data]);
 
-    const handleStarFilter = (stars: number) => {
+    const handleStarFilter = (stars: number[]) => {
         setStarFilter(stars);
-        setPageOffset(0); // Reset pagination when filtering
+        setPageOffset(0);
     };
 
     const handleSeeAllReviews = () => {
