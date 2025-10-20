@@ -101,7 +101,7 @@ function ReviewCard({ review }: { review: Review }) {
                         {data?.country && <span className="text-sm text-gray-500">• {data.country}</span>}
                         <div aria-label={`${review.stars} stars`} className="ml-2 flex items-center gap-0.5">
                             {Array.from({ length: 5 }).map((_, i) => (
-                                <StarFilledIcon key={i} className={`h-4 w-4 ${i < review.stars ? "text-black" : "text-gray-300"}`} />
+                                <StarFilledIcon key={i} className={`h-4 w-4 ${i < review.stars ? "text-yellow-500" : "text-gray-300"}`} />
                             ))}
                         </div>
                         <span className="ml-1 text-sm font-semibold">{review.stars}</span>

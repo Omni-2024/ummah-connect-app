@@ -25,7 +25,7 @@ import ServiceFAQ from "./ServiceFAQ";
 import ShareServiceModal from "@/features/explore/component/ShareServiceModal";
 import { setServiceId, setShowServiceShareModal } from "@/features/app/context/AppState";
 import ReviewCarousel from "@/components/widgets/ReviewCarousel";
-import AllReviews from "./AllReviews";
+import AllReviews from "./reviews/AllReviews";
 import { useReviewByService } from "@/lib/hooks/useReview";
 import { createLoginUrl } from "@/lib/helpers/urls";
 import { useAuthState } from "@/features/auth/context/useAuthState";
