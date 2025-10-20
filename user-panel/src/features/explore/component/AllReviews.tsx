@@ -174,63 +174,58 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
     const currentSortOption = sortOptions.find(opt => opt.value === sortBy);
 
     return (
-        <div id="all-reviews" className={`w-full my-6 ${showOnDesktop ? 'block' : 'block sm:hidden'} bg-gradient-to-br from-gray-50 to-white p-4 rounded-lg`} ref={ref}>
+        <div id="all-reviews" className={`w-full my-6 ${showOnDesktop ? 'block' : 'block sm:hidden'} p-4 rounded-lg pl-0`} ref={ref}>
             <h2 className="text-xl text-gray-800 font-semibold mb-3">All Reviews</h2>
             
-            {ratingBreakdown && totalReviews && totalReviews > 0 && (
+{ratingBreakdown && totalReviews && totalReviews > 0 && (
             <div className="bg-white rounded-xl border border-gray-200 p-4 mb-3">
                 <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-4">
-                        <div className="flex items-center gap-4">
-                            <div className="flex-shrink-0 relative">
-                                <svg className="w-20 h-20" viewBox="0 0 100 100">
-                                    <circle cx="50" cy="50" r="40" stroke="#e0e0e0" strokeWidth="8" fill="none" />
-                                    <circle cx="50" cy="50" r="40" stroke="#4B5EFC" strokeWidth="8" fill="none"
-                                        strokeDasharray={circumference} strokeDashoffset={strokeDashoffset}
-                                        transform="rotate(-90 50 50)" />
-                                    <text x="50" y="50" textAnchor="middle" dy=".3em" className="text-2xl font-bold text-gray-800">
-                                        {averageRating.toFixed(1)}
-                                    </text>
-                                </svg>
-                                <p className="text-center text-xs text-gray-500 mt-1">{totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
+                    <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 text-center">
+                            <div className="text-4xl font-bold text-gray-900">{averageRating.toFixed(1)}</div>
+                            <div className="flex items-center justify-center gap-0.5 mt-1">
+                                {Array.from({ length: 5 }).map((_, i) =>
+                                    i < Math.round(averageRating) ? (
+                                        <StarFilledIcon key={i} className="h-3.5 w-3.5 text-yellow-500" />
+                                    ) : (
+                                        <StarIcon key={i} className="h-3.5 w-3.5 text-gray-300" />
+                                    )
+                                )}
                             </div>
+                            <p className="text-xs text-gray-500 mt-1">{totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
+                        </div>
 
-                            <div className="flex-1">
-                                <h3 className="font-semibold text-gray-900 mb-1.5 text-sm">Rating Breakdown</h3>
-                                <div className="space-y-0.5">
-                                    {[5, 4, 3, 2, 1].map((star) => {
-                                        const count = ratingBreakdown[star as keyof typeof ratingBreakdown] || 0;
-                                        const isActive = activeStarFilter === star;
+                        <div className="flex-1 min-w-0">
+                            <div className="space-y-1">
+                                {[5, 4, 3, 2, 1].map((star) => {
+                                    const count = ratingBreakdown[star as keyof typeof ratingBreakdown] || 0;
+                                    const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+                                    const isActive = activeStarFilter === star;
 
-                                        return (
-                                            <button key={star} onClick={(e) => {
-                                                    e.preventDefault();
-                                                    if (count > 0 && onStarFilter) {
-                                                        handleStarFilter(isActive ? 0 : star);
-                                                    }
-                                                }}
-                                                disabled={count === 0 || !onStarFilter}
-                                                className={`w-full flex items-center gap-2 p-1 rounded-md transition-all ${
-                                                    isActive ? "bg-blue-50 ring-1 ring-blue-300" : ""
-                                                } ${count === 0 ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}`}
-                                            >
-                                                <span className="text-xs font-medium text-gray-700 w-12">
-                                                    {star} Star{star !== 1 ? "s" : ""}
-                                                </span>
-                                                <div className="flex items-center gap-0.5">
-                                                    {Array.from({ length: 5 }).map((_, i) =>
-                                                        i < star ? (
-                                                            <StarFilledIcon key={i} className="h-2.5 w-2.5 text-yellow-500" />
-                                                        ) : (
-                                                            <StarIcon key={i} className="h-2.5 w-2.5 text-gray-300" />
-                                                        )
-                                                    )}
-                                                </div>
-                                                <span className="text-xs text-gray-500 w-8 text-right">({count})</span>
-                                            </button>
-                                        );
-                                    })}
-                                </div>
+                                    return (
+                                        <button key={star} onClick={(e) => {
+                                                e.preventDefault();
+                                                if (count > 0 && onStarFilter) {
+                                                    handleStarFilter(isActive ? 0 : star);
+                                                }
+                                            }}
+                                            disabled={count === 0 || !onStarFilter}
+                                            className={`w-full flex items-center gap-2 group transition-all ${
+                                                isActive ? "opacity-100" : ""
+                                            } ${count === 0 ? "opacity-40" : "hover:opacity-100 cursor-pointer opacity-80"}`}
+                                        >
+                                            <span className="text-xs font-medium text-gray-600 w-5">{star}</span>
+                                            <StarFilledIcon className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                                            <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                                <div className={`h-full rounded-full transition-all ${
+                                                    isActive ? "bg-blue-500" : "bg-gradient-to-r from-yellow-400 to-yellow-500"
+                                                }`}
+                                                    style={{ width: `${percentage}%` }} />
+                                            </div>
+                                            <span className="text-xs text-gray-500 w-8 text-right">{count}</span>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
                     </div>
