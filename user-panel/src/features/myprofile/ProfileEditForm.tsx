@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { PersonIcon, CameraIcon, CheckIcon, ArrowRightIcon } from "@radix-ui/react-icons"
 import Image from "next/image"
 import { buildAvatarUrl } from "@/features/app/components/Navbar"
-import { updateUserFn } from "@/lib/endpoints/userFns"
+import { updateUserFn, Gender } from "@/lib/endpoints/userFns"
 import { getAllProfessionsFn, getAllSpecialistByProfessionIdFn } from "@/lib/endpoints/categoryFns"
 import { COUNTRY_LIST, languages } from "@/lib/constants"
 import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns"
@@ -26,6 +26,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
     email: "",
     contact: "",
     profileImage: "",
+    gender: Gender.MALE,
     designation: [] as string[],
     interest: [] as string[],
     specialization: "",
@@ -38,6 +39,12 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
   const [saveMessage, setSaveMessage] = useState("")
   const [professionMap, setProfessionMap] = useState<{[key: string]: string}>({})
   const [specialistMap, setSpecialistMap] = useState<{[key: string]: string}>({})
+
+  // Gender options
+  const genderOptions = [
+    { value: Gender.MALE, label: 'Male' },
+    { value: Gender.FEMALE, label: 'Female' }
+  ]
 
   // Load professions on component mount
   useEffect(() => {
@@ -94,6 +101,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
         email: user.email || "",
         contact: user.contactNumber || "",
         profileImage: imageManuallyUpdated ? prev.profileImage : (avatarUrl || ""),
+        gender: user.gender || Gender.MALE,
         designation: Array.isArray(user.designations) ? user.designations : [],
         interest: Array.isArray(user.interests) ? user.interests : [],
         specialization: user.specializations || "",
@@ -129,6 +137,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
       await updateUserFn({
         id: user.id,
         name: profileData.name,
+        gender: profileData.gender,
         designations: profileData.designation,
         interests: profileData.interest,
         profileImage: imageUrl,
@@ -156,7 +165,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
     }
   }
 
-  const handleInputChange = (field: string, value: string | string[]) => {
+  const handleInputChange = (field: string, value: string | string[] | Gender) => {
     setProfileData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -250,7 +259,6 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                 readOnly
               />
             </div>
-
             <div>
               <Dropdown
                 label="Languages"
@@ -274,6 +282,19 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
             </div>
 
             <div>
+              <Dropdown
+                label="Gender"
+                value={profileData.gender}
+                options={genderOptions.map(g => g.label)}
+                onChange={(value) => {
+                  const selectedGender = genderOptions.find(g => g.label === value)?.value || Gender.MALE
+                  handleInputChange('gender', selectedGender)
+                }}
+                required
+              />
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Contact Number</label>
               <input
                 type="tel"
@@ -282,6 +303,8 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                 className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
               />
             </div>
+
+            
           </div>
         </div>
 
