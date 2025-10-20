@@ -36,8 +36,8 @@ interface AllReviewsProps {
         2: number;
         1: number;
     };
-    onStarFilter?: (stars: number) => void;
-    activeStarFilter?: number;
+    onStarFilter?: (stars: number[]) => void;
+    activeStarFilter?: number[];
 }
 
 const ReviewItem = ({ review, searchQuery }: { review: Review; searchQuery: string }) => {
@@ -108,29 +108,39 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
     isLoadingMore = false,
     averageRating = 0,
     ratingBreakdown,
-    activeStarFilter: externalActiveFilter = 0,
+    activeStarFilter: externalActiveFilter = [],
     onStarFilter
 }, ref) => {
     const [sortBy, setSortBy] = useState<SortOption>("recent");
-    const [internalFilter, setInternalFilter] = useState<number>(externalActiveFilter);
+    const [internalFilter, setInternalFilter] = useState<number[]>(externalActiveFilter || []);
     const [searchQuery, setSearchQuery] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-    const activeStarFilter = onStarFilter ? externalActiveFilter : internalFilter;
+    const activeStarFilter = Array.isArray(onStarFilter ? externalActiveFilter : internalFilter) 
+        ? (onStarFilter ? externalActiveFilter : internalFilter) 
+        : [];
 
-    const handleStarFilter = (value: number) => {
-        if (onStarFilter) {
-            onStarFilter(value);
+    const handleStarFilter = (star: number) => {
+        const newFilter = [...activeStarFilter];
+        if (newFilter.includes(star)) {
+            newFilter.splice(newFilter.indexOf(star), 1);
         } else {
-            setInternalFilter(value);
+            newFilter.push(star);
+            newFilter.sort((a, b) => b - a);
+        }
+
+        if (onStarFilter) {
+            onStarFilter(newFilter);
+        } else {
+            setInternalFilter(newFilter);
         }
     };
 
     const filteredAndSortedReviews = useMemo(() => {
         let result = [...reviews];
         
-        if (activeStarFilter > 0) {
-            result = result.filter(review => review.stars === activeStarFilter);
+        if (activeStarFilter.length > 0) {
+            result = result.filter(review => activeStarFilter.includes(review.stars));
         }
         
         if (searchQuery.trim()) {
@@ -159,11 +169,15 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
     const strokeDashoffset = circumference - (averageRating / 5) * circumference;
 
     const clearAllFilters = () => {
-        onStarFilter && handleStarFilter(0);
+        if (onStarFilter) {
+            onStarFilter([]);
+        } else {
+            setInternalFilter([]);
+        }
         setSearchQuery("");
     };
 
-    const activeFiltersCount = (activeStarFilter > 0 ? 1 : 0) + (searchQuery.trim() ? 1 : 0);
+    const activeFiltersCount = (activeStarFilter.length > 0 ? activeStarFilter.length : 0) + (searchQuery.trim() ? 1 : 0);
 
     const sortOptions = [
         { value: "recent", label: "Most Recent", icon: "📅" },
@@ -175,120 +189,152 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
 
     return (
         <div id="all-reviews" className={`w-full my-6 ${showOnDesktop ? 'block' : 'block sm:hidden'} p-4 rounded-lg pl-0`} ref={ref}>
-            <h2 className="text-xl text-gray-800 font-semibold mb-3">All Reviews</h2>
+            <h2 className="text-xl text-gray-800 font-semibold mb-3 mt-3">All Reviews</h2>
             
-{ratingBreakdown && totalReviews && totalReviews > 0 && (
-            <div className="bg-white rounded-xl border border-gray-200 p-4 mb-3">
-                <div className="flex flex-col gap-3">
-                    <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0 text-center">
-                            <div className="text-4xl font-bold text-gray-900">{averageRating.toFixed(1)}</div>
-                            <div className="flex items-center justify-center gap-0.5 mt-1">
-                                {Array.from({ length: 5 }).map((_, i) =>
-                                    i < Math.round(averageRating) ? (
-                                        <StarFilledIcon key={i} className="h-3.5 w-3.5 text-yellow-500" />
-                                    ) : (
-                                        <StarIcon key={i} className="h-3.5 w-3.5 text-gray-300" />
-                                    )
+            {ratingBreakdown && totalReviews && totalReviews > 0 && (
+                <div className="bg-white rounded-xl border border-gray-200 p-4 mb-3">
+                    <div className="flex flex-col gap-3">
+                        <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0 text-center">
+                                <div className="text-4xl font-bold text-gray-900">{averageRating.toFixed(1)}</div>
+                                <div className="flex items-center justify-center gap-0.5 mt-1">
+                                    {Array.from({ length: 5 }).map((_, i) =>
+                                        i < Math.round(averageRating) ? (
+                                            <StarFilledIcon key={i} className="h-3.5 w-3.5 text-yellow-500" />
+                                        ) : (
+                                            <StarIcon key={i} className="h-3.5 w-3.5 text-gray-300" />
+                                        )
+                                    )}
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">{totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                                <div className="space-y-1">
+                                    {[5, 4, 3, 2, 1].map((star) => {
+                                        const count = ratingBreakdown[star as keyof typeof ratingBreakdown] || 0;
+                                        const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+                                        const isActive = activeStarFilter.includes(star);
+
+                                        return (
+                                            <button
+                                                key={star}
+                                                onClick={(e) => {
+                                                    e.preventDefault(); // Explicitly prevent default behavior
+                                                    e.stopPropagation(); // Prevent event bubbling
+                                                    if (count > 0) {
+                                                        handleStarFilter(star);
+                                                    }
+                                                }}
+                                                disabled={count === 0}
+                                                className={`w-full flex items-center gap-2 group transition-all ${
+                                                    isActive ? "opacity-100" : ""
+                                                } ${count === 0 ? "opacity-40" : "hover:opacity-100 cursor-pointer opacity-80"}`}
+                                            >
+                                                <span className="text-xs font-medium text-gray-600 w-5">{star}</span>
+                                                <StarFilledIcon className="h-3 w-3 text-yellow-500 flex-shrink-0" />
+                                                <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                                    <div
+                                                        className={`h-full rounded-full transition-all ${
+                                                            isActive ? "bg-blue-500" : "bg-gradient-to-r from-yellow-400 to-yellow-500"
+                                                        }`}
+                                                        style={{ width: `${percentage}%` }}
+                                                    />
+                                                </div>
+                                                <span className="text-xs text-gray-500 w-8 text-right">{count}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-2 pt-3 border-t border-gray-100">
+                            <div className="flex-1 relative">
+                                <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                                <input
+                                    type="text"
+                                    placeholder="Search reviews..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full pl-9 pr-4 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white placeholder:text-gray-400"
+                                />
+                                {searchQuery && (
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setSearchQuery("");
+                                        }}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    >
+                                        <span className="text-lg">×</span>
+                                    </button>
                                 )}
                             </div>
-                            <p className="text-xs text-gray-500 mt-1">{totalReviews} review{totalReviews !== 1 ? 's' : ''}</p>
-                        </div>
 
-                        <div className="flex-1 min-w-0">
-                            <div className="space-y-1">
-                                {[5, 4, 3, 2, 1].map((star) => {
-                                    const count = ratingBreakdown[star as keyof typeof ratingBreakdown] || 0;
-                                    const percentage = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
-                                    const isActive = activeStarFilter === star;
-
-                                    return (
-                                        <button key={star} onClick={(e) => {
-                                                e.preventDefault();
-                                                if (count > 0 && onStarFilter) {
-                                                    handleStarFilter(isActive ? 0 : star);
-                                                }
-                                            }}
-                                            disabled={count === 0 || !onStarFilter}
-                                            className={`w-full flex items-center gap-2 group transition-all ${
-                                                isActive ? "opacity-100" : ""
-                                            } ${count === 0 ? "opacity-40" : "hover:opacity-100 cursor-pointer opacity-80"}`}
-                                        >
-                                            <span className="text-xs font-medium text-gray-600 w-5">{star}</span>
-                                            <StarFilledIcon className="h-3 w-3 text-yellow-500 flex-shrink-0" />
-                                            <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                                <div className={`h-full rounded-full transition-all ${
-                                                    isActive ? "bg-blue-500" : "bg-gradient-to-r from-yellow-400 to-yellow-500"
-                                                }`}
-                                                    style={{ width: `${percentage}%` }} />
-                                            </div>
-                                            <span className="text-xs text-gray-500 w-8 text-right">{count}</span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-2 pt-3 border-t border-gray-100">
-                        <div className="flex-1 relative">
-                            <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                            <input type="text" placeholder="Search reviews..." value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-9 pr-4 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white placeholder:text-gray-400"
-                            />
-                            {searchQuery && (
-                                <button onClick={() => setSearchQuery("")}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                                    <span className="text-lg">×</span>
+                            <div className="relative">
+                                <button
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setIsDropdownOpen(!isDropdownOpen);
+                                    }}
+                                    className="w-full sm:w-auto flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-700 font-medium hover:bg-gray-50 transition-colors min-w-[160px]"
+                                >
+                                    <span className="flex items-center gap-1.5">
+                                        <span>{currentSortOption?.icon}</span>
+                                        <span>{currentSortOption?.label}</span>
+                                    </span>
+                                    <svg
+                                        className={`w-4 h-4 text-gray-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                    </svg>
                                 </button>
-                            )}
-                        </div>
 
-                        <div className="relative">
-                            <button onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="w-full sm:w-auto flex items-center justify-between gap-2 pl-3 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-700 font-medium hover:bg-gray-50 transition-colors min-w-[160px]">
-                                <span className="flex items-center gap-1.5">
-                                    <span>{currentSortOption?.icon}</span>
-                                    <span>{currentSortOption?.label}</span>
-                                </span>
-                                <svg className={`w-4 h-4 text-gray-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} 
-                                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                                </svg>
-                            </button>
-
-                            {isDropdownOpen && (
-                                <>
-                                    <div className="fixed inset-0 z-10" onClick={() => setIsDropdownOpen(false)} />
-                                    <div className="absolute right-0 mt-1 w-full sm:w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20 overflow-hidden">
-                                        {sortOptions.map((option) => (
-                                            <button key={option.value}
-                                                onClick={() => {
-                                                    setSortBy(option.value as SortOption);
-                                                    setIsDropdownOpen(false);
-                                                }}
-                                                className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${
-                                                    sortBy === option.value 
-                                                        ? 'bg-blue-50 text-blue-700 font-semibold' 
-                                                        : 'text-gray-700 hover:bg-gray-50'
-                                                }`}>
-                                                <span className="text-base">{option.icon}</span>
-                                                <span>{option.label}</span>
-                                                {sortBy === option.value && (
-                                                    <svg className="w-4 h-4 ml-auto text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                    </svg>
-                                                )}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </>
-                            )}
+                                {isDropdownOpen && (
+                                    <>
+                                        <div className="fixed inset-0 z-10" onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            setIsDropdownOpen(false);
+                                        }} />
+                                        <div className="absolute right-0 mt-1 w-full sm:w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20 overflow-hidden">
+                                            {sortOptions.map((option) => (
+                                                <button
+                                                    key={option.value}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        setSortBy(option.value as SortOption);
+                                                        setIsDropdownOpen(false);
+                                                    }}
+                                                    className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${
+                                                        sortBy === option.value 
+                                                            ? 'bg-blue-50 text-blue-700 font-semibold' 
+                                                            : 'text-gray-700 hover:bg-gray-50'
+                                                    }`}
+                                                >
+                                                    <span className="text-base">{option.icon}</span>
+                                                    <span>{option.label}</span>
+                                                    {sortBy === option.value && (
+                                                        <svg className="w-4 h-4 ml-auto text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                                        </svg>
+                                                    )}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             )}
 
             {activeFiltersCount > 0 && (
@@ -296,22 +342,41 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
                     <span className="text-xs text-blue-900 font-medium">
                         {activeFiltersCount} filter{activeFiltersCount > 1 ? 's' : ''}:
                     </span>
-                    {activeStarFilter > 0 && (
-                        <button onClick={() => onStarFilter && handleStarFilter(0)}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-gray-50 rounded-full text-xs font-medium text-gray-700 border border-gray-200 transition-colors">
-                            <span>{activeStarFilter} stars</span>
+                    {activeStarFilter.length > 0 && activeStarFilter.map((star) => (
+                        <button
+                            key={star}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                handleStarFilter(star);
+                            }}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-gray-50 rounded-full text-xs font-medium text-gray-700 border border-gray-200 transition-colors"
+                        >
+                            <span>{star} stars</span>
                             <span className="text-gray-400">×</span>
                         </button>
-                    )}
+                    ))}
                     {searchQuery.trim() && (
-                        <button onClick={() => setSearchQuery("")}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-gray-50 rounded-full text-xs font-medium text-gray-700 border border-gray-200 transition-colors">
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setSearchQuery("");
+                            }}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white hover:bg-gray-50 rounded-full text-xs font-medium text-gray-700 border border-gray-200 transition-colors"
+                        >
                             <span>"{searchQuery.substring(0, 20)}{searchQuery.length > 20 ? '...' : ''}"</span>
                             <span className="text-gray-400">×</span>
                         </button>
                     )}
-                    <button onClick={clearAllFilters}
-                        className="text-xs text-blue-600 hover:text-blue-800 font-semibold ml-auto">
+                    <button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            clearAllFilters();
+                        }}
+                        className="text-xs text-blue-600 hover:text-blue-800 font-semibold ml-auto"
+                    >
                         Clear all
                     </button>
                 </div>
@@ -335,18 +400,32 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
                             : "Be the first to leave a review!"}
                     </p>
                     {activeFiltersCount > 0 && (
-                        <button onClick={clearAllFilters}
-                            className="px-4 py-1.5 text-blue-600 hover:text-blue-800 font-medium text-sm bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors">
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                clearAllFilters();
+                            }}
+                            className="px-4 py-1.5 text-blue-600 hover:text-blue-800 font-medium text-sm bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+                        >
                             Clear all filters
                         </button>
                     )}
                 </div>
             )}
             
-            {hasMore && onLoadMore && !activeStarFilter && !searchQuery.trim() && (
+            {hasMore && onLoadMore && !activeStarFilter.length && !searchQuery.trim() && (
                 <div className="mt-3 flex justify-center">
-                    <Button onClick={onLoadMore} className="px-6 py-2 text-sm"
-                        disabled={isLoadingMore} isLoading={isLoadingMore}>
+                    <Button
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            if (onLoadMore) onLoadMore();
+                        }}
+                        className="px-6 py-2 text-sm"
+                        disabled={isLoadingMore}
+                        isLoading={isLoadingMore}
+                    >
                         See More Reviews
                     </Button>
                 </div>
