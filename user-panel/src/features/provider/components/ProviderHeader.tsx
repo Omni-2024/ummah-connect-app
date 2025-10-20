@@ -67,7 +67,7 @@ export default function ProviderHeader({ educator, getDesignationDisplay, buildA
         {/* Info Section */}
         <div className="flex-1 w-full">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{educator.name}</h1>
-          <p className="text-base sm:text-lg text-gray-600 mb-3">{getDesignationDisplay()}</p>
+          <p className="text-base sm:text-lg text-gray-600 mb-3">{getDesignationDisplay()} ({educator.totalServices || "0"} Services)</p>
           
           {/* Badges */}
           <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-3">
@@ -99,8 +99,8 @@ export default function ProviderHeader({ educator, getDesignationDisplay, buildA
           {/* Stats - Single row on mobile */}
           <div className="flex justify-center sm:justify-start gap-6 sm:gap-8">
             <div>
-              <p className="font-bold text-lg sm:text-xl text-gray-900">{educator.totalServices || "0"}</p>
-              <p className="text-xs sm:text-sm text-gray-500">Services</p>
+              <p className="font-bold text-lg sm:text-xl text-gray-900"></p>
+              
             </div>
           </div>
         </div>
