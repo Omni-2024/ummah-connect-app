@@ -67,7 +67,7 @@ export default function ProviderHeader({ educator, getDesignationDisplay, buildA
         {/* Info Section */}
         <div className="flex-1 w-full">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{educator.name}</h1>
-          <p className="text-base sm:text-lg text-gray-600 mb-3">{getDesignationDisplay()} ({educator.totalServices || "0"} Services)</p>
+          <p className="text-base sm:text-lg text-gray-600 mb-3">({educator.totalServices || "0"} Services)</p>
           
           {/* Badges */}
           <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-3">

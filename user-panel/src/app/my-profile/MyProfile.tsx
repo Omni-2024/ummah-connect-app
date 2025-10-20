@@ -34,7 +34,7 @@ const MyProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 sm:bg-white">
+    <div className="min-h-screen bg-gray-50 ">
       <Navbar />
       <NavbarMobile
         className="px-4"
@@ -47,7 +47,7 @@ const MyProfile = () => {
           </div>
         }
       />
-      <div className="bg-white border-b border-gray-200 hidden sm:block">
+      <div className="bg-gray-50 border-b border-gray-200 hidden sm:block">
         <div className="max-w-4xl mx-auto px-8 py-4">
           <h1 className="text-2xl font-bold text-gray-900">Edit Profile</h1>
           <p className="text-gray-600">Update your Profile Information</p>
