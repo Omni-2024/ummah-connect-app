@@ -3,45 +3,50 @@
 import React from "react"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useRouter } from "next/navigation"
-import Navbar from "../features/app/components/Navbar";
-import IconButton from "@/components/base/IconButton";
-import Link from "next/link";
-import NavbarMobile from "@/features/app/components/Navbar.mobile";
-import { useAppState } from "@/features/app/context/useAppState";
-import { HambergerMenu } from "iconsax-react"; import { NAV_LOGO_SRC } from "@/lib/constants";
-import NavDrawerMobile from "@/features/app/components/NavDrawer.mobile";
-import NotLoggedInNavModal from "@/features/app/components/NotLoggedInNavModal.mobile";
-import BottomBar from "@/features/app/components/Bottombar";
+import Navbar from "../features/app/components/Navbar"
+import IconButton from "@/components/base/IconButton"
+import Link from "next/link"
+import NavbarMobile from "@/features/app/components/Navbar.mobile"
+import { useAppState } from "@/features/app/context/useAppState"
+import { HambergerMenu } from "iconsax-react"
+import { NAV_LOGO_SRC } from "@/lib/constants"
+import NavDrawerMobile from "@/features/app/components/NavDrawer.mobile"
+import NotLoggedInNavModal from "@/features/app/components/NotLoggedInNavModal.mobile"
+import BottomBar from "@/features/app/components/Bottombar"
 import ProfileMenuButton from "@/features/app/components/ProfileMenuButton"
 import HeroSection from "@/features/home/HeroSection"
 import FeaturesSection from "@/features/home/FeaturesSection"
 import IslamicLearningPathsSection from "@/features/home/IslamicLearningPathsSection"
 import IslamicValuesSection from "@/features/home/IslamicValuesSection"
 import RecommendedServicesSection from "@/features/home/RecommendedServicesSection"
-import {ChatWidgetWrapper} from "@/components/getStream/chat/ChatWidgetWrapper";
-import Footer from "@/features/app/components/Footer";
+import Footer from "@/features/app/components/Footer"
+import PopularServicesSection from "@/features/home/PopularServicesSection"
+import { useCategories } from "@/lib/hooks/useCategories"
 
 export default function HomePage() {
   const { isAuthenticated } = useAuthState()
   const router = useRouter()
+  
+  // Use the same hook that ExploreDropDown uses!
+  const { data: exploreCategories, isLoading: categoriesLoading, error: categoriesError } = useCategories()
 
   const {
     setShowNavDrawer,
     setShowNotificationsModal,
     setShowNotLoggedInNavModal,
-  } = useAppState();
+  } = useAppState()
 
   const handleNotificationButton = () => {
-    setShowNotificationsModal(true);
-  };
+    setShowNotificationsModal(true)
+  }
 
   const handleShowNavDrawer = () => {
-    setShowNavDrawer(true);
-  };
+    setShowNavDrawer(true)
+  }
 
   const handleHamBurgerMenu = () => {
-    setShowNotLoggedInNavModal(true);
-  };
+    setShowNotLoggedInNavModal(true)
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -81,6 +86,11 @@ export default function HomePage() {
       <NotLoggedInNavModal />
 
       <HeroSection isAuthenticated={isAuthenticated} router={router} />
+      <PopularServicesSection
+        exploreCategories={exploreCategories || []}
+        categoriesLoading={categoriesLoading}
+        categoriesError={categoriesError}
+      />
       <FeaturesSection />
       {isAuthenticated && <RecommendedServicesSection router={router} />}
       {/* {isAuthenticated && <ContinueLearningSection />}  */}
