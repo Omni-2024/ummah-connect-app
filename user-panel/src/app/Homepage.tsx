@@ -22,13 +22,24 @@ import RecommendedServicesSection from "@/features/home/RecommendedServicesSecti
 import Footer from "@/features/app/components/Footer"
 import PopularServicesSection from "@/features/home/PopularServicesSection"
 import { useCategories } from "@/lib/hooks/useCategories"
+import { useServices } from "@/lib/hooks/useServices"
+import { useGeneralUser } from "@/lib/hooks/useUser"
 
 export default function HomePage() {
-  const { isAuthenticated } = useAuthState()
+  const { isAuthenticated, id: userId } = useAuthState()
   const router = useRouter()
   
-  // Use the same hook that ExploreDropDown uses!
+  // Fetch categories for PopularServicesSection
   const { data: exploreCategories, isLoading: categoriesLoading, error: categoriesError } = useCategories()
+
+  // Fetch ALL services for RecommendedServicesSection
+  const { data: servicesData, isLoading: servicesLoading, error: servicesError } = useServices({
+    limit: 100, // Fetch more services to have a better pool for filtering
+    offset: 0,
+  })
+
+  // Fetch user profile to get their interests
+  const { data: userProfile } = useGeneralUser(userId)
 
   const {
     setShowNavDrawer,
@@ -48,6 +59,45 @@ export default function HomePage() {
     setShowNotLoggedInNavModal(true)
   }
 
+  // Get user's interests from their profile (or use empty array if not available)
+  const userInterests = userProfile?.interests || []
+
+  // Filter services based on user's interests
+  // Match interests against specialtyId, professionId, or typeId
+  const recommendedServices = React.useMemo(() => {
+    if (!servicesData?.data) return []
+    
+    // If user has no interests, return empty
+    if (!userInterests || userInterests.length === 0) {
+      console.log('User has no interests set')
+      return []
+    }
+    
+    // Debug logs
+    console.log('User interests from profile:', userInterests)
+    console.log('Total services available:', servicesData.data.length)
+    
+    // Filter services that match user interests
+    const filtered = servicesData.data.filter(service => {
+      const matchesSpecialty = userInterests.includes(service.specialtyId)
+      const matchesProfession = userInterests.includes(service.professionId)
+      const matchesType = service.typeId && userInterests.includes(service.typeId)
+      
+      return matchesSpecialty || matchesProfession || matchesType
+    })
+    
+    console.log('Services matching user interests:', filtered)
+    console.log('Matching services count:', filtered.length)
+    
+    // If no matches, show all published services for testing
+    if (filtered.length === 0) {
+      console.warn('No services match user interests! Showing all published services.')
+      return servicesData.data.filter(s => s.isPublished && !s.isArchived)
+    }
+    
+    return filtered
+  }, [servicesData, userInterests])
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -65,12 +115,6 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
               <>
-                {/*<ComingSoonToolTip>*/}
-                {/*  <IconButton size="sm" onClick={handleNotificationButton}>*/}
-                {/*    <Notification color="black" className="text-dark-600" />*/}
-                {/*  </IconButton>*/}
-                {/*</ComingSoonToolTip>*/}
-
                 <ProfileMenuButton onClick={handleShowNavDrawer} />
               </>
             ) : (
@@ -92,11 +136,16 @@ export default function HomePage() {
         categoriesError={categoriesError}
       />
       <FeaturesSection />
-      {isAuthenticated && <RecommendedServicesSection router={router} />}
-      {/* {isAuthenticated && <ContinueLearningSection />}  */}
+      {isAuthenticated && (
+        <RecommendedServicesSection
+          services={recommendedServices}
+          loading={servicesLoading}
+          error={servicesError}
+          router={router}
+        />
+      )}
       <IslamicValuesSection />
       <IslamicLearningPathsSection />
-      {/* <SuccessStoriesSection /> */}
       <BottomBar />
       <Footer />
     </div>
