@@ -52,16 +52,16 @@ const PopularServicesSection: React.FC<PopularServicesSectionProps> = ({
   }
 
   return (
-    <section className="py-16" aria-labelledby="popular-services-heading">
+    <section className="py-10" aria-labelledby="popular-services-heading">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
+        {/* <div className="text-center mb-12">
           <h2 id="popular-services-heading" className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
             Popular Services
           </h2>
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto">
             Explore our most sought-after categories and find the perfect service for your needs
           </p>
-        </div>
+        </div> */}
 
         {categoriesLoading ? (
           <>
@@ -92,7 +92,7 @@ const PopularServicesSection: React.FC<PopularServicesSectionProps> = ({
             </div>
           </>
         ) : categoriesError ? (
-          <div className="text-center py-16 text-red-600">Error loading categories</div>
+          <div className="text-center py-14 text-red-600">Error loading categories</div>
         ) : (
           <>
             {/* Desktop View */}

@@ -218,9 +218,9 @@ function RecommendedServicesSection({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
           <span className="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium mb-4">
-            Recommended for You
+            Personalized Learning Path
           </span>
-          <h2 className="text-3xl font-bold text-slate-900 mb-3">Personalized Learning Path</h2>
+          <h2 className="text-3xl font-bold text-slate-900 mb-3"> Recommended for You</h2>
           <p className="text-lg text-slate-600 max-w-2xl mx-auto">
             Services tailored to your interests and professional goals
           </p>

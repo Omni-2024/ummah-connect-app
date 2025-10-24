@@ -43,7 +43,7 @@ export default function IslamicLearningPathsSection() {
   ];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-16 bg-white">
+    <section className="py-12 sm:py-12 lg:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">

@@ -26,10 +26,10 @@ export default function FeaturesSection() {
   ];
 
   return (
-    <section className="py-10 sm:py-16 lg:py-16 bg-white">
+    <section className="py-10 sm:py-10 lg:py-10 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
+        <div className="text-center mb-12 sm:mb-14 lg:mb-20">
           <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
             Why Choose Us?
           </h2>
