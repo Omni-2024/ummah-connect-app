@@ -1,11 +1,20 @@
 "use client"
 
 import React from "react"
-import { ArrowRightIcon, StarIcon } from "@radix-ui/react-icons"
+import { ArrowRightIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"
-import { S3_BUCKET_URL } from "@/lib/constants"
-import { buildAvatarUrl } from "@/features/app/components/Navbar"
+import useEmblaCarousel from "embla-carousel-react"
 import { Service } from "@/types"
+import { Card, CardDescription, CardTitle } from "@/components/base/Card"
+import { cn } from "@/lib/className"
+import { S3_BUCKET_URL } from "@/lib/constants"
+import StudentCountLabel from "@/components/widgets/StudentCountLabel"
+import { useGeneralUser } from "@/lib/hooks/useUser"
+import Image from "next/image"
+import { buildAvatarUrl } from "@/features/app/components/Navbar"
+import { formatDurationFromSeconds } from "@/lib/helpers/formatUtils"
+import { SkeletonServicesCard } from "@/features/explore/component/SkeletonCourseCard"
+import ServiceCard from "@/features/app/components/ServiceCard"
 
 interface RecommendedServicesSectionProps {
   services: Service[]
@@ -14,34 +23,179 @@ interface RecommendedServicesSectionProps {
   router: ReturnType<typeof useRouter>
 }
 
+interface ServiceCardProps {
+  size?: "sm" | "md"
+  service?: Service
+  className?: string
+}
+
+const ServiceCardComponent = ({ size = "md", service, className }: ServiceCardProps) => {
+  const router = useRouter()
+  const { data: educator } = useGeneralUser(service ? service?.providerId : "1")
+
+  const handleCardClick = () => {
+    if (service) {
+      router.push(`/service/${service.slug}`)
+    } else {
+      router.push(`/course/n-a`)
+    }
+  }
+
+  return (
+    <Card
+      onClick={handleCardClick}
+      className={cn(
+        "flex h-full w-full min-w-80 max-w-[25rem] cursor-pointer select-none flex-col space-y-2 overflow-hidden rounded-3xl p-4 transition-colors duration-300 ease-in-out hover:border-primary-100 hover:bg-primary-50/60 active:border-primary-300 lg:space-y-3.5",
+        {
+          "space-y-3 p-3.5 lg:min-w-72 lg:max-w-72": size === "sm",
+        },
+        className
+      )}
+    >
+      <img
+        alt="cover"
+        src={
+          service?.coverImageUrl
+            ? buildAvatarUrl(service.coverImageUrl) || `${S3_BUCKET_URL}/images/coverImage.png`
+            : "/images/coverImage.png"
+        }
+        className={cn("h-44 w-full rounded-2xl object-cover", {
+          "h-36": size === "sm",
+        })}
+      />
+
+      <div
+        className={cn("flex items-center gap-2.5 text-sm font-semibold", {
+          "gap-1.5 text-xs": size === "sm",
+        })}
+      >
+        <span
+          className={cn("flex items-center gap-2", {
+            "gap-1": size === "sm",
+          })}
+        >
+          <img
+            alt="trophy"
+            src="/icons/filled/trophy.svg"
+            className={cn("size-5 object-cover", {
+              "size-4": size === "sm",
+            })}
+          />
+          {service?.averageReviewScore ?? 5} ★
+          <span>({service?.totalReviewCount ?? 0} reviews)</span>
+        </span>
+      </div>
+
+      <div
+        className={cn("space-y-1", {
+          "space-y-0.5": size === "sm",
+        })}
+      >
+        <CardTitle
+          className={cn("line-clamp-2 text-base leading-tight lg:text-lg", {
+            "text-[.92rem] font-medium leading-tight": size === "sm",
+          })}
+        >
+          {service
+            ? service?.title
+            : "Vivamus ex augue tempus id diam at, dictum cursus metus"}
+        </CardTitle>
+
+        <CardDescription
+          className={cn("line-clamp-1 font-normal", {
+            "text-xs": size === "sm",
+          })}
+        >
+          {educator?.name || "N/A"}
+        </CardDescription>
+      </div>
+
+      <CardDescription
+        className={cn("line-clamp-3", {
+          "text-xs": size === "sm",
+        })}
+      >
+        {service
+          ? service?.tagline
+          : "Praesent non orci eu augue egestas lobortis. Fusce dapibus, urna non dignissim ultrices, libero dolor porta tellus, eget tincidunt mi."}
+      </CardDescription>
+
+      <CardDescription
+        className={cn("!mt-auto flex items-center gap-2 pt-3", {
+          "pt-3 text-xs": size === "sm",
+        })}
+      >
+        <span>
+          {formatDurationFromSeconds(service ? service?.duration : 278)} total
+          time
+        </span>
+        <StudentCountLabel count={Number(service?.enrollmentCount)} />
+      </CardDescription>
+    </Card>
+  )
+}
+
 function RecommendedServicesSection({
   services,
   loading,
   error,
   router,
 }: RecommendedServicesSectionProps) {
-  const calculateDiscountedPrice = (price: number, discount = 0, discountEnabled = false) => {
-    return discountEnabled ? price - (price * discount) / 100 : price
-  }
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    slidesToScroll: 1,
+    breakpoints: {
+      "(min-width: 768px)": { slidesToScroll: 2 },
+      "(min-width: 1024px)": { slidesToScroll: 3 },
+    },
+  })
 
-  const getCoverImageUrl = (coverImageUrl: string) => {
-    if (!coverImageUrl) return `${S3_BUCKET_URL}/images/coverImage.png`
-    
-    // If it's already a full URL, return as is
-    if (coverImageUrl.startsWith('http://') || coverImageUrl.startsWith('https://')) {
-      return coverImageUrl
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
+
+  const scrollPrev = React.useCallback(() => {
+    if (emblaApi) emblaApi.scrollPrev()
+  }, [emblaApi])
+
+  const scrollNext = React.useCallback(() => {
+    if (emblaApi) emblaApi.scrollNext()
+  }, [emblaApi])
+
+  const onSelect = React.useCallback(() => {
+    if (!emblaApi) return
+    setSelectedIndex(emblaApi.selectedScrollSnap())
+  }, [emblaApi])
+
+  React.useEffect(() => {
+    if (!emblaApi) return
+    onSelect()
+    emblaApi.on("select", onSelect)
+    return () => {
+      emblaApi.off("select", onSelect)
     }
-    
-    // Otherwise, use buildAvatarUrl
-    return buildAvatarUrl(coverImageUrl) || `${S3_BUCKET_URL}/images/coverImage.png`
-  }
+  }, [emblaApi, onSelect])
 
   if (loading) {
     return (
-      <section className="py-16 text-center">
-        <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-emerald-600" />
-          <p className="text-gray-500 mt-4 text-sm">Loading recommended services...</p>
+      <section className="py-8 sm:py-10 lg:py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+            <div className="inline-flex items-center px-3 py-1.5 bg-emerald-50 rounded-full mb-4">
+              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
+            </div>
+            <div className="h-8 w-64 bg-gray-200 rounded mx-auto mb-3 animate-pulse" />
+            <div className="h-5 w-96 bg-gray-200 rounded mx-auto animate-pulse" />
+          </div>
+          <div className="flex flex-col sm:flex-row sm:gap-6 lg:gap-8 justify-center">
+            <div className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] mb-6 sm:mb-0">
+              <SkeletonServicesCard />
+            </div>
+            <div className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] mb-6 sm:mb-0">
+              <SkeletonServicesCard />
+            </div>
+            <div className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)]">
+              <SkeletonServicesCard />
+            </div>
+          </div>
         </div>
       </section>
     )
@@ -56,13 +210,12 @@ function RecommendedServicesSection({
   }
 
   if (!services || services.length === 0) {
-    return null // Don't show section if no services
+    return null
   }
 
   return (
     <section className="py-8 sm:py-10 lg:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
           <span className="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium mb-4">
             Recommended for You
@@ -73,74 +226,71 @@ function RecommendedServicesSection({
           </p>
         </div>
 
-        {/* Recommended Services */}
-        <div className="space-y-6">
-          {services.map((service) => (
-            <div
-              key={service.id}
-              className="bg-white border border-gray-100 rounded-2xl p-6 hover:shadow-lg transition-all duration-300 hover:border-emerald-200 cursor-pointer"
-              onClick={() => router.push(`/service/${service.slug}`)}
-            >
-              <div className="grid sm:grid-cols-4 gap-6 items-center">
-                <img
-                  src={getCoverImageUrl(service.coverImageUrl)}
-                  alt={service.title}
-                  className="sm:col-span-1 w-full h-32 object-cover rounded-xl"
-                />
-                <div className="sm:col-span-2">
-                  <h3 className="text-xl font-bold text-slate-900 mb-1 hover:text-emerald-600 transition">
-                    {service.title}
-                  </h3>
-                  <p className="text-emerald-600 text-sm font-medium mb-2">{service.tagline}</p>
-                  <p className="text-slate-600 text-sm mb-3 line-clamp-2">{service.description}</p>
-                  
-                  <div className="flex items-center gap-3 text-xs text-slate-500">
-                    <div className="flex items-center gap-1">
-                      <StarIcon className="w-3 h-3 text-yellow-500" />
-                      <span>{service.averageReviewScore || "0"}</span>
-                      <span>({service.totalReviewCount || "0"})</span>
-                    </div>
-                    <span>·</span>
-                    <span>{service.enrollmentCount || "0"} enrolled</span>
-                    {service.duration && (
-                      <>
-                        <span>·</span>
-                        <span>{service.duration} hours</span>
-                      </>
-                    )}
-                  </div>
+        <div className="relative">
+          {services.length > 1 && (
+            <>
+              <button
+                onClick={scrollPrev}
+                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-50 transition-all duration-200 hidden md:block"
+                aria-label="Previous slide"
+              >
+                <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={scrollNext}
+                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white shadow-lg rounded-full p-3 hover:bg-gray-50 transition-all duration-200 hidden md:block"
+                aria-label="Next slide"
+              >
+                <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="flex gap-6">
+              {services.map((service) => (
+                <div key={service.id} className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)]">
+                  <ServiceCard service={service} size="md" />
                 </div>
-                <div className="sm:col-span-1 flex flex-col items-end justify-center">
-                  <div className="text-right mb-4">
-                    <span className="text-2xl font-bold text-slate-900">
-                      ${calculateDiscountedPrice(service.price, service.discount, service.discountEnabled).toFixed(2)}
-                    </span>
-                    {service.discountEnabled && service.discount > 0 && (
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-sm text-slate-400 line-through">${service.price.toFixed(2)}</span>
-                        <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-medium">
-                          {service.discount}% OFF
-                        </span>
-                      </div>
-                    )}
-                  </div>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      router.push(`/service/${service.slug}`)
-                    }}
-                    className="bg-emerald-500 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-600 transition w-full sm:w-auto"
-                  >
-                    View Details
-                  </button>
-                </div>
-              </div>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {services.length > 1 && (
+            <div className="flex justify-center gap-2 mt-6 md:hidden">
+              {services.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => emblaApi?.scrollTo(index)}
+                  className="h-2 rounded-full transition-all duration-300"
+                  style={{
+                    width: index === (emblaApi?.selectedScrollSnap() || 0) ? '24px' : '8px',
+                    backgroundColor: index === (emblaApi?.selectedScrollSnap() || 0) ? '#10b981' : '#d1d5db',
+                  }}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
+
+          {services.length > 1 && (
+            <div className="flex justify-center items-center gap-2 mt-4 text-sm text-gray-500 md:hidden">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+              </svg>
+              <span>Swipe to explore more</span>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </div>
+          )}
         </div>
 
-        {/* View All */}
-        <div className="text-center mt-12">
+        {/* <div className="text-center mt-12">
           <button
             onClick={() => router.push("/explore")}
             className="bg-slate-900 text-white px-8 py-4 rounded-2xl hover:bg-slate-800 transition font-semibold inline-flex items-center gap-2"
@@ -148,7 +298,7 @@ function RecommendedServicesSection({
             View All Services
             <ArrowRightIcon className="w-5 h-5" />
           </button>
-        </div>
+        </div> */}
       </div>
     </section>
   )
