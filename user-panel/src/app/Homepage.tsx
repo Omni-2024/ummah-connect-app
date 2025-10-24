@@ -28,7 +28,7 @@ import { useGeneralUser } from "@/lib/hooks/useUser"
 export default function HomePage() {
   const { isAuthenticated, id: userId } = useAuthState()
   const router = useRouter()
-  
+
   // Fetch categories for PopularServicesSection
   const { data: exploreCategories, isLoading: categoriesLoading, error: categoriesError } = useCategories()
 
@@ -38,7 +38,7 @@ export default function HomePage() {
     offset: 0,
   })
 
-  // Fetch user profile to get their interests
+  // Fetch user profile to get their designations
   const { data: userProfile } = useGeneralUser(userId)
 
   const {
@@ -59,44 +59,39 @@ export default function HomePage() {
     setShowNotLoggedInNavModal(true)
   }
 
-  // Get user's interests from their profile (or use empty array if not available)
-  const userInterests = userProfile?.interests || []
+  // Get user's designations from their profile (or use empty array if not available)
+  const userDesignations = userProfile?.designations || []
 
-  // Filter services based on user's interests
-  // Match interests against specialtyId, professionId, or typeId
+  // Filter services based on user's designations
   const recommendedServices = React.useMemo(() => {
     if (!servicesData?.data) return []
-    
-    // If user has no interests, return empty
-    if (!userInterests || userInterests.length === 0) {
-      console.log('User has no interests set')
+
+    // If user has no designations, return empty
+    if (!userDesignations || userDesignations.length === 0) {
+      console.log('User has no designations set')
       return []
     }
-    
+
     // Debug logs
-    console.log('User interests from profile:', userInterests)
+    console.log('User designations from profile:', userDesignations)
     console.log('Total services available:', servicesData.data.length)
-    
-    // Filter services that match user interests
+
+    // Filter services that match user designations
     const filtered = servicesData.data.filter(service => {
-      const matchesSpecialty = userInterests.includes(service.specialtyId)
-      const matchesProfession = userInterests.includes(service.professionId)
-      const matchesType = service.typeId && userInterests.includes(service.typeId)
-      
-      return matchesSpecialty || matchesProfession || matchesType
+      return userDesignations.includes(service.professionId)
     })
-    
-    console.log('Services matching user interests:', filtered)
+
+    console.log('Services matching user designations:', filtered)
     console.log('Matching services count:', filtered.length)
-    
+
     // If no matches, show all published services for testing
     if (filtered.length === 0) {
-      console.warn('No services match user interests! Showing all published services.')
+      console.warn('No services match user designations! Showing all published services.')
       return servicesData.data.filter(s => s.isPublished && !s.isArchived)
     }
-    
+
     return filtered
-  }, [servicesData, userInterests])
+  }, [servicesData, userDesignations])
 
   return (
     <div className="min-h-screen bg-white">
