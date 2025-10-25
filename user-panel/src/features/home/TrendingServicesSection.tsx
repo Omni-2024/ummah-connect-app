@@ -44,8 +44,18 @@ const ServiceCard = ({ service, idx, router }: { service: Service; idx: number; 
 
 export default function TrendingServicesSection({ services, loading, error, router }: { services: Service[]; loading: boolean; error: Error | null; router: ReturnType<typeof useRouter> }) {
   if (loading) return (
-    <section className="py-12 bg-gradient-to-br from-lime-50 via-green-50 to-emerald-50">
-      <div className="max-w-7xl mx-auto px-4"><div className="text-center mb-8"><div className="h-5 w-32 bg-gray-200 rounded animate-pulse mb-2" /><div className="h-6 w-48 bg-gray-200 rounded mx-auto mb-2 animate-pulse" /><div className="h-4 w-72 bg-gray-200 rounded mx-auto animate-pulse" /></div><div className="grid md:grid-cols-3 gap-4"><SkeletonServicesCard /><SkeletonServicesCard /><SkeletonServicesCard /></div></div>
+    <section className="py-12 bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="text-center mb-8">
+          <div className="h-6 w-48 bg-gray-200 rounded mx-auto mb-2 animate-pulse" />
+          <div className="h-6 w-48 bg-gray-200 rounded mx-auto mb-2 animate-pulse" />
+          <div className="h-4 w-72 bg-gray-200 rounded mx-auto animate-pulse" />
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-4">
+        <SkeletonServicesCard /><SkeletonServicesCard /><SkeletonServicesCard />
+        </div>
+      </div>
     </section>
   );
   if (error) return <section className="py-12 text-center"><p className="text-gray-500">{error.message || "Failed to load trending services."}</p></section>;

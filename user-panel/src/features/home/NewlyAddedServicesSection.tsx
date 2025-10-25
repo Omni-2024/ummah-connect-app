@@ -83,7 +83,7 @@ const ServiceCard = ({ service, router }: { service: Service; router: ReturnType
 export default function NewlyAddedServicesSection({ services, loading, error, router }: NewlyAddedServicesSectionProps) {
   if (loading) {
     return (
-      <section className="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50">
+      <section className="py-16 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mx-auto mb-3" />
