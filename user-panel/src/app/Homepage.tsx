@@ -19,6 +19,9 @@ import FeaturesSection from "@/features/home/FeaturesSection"
 import IslamicLearningPathsSection from "@/features/home/IslamicLearningPathsSection"
 import IslamicValuesSection from "@/features/home/IslamicValuesSection"
 import RecommendedServicesSection from "@/features/home/RecommendedServicesSection"
+import NewlyAddedServicesSection from "@/features/home/NewlyAddedServicesSection"
+import TrendingServicesSection from "@/features/home/TrendingServicesSection"
+import RecentlySearchedServicesSection from "@/features/home/RecentlySearchedServicesSection"
 import Footer from "@/features/app/components/Footer"
 import PopularServicesSection from "@/features/home/PopularServicesSection"
 import { useCategories } from "@/lib/hooks/useCategories"
@@ -32,9 +35,9 @@ export default function HomePage() {
   // Fetch categories for PopularServicesSection
   const { data: exploreCategories, isLoading: categoriesLoading, error: categoriesError } = useCategories()
 
-  // Fetch ALL services for RecommendedServicesSection
+  // Fetch ALL services for sections
   const { data: servicesData, isLoading: servicesLoading, error: servicesError } = useServices({
-    limit: 100, // Fetch more services to have a better pool for filtering
+    limit: 100,
     offset: 0,
   })
 
@@ -59,24 +62,21 @@ export default function HomePage() {
     setShowNotLoggedInNavModal(true)
   }
 
-  // Get user's designations from their profile (or use empty array if not available)
+  // Get user's designations from their profile
   const userDesignations = userProfile?.designations || []
 
-  // Filter services based on user's designations
+  // Filter services based on user's designations for RecommendedServicesSection
   const recommendedServices = React.useMemo(() => {
     if (!servicesData?.data) return []
 
-    // If user has no designations, return empty
     if (!userDesignations || userDesignations.length === 0) {
       console.log('User has no designations set')
       return []
     }
 
-    // Debug logs
     console.log('User designations from profile:', userDesignations)
     console.log('Total services available:', servicesData.data.length)
 
-    // Filter services that match user designations
     const filtered = servicesData.data.filter(service => {
       return userDesignations.includes(service.professionId)
     })
@@ -84,7 +84,6 @@ export default function HomePage() {
     console.log('Services matching user designations:', filtered)
     console.log('Matching services count:', filtered.length)
 
-    // If no matches, show all published services for testing
     if (filtered.length === 0) {
       console.warn('No services match user designations! Showing all published services.')
       return servicesData.data.filter(s => s.isPublished && !s.isArchived)
@@ -92,6 +91,26 @@ export default function HomePage() {
 
     return filtered
   }, [servicesData, userDesignations])
+
+  // Sort services by createdAt for NewlyAddedServicesSection
+  const newlyAddedServices = React.useMemo(() => {
+    if (!servicesData?.data) return []
+
+    return [...servicesData.data]
+      .filter(s => s.isPublished && !s.isArchived)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice(0, 10) // Limit to 10 services for performance
+  }, [servicesData])
+
+  // Sort services by enrollmentCount for TrendingServicesSection
+  const trendingServices = React.useMemo(() => {
+    if (!servicesData?.data) return []
+
+    return [...servicesData.data]
+      .filter(s => s.isPublished && !s.isArchived)
+      .sort((a, b) => Number(b.enrollmentCount) - Number(a.enrollmentCount))
+      .slice(0, 10) // Limit to 10 services for performance
+  }, [servicesData])
 
   return (
     <div className="min-h-screen bg-white">
@@ -130,7 +149,18 @@ export default function HomePage() {
         categoriesLoading={categoriesLoading}
         categoriesError={categoriesError}
       />
-      <FeaturesSection />
+      <NewlyAddedServicesSection
+        services={newlyAddedServices}
+        loading={servicesLoading}
+        error={servicesError}
+        router={router}
+      />
+      <TrendingServicesSection
+        services={trendingServices}
+        loading={servicesLoading}
+        error={servicesError}
+        router={router}
+      />
       {isAuthenticated && (
         <RecommendedServicesSection
           services={recommendedServices}
@@ -139,6 +169,8 @@ export default function HomePage() {
           router={router}
         />
       )}
+      <RecentlySearchedServicesSection router={router} />
+      <FeaturesSection />
       <IslamicValuesSection />
       <IslamicLearningPathsSection />
       <BottomBar />
