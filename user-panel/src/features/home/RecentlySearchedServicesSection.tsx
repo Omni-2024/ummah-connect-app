@@ -157,7 +157,6 @@ export default function RecentlySearchedServicesSection({ router }: RecentlySear
           <h2 className="text-4xl font-bold text-slate-900 mb-3">
             Recently Searched Services
           </h2>
-          <p className="text-lg text-slate-600">Revisit services you recently explored</p>
         </div>
 
         {/* Timeline-style cards */}
