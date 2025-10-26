@@ -2,6 +2,7 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/base/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import TopListSkeleton from "./TopListSkeleton" // ✅ new import
 
 export default function AdminDashboardSkeleton() {
   return (
@@ -30,9 +31,9 @@ export default function AdminDashboardSkeleton() {
           {[1, 2, 3].map((i) => (
             <Card
               key={i}
-              className="border-primary-100 bg-primary-50 rounded-xl flex flex-col justify-between h-full"
+              className="border-background-100 bg-background/95 rounded-xl flex flex-col justify-between h-full"
             >
-              <CardHeader className="flex flex-row items-start justify-between pb-3 border-b border-primary-100 min-h-[110px]">
+              <CardHeader className="flex flex-row items-start justify-between pb-3 border-b border-background-100 min-h-[110px]">
                 <div className="flex items-start gap-3 w-full">
                   <Skeleton className="h-10 w-10 rounded-full" />
                   <div className="flex flex-col justify-between flex-1 space-y-2">
@@ -66,7 +67,7 @@ export default function AdminDashboardSkeleton() {
       {/* Chart + Top Lists Skeleton */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Skeleton className="h-64 w-full rounded-md" />
-        <Skeleton className="h-64 w-full rounded-md" />
+        <TopListSkeleton /> {/* ✅ integrated here */}
       </div>
 
       {/* Recent Payments Skeleton */}

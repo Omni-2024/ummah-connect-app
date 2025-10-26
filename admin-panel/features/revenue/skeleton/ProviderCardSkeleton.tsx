@@ -16,7 +16,7 @@ export default function ProviderPaymentsSkeleton() {
 
       <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
         {[...Array(6)].map((_, i) => (
-          <Card key={i} className="rounded-xl border bg-primary-50">
+          <Card key={i} className="rounded-xl border bg-background/95">
             <CardHeader>
               <Skeleton className="h-6 w-3/4 mb-2" />
               <Skeleton className="h-4 w-1/3" />

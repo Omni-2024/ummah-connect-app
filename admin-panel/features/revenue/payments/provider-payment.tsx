@@ -94,8 +94,6 @@ export default function ProviderPayments() {
     }
   }
 
-  // ✅ Use skeleton loader while fetching
-  if (loading) return <ProviderPaymentsSkeleton />
 
   // Filtering logic
   let filteredPayments = payments.filter(p =>
