@@ -30,7 +30,7 @@ const AuthCardHeader: React.FC<Props> = ({ heading }) => {
           })}
         </div>
 
-        <p className="text-sm">Join these and other 1000+ physicians now</p>
+        <p className="text-sm">Join our thriving Muslim community today</p>
       </div>
     </div>
   );
