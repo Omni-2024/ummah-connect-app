@@ -3,7 +3,6 @@ import React from "react"
 export function LoadingSkeleton() {
   return (
     <div className="min-h-screen">
-      Header skeleton
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="animate-pulse space-y-2">

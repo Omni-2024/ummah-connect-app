@@ -25,7 +25,7 @@ import ServiceFAQ from "./ServiceFAQ";
 import ShareServiceModal from "@/features/explore/component/ShareServiceModal";
 import { setServiceId, setShowServiceShareModal } from "@/features/app/context/AppState";
 import ReviewCarousel from "@/components/widgets/ReviewCarousel";
-import AllReviews from "./AllReviews";
+import AllReviews from "./reviews/AllReviews";
 import { useReviewByService } from "@/lib/hooks/useReview";
 import { createLoginUrl } from "@/lib/helpers/urls";
 import { useAuthState } from "@/features/auth/context/useAuthState";
@@ -64,8 +64,8 @@ export default function ServiceDetailsPage() {
     const { serviceSlug } = useExploreState();
     const [pageLimit, setPageLimit] = useState(4);
     const [pageOffset, setPageOffset] = useState(0);
-    const [starFilter, setStarFilter] = useState(0);
-    
+    const [starFilter, setStarFilter] = useState<number[]>([]);
+
     const {
         data: service,
         isLoading,
@@ -115,7 +115,7 @@ export default function ServiceDetailsPage() {
         error: reviewError,
     } = useReviewByService({
         serviceId: serviceId!,
-        stars: starFilter,
+        stars: starFilter.length === 1 ? starFilter[0] : 0,
         limit: pageLimit,
         offset: pageOffset,
     });
@@ -285,9 +285,9 @@ export default function ServiceDetailsPage() {
         return total / allReviewsForStats.data.length;
     }, [allReviewsForStats?.data]);
 
-    const handleStarFilter = (stars: number) => {
+    const handleStarFilter = (stars: number[]) => {
         setStarFilter(stars);
-        setPageOffset(0); // Reset pagination when filtering
+        setPageOffset(0);
     };
 
     const handleSeeAllReviews = () => {

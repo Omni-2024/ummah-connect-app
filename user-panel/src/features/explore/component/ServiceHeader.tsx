@@ -67,9 +67,9 @@ export default function ServiceHeader({
   return (
     <>
       {/* Title and Quick Info Card - Moved before image */}
-      <Card className="p-4 lg:p-0 pt-0 bg-white shadow-none border-none mb-4 pb-2 lg:pl-0">
+      <Card className="p-4 lg:p-0 pt-0 bg-transparent shadow-none border-none mb-4 pb-2 lg:pl-0">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-          <div className="flex-1">
+          <div className="flex-1 p-3">
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
               {service.title}
             </h1>

@@ -25,12 +25,6 @@ export default function ProviderProfileSkeleton() {
                     <Skeleton className="h-5 w-8" />
                     <Skeleton className="h-4 w-16" />
                   </div>
-                  <div className="flex gap-6 justify-center sm:justify-start">
-                    <div>
-                      <Skeleton className="h-6 w-8 mx-auto sm:mx-0 mb-1" />
-                      <Skeleton className="h-4 w-16" />
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>

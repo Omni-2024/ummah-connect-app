@@ -12,7 +12,7 @@ import TextInput from "@/components/widgets/TextInput";
 import useIsMobile from "@/lib/hooks/useIsMobile";
 import { useRouter } from "next/navigation";
 import { useOnboardingState } from "@/features/onboarding/context/useOnboardingState";
-import { updateUserFn } from "@/lib/endpoints/userFns";
+import { updateUserFn, Gender } from "@/lib/endpoints/userFns";
 import { useMutation } from "@tanstack/react-query";
 import { useAuthState } from "@/features/auth/context/useAuthState";
 import { Toast } from "@/components/base/Toast";
@@ -30,6 +30,7 @@ const SetupAccountStep = () => {
   const [contactNumber, setContactNumber] = useState("");
   const [company, setCompany] = useState("");
   const [country, setCountry] = useState("");
+  const [gender, setGender] = useState<Gender>(Gender.MALE);
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
 
   const { id } = useAuthState();
@@ -61,6 +62,7 @@ const SetupAccountStep = () => {
           contactNumber,
           company,
           country,
+          gender,
           designations: [selectedDesignation?.id || ""],
           interests: selectedInterests.map((i) => i.id),
           languages: selectedLanguages,
@@ -124,6 +126,11 @@ const SetupAccountStep = () => {
     }
   };
 
+  const genderOptions = [
+    { label: 'Male', value: Gender.MALE },
+    { label: 'Female', value: Gender.FEMALE }
+  ];
+
   return (
       <div className="w-screen pb-32 lg:w-auto lg:pb-0">
         <div className="w-full">
@@ -170,6 +177,18 @@ const SetupAccountStep = () => {
             </div>
 
             <div className="w-full flex-1 space-y-4 lg:max-w-sm">
+              <div className="w-full space-y-1">
+                <Label>Gender</Label>
+                <ComboBox
+                    onChange={(value) => {
+                      const selectedGender = genderOptions.find(g => g.label === value)?.value || Gender.MALE;
+                      setGender(selectedGender);
+                    }}
+                    placeholder="Select your gender"
+                    items={genderOptions}
+                />
+              </div>
+
               <TextInput
                   id="contactNumber"
                   label="Contact number"

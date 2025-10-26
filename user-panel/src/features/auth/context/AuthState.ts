@@ -29,15 +29,14 @@ const savedState =
 let parsedState = initialState;
 
 if (savedState) {
-  const parsed = JSON.parse(savedState);
-  if (parsed.refreshToken.trim() !== "") {
-    parsedState = { ...parsed, isHydrated: false };
-  } else {
-    // fallback if refreshToken is empty
-    parsedState = initialState;
-  }
+    const parsed = JSON.parse(savedState);
+    if ((parsed.refreshToken ?? "").trim() !== "") {
+        parsedState = { ...parsed, isHydrated: false };
+    } else {
+        parsedState = initialState;
+    }
 } else {
-  parsedState = initialState;
+    parsedState = initialState;
 }
 
 export const authState = proxy<AuthState>(parsedState)
@@ -50,23 +49,23 @@ if (typeof window !== "undefined") {
 }
 
 export function hydrateAuthFromStorage() {
-  try {
-    const raw = localStorage.getItem("authState");
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (parsed.refreshToken.trim()!=""){
-        authState.isAuthenticated      = !!parsed.isAuthenticated;
-        authState.accessToken          = parsed.accessToken ?? "";
-        authState.refreshToken         = parsed.refreshToken ?? "";
-        authState.role                 = parsed.role ?? UserRole.NONE;
-        authState.id                   = parsed.id ?? "";
-        authState.isFirstLogin         = !!parsed.isFirstLogin;
-        authState.onboardingCompleted  = !!parsed.onboardingCompleted;
-      }
+    try {
+        const raw = localStorage.getItem("authState");
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if ((parsed.refreshToken ?? "").trim() !== "") {
+                authState.isAuthenticated      = !!parsed.isAuthenticated;
+                authState.accessToken          = parsed.accessToken ?? "";
+                authState.refreshToken         = parsed.refreshToken ?? "";
+                authState.role                 = parsed.role ?? UserRole.NONE;
+                authState.id                   = parsed.id ?? "";
+                authState.isFirstLogin         = !!parsed.isFirstLogin;
+                authState.onboardingCompleted  = !!parsed.onboardingCompleted;
+            }
+        }
+    } finally {
+        authState.isHydrated = true;
     }
-  } finally {
-    authState.isHydrated = true;
-  }
 }
 
 export const setIsFirstLogin = (isFirstLogin: boolean) => {
