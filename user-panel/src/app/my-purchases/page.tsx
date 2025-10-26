@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 function PurchasePageLoading() {
     return (
         <div className="min-h-screen bg-gray-50 sm:bg-white">
-            <div className="animate-pulse">
+            {/* <div className="animate-pulse">
                 <div className="h-16 bg-gray-200 mb-4"></div>
                 <div className="max-w-4xl mx-auto px-4">
                     <div className="space-y-4">
@@ -25,7 +25,7 @@ function PurchasePageLoading() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }
