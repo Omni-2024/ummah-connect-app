@@ -4,14 +4,10 @@ import React, { useState } from "react"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useRouter } from "next/navigation"
 import Navbar from "../features/app/components/Navbar"
-import IconButton from "@/components/base/IconButton"
 import Link from "next/link"
-import NavbarMobile from "@/features/app/components/Navbar.mobile"
+import NavbarMobile, { NavbarTitle } from "@/features/app/components/Navbar.mobile"
 import { useAppState } from "@/features/app/context/useAppState"
-import { HambergerMenu } from "iconsax-react"
 import { NAV_LOGO_SRC } from "@/lib/constants"
-import NavDrawerMobile from "@/features/app/components/NavDrawer.mobile"
-import NotLoggedInNavModal from "@/features/app/components/NotLoggedInNavModal.mobile"
 import Bottombar from "@/features/app/components/Bottombar"
 import ProfileMenuButton from "@/features/app/components/ProfileMenuButton"
 import HeroSection from "@/features/home/HeroSection"
@@ -28,14 +24,16 @@ import { useCategories } from "@/lib/hooks/useCategories"
 import { useServices } from "@/lib/hooks/useServices"
 import { useCurrentUser } from "@/lib/hooks/useUser"
 import envs from "@/lib/env"
+import Button from "@/components/base/Button"
+import { ArrowRightIcon } from "@radix-ui/react-icons"
 
 // Helper function to build avatar URL (same as in ExplorePage)
 export const buildAvatarUrl = (img?: string | null): string | null => {
-  if (!img) return null;
-  if (/^https?:\/\//i.test(img)) return img;
-  const base = envs.imageBaseUrl;
-  return `${base}/${img}`;
-};
+  if (!img) return null
+  if (/^https?:\/\//i.test(img)) return img
+  const base = envs.imageBaseUrl
+  return `${base}/${img}`
+}
 
 export default function HomePage() {
   const { isAuthenticated, id: userId, logout } = useAuthState()
@@ -57,7 +55,6 @@ export default function HomePage() {
   const {
     setShowNavDrawer,
     setShowNotificationsModal,
-    setShowNotLoggedInNavModal,
   } = useAppState()
 
   const avatarUrl = buildAvatarUrl(user?.profileImage)
@@ -68,10 +65,6 @@ export default function HomePage() {
 
   const handleShowNavDrawer = () => {
     setShowNavDrawer(true)
-  }
-
-  const handleHamBurgerMenu = () => {
-    setShowNotLoggedInNavModal(true)
   }
 
   const handleLogout = () => {
@@ -133,30 +126,37 @@ export default function HomePage() {
     <div className="min-h-screen bg-white">
       <Navbar />
       <NavbarMobile
+        className="px-4 bg-white border-b border-gray-100 sticky top-0 z-40"
         left={
-          <Link href="/">
+          <Link href="/" className="flex items-center">
             <img
               alt="Ummah Logo"
               src={NAV_LOGO_SRC}
-              className="w-20 cursor-pointer object-contain"
+              className="h-8 w-auto cursor-pointer object-contain"
             />
           </Link>
         }
-        // right={
-        //   <div className="flex items-center gap-2">
-        //     {isAuthenticated ? (
-        //       <ProfileMenuButton onClick={handleShowNavDrawer} />
-        //     ) : (
-        //       <IconButton size="lg" onClick={handleHamBurgerMenu}>
-        //         <HambergerMenu className="text-dark-600" />
-        //       </IconButton>
-        //     )}
-        //   </div>
-        // }
+        right={
+          <div className="flex items-center gap-4">
+            {isAuthenticated ? (
+              <ProfileMenuButton onClick={handleShowNavDrawer} />
+            ) : (
+              <>
+                <Link href="/start-selling">
+                  <Button variant="unstyled" className="text-sm font-medium h-9 ">
+                    Become a Seller
+                  </Button>
+                </Link>
+                <Link href="/user/login">
+                  <Button variant="primary" size="sm" className="text-sm font-medium h-9">
+                    Login
+                  </Button>
+                </Link>
+              </>
+            )}
+          </div>
+        }
       />
-
-      <NavDrawerMobile />
-      <NotLoggedInNavModal />
 
       <HeroSection isAuthenticated={isAuthenticated} router={router} />
       <PopularServicesSection
