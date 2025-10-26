@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { useRouter } from "next/navigation"
 import Navbar from "../features/app/components/Navbar"
@@ -12,7 +12,7 @@ import { HambergerMenu } from "iconsax-react"
 import { NAV_LOGO_SRC } from "@/lib/constants"
 import NavDrawerMobile from "@/features/app/components/NavDrawer.mobile"
 import NotLoggedInNavModal from "@/features/app/components/NotLoggedInNavModal.mobile"
-import BottomBar from "@/features/app/components/Bottombar"
+import Bottombar from "@/features/app/components/Bottombar"
 import ProfileMenuButton from "@/features/app/components/ProfileMenuButton"
 import HeroSection from "@/features/home/HeroSection"
 import FeaturesSection from "@/features/home/FeaturesSection"
@@ -26,11 +26,21 @@ import Footer from "@/features/app/components/Footer"
 import PopularServicesSection from "@/features/home/PopularServicesSection"
 import { useCategories } from "@/lib/hooks/useCategories"
 import { useServices } from "@/lib/hooks/useServices"
-import { useGeneralUser } from "@/lib/hooks/useUser"
+import { useCurrentUser } from "@/lib/hooks/useUser"
+import envs from "@/lib/env"
+
+// Helper function to build avatar URL (same as in ExplorePage)
+export const buildAvatarUrl = (img?: string | null): string | null => {
+  if (!img) return null;
+  if (/^https?:\/\//i.test(img)) return img;
+  const base = envs.imageBaseUrl;
+  return `${base}/${img}`;
+};
 
 export default function HomePage() {
-  const { isAuthenticated, id: userId } = useAuthState()
+  const { isAuthenticated, id: userId, logout } = useAuthState()
   const router = useRouter()
+  const [avatarBroken, setAvatarBroken] = useState(false)
 
   // Fetch categories for PopularServicesSection
   const { data: exploreCategories, isLoading: categoriesLoading, error: categoriesError } = useCategories()
@@ -41,14 +51,16 @@ export default function HomePage() {
     offset: 0,
   })
 
-  // Fetch user profile to get their designations
-  const { data: userProfile } = useGeneralUser(userId)
+  // Fetch user profile to get their profile image and designations
+  const { data: user } = useCurrentUser()
 
   const {
     setShowNavDrawer,
     setShowNotificationsModal,
     setShowNotLoggedInNavModal,
   } = useAppState()
+
+  const avatarUrl = buildAvatarUrl(user?.profileImage)
 
   const handleNotificationButton = () => {
     setShowNotificationsModal(true)
@@ -62,8 +74,13 @@ export default function HomePage() {
     setShowNotLoggedInNavModal(true)
   }
 
+  const handleLogout = () => {
+    logout()
+    router.push("/user/login")
+  }
+
   // Get user's designations from their profile
-  const userDesignations = userProfile?.designations || []
+  const userDesignations = user?.designations || []
 
   // Filter services based on user's designations for RecommendedServicesSection
   const recommendedServices = React.useMemo(() => {
@@ -125,19 +142,17 @@ export default function HomePage() {
             />
           </Link>
         }
-        // right={
-        //   <div className="flex items-center gap-2">
-        //     {isAuthenticated ? (
-        //       <>
-        //         <ProfileMenuButton onClick={handleShowNavDrawer} />
-        //       </>
-        //     ) : (
-        //       <IconButton size="lg" onClick={handleHamBurgerMenu}>
-        //         <HambergerMenu className="text-dark-600" />
-        //       </IconButton>
-        //     )}
-        //   </div>
-        // }
+        right={
+          <div className="flex items-center gap-2">
+            {isAuthenticated ? (
+              <ProfileMenuButton onClick={handleShowNavDrawer} />
+            ) : (
+              <IconButton size="lg" onClick={handleHamBurgerMenu}>
+                <HambergerMenu className="text-dark-600" />
+              </IconButton>
+            )}
+          </div>
+        }
       />
 
       <NavDrawerMobile />
@@ -173,7 +188,13 @@ export default function HomePage() {
       <FeaturesSection />
       <IslamicValuesSection />
       <IslamicLearningPathsSection />
-      <BottomBar />
+      <Bottombar
+        user={user}
+        avatarUrl={avatarUrl}
+        avatarBroken={avatarBroken}
+        setAvatarBroken={setAvatarBroken}
+        handleLogout={handleLogout}
+      />
       <Footer />
     </div>
   )

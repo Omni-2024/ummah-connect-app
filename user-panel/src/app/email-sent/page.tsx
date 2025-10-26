@@ -1,18 +1,36 @@
 "use client"
 
-
 import { EnvelopeClosedIcon, ArrowLeftIcon, ReloadIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"
 import { useForgotPasswordState } from "@/features/auth/context/useForgotPasswordState"
-import {useCurrentUser} from "@/lib/hooks/useUser";
-import BottomBar from "@/features/app/components/Bottombar";
-import Footer from "@/features/app/components/Footer";
+import { useCurrentUser } from "@/lib/hooks/useUser"
+import { useAuthState } from "@/features/auth/context/useAuthState"
+import Bottombar from "@/features/app/components/Bottombar"
+import Footer from "@/features/app/components/Footer"
+import { useState } from "react"
+import envs from "@/lib/env"
+
+// Helper function to build avatar URL (same as in ExplorePage)
+export const buildAvatarUrl = (img?: string | null): string | null => {
+  if (!img) return null;
+  if (/^https?:\/\//i.test(img)) return img;
+  const base = envs.imageBaseUrl;
+  return `${base}/${img}`;
+};
 
 export default function EmailSentPage() {
   const router = useRouter()
   const { email } = useForgotPasswordState()
-  const { data: currentUser, isLoading: isCurrentUserLoading } =
-      useCurrentUser();
+  const { data: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser()
+  const { logout } = useAuthState()
+  const [avatarBroken, setAvatarBroken] = useState(false)
+
+  const avatarUrl = buildAvatarUrl(currentUser?.profileImage)
+
+  const handleLogout = () => {
+    logout()
+    router.push("/user/login")
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -83,10 +101,17 @@ export default function EmailSentPage() {
               Contact our support team
             </button>
           </div>
-          <BottomBar/>
-          <Footer/>
         </div>
       </main>
+
+      <Bottombar
+        user={currentUser}
+        avatarUrl={avatarUrl}
+        avatarBroken={avatarBroken}
+        setAvatarBroken={setAvatarBroken}
+        handleLogout={handleLogout}
+      />
+      <Footer />
     </div>
   )
 }
