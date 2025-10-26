@@ -21,11 +21,13 @@ import {
   LockClosedIcon as ShieldIcon,
   ArrowRightIcon,
   PlayIcon,
+  ArrowLeftIcon,
 } from "@radix-ui/react-icons"
 import Footer from "@/features/app/components/Footer"
 import { useCurrentUser } from "@/lib/hooks/useUser"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import envs from "@/lib/env"
+import { IconButton } from "@radix-ui/themes"
 
 // Helper function to build avatar URL (same as in ExplorePage)
 export const buildAvatarUrl = (img?: string | null): string | null => {
@@ -181,13 +183,24 @@ export default function BecomeSellerPage() {
     },
   ]
 
+    const handleBack = () => {
+    router.back()
+  }
+  
   return (
     <div className="min-h-screen w-full bg-white pb-16 lg:pb-0">
       <Navbar />
       <NavbarMobile
-        className="px-4"
-        left={<NavbarTitle title="Become a Seller" size="md" />}
-      />
+        className="px-4 bg-white border-b border-gray-100 sticky top-0 z-40"
+        left={
+          <div className="flex items-center gap-3">
+            <IconButton onClick={handleBack} className="hover:bg-gray-100 transition-colors">
+              <ArrowLeftIcon className="size-5" />
+            </IconButton>
+            <NavbarTitle title="Become a Seller" size="md" />
+          </div>
+        }
+        />
 
       {/* Hero Section - Balanced */}
       <div className="bg-emerald-600 py-12">
