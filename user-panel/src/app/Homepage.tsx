@@ -142,17 +142,17 @@ export default function HomePage() {
             />
           </Link>
         }
-        right={
-          <div className="flex items-center gap-2">
-            {isAuthenticated ? (
-              <ProfileMenuButton onClick={handleShowNavDrawer} />
-            ) : (
-              <IconButton size="lg" onClick={handleHamBurgerMenu}>
-                <HambergerMenu className="text-dark-600" />
-              </IconButton>
-            )}
-          </div>
-        }
+        // right={
+        //   <div className="flex items-center gap-2">
+        //     {isAuthenticated ? (
+        //       <ProfileMenuButton onClick={handleShowNavDrawer} />
+        //     ) : (
+        //       <IconButton size="lg" onClick={handleHamBurgerMenu}>
+        //         <HambergerMenu className="text-dark-600" />
+        //       </IconButton>
+        //     )}
+        //   </div>
+        // }
       />
 
       <NavDrawerMobile />
