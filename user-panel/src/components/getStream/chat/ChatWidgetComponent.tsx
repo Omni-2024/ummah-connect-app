@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { NotificationSettingsPanel } from "@/components/getStream/notification-settings-panel";
 import { useChatNotifications } from "@/components/getStream/useChatNotifications";
 import { Menu, MessageCircle, Settings, User, CloseCircle } from "iconsax-react";
-import { Minimize, Minimize2 } from "lucide-react";
+import { Minimize2 } from "lucide-react";
 
 const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUserId: string }) => {
     const [isOpen, setIsOpen] = useState(false)
@@ -39,7 +39,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
     // Check if mobile
     useEffect(() => {
         const checkMobile = () => {
-            setIsMobile(window.innerWidth < 768)
+            setIsMobile(window.innerWidth < 1024) // lg breakpoint
         }
 
         checkMobile()
@@ -76,14 +76,15 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
             {isOpen && isMobile && (
                 <motion.div
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 0 }}
+                    animate={{ opacity: 0.5 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/50 z-50 md:hidden"
+                    className="fixed inset-0 bg-black/50 z-[45] lg:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}
 
-            <div className="fixed bottom-4 right-4 z-50">
+            {/* Chat Widget Container - adjusted for mobile bottom bar */}
+            <div className={`fixed z-[48] ${isMobile ? 'bottom-20 right-4' : 'bottom-4 right-4'}`}>
                 <AnimatePresence>
                     {!isOpen && (
                         <motion.div className="relative">
@@ -96,7 +97,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                 onClick={handleChatOpen}
                                 className="bg-primary-500 hover:bg-primary-400 text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-colors duration-200 relative"
                             >
-                                <MessageCircle color="white " width={25} size={24} />
+                                <MessageCircle color="white" width={25} size={24} />
 
                                 {/* Enhanced Notification Badge */}
                                 <AnimatePresence>
@@ -148,13 +149,18 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             transition={{ duration: 0.2, ease: "easeOut" }}
                             className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${isMobile
-                                    ? "fixed inset-4 z-50"
+                                    ? "fixed inset-x-4 z-[48] lg:relative lg:inset-auto"
                                     : isMinimized
                                         ? "w-80 h-14"
                                         : isAdmin
                                             ? "w-[900px] h-[650px] max-w-[95vw] max-h-[90vh]"
                                             : "w-96 h-[550px] max-w-[95vw] max-h-[90vh]"
                                 }`}
+                            style={isMobile ? {
+                                top: '1rem',
+                                bottom: '5.5rem', // 5.5rem accounts for bottom bar (4rem/64px) + spacing
+                                height: 'auto'
+                            } : undefined}
                         >
                             {/* Chat Header */}
                             <div className="bg-primary-500 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
