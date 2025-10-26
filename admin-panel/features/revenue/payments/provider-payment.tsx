@@ -128,26 +128,26 @@ export default function ProviderPayments() {
           className="flex-1"
         />
 
-        {/* Pill-style Tabs */}
         <div className="flex space-x-2 mt-2 sm:mt-0">
-          {["pending", "completed", "last7"].map((t) => {
-            const label = t === "pending" ? "Pending" : t === "completed" ? "Completed" : "Last 7 Days"
-            const isActive = tab === t
-            return (
-              <button
-                key={t}
-                className={`px-4 py-2 rounded-md font-medium transition-colors
-                  ${isActive ? "bg-teal-700 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
-                onClick={() => setTab(t as typeof tab)}
-              >
-                {label}
-              </button>
-            )
-          })}
-        </div>
+        {["pending", "completed", "last7"].map((t) => {
+          const label = t === "pending" ? "Pending" : t === "completed" ? "Completed" : "Last 7 Days"
+          const isActive = tab === t
+          return (
+            <button
+              key={t}
+              className={`px-2 py-2 rounded-md font-medium transition-colors
+                ${isActive ? "bg-teal-700 text-white" : "text-primary-500 border border-primary-500 hover:bg-primary/5"}
+              text-sm`}
+              onClick={() => setTab(t as typeof tab)}
+            >
+              {label}
+            </button>
+          )
+        })}
+      </div>
 
         <Select value={selectedProvider} onValueChange={val => setSelectedProvider(val)}>
-          <SelectTrigger className="w-48 mt-2 sm:mt-0">
+          <SelectTrigger className="w-48 mt-2 sm:mt-0 text-primary-500 border border-primary-500">
             <SelectValue placeholder="Filter by provider" />
           </SelectTrigger>
           <SelectContent className="bg-white">

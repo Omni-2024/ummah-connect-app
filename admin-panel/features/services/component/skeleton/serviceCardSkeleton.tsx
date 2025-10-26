@@ -1,30 +1,41 @@
 import { Skeleton } from "@/components/base/skeleton";
+import { Card, CardContent } from "@/components/base/card";
 
 const ServiceCardSkeleton = () => {
   return (
-    <div className="flex flex-col p-4 rounded-2xl border border-dark-50">
-      <Skeleton className="w-full aspect-[344/200] h-auto min-h-[200px] rounded-2xl" />
+    <Card className="bg-white border border-gray-200 hover:shadow-lg transition-shadow">
+      <CardContent className="p-0">
+        {/* Cover Image */}
+        <div className="relative">
+          <Skeleton className="w-full h-52 rounded-t-lg" /> {/* slightly taller */}
 
-      <Skeleton className="h-4 w-1/3 mt-4" />
+          {/* Top-right action buttons */}
+          <div className="absolute top-3 right-3 flex gap-2">
+            <Skeleton className="h-10 w-10 rounded-lg" />
+            <Skeleton className="h-10 w-10 rounded-lg" />
+            <Skeleton className="h-10 w-10 rounded-lg" />
+          </div>
 
-      <Skeleton className="h-6 w-3/4 mt-3" />
+          {/* Provider Avatar */}
+          <Skeleton className="absolute bottom-3 left-3 h-11 w-11 rounded-full border-2 border-white" />
+        </div>
 
-      <Skeleton className="h-4 w-1/4 mt-8" />
+        {/* Service Details */}
+        <div className="p-5 space-y-3">
+          <Skeleton className="h-4 w-24 rounded-full" /> {/* profession badge */}
+          <Skeleton className="h-5 w-4/5 rounded" /> {/* title */}
+          <Skeleton className="h-4 w-1/2 rounded" /> {/* provider name */}
 
-      <div className="flex gap-2 items-center mt-4">
-        <Skeleton className="h-4 w-24" />
-        <Skeleton className="h-4 w-4 rounded-full" />
-        <Skeleton className="h-4 w-28" />
-        <Skeleton className="h-4 w-4 rounded-full" />
-        <Skeleton className="h-4 w-16" />
-      </div>
-
-      <div className="flex mt-8 gap-1">
-        <Skeleton className="h-10 w-full rounded-lg" />
-        <Skeleton className="h-10 w-10 rounded-lg" />
-        <Skeleton className="h-10 w-10 rounded-lg" />
-      </div>
-    </div>
+          <div className="flex items-center justify-between mt-4">
+            <Skeleton className="h-4 w-36 rounded" /> {/* enrollment count */}
+            <div className="flex items-baseline gap-2">
+              <Skeleton className="h-6 w-20 rounded" /> {/* price */}
+              <Skeleton className="h-4 w-14 rounded" /> {/* discount price */}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
