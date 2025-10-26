@@ -110,7 +110,7 @@ const ProfileDropdown = ({
                   <div className="text-xs text-slate-500">Learning progress</div>
                 </div>
               </button>
-              <button
+              {/* <button
                 onClick={() => { router.push("/settings"); setProfileDropdownOpen(false); }}
                 className="flex items-center w-full text-left px-4 py-3 text-sm text-slate-700 hover:bg-slate-50 hover:text-emerald-600 transition-colors duration-200 group"
               >
@@ -121,7 +121,7 @@ const ProfileDropdown = ({
                   <div className="font-medium">Settings</div>
                   <div className="text-xs text-slate-500">Account preferences</div>
                 </div>
-              </button>
+              </button> */}
             </div>
             <div className="border-t border-slate-100 py-2">
               <button
