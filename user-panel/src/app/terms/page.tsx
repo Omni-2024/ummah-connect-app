@@ -54,25 +54,25 @@ const TermsPageContent = () => {
             />
           </Link>
         }
-        right={
-          <div className="flex items-center gap-2">
-            {isAuthenticated ? (
-              <>
-                <ComingSoonToolTip>
-                  <IconButton size="lg" onClick={handleNotificationButton}>
-                    <Notification className="text-dark-600" />
-                  </IconButton>
-                </ComingSoonToolTip>
+        // right={
+        //   <div className="flex items-center gap-2">
+        //     {isAuthenticated ? (
+        //       <>
+        //         <ComingSoonToolTip>
+        //           <IconButton size="lg" onClick={handleNotificationButton}>
+        //             <Notification className="text-dark-600" />
+        //           </IconButton>
+        //         </ComingSoonToolTip>
 
-                <ProfileMenuButton onClick={handleShowNavDrawer} />
-              </>
-            ) : (
-              <IconButton size="lg" onClick={handleHamBurgerMenu}>
-                <HambergerMenu className="text-dark-600" />
-              </IconButton>
-            )}
-          </div>
-        }
+        //         <ProfileMenuButton onClick={handleShowNavDrawer} />
+        //       </>
+        //     ) : (
+        //       <IconButton size="lg" onClick={handleHamBurgerMenu}>
+        //         <HambergerMenu className="text-dark-600" />
+        //       </IconButton>
+        //     )}
+        //   </div>
+        // }
       />
 
       {/* TODO:: Temporary disabled until feature available */}

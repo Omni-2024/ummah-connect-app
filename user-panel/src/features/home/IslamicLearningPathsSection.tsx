@@ -7,7 +7,6 @@ export default function IslamicLearningPathsSection() {
     {
       title: "Islamic Finance & Business",
       description: "Master halal business practices and Islamic finance principles",
-      courses: 45,
       color: "from-emerald-500 to-emerald-600",
       textColor: "text-emerald-600",
       bgColor: "bg-emerald-50",
@@ -17,7 +16,6 @@ export default function IslamicLearningPathsSection() {
     {
       title: "Quran & Arabic Studies", 
       description: "Deepen your understanding of the Quran and Arabic language",
-      courses: 32,
       color: "from-blue-500 to-blue-600",
       textColor: "text-blue-600", 
       bgColor: "bg-blue-50",
@@ -27,7 +25,6 @@ export default function IslamicLearningPathsSection() {
     {
       title: "Islamic Leadership",
       description: "Lead with Islamic principles in modern organizations", 
-      courses: 28,
       color: "from-purple-500 to-purple-600",
       textColor: "text-purple-600",
       bgColor: "bg-purple-50",
@@ -37,7 +34,6 @@ export default function IslamicLearningPathsSection() {
     {
       title: "Halal Technology",
       description: "Navigate tech careers while maintaining Islamic values",
-      courses: 38, 
       color: "from-teal-500 to-teal-600",
       textColor: "text-teal-600",
       bgColor: "bg-teal-50",
@@ -47,7 +43,7 @@ export default function IslamicLearningPathsSection() {
   ];
 
   return (
-    <section className="py-12 sm:py-16 lg:py-16 bg-white">
+    <section className="py-12 sm:py-12 lg:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
@@ -76,12 +72,6 @@ export default function IslamicLearningPathsSection() {
                 <div className="text-center">
                   <h3 className="text-lg font-bold text-slate-900 mb-2 leading-tight">{path.title}</h3>
                   <p className="text-slate-600 mb-4 text-sm leading-relaxed px-2">{path.description}</p>
-                  <div className="flex items-center justify-center gap-2">
-                    <span className={`${path.textColor} font-semibold text-sm`}>
-                      {path.courses} Services
-                    </span>
-                    <ArrowRightIcon className={`w-4 h-4 ${path.textColor} group-hover:translate-x-1 transition-transform duration-300`} />
-                  </div>
                 </div>
               </div>
 
@@ -95,13 +85,6 @@ export default function IslamicLearningPathsSection() {
                 <div className="flex-1 min-w-0">
                   <h3 className="text-xl lg:text-2xl font-bold text-slate-900 mb-2 leading-tight">{path.title}</h3>
                   <p className="text-slate-600 mb-4 leading-relaxed text-sm lg:text-base">{path.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className={`${path.textColor} font-semibold text-sm lg:text-base`}>
-                      <span className="hidden lg:inline">{path.courses} Services Available</span>
-                      <span className="lg:hidden">{path.courses} Services</span>
-                    </span>
-                    <ArrowRightIcon className={`w-4 h-4 lg:w-5 lg:h-5 ${path.textColor} group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0`} />
-                  </div>
                 </div>
               </div>
             </div>
