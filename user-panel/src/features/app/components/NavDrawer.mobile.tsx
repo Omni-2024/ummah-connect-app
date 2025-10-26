@@ -14,7 +14,7 @@ const NavDrawer = () => {
   return (
     <Sheet open={showNavDrawer} onOpenChange={handleOpenchange}>
       <SheetContent side="left" className="w-10/12 p-0">
-        <ProfileView />
+        {/* <ProfileView /> */}
       </SheetContent>
     </Sheet>
   );
