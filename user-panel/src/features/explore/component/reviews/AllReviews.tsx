@@ -1,7 +1,7 @@
 "use client";
 
 import React, { forwardRef, useState, useMemo } from "react";
-import ReviewItem from "./ReviewItem";
+import ReviewCard from "./ReviewCard"; 
 import RatingSummary from "./RatingSummary";
 import Button from "@/components/base/Button";
 import { Review } from "@/lib/endpoints/reviewFns";
@@ -179,9 +179,13 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
             )}
             
             {filteredAndSortedReviews.length > 0 ? (
-                <div className="grid gap-3">
+                <div className="space-y-6"> {/* Changed from grid gap-3 to space-y-6 for consistent spacing */}
                     {filteredAndSortedReviews.map((review) => (
-                        <ReviewItem key={review.id} review={review} searchQuery={searchQuery} />
+                        <ReviewCard
+                            key={review.id}
+                            review={review}
+                            searchQuery={searchQuery} // Pass searchQuery to ReviewCard
+                        />
                     ))}
                 </div>
             ) : (
