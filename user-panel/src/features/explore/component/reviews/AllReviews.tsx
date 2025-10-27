@@ -11,7 +11,6 @@ type SortOption = "recent" | "highest" | "lowest";
 
 interface AllReviewsProps {
     reviews?: Review[];
-    showOnDesktop?: boolean;
     totalReviews?: number;
     onLoadMore?: () => void;
     isLoadingMore?: boolean;
@@ -29,7 +28,6 @@ interface AllReviewsProps {
 
 const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({ 
     reviews = [], 
-    showOnDesktop = false,
     totalReviews,
     onLoadMore,
     isLoadingMore = false,
@@ -114,7 +112,7 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
     const currentSortOption = sortOptions.find(opt => opt.value === sortBy);
 
     return (
-        <div id="all-reviews" className={`w-full my-6 ${showOnDesktop ? 'block' : 'block sm:hidden'} p-4 rounded-lg pl-0`} ref={ref}>
+        <div id="all-reviews" className="w-full my-6 p-4 rounded-lg pl-0" ref={ref}>
             <h2 className="text-xl text-gray-800 font-semibold mb-3 mt-3">All Reviews</h2>
             
             {ratingBreakdown && totalReviews && totalReviews > 0 && (

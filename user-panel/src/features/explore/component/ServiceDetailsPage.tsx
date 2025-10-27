@@ -59,7 +59,6 @@ export default function ServiceDetailsPage() {
   const slug = params?.slug as string
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [showAllReviews, setShowAllReviews] = useState(false)
   const [avatarBroken, setAvatarBroken] = useState(false)
   const allReviewsRef = useRef<HTMLDivElement>(null)
   const { serviceSlug } = useExploreState()
@@ -303,7 +302,6 @@ export default function ServiceDetailsPage() {
   }
 
   const handleSeeAllReviews = () => {
-    setShowAllReviews(true)
     setTimeout(() => {
       if (allReviewsRef.current) {
         const offset = 64
@@ -467,20 +465,19 @@ export default function ServiceDetailsPage() {
 
               <ServiceFAQ faqs={service.faqData} />
 
-              <AllReviews
-                reviews={reviews.data}
-                ref={allReviewsRef}
-                showOnDesktop={showAllReviews}
-                totalReviews={allReviewsForStats?.data?.length || 0}
-                onLoadMore={() => {
-                  setPageOffset((prevOffset) => prevOffset + pageLimit)
-                }}
-                isLoadingMore={reviewLoading}
-                averageRating={averageRating}
-                ratingBreakdown={ratingBreakdown}
-                onStarFilter={handleStarFilter}
-                activeStarFilter={starFilter}
-              />
+             <AllReviews
+              reviews={reviews.data}
+              ref={allReviewsRef}
+              totalReviews={allReviewsForStats?.data?.length || 0}
+              onLoadMore={() => {
+                setPageOffset((prevOffset) => prevOffset + pageLimit)
+              }}
+              isLoadingMore={reviewLoading}
+              averageRating={averageRating}
+              ratingBreakdown={ratingBreakdown}
+              onStarFilter={handleStarFilter}
+              activeStarFilter={starFilter}
+            />
 
               <ProviderServices
                 providerId={service.serviceDetails.data.provider.id}
