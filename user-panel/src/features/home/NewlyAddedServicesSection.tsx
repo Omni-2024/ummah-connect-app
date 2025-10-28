@@ -32,16 +32,16 @@ const ServiceCard = ({ service, router }: { service: Service; router: ReturnType
   return (
     <div 
       onClick={handleCardClick}
-      className="relative bg-white rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer"
+      className="relative bg-white rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer active:scale-95 sm:active:scale-100"
     >
       {/* New badge ribbon */}
       {daysAgo <= 30 && (
-        <div className="absolute top-4 -right-12 rotate-45 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-xs font-bold py-1 px-12 shadow-lg z-10">
+        <div className="absolute top-3 sm:top-4 -right-10 sm:-right-12 rotate-45 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-[10px] sm:text-xs font-bold py-0.5 sm:py-1 px-10 sm:px-12 shadow-lg z-10">
           NEW
         </div>
       )}
       
-      <div className="relative h-56 overflow-hidden">
+      <div className="relative h-40 sm:h-48 md:h-56 overflow-hidden">
         <img 
           src={service.coverImageUrl ? buildAvatarUrl(service.coverImageUrl) || `${S3_BUCKET_URL}/images/coverImage.png` : "/images/coverImage.png"}
           alt={service.title} 
@@ -49,32 +49,23 @@ const ServiceCard = ({ service, router }: { service: Service; router: ReturnType
         />
       </div>
       
-      <div className="p-5">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+      <div className="p-4 sm:p-5">
+        <div className="flex items-center justify-between mb-2 sm:mb-3">
+          <span className="text-[10px] sm:text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 sm:px-3 py-1 rounded-full">
             Added {daysAgo === 0 ? 'today' : `${daysAgo} day${daysAgo !== 1 ? 's' : ''} ago`}
           </span>
           <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm font-semibold text-slate-700">
+            <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
+            <span className="text-xs sm:text-sm font-semibold text-slate-700">
               {service.averageReviewScore || '0.0'}
             </span>
           </div>
         </div>
         
-        <h3 className="text-lg font-bold text-slate-900 mb-2">
+        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1.5 sm:mb-2 line-clamp-2">
           {service.title}
         </h3>
-        <p className="text-slate-600 text-sm mb-3">{service.tagline}</p>
-        
-        {/* <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-          <span className="text-xs text-slate-500">
-            {formatDurationFromSeconds(service.duration)}
-          </span>
-          <span className="text-xs font-semibold text-slate-700">
-            {Number(service.enrollmentCount).toLocaleString()} learners
-          </span>
-        </div> */}
+        <p className="text-slate-600 text-xs sm:text-sm mb-3 line-clamp-2">{service.tagline}</p>
       </div>
     </div>
   )
@@ -83,12 +74,12 @@ const ServiceCard = ({ service, router }: { service: Service; router: ReturnType
 export default function NewlyAddedServicesSection({ services, loading, error, router }: NewlyAddedServicesSectionProps) {
   if (loading) {
     return (
-      <section className="py-16 ">
+      <section className="py-8 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="h-5 w-32 bg-gray-200 rounded animate-pulse mx-auto mb-3" />
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="h-4 sm:h-5 w-32 bg-gray-200 rounded animate-pulse mx-auto mb-3" />
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             <SkeletonServicesCard />
             <SkeletonServicesCard />
             <SkeletonServicesCard />
@@ -100,8 +91,8 @@ export default function NewlyAddedServicesSection({ services, loading, error, ro
 
   if (error) {
     return (
-      <section className="py-16 text-center">
-        <p className="text-gray-500">{error.message || "Failed to load newly added services."}</p>
+      <section className="py-8 sm:py-16 text-center px-4">
+        <p className="text-gray-500 text-sm sm:text-base">{error.message || "Failed to load newly added services."}</p>
       </section>
     )
   }
@@ -123,16 +114,16 @@ export default function NewlyAddedServicesSection({ services, loading, error, ro
   }
 
   return (
-    <section className="py-8  mb-8">
+    <section className="py-6 sm:py-8 mb-6 sm:mb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-slate-900 mb-3">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-2 sm:mb-3 px-4">
             Newly Added Services
           </h2>
-          <p className="text-lg text-slate-600">Discover the latest services added to our platform</p>
+          <p className="text-sm sm:text-base md:text-lg text-slate-600 px-4">Discover the latest services added to our platform</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {recentServices.map((service) => (
             <ServiceCard key={service.id} service={service} router={router} />
           ))}

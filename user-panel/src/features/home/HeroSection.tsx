@@ -1,4 +1,3 @@
-
 "use client"
 import {ArrowRightIcon} from "@radix-ui/react-icons"
 import Button from "@/components/base/Button";
@@ -12,7 +11,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
   ]
 
   return (
-    <section className="relative bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-20 overflow-hidden">
+    <section className="relative bg-gradient-to-br from-emerald-50 via-white to-teal-50 py-12 sm:py-20 overflow-hidden">
       {/* Islamic Pattern Overlay */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 left-10 w-32 h-32 bg-emerald-600 rounded-full transform rotate-45"></div>
@@ -22,13 +21,13 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center max-w-4xl mx-auto">
-          <div className="mb-4">
-            <span className="inline-flex items-center px-4 py-2 sm:py-2 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium">
+          <div className="mb-4 sm:mb-6">
+            <span className="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-emerald-100 text-emerald-700 text-xs sm:text-sm font-medium">
               🕌 Serving the Ummah Worldwide
             </span>
           </div>
           
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-4 sm:mb-6 leading-tight px-2">
             Grow in{" "}
             <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
               Islamic Knowledge
@@ -36,17 +35,17 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
             <br />& Professional Skills
           </h1>
           
-          <p className="text-base sm:text-lg lg:text-xl text-slate-600 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto px-4 sm:px-0">
+          <p className="text-sm sm:text-base lg:text-xl text-slate-600 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto px-4">
             Join thousands of Muslims advancing their careers while staying true to Islamic principles. Learn from certified scholars and industry experts.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-8 sm:mb-12 px-4">
             {!isAuthenticated ? (
               <>
                 <Button
                   variant="unstyled"
                   onClick={() => router.push("/user/signup")}
-                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-6 rounded-xl transition-all duration-200 text-lg font-semibold shadow-lg hover:from-emerald-600 hover:to-emerald-700 hover:-translate-y-1 hover:shadow-xl transform flex items-center gap-2"
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-4 sm:px-8 sm:py-6 rounded-xl transition-all duration-200 text-base sm:text-lg font-semibold shadow-lg hover:from-emerald-600 hover:to-emerald-700 hover:-translate-y-1 hover:shadow-xl transform flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
                   Begin Your Journey
                   <ArrowRightIcon className="w-5 h-5" />
@@ -54,7 +53,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
                 <Button
                   variant="unstyled"
                   onClick={() => router.push("/explore")}
-                  className="border-2 border-emerald-500 text-emerald-600 px-8 py-6 rounded-xl transition-all duration-200 text-lg font-semibold hover:bg-emerald-500 hover:text-white hover:-translate-y-1 transform"
+                  className="border-2 border-emerald-500 text-emerald-600 px-6 py-4 sm:px-8 sm:py-6 rounded-xl transition-all duration-200 text-base sm:text-lg font-semibold hover:bg-emerald-500 hover:text-white hover:-translate-y-1 transform w-full sm:w-auto"
                 >
                   Explore Services
                 </Button>
@@ -64,7 +63,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
                 <Button
                   variant="unstyled"
                   onClick={() => router.push("/my-purchases")}
-                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-8 py-6 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transform flex items-center gap-2"
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-4 sm:px-8 sm:py-6 rounded-xl text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transform flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
                   Continue Learning
                   <ArrowRightIcon className="w-5 h-5" />
@@ -72,7 +71,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
                 <Button
                   variant="unstyled"
                   onClick={() => router.push("/explore")}
-                  className="border-2 border-emerald-500 text-color px-8 py-6 rounded-xl  text-lg font-semibold hover:bg-background-light hover:shadow-xl"
+                  className="border-2 border-emerald-500 text-color px-6 py-4 sm:px-8 sm:py-6 rounded-xl text-base sm:text-lg font-semibold hover:bg-background-light hover:shadow-xl w-full sm:w-auto"
                 >
                   Discover New Paths
                 </Button>
@@ -81,13 +80,13 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 mt-2 sm:mt-16 max-w-2xl mx-auto">
+          <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-8 sm:mt-16 max-w-2xl mx-auto px-4">
             {stats.map((stat, index) => (
               <div key={index} className="text-center group">
-                <div className="text-2xl sm:text-3xl font-bold text-slate-900 group-hover:text-emerald-600 transition-colors duration-200">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 group-hover:text-emerald-600 transition-colors duration-200">
                   {stat.value}
                 </div>
-                <div className="text-sm text-slate-600">{stat.label}</div>
+                <div className="text-xs sm:text-sm text-slate-600 mt-1">{stat.label}</div>
               </div>
             ))}
           </div>
