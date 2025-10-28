@@ -54,7 +54,8 @@ export default function ReviewsFilter({
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm text-gray-600">Filter by stars:</span>
+          <span className="hidden sm:inline text-sm text-gray-600">Filter by stars:</span>
+
           {[0, 5, 4, 3, 2, 1].map((s) => (
             <button
               key={s}
