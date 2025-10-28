@@ -139,8 +139,11 @@ export default function HomePage() {
         right={
           <div className="flex items-center gap-4">
             {isAuthenticated ? (
-              <ProfileMenuButton onClick={handleShowNavDrawer} />
-            ) : (
+                <Link href="/start-selling">
+                  <Button variant="unstyled" className="text-sm font-medium h-9 pr-0">
+                    Become a Seller
+                  </Button>
+                </Link>            ) : (
               <>
                 <Link href="/start-selling">
                   <Button variant="unstyled" className="text-sm font-medium h-9 ">
