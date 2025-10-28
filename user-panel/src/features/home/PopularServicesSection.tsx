@@ -70,17 +70,18 @@ const PopularServicesSection: React.FC<PopularServicesSectionProps> = ({
             </div>
             
             {/* Mobile Loading State - Grid with Skeletons */}
-            <div className="sm:hidden grid grid-cols-2 gap-3">
-              {[...Array(4)].map((_, index) => (
+            <div className="sm:hidden grid grid-cols-3 gap-3">
+              {[...Array(6)].map((_, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center justify-center h-24 bg-white rounded-lg border border-slate-200 max-w-[80%] sm:max-w-none"
+                  className="flex flex-col items-center justify-center h-24 bg-white rounded-lg border border-slate-200 max-w-full sm:max-w-none"
                 >
                   <Skeleton className="w-10 h-10 mb-2 rounded-full" />
                   <Skeleton className="h-3 w-16 rounded" />
                 </div>
               ))}
             </div>
+
           </>
         ) : categoriesError ? (
           <div className="text-center py-8 sm:py-14 text-red-600 text-sm sm:text-base">Error loading categories</div>
@@ -109,24 +110,24 @@ const PopularServicesSection: React.FC<PopularServicesSectionProps> = ({
 
             {/* Mobile View - Compact Grid Layout */}
             <div className="sm:hidden grid grid-cols-3 gap-3">
-  {exploreCategories
-    .sort((a, b) => a.order - b.order)
-    .map((category) => (
-      <button
-        key={category.id}
-        onClick={() => handleRedirect(category)}
-        className="group flex flex-col items-center justify-center h-24 bg-white rounded-lg border border-slate-200 hover:border-emerald-500 hover:shadow-md hover:shadow-emerald-100 transition-all duration-300 text-center active:scale-95"
-        aria-label={`Explore ${category.name}`}
-      >
-        <div className="flex items-center justify-center w-10 h-10 mb-1.5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-full group-hover:from-emerald-100 group-hover:to-teal-100 transition-colors duration-300">
-          {getCategoryIcon(category.name)}
-        </div>
-        <p className="text-[11px] font-semibold text-slate-700 group-hover:text-emerald-600 transition-colors duration-300 leading-tight px-2 line-clamp-2">
-          {category.name}
-        </p>
-      </button>
-    ))}
-</div>
+              {exploreCategories
+                .sort((a, b) => a.order - b.order)
+                .map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => handleRedirect(category)}
+                    className="group flex flex-col items-center justify-center h-24 bg-white rounded-lg border border-slate-200 hover:border-emerald-500 hover:shadow-md hover:shadow-emerald-100 transition-all duration-300 text-center active:scale-95"
+                    aria-label={`Explore ${category.name}`}
+                  >
+                    <div className="flex items-center justify-center w-10 h-10 mb-1.5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-full group-hover:from-emerald-100 group-hover:to-teal-100 transition-colors duration-300">
+                      {getCategoryIcon(category.name)}
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-700 group-hover:text-emerald-600 transition-colors duration-300 leading-tight px-2 line-clamp-2">
+                      {category.name}
+                    </p>
+                  </button>
+                ))}
+            </div>
           </>
         )}
       </div>
