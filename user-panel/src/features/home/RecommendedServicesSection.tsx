@@ -125,10 +125,6 @@ const ServiceCardComponent = ({ size = "md", service, className }: ServiceCardPr
           "pt-3 text-xs": size === "sm",
         })}
       >
-        <span>
-          {formatDurationFromSeconds(service ? service?.duration : 278)} total
-          time
-        </span>
         <StudentCountLabel count={Number(service?.enrollmentCount)} />
       </CardDescription>
     </Card>

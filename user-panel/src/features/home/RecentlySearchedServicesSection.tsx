@@ -112,11 +112,11 @@ const ServiceCard = ({ service, idx }: { service: Service; idx: number }) => {
         </div>
         <div className="p-4 sm:p-5">
           <div className="flex items-center gap-1.5 sm:gap-2 mb-3 flex-wrap">
-            <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" />
-            <span className="text-xs sm:text-sm font-medium text-slate-600">
+            {/* <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-600 flex-shrink-0" /> */}
+            {/* <span className="text-xs sm:text-sm font-medium text-slate-600">
               {formatDurationFromSeconds(service.duration)}
-            </span>
-            <span className="text-slate-300">•</span>
+            </span> */}
+            {/* <span className="text-slate-300">•</span> */}
             <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />
             <span className="text-xs sm:text-sm font-medium text-slate-700">
               {service.averageReviewScore || '0.0'}

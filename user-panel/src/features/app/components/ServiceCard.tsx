@@ -135,10 +135,10 @@ const ServiceCard = ({ size = "md", service, className }: Props) => {
           "pt-3 text-xs": size === "sm",
         })}
       >
-        <span>
+        {/* <span>
           {formatDurationFromSeconds(service ? service?.duration : 278)} total
           time
-        </span>
+        </span> */}
 
         <StudentCountLabel count={Number(service?.enrollmentCount)} />
       </CardDescription>
