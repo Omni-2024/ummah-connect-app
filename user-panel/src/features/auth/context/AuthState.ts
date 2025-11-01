@@ -30,7 +30,7 @@ let parsedState = initialState;
 
 if (savedState) {
   const parsed = JSON.parse(savedState);
-  if (parsed.refreshToken.trim() !== "") {
+  if (parsed.refreshToken && parsed.refreshToken.trim() !== "") {
     parsedState = { ...parsed, isHydrated: false };
   } else {
     // fallback if refreshToken is empty
@@ -54,7 +54,7 @@ export function hydrateAuthFromStorage() {
     const raw = localStorage.getItem("authState");
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed.refreshToken.trim()!=""){
+      if (parsed.refreshToken && parsed.refreshToken.trim() !== "") {
         authState.isAuthenticated      = !!parsed.isAuthenticated;
         authState.accessToken          = parsed.accessToken ?? "";
         authState.refreshToken         = parsed.refreshToken ?? "";
