@@ -225,6 +225,8 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
               educator={educator}
               getDesignationDisplay={getDesignationDisplay}
               buildAvatarUrl={buildAvatarUrl}
+              serviceCount={services?.data?.length || 0}
+              totalReviews={reviewsData?.meta?.total || 0}                 
             />
             <ProfileTabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
             {activeTab === "overview" && (
