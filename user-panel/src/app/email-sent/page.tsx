@@ -5,18 +5,21 @@ import { useRouter } from "next/navigation"
 import { useForgotPasswordState } from "@/features/auth/context/useForgotPasswordState"
 import { useCurrentUser } from "@/lib/hooks/useUser"
 import { useAuthState } from "@/features/auth/context/useAuthState"
+import Navbar from "@/features/app/components/Navbar"
+import NavbarMobile, { NavbarTitle } from "@/features/app/components/Navbar.mobile"
 import Bottombar from "@/features/app/components/Bottombar"
 import Footer from "@/features/app/components/Footer"
+import IconButton from "@/components/base/IconButton"
 import { useState } from "react"
 import envs from "@/lib/env"
 
-// Helper function to build avatar URL (same as in ExplorePage)
+// Helper function to build avatar URL (same as in MyPurchasesPage)
 export const buildAvatarUrl = (img?: string | null): string | null => {
-  if (!img) return null;
-  if (/^https?:\/\//i.test(img)) return img;
-  const base = envs.imageBaseUrl;
-  return `${base}/${img}`;
-};
+  if (!img) return null
+  if (/^https?:\/\//i.test(img)) return img
+  const base = envs.imageBaseUrl
+  return `${base}/${img}`
+}
 
 export default function EmailSentPage() {
   const router = useRouter()
@@ -32,30 +35,31 @@ export default function EmailSentPage() {
     router.push("/user/login")
   }
 
+  const handleBack = () => {
+    router.back()
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-      {/* Header */}
-      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-6 py-4">
-          <button
-            onClick={() => router.push("/")}
-            className="flex items-center space-x-3 text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <ArrowLeftIcon className="w-5 h-5" />
-            <div className="flex items-center space-x-2">
-              <div className="h-6 w-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600"></div>
-              <span className="text-lg font-bold">Ummah Community</span>
-            </div>
-          </button>
-        </div>
-      </header>
+    <div className="min-h-screen w-full pb-16 lg:pb-0 bg-white">
+      <Navbar />
+      <NavbarMobile
+        className="px-4"
+        left={
+          <div className="flex items-center gap-3">
+            <IconButton onClick={handleBack}>
+              <ArrowLeftIcon className="size-5" />
+            </IconButton>
+            <NavbarTitle title="Email Verification" size="md" />
+          </div>
+        }
+      />
 
       {/* Main Content */}
-      <main className="container mx-auto px-6 py-16">
+      <main className="container px-4 py-4 lg:px-20 lg:py-10">
         <div className="max-w-md mx-auto">
-          <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 text-center">
+          <div className="bg-white rounded-2xl shadow-xl border-2 border-gray-200 p-8 text-center">
             {/* Email Icon */}
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-6">
+            <div className="mx-auto w-16 h-16 bg-primary-500 text-white hover:bg-primary-400 rounded-full flex items-center justify-center mb-6">
               <EnvelopeClosedIcon className="w-8 h-8 text-white" />
             </div>
 
@@ -66,7 +70,7 @@ export default function EmailSentPage() {
               <p className="text-gray-600 leading-relaxed">
                 We've sent a verification link to verify your email address.
               </p>
-              <div className="bg-gray-50 rounded-lg p-4">
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <p className="text-sm text-gray-700">Verification email sent to:</p>
                 <p className="font-semibold text-gray-900 break-all">{email || "your email address"}</p>
               </div>
