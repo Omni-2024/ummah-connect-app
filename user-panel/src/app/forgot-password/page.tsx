@@ -16,16 +16,16 @@ function ForgotPasswordRoute() {
   }, []);
 
   return (
-      <main style={{ backgroundImage: "url(/images/pattern.jpg)" }}>
+      <main className="flex flex-col min-h-screen" style={{ backgroundImage: "url(/images/pattern.jpg)" }}>
         <div className="hidden w-full items-center justify-center pt-6 md:flex">
           <img
               alt="logo"
               src="/images/logo.png"
-              className="h-14 object-contain"
+              className="h-28 object-contain"
           />
         </div>
 
-        <div className="container flex min-h-[calc(100vh-5rem)] flex-row items-center justify-center md:py-8">
+        <div className="container flex flex-1 flex-row items-center justify-center md:py-8">
           <AnimatePresence mode="wait">
             {forgotPasswordStep === "enter-email" && <EnterEmailCard />}
             {forgotPasswordStep === "check-inbox" && <CheckInboxCard />}
