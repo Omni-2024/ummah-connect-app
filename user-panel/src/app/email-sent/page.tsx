@@ -13,7 +13,6 @@ import IconButton from "@/components/base/IconButton"
 import { useState } from "react"
 import envs from "@/lib/env"
 
-// Helper function to build avatar URL (same as in MyPurchasesPage)
 export const buildAvatarUrl = (img?: string | null): string | null => {
   if (!img) return null
   if (/^https?:\/\//i.test(img)) return img
@@ -100,7 +99,7 @@ export default function EmailSentPage() {
             <p className="text-sm text-gray-500 mb-2">Need help?</p>
             <button
               onClick={() => router.push("/contact-support")}
-              className="text-indigo-600 hover:text-indigo-700 text-sm font-medium"
+              className="text-sm font-medium"
             >
               Contact our support team
             </button>
