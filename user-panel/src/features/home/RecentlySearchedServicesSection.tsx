@@ -102,7 +102,8 @@ const ServiceCard = ({ service, idx }: { service: Service; idx: number }) => {
       >
         <div className="relative h-40 sm:h-48">
           <img 
-            src={service.coverImageUrl ? buildAvatarUrl(service.coverImageUrl) || `${S3_BUCKET_URL}/images/coverImage.png` : "/images/coverImage.png"}
+            // src={service.coverImageUrl ? buildAvatarUrl(service.coverImageUrl) || `${S3_BUCKET_URL}/images/coverImage.png` : "/images/coverImage.png"}
+            src={"/images/coverImage.png"}
             alt={service.title} 
             className="w-full h-full object-cover" 
           />
