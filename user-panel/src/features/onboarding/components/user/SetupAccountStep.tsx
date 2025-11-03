@@ -44,6 +44,12 @@ const SetupAccountStep = () => {
   const { mutate: updateUserMutate, isPending: isUpdateUserPending } =
       useMutation({ mutationFn: updateUserFn });
 
+  // Gender options
+  const genderOptions = [
+    { value: Gender.MALE, label: 'Male' },
+    { value: Gender.FEMALE, label: 'Female' }
+  ];
+
   useEffect(() => {
     if (!image) {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -132,11 +138,6 @@ const SetupAccountStep = () => {
     }
   };
 
-  const genderOptions = [
-    { label: 'Male', value: Gender.MALE },
-    { label: 'Female', value: Gender.FEMALE }
-  ];
-
   return (
       <div className="w-screen pb-32 lg:w-auto lg:pb-0">
         <div className="w-full">
@@ -185,13 +186,14 @@ const SetupAccountStep = () => {
             <div className="w-full flex-1 space-y-4 lg:max-w-sm">
               <div className="w-full space-y-1">
                 <Label>Gender</Label>
-                <ComboBox
+                <Dropdown
+                    label=""
+                    value={genderOptions.find(g => g.value === gender)?.label || 'Male'}
+                    options={genderOptions.map(g => g.label)}
                     onChange={(value) => {
                       const selectedGender = genderOptions.find(g => g.label === value)?.value || Gender.MALE;
                       setGender(selectedGender);
                     }}
-                    placeholder="Select your gender"
-                    items={genderOptions}
                 />
               </div>
 
