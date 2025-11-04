@@ -17,6 +17,7 @@ import { useCurrentUser } from "@/lib/hooks/useUser"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import envs from "@/lib/env"
 import { usePaymentsByUser } from "@/lib/hooks/usePayments"
+import { generateSlug } from "@/lib/helpers/strings"
 
 // Helper function to build avatar URL
 export const buildAvatarUrl = (img?: string | null): string | null => {
@@ -81,8 +82,10 @@ const MyPurchasesPage = () => {
     router.back()
   }
 
-  const handleViewService = (serviceId: string) => {
-    router.push(`/service/${serviceId}`)
+  const handleViewService = (serviceName: string) => {
+    // Generate slug from service name only (backend handles lookup by slug)
+    const slug = generateSlug(serviceName)
+    router.push(`/service/${slug}`)
   }
 
   // Show loading state while fetching user or payments
@@ -232,11 +235,6 @@ const MyPurchasesPage = () => {
         {filteredPurchases.length === 0 ? (
           <div className="text-center py-12">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No Services found</h3>
-            {/* <p className="text-gray-600 mb-6">
-              {selectedTab === "all"
-                ? "You haven't purchased any services yet."
-                : `No services with "${selectedTab}" status.`}
-            </p> */}
             <Button onClick={() => router.push("/explore")}>
               Explore Services
             </Button>
@@ -282,7 +280,7 @@ const MyPurchasesPage = () => {
                   {/* Action Buttons */}
                   <div className="flex gap-2">
                     <Button
-                      onClick={() => handleViewService(purchase.serviceId)}
+                      onClick={() => handleViewService(purchase.serviceName)}
                       variant="primary"
                       className="flex-1"
                       size="sm"

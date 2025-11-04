@@ -72,8 +72,10 @@ export default function ServiceDetailsPage() {
     isLoading,
     error,
   } = useServiceBySlug(serviceSlug || slug || "")
+  
+  // Only fetch educator data when we have the service and provider ID
   const { data: educator, isLoading: educatorLoading } = useGeneralUser(
-    service?.serviceDetails?.data.provider.id ?? undefined
+    service?.serviceDetails?.data?.provider?.id ?? undefined
   )
 
   const serviceId = service?.serviceDetails?.data?.id
@@ -111,6 +113,8 @@ export default function ServiceDetailsPage() {
     stars: 0, // 0 means get all reviews
     limit: 1000, // High limit to get all reviews for statistics
     offset: 0,
+  }, {
+    enabled: !!serviceId // Only fetch when serviceId exists
   })
 
   // Fetch filtered reviews for display
@@ -123,6 +127,8 @@ export default function ServiceDetailsPage() {
     stars: starFilter.length === 1 ? starFilter[0] : 0,
     limit: pageLimit,
     offset: pageOffset,
+  }, {
+    enabled: !!serviceId // Only fetch when serviceId exists
   })
 
   const handleLogout = () => {
@@ -314,7 +320,8 @@ export default function ServiceDetailsPage() {
     }, 100)
   }
 
-  if (isLoading || educatorLoading || reviewLoading || allReviewsLoading) {
+  // Show loading state while any critical data is loading
+  if (isLoading || educatorLoading) {
     return (
       <div className="min-h-screen w-full bg-gray-50 pb-16 lg:pb-0">
         <Navbar />
@@ -341,7 +348,7 @@ export default function ServiceDetailsPage() {
     )
   }
 
-  if (error || !service || !educator || !reviews || !allReviewsForStats) {
+  if (error || !service || !educator) {
     return (
       <div className="min-h-screen w-full bg-gray-50 pb-16 lg:pb-0">
         <Navbar />
@@ -455,7 +462,7 @@ export default function ServiceDetailsPage() {
                   </Card>
                 )}
 
-              <ReviewCarousel apiReviews={reviews.data} onSeeAllReviews={handleSeeAllReviews} />
+              {reviews && <ReviewCarousel apiReviews={reviews.data} onSeeAllReviews={handleSeeAllReviews} />}
 
               <ServiceContent
                 service={service.serviceDetails.data}
@@ -465,19 +472,21 @@ export default function ServiceDetailsPage() {
 
               <ServiceFAQ faqs={service.faqData} />
 
-             <AllReviews
-              reviews={reviews.data}
-              ref={allReviewsRef}
-              totalReviews={allReviewsForStats?.data?.length || 0}
-              onLoadMore={() => {
-                setPageOffset((prevOffset) => prevOffset + pageLimit)
-              }}
-              isLoadingMore={reviewLoading}
-              averageRating={averageRating}
-              ratingBreakdown={ratingBreakdown}
-              onStarFilter={handleStarFilter}
-              activeStarFilter={starFilter}
-            />
+              {reviews && allReviewsForStats && (
+                <AllReviews
+                  reviews={reviews.data}
+                  ref={allReviewsRef}
+                  totalReviews={allReviewsForStats?.data?.length || 0}
+                  onLoadMore={() => {
+                    setPageOffset((prevOffset) => prevOffset + pageLimit)
+                  }}
+                  isLoadingMore={reviewLoading}
+                  averageRating={averageRating}
+                  ratingBreakdown={ratingBreakdown}
+                  onStarFilter={handleStarFilter}
+                  activeStarFilter={starFilter}
+                />
+              )}
 
               <ProviderServices
                 providerId={service.serviceDetails.data.provider.id}
