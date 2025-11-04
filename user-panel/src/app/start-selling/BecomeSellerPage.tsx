@@ -1,12 +1,12 @@
-"use client";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import Navbar from "@/features/app/components/Navbar";
-import NavbarMobile, { NavbarTitle } from "@/features/app/components/Navbar.mobile";
-import Bottombar from "@/features/app/components/Bottombar";
-import { Card } from "@/components/base/Card";
-import Button from "@/components/base/Button";
-import Badge from "@/components/base/Badge";
+"use client"
+import React, { useState } from "react"
+import { useRouter } from "next/navigation"
+import Navbar from "@/features/app/components/Navbar"
+import NavbarMobile, { NavbarTitle } from "@/features/app/components/Navbar.mobile"
+import Bottombar from "@/features/app/components/Bottombar"
+import { Card } from "@/components/base/Card"
+import Button from "@/components/base/Button"
+import Badge from "@/components/base/Badge"
 import {
   LightningBoltIcon,
   GlobeIcon,
@@ -21,17 +21,40 @@ import {
   LockClosedIcon as ShieldIcon,
   ArrowRightIcon,
   PlayIcon,
-} from "@radix-ui/react-icons";
-import Footer from "@/features/app/components/Footer";
+  ArrowLeftIcon,
+} from "@radix-ui/react-icons"
+import Footer from "@/features/app/components/Footer"
+import { useCurrentUser } from "@/lib/hooks/useUser"
+import { useAuthState } from "@/features/auth/context/useAuthState"
+import envs from "@/lib/env"
+import { IconButton } from "@radix-ui/themes"
+
+// Helper function to build avatar URL (same as in ExplorePage)
+export const buildAvatarUrl = (img?: string | null): string | null => {
+  if (!img) return null
+  if (/^https?:\/\//i.test(img)) return img
+  const base = envs.imageBaseUrl
+  return `${base}/${img}`
+}
 
 export default function BecomeSellerPage() {
-  const router = useRouter();
-  const [activeStep, setActiveStep] = useState(0);
-  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const router = useRouter()
+  const { data: user } = useCurrentUser()
+  const { logout } = useAuthState()
+  const [activeStep, setActiveStep] = useState(0)
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
+  const [avatarBroken, setAvatarBroken] = useState(false)
+
+  const avatarUrl = buildAvatarUrl(user?.profileImage)
+
+  const handleLogout = () => {
+    logout()
+    router.push("/user/login")
+  }
 
   const handleGetStarted = () => {
-    router.push("/user/signup");
-  };
+    router.push("/user/signup")
+  }
 
   // Success metrics to build trust
   const metrics = [
@@ -39,7 +62,7 @@ export default function BecomeSellerPage() {
     { number: "50K+", label: "Projects Completed", icon: <CheckCircledIcon /> },
     { number: "4.9", label: "Average Rating", icon: <StarIcon /> },
     { number: "90+", label: "Countries Served", icon: <GlobeIcon /> },
-  ];
+  ]
 
   // Enhanced benefits with more compelling copy
   const benefits = [
@@ -67,7 +90,7 @@ export default function BecomeSellerPage() {
       description: "Quick approval process gets you selling faster than any other platform",
       highlight: "Fast Track",
     },
-  ];
+  ]
 
   // Interactive steps with progress
   const steps = [
@@ -92,7 +115,7 @@ export default function BecomeSellerPage() {
       time: "Immediate",
       icon: <RocketIcon />,
     },
-  ];
+  ]
 
   // Enhanced FAQ with more specific questions
   const faqs = [
@@ -120,7 +143,7 @@ export default function BecomeSellerPage() {
       question: "Can I sell if I'm not a native English speaker?",
       answer: "Absolutely! We serve a global Muslim community and many clients prefer sellers who speak their native language. Arabic, Urdu, Turkish, and other languages are in high demand.",
     },
-  ];
+  ]
 
   const expertiseCategories = [
     { name: "Islamic Education", demand: "High", icon: "📚" },
@@ -131,7 +154,7 @@ export default function BecomeSellerPage() {
     { name: "Digital Marketing", demand: "Medium", icon: "📱" },
     { name: "Writing & Translation", demand: "High", icon: "✍️" },
     { name: "Video Production", demand: "Medium", icon: "🎥" },
-  ];
+  ]
 
   const testimonials = [
     {
@@ -158,15 +181,26 @@ export default function BecomeSellerPage() {
       avatar: "👨‍💻",
       rating: 5,
     },
-  ];
+  ]
 
+    const handleBack = () => {
+    router.back()
+  }
+  
   return (
     <div className="min-h-screen w-full bg-white pb-16 lg:pb-0">
       <Navbar />
       <NavbarMobile
-        className="px-4"
-        left={<NavbarTitle title="Become a Seller" size="md" />}
-      />
+        className="px-4 bg-white border-b border-gray-100 sticky top-0 z-40"
+        left={
+          <div className="flex items-center gap-3">
+            <IconButton onClick={handleBack} className="hover:bg-gray-100 transition-colors">
+              <ArrowLeftIcon className="size-5" />
+            </IconButton>
+            <NavbarTitle title="Become a Seller" size="md" />
+          </div>
+        }
+        />
 
       {/* Hero Section - Balanced */}
       <div className="bg-emerald-600 py-12">
@@ -407,8 +441,14 @@ export default function BecomeSellerPage() {
         </div>
       </div>
 
-      <Bottombar />
+      <Bottombar
+        user={user}
+        avatarUrl={avatarUrl}
+        avatarBroken={avatarBroken}
+        setAvatarBroken={setAvatarBroken}
+        handleLogout={handleLogout}
+      />
       <Footer />
     </div>
-  );
+  )
 }

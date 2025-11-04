@@ -26,11 +26,13 @@ const AuthCardLayout: React.FC<Props> = ({
     author,
   }: {
     quote: string;
-    author: string;
+    author?: string;
   }) => (
     <p className="w-11/12 text-start font-primary text-base leading-normal text-white">
       {quote}
-      <span className="mt-3 block text-xs font-light">- {author}</span>
+      {author && (
+        <span className="mt-3 block text-xs font-light">- {author}</span>
+      )}
     </p>
   );
 
@@ -38,40 +40,44 @@ const AuthCardLayout: React.FC<Props> = ({
     <CardWrapper
       className={cn(
         "container flex min-h-svh w-screen justify-center gap-2 md:h-[90vh] md:min-h-[unset] md:w-[80vw]",
-        layoutClassName,
+        layoutClassName
       )}
     >
+      {/* Left side: children content */}
       <div
         className={cn(
           "flex-1 overflow-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-dark-50 scrollbar-corner-transparent",
-          childrenContainerClassName,
+          childrenContainerClassName
         )}
       >
         {children}
       </div>
 
-      <div className={cn("flex-[0] lg:flex-1", sliderContainerClassName)}>
+      {/* Right side: carousel, visible only on large screens */}
+      <div className={cn("hidden lg:flex lg:flex-1", sliderContainerClassName)}>
         <CarouselSlider
-          slides={[
-            {
-              id: 1,
-              image: "/images/auth-card.jpeg",
-              text: renderQuoteText({
-                quote:
-                  "“Nobody can go back and start a new beginning, but anyone can start today and make a new ending.”",
-                author: "Maria Robinson",
-              }),
-            },
-            {
-              id: 2,
-              image: "/images/course-card.jpeg",
-              text: renderQuoteText({
-                quote:
-                  "“The only way to do great work is to love what you do.”",
-                author: "Steve Jobs",
-              }),
-            },
-          ]}
+          slides={
+            slides || [
+              {
+                id: 1,
+                image:
+                  "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=2070",
+                text: renderQuoteText({
+                  quote:
+                    "Join the Ummah Community - where faith meets professional excellence.",
+                }),
+              },
+              {
+                id: 2,
+                image:
+                  "https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=2070",
+                text: renderQuoteText({
+                  quote:
+                    "Build, collaborate, and grow with your Muslim brothers and sisters.",
+                }),
+              },
+            ]
+          }
         />
       </div>
     </CardWrapper>

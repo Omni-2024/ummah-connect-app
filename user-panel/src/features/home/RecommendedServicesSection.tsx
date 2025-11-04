@@ -125,10 +125,6 @@ const ServiceCardComponent = ({ size = "md", service, className }: ServiceCardPr
           "pt-3 text-xs": size === "sm",
         })}
       >
-        <span>
-          {formatDurationFromSeconds(service ? service?.duration : 278)} total
-          time
-        </span>
         <StudentCountLabel count={Number(service?.enrollmentCount)} />
       </CardDescription>
     </Card>
@@ -180,19 +176,19 @@ function RecommendedServicesSection({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12 lg:mb-16">
             <div className="inline-flex items-center px-3 py-1.5 bg-emerald-50 rounded-full mb-4">
-              <div className="h-5 w-32 bg-gray-200 rounded animate-pulse" />
+              <div className="h-4 sm:h-5 w-24 sm:w-32 bg-gray-200 rounded animate-pulse" />
             </div>
-            <div className="h-8 w-64 bg-gray-200 rounded mx-auto mb-3 animate-pulse" />
-            <div className="h-5 w-96 bg-gray-200 rounded mx-auto animate-pulse" />
+            <div className="h-6 sm:h-8 w-48 sm:w-64 bg-gray-200 rounded mx-auto mb-3 animate-pulse" />
+            <div className="h-4 sm:h-5 w-72 sm:w-96 max-w-full bg-gray-200 rounded mx-auto animate-pulse" />
           </div>
           <div className="flex flex-col sm:flex-row sm:gap-6 lg:gap-8 justify-center">
             <div className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] mb-6 sm:mb-0">
               <SkeletonServicesCard />
             </div>
-            <div className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] mb-6 sm:mb-0">
+            <div className="hidden sm:block flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] mb-6 lg:mb-0">
               <SkeletonServicesCard />
             </div>
-            <div className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)]">
+            <div className="hidden lg:block flex-[0_0_100%] lg:flex-[0_0_calc(33.333%-16px)]">
               <SkeletonServicesCard />
             </div>
           </div>
@@ -203,8 +199,8 @@ function RecommendedServicesSection({
 
   if (error) {
     return (
-      <section className="py-16 text-center">
-        <p className="text-gray-500">{error.message || "Failed to load recommended services."}</p>
+      <section className="py-10 sm:py-16 text-center px-4">
+        <p className="text-gray-500 text-sm sm:text-base">{error.message || "Failed to load recommended services."}</p>
       </section>
     )
   }
@@ -217,11 +213,11 @@ function RecommendedServicesSection({
     <section className="py-8 sm:py-10 lg:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-          <span className="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium mb-4">
+          <span className="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
             Personalized Learning Path
           </span>
-          <h2 className="text-3xl font-bold text-slate-900 mb-3"> Recommended for You</h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 sm:mb-3 px-4">Recommended for You</h2>
+          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto px-4">
             Services tailored to your interests and professional goals
           </p>
         </div>
@@ -251,7 +247,7 @@ function RecommendedServicesSection({
           )}
 
           <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex gap-6">
+            <div className="flex gap-4 sm:gap-6">
               {services.map((service) => (
                 <div key={service.id} className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)]">
                   <ServiceCard service={service} size="md" />
@@ -278,12 +274,12 @@ function RecommendedServicesSection({
           )}
 
           {services.length > 1 && (
-            <div className="flex justify-center items-center gap-2 mt-4 text-sm text-gray-500 md:hidden">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex justify-center items-center gap-2 mt-4 text-xs sm:text-sm text-gray-500 md:hidden">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
               </svg>
               <span>Swipe to explore more</span>
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </div>

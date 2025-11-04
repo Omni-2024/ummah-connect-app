@@ -80,7 +80,7 @@ export default function ServicesSection({ services, servicesLoading, router, bui
               </div>
               <div className="flex-1">
                 <div className="flex justify-between items-start mb-3">
-                  <h3 className="text-xl font-bold text-gray-900">{service.title}</h3>
+                  <h3 className="text-xl font-normal lg:font-bold text-gray-900">{service.title}</h3>
                   <div className="text-right">
                     <p className="text-2xl font-bold text-green-600">
                       ${service.discountEnabled && service.discount > 0

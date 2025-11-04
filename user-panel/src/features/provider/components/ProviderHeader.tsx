@@ -10,9 +10,17 @@ interface ProviderHeaderProps {
   educator: any;
   getDesignationDisplay: () => string;
   buildAvatarUrl: (url?: string | null) => string | null;
+  serviceCount?: number;
+  totalReviews?: number; // Added prop for total reviews
 }
 
-export default function ProviderHeader({ educator, getDesignationDisplay, buildAvatarUrl }: ProviderHeaderProps) {
+export default function ProviderHeader({ 
+  educator, 
+  getDesignationDisplay, 
+  buildAvatarUrl,
+  serviceCount = 0,
+  totalReviews = 0 // Default value
+}: ProviderHeaderProps) {
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -67,7 +75,7 @@ export default function ProviderHeader({ educator, getDesignationDisplay, buildA
         {/* Info Section */}
         <div className="flex-1 w-full">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1">{educator.name}</h1>
-          <p className="text-base sm:text-lg text-gray-600 mb-3">({educator.totalServices || "0"} Services)</p>
+          <p className="text-base sm:text-lg text-gray-600 mb-3">({serviceCount} Services)</p>
           
           {/* Badges */}
           <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-3">
@@ -90,10 +98,12 @@ export default function ProviderHeader({ educator, getDesignationDisplay, buildA
           {/* Rating */}
           <div className="flex items-center gap-2 justify-center sm:justify-start mb-4">
             <div className="flex items-center gap-1">
-              {renderStars(educator?.averageReviewScore || 4.9)}
+              {renderStars(parseFloat(educator?.averageReviewScore) || 0)}
             </div>
-            <span className="font-semibold text-base">{educator.averageReviewScore || "4.9"}</span>
-            <span className="text-gray-500 text-sm">(reviews)</span>
+            <span className="font-semibold text-base">
+              {educator?.averageReviewScore ? parseFloat(educator.averageReviewScore).toFixed(1) : "0.0"}
+            </span>
+            <span className="text-gray-500 text-sm">({totalReviews} review{totalReviews === 1 ? "" : "s"})</span>
           </div>
 
           {/* Stats - Single row on mobile */}
@@ -108,4 +118,3 @@ export default function ProviderHeader({ educator, getDesignationDisplay, buildA
     </Card>
   );
 }
-

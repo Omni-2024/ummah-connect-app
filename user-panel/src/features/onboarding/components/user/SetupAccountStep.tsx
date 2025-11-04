@@ -17,7 +17,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuthState } from "@/features/auth/context/useAuthState";
 import { Toast } from "@/components/base/Toast";
 import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns";
-import {COUNTRY_LIST, MAX_IMAGE_BYTES, languages} from "@/lib/constants";
+import { COUNTRY_LIST, MAX_IMAGE_BYTES, languages, COUNTRY_CODES } from "@/lib/constants";
+import { Dropdown } from "@/features/myprofile/Dropdown";
 
 const SetupAccountStep = () => {
   const router = useRouter();
@@ -27,7 +28,8 @@ const SetupAccountStep = () => {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const [contactNumber, setContactNumber] = useState("");
+  const [countryCode, setCountryCode] = useState("+44");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [company, setCompany] = useState("");
   const [country, setCountry] = useState("");
   const [gender, setGender] = useState<Gender>(Gender.MALE);
@@ -42,6 +44,12 @@ const SetupAccountStep = () => {
   const { mutate: updateUserMutate, isPending: isUpdateUserPending } =
       useMutation({ mutationFn: updateUserFn });
 
+  // Gender options
+  const genderOptions = [
+    { value: Gender.MALE, label: 'Male' },
+    { value: Gender.FEMALE, label: 'Female' }
+  ];
+
   useEffect(() => {
     if (!image) {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -55,11 +63,15 @@ const SetupAccountStep = () => {
 
   const handleUpdateUser = (uploadedImageKey?: string) => {
     if (!id) return;
+    
+    // Combine country code and phone number
+    const fullContact = phoneNumber ? `${countryCode}${phoneNumber}` : "";
+    
     updateUserMutate(
         {
           id,
           profileImage: uploadedImageKey,
-          contactNumber,
+          contactNumber: fullContact,
           company,
           country,
           gender,
@@ -126,11 +138,6 @@ const SetupAccountStep = () => {
     }
   };
 
-  const genderOptions = [
-    { label: 'Male', value: Gender.MALE },
-    { label: 'Female', value: Gender.FEMALE }
-  ];
-
   return (
       <div className="w-screen pb-32 lg:w-auto lg:pb-0">
         <div className="w-full">
@@ -179,31 +186,45 @@ const SetupAccountStep = () => {
             <div className="w-full flex-1 space-y-4 lg:max-w-sm">
               <div className="w-full space-y-1">
                 <Label>Gender</Label>
-                <ComboBox
+                <Dropdown
+                    label=""
+                    value={genderOptions.find(g => g.value === gender)?.label || 'Male'}
+                    options={genderOptions.map(g => g.label)}
                     onChange={(value) => {
                       const selectedGender = genderOptions.find(g => g.label === value)?.value || Gender.MALE;
                       setGender(selectedGender);
                     }}
-                    placeholder="Select your gender"
-                    items={genderOptions}
                 />
               </div>
 
-              <TextInput
-                  id="contactNumber"
-                  label="Contact number"
-                  placeholder="Your contact number"
-                  onChange={(e) => setContactNumber(e.target.value)}
-              />
-
-              {/* If you want company later, just re-enable:
-            <TextInput
-              id="company"
-              label="Hospital/Company"
-              placeholder="Your Hospital or Company"
-              onChange={(e) => setCompany(e.target.value)}
-            />
-            */}
+              <div className="w-full space-y-1">
+                <Label>Contact Number</Label>
+                <div className="grid grid-cols-[140px_1fr] gap-2">
+                  <Dropdown
+                      label=""
+                      value={`${countryCode} ${COUNTRY_CODES.find(cc => cc.code === countryCode)?.country || ''}`}
+                      options={COUNTRY_CODES.map(cc => `${cc.code} ${cc.country}`)}
+                      onChange={(value) => {
+                        if (typeof value === 'string') {
+                          const code = value.split(' ')[0];
+                          setCountryCode(code);
+                        }
+                      }}
+                      maxHeight={isMobile ? "90px" : "100px"}
+                  />
+                  <input
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={(e) => {
+                        // Only allow numbers
+                        const value = e.target.value.replace(/\D/g, '');
+                        setPhoneNumber(value);
+                      }}
+                      placeholder="712345678"
+                      className="px-3 mt-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
+                  />
+                </div>
+              </div>
 
               <div className="w-full space-y-1">
                 <Label>Country</Label>

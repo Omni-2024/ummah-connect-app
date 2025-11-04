@@ -9,8 +9,10 @@ const StudentCountLabel = ({ count }: { count: number }) => {
 
   return (
     <>
-      <span>•</span>{" "}
-      <span>{getLabel()}</span>
+      {/* <span>•</span>{" "} */}
+<div className="w-full">
+  <p className="text-right">{getLabel()}</p>
+</div>
     </>
   );
 };

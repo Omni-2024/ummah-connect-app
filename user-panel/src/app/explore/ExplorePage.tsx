@@ -37,14 +37,26 @@ import {Setting4} from "iconsax-react";
 import Bottombar from "@/features/app/components/Bottombar";
 import Footer from "@/features/app/components/Footer";
 import {useAuthState} from "@/features/auth/context/useAuthState";
+import { useCurrentUser } from "@/lib/hooks/useUser";
+import envs from "@/lib/env";
+
+// Helper function to build avatar URL (same as in Navbar)
+export const buildAvatarUrl = (img?: string | null): string | null => {
+  if (!img) return null;
+  if (/^https?:\/\//i.test(img)) return img;
+  const base = envs.imageBaseUrl;
+  return `${base}/${img}`;
+};
 
 export default function ExplorePage() {
 
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [showBanner, _setShowBanner] = useState(true); // TODO: Show banner based on auth status
+    const [showBanner, _setShowBanner] = useState(true);
     const [totalServices, setTotalServices] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+    const [avatarBroken, setAvatarBroken] = useState(false);
+    
     const {
         limit,
         offset,
@@ -55,18 +67,19 @@ export default function ExplorePage() {
         setOffset,
         setSearchTerm,
         setLimit,
-
     } = useExploreState()
 
-    const {id}=useAuthState()
-
-    const { data: categories } = useCategories();
+    const { id, logout } = useAuthState();
+    const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useCategories();
+    const { data: user } = useCurrentUser();
+    
+    const avatarUrl = buildAvatarUrl(user?.profileImage);
 
     useEffect(() => {
         setOffset((currentPage - 1) * limit)
     }, [currentPage, limit]);
 
-    const serviceParams = { limit, offset,userId:id } as GetAllServiceParams;
+    const serviceParams = { limit, offset, userId: id } as GetAllServiceParams;
 
     if (searchTerm) {
         serviceParams.search = searchTerm;
@@ -88,7 +101,6 @@ export default function ExplorePage() {
 
     const totalPages = Math.ceil(totalServices / limit);
 
-
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= totalPages) {
             window.scrollTo({ top: 0 });
@@ -108,6 +120,11 @@ export default function ExplorePage() {
         if (searchQuery) {
             router.push("/explore");
         }
+    };
+
+    const handleLogout = () => {
+        logout();
+        router.push("/user/login");
     };
 
     const getCourseCardsWithBanner = () => {
@@ -151,7 +168,7 @@ export default function ExplorePage() {
     };
 
     const onTabChange = (tabId: string) => {
-        setCurrentPage(1); // Reset to the first page
+        setCurrentPage(1);
         setProfession(tabId)
         setProfessionName(categories?.find((cat) => cat.id === tabId)?.name || "")
     };
@@ -260,7 +277,6 @@ export default function ExplorePage() {
                                 />
                             </div>
 
-                            {/* TODO: Mobile UI for filter section */}
                             <div className="flex lg:hidden">
                                 <FilterTabs
                                     widthAuto
@@ -305,15 +321,12 @@ export default function ExplorePage() {
                                     </div>
                                 </div>
                             )}
-
-                            {/* add here */}
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-x-4 gap-y-4 lg:gap-y-10">
                             {getCourseCardsWithBanner()}
                         </div>
 
-                        {/* if no courses found, hide pagination */}
                         {services?.data && totalPages > 1 && (
                             <div className="mt-6 flex w-full items-center justify-center lg:mt-14">
                                 <Pagination>
@@ -345,9 +358,15 @@ export default function ExplorePage() {
                     </div>
                 </div>
             </div>
-            <Bottombar/>
+            
+            <Bottombar 
+            user={user}
+            avatarUrl={avatarUrl}
+            avatarBroken={avatarBroken}
+            setAvatarBroken={setAvatarBroken}
+            handleLogout={handleLogout}
+            />
             <Footer />
         </div>
     )
-
 }

@@ -13,6 +13,8 @@ import { HambergerMenu, Notification } from "iconsax-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import ProfileMenuButton from "@/features/app/components/ProfileMenuButton";
+import Button from "@/components/base/Button";
+import { NAV_LOGO_SRC } from "@/lib/constants";
 
 const PrivacyPolicyPage = () => {
   const { isAuthenticated } = useAuthState();
@@ -44,35 +46,37 @@ const PrivacyPolicyPage = () => {
   return (
     <>
       <Navbar />
-      <NavbarMobile
+            <NavbarMobile
+        className="px-4 bg-white border-b border-gray-100 sticky top-0 z-40"
         left={
-          <Link href="/">
+          <Link href="/" className="flex items-center">
             <img
-              alt="Ummah connect Logo"
-              src="/images/logo.svg"
-              className="w-20 cursor-pointer object-contain"
+              alt="Ummah Logo"
+              src={NAV_LOGO_SRC}
+              className="h-8 w-auto cursor-pointer object-contain"
             />
           </Link>
         }
-        // right={
-        //   <div className="flex items-center gap-2">
-        //     {isAuthenticated ? (
-        //       <>
-        //         <ComingSoonToolTip>
-        //           <IconButton size="lg" onClick={handleNotificationButton}>
-        //             <Notification className="text-dark-600" />
-        //           </IconButton>
-        //         </ComingSoonToolTip>
-
-        //         <ProfileMenuButton onClick={handleShowNavDrawer} />
-        //       </>
-        //     ) : (
-        //       <IconButton size="lg" onClick={handleHamBurgerMenu}>
-        //         <HambergerMenu className="text-dark-600" />
-        //       </IconButton>
-        //     )}
-        //   </div>
-        // }
+        right={
+          <div className="flex items-center gap-4">
+            {isAuthenticated ? (
+              <ProfileMenuButton onClick={handleShowNavDrawer} />
+            ) : (
+              <>
+                <Link href="/start-selling">
+                  <Button variant="unstyled" className="text-sm font-medium h-9 ">
+                    Become a Seller
+                  </Button>
+                </Link>
+                <Link href="/user/login">
+                  <Button variant="primary" size="sm" className="text-sm font-medium h-9">
+                    Login
+                  </Button>
+                </Link>
+              </>
+            )}
+          </div>
+        }
       />
 
       {/* TODO:: Temporary disabled until feature available */}

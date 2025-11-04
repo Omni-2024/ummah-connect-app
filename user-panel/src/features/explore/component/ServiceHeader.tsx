@@ -67,9 +67,9 @@ export default function ServiceHeader({
   return (
     <>
       {/* Title and Quick Info Card - Moved before image */}
-      <Card className="p-4 lg:p-0 pt-0 bg-transparent shadow-none border-none mb-4 pb-2 lg:pl-0">
+      <Card className="p-4 lg:p-0 pt-0 bg-transparent shadow-none border-none mb-4 pb-2 pl-0">
         <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-          <div className="flex-1 p-3">
+          <div className="flex-1 p-3 ">
             <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-2">
               {service.title}
             </h1>
@@ -116,17 +116,18 @@ export default function ServiceHeader({
                 
                 <div className="flex items-center gap-3 text-sm mt-1 flex-wrap">
                   <div className="flex items-center gap-1">
-                    <StarFilledIcon className="size-4 text-yellow-500" />
+                    <StarFilledIcon className="size-6 text-yellow-500" />
                     <span className="font-semibold text-gray-900">
                       {service.averageReviewScore}
                     </span>
                     <span className="text-gray-600">
                       ({service.totalReviewCount})
                     </span>
-                  </div>
-                  <StudentCountLabel
+                    <StudentCountLabel
                     count={Number(service.enrollmentCount)}
                   />
+                  </div>
+
                 </div>
               </div>
             </div>

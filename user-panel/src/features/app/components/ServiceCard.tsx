@@ -11,6 +11,7 @@ import {useGeneralUser} from "@/lib/hooks/useUser";
 import Image from "next/image";
 import React from "react";
 import {buildAvatarUrl} from "@/features/app/components/Navbar";
+import { Star } from "lucide-react";
 
 interface Props {
   size?: "sm" | "md";
@@ -72,7 +73,8 @@ const ServiceCard = ({ size = "md", service, className }: Props) => {
                 "size-4": size === "sm",
               })}
           />
-            {service?.averageReviewScore ?? 5} ★
+            {service?.averageReviewScore ?? 5}            
+             <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-yellow-400 text-yellow-400" />
             <span className="">
               ({service?.totalReviewCount ?? 0} reviews)
             </span>
@@ -135,10 +137,10 @@ const ServiceCard = ({ size = "md", service, className }: Props) => {
           "pt-3 text-xs": size === "sm",
         })}
       >
-        <span>
+        {/* <span>
           {formatDurationFromSeconds(service ? service?.duration : 278)} total
           time
-        </span>
+        </span> */}
 
         <StudentCountLabel count={Number(service?.enrollmentCount)} />
       </CardDescription>

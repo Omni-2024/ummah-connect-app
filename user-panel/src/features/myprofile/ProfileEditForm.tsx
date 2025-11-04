@@ -4,9 +4,10 @@ import Image from "next/image"
 import { buildAvatarUrl } from "@/features/app/components/Navbar"
 import { updateUserFn, Gender } from "@/lib/endpoints/userFns"
 import { getAllProfessionsFn, getAllSpecialistByProfessionIdFn } from "@/lib/endpoints/categoryFns"
-import { COUNTRY_LIST, languages } from "@/lib/constants"
+import { COUNTRY_LIST, languages, COUNTRY_CODES } from "@/lib/constants"
 import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns"
 import { Dropdown } from "@/features/myprofile/Dropdown"
+import useIsMobile from "@/lib/hooks/useIsMobile"
 
 interface ProfileEditFormProps {
   user: any
@@ -21,6 +22,8 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
   const [specialists, setSpecialists] = useState<Array<{id: string, name: string}>>([])
   const [selectedProfessionId, setSelectedProfessionId] = useState("")
   const [imageManuallyUpdated, setImageManuallyUpdated] = useState(false)
+  const [countryCode, setCountryCode] = useState("+44")
+  const [phoneNumber, setPhoneNumber] = useState("")
   const [profileData, setProfileData] = useState({
     name: "",
     email: "",
@@ -39,7 +42,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
   const [saveMessage, setSaveMessage] = useState("")
   const [professionMap, setProfessionMap] = useState<{[key: string]: string}>({})
   const [specialistMap, setSpecialistMap] = useState<{[key: string]: string}>({})
-
+  const isMobile = useIsMobile()
   // Gender options
   const genderOptions = [
     { value: Gender.MALE, label: 'Male' },
@@ -96,10 +99,24 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
     if (user) {
       const avatarUrl = buildAvatarUrl(user.profileImage)
       
+      // Parse existing contact number to extract country code and phone number
+      const contact = user.contactNumber || ""
+      if (contact) {
+        // Find matching country code
+        const matchedCode = COUNTRY_CODES.find(cc => contact.startsWith(cc.code))
+        if (matchedCode) {
+          setCountryCode(matchedCode.code)
+          setPhoneNumber(contact.substring(matchedCode.code.length))
+        } else {
+          // If no match, treat entire number as phone number
+          setPhoneNumber(contact)
+        }
+      }
+      
       setProfileData(prev => ({
         name: user.name || "",
         email: user.email || "",
-        contact: user.contactNumber || "",
+        contact: contact,
         profileImage: imageManuallyUpdated ? prev.profileImage : (avatarUrl || ""),
         gender: user.gender || Gender.MALE,
         designation: Array.isArray(user.designations) ? user.designations : [],
@@ -118,6 +135,9 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
 
   const handleSaveProfile = async () => {
     if (!user?.id) return
+
+    // Combine country code and phone number
+    const fullContact = phoneNumber ? `${countryCode}${phoneNumber}` : ""
 
     setIsSavingProfile(true)
     try {
@@ -141,7 +161,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
         designations: profileData.designation,
         interests: profileData.interest,
         profileImage: imageUrl,
-        contactNumber: profileData.contact,
+        contactNumber: fullContact,
         company: profileData.company,
         country: profileData.country,
         specializations: profileData.specialization,
@@ -295,13 +315,33 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Contact Number</label>
-              <input
-                type="tel"
-                value={profileData.contact}
-                onChange={(e) => handleInputChange('contact', e.target.value)}
-                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
-              />
+              <label className="block text-sm font-medium text-gray-700 ">Contact Number</label>
+              <div className="grid grid-cols-[140px_1fr] gap-2">
+                <Dropdown
+                  label=""
+                  value={`${countryCode} ${COUNTRY_CODES.find(cc => cc.code === countryCode)?.country || ''}`}
+                  options={COUNTRY_CODES.map(cc => `${cc.code} ${cc.country}`)}
+                  onChange={(value) => {
+                    if (typeof value === 'string') {
+                      const code = value.split(' ')[0]
+                      setCountryCode(code)
+                    }
+                  }}
+                  maxHeight={isMobile ? "90px" : "100px"} 
+
+                />
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={(e) => {
+                    // Only allow numbers
+                    const value = e.target.value.replace(/\D/g, '')
+                    setPhoneNumber(value)
+                  }}
+                  placeholder="712345678"
+                  className="px-3 mt-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
+                />
+              </div>
             </div>
 
             

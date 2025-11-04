@@ -65,16 +65,16 @@ const ResetPasswordContent = () => {
   }
   //
   return (
-      <main style={{ backgroundImage: "url(/images/textures/1.svg)" }}>
+      <main className="flex flex-col min-h-screen" style={{ backgroundImage: "url(/images/textures/1.svg)" }}>
         <div className="hidden w-full items-center justify-center pt-6 md:flex">
           <img
               alt="logo"
               src="/images/logo.png"
-              className="h-14 object-contain"
+              className="h-32 object-contain"
           />
         </div>
 
-        <div className="container flex min-h-[calc(100vh-5rem)] flex-row items-center justify-center md:py-8">
+        <div className="container flex flex-1 flex-row items-center justify-center md:py-8">
           <AnimatePresence mode="wait">
             <CardWrapper className="flex h-svh min-w-[40vw] flex-col items-center justify-center space-y-6 p-4 sm:h-auto md:p-8">
               <div className="flex size-12 items-center justify-center rounded-full bg-tertiary-50">

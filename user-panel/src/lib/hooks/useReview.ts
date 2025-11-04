@@ -6,7 +6,7 @@ import {
 } from "@/lib/endpoints/reviewFns";
 import { useQuery } from "@tanstack/react-query";
 
-export const useReviewByService = (data: ReviewByServiceIdReq) => {
+export const useReviewByService = (data: ReviewByServiceIdReq, p0: { enabled: boolean; }) => {
   return useQuery({
     queryKey: ["reviewByService", data],
     queryFn: () => getReviewByServiceId(data),

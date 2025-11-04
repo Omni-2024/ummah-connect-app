@@ -1,7 +1,7 @@
 "use client";
 
 import React, { forwardRef, useState, useMemo } from "react";
-import ReviewItem from "./ReviewItem";
+import ReviewCard from "./ReviewCard"; 
 import RatingSummary from "./RatingSummary";
 import Button from "@/components/base/Button";
 import { Review } from "@/lib/endpoints/reviewFns";
@@ -11,7 +11,6 @@ type SortOption = "recent" | "highest" | "lowest";
 
 interface AllReviewsProps {
     reviews?: Review[];
-    showOnDesktop?: boolean;
     totalReviews?: number;
     onLoadMore?: () => void;
     isLoadingMore?: boolean;
@@ -29,7 +28,6 @@ interface AllReviewsProps {
 
 const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({ 
     reviews = [], 
-    showOnDesktop = false,
     totalReviews,
     onLoadMore,
     isLoadingMore = false,
@@ -114,7 +112,7 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
     const currentSortOption = sortOptions.find(opt => opt.value === sortBy);
 
     return (
-        <div id="all-reviews" className={`w-full my-6 ${showOnDesktop ? 'block' : 'block sm:hidden'} p-4 rounded-lg pl-0`} ref={ref}>
+        <div id="all-reviews" className="w-full my-6 p-4 rounded-lg pl-0 pr-0" ref={ref}>
             <h2 className="text-xl text-gray-800 font-semibold mb-3 mt-3">All Reviews</h2>
             
             {ratingBreakdown && totalReviews && totalReviews > 0 && (
@@ -181,9 +179,13 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
             )}
             
             {filteredAndSortedReviews.length > 0 ? (
-                <div className="grid gap-3">
+                <div className="space-y-6"> {/* Changed from grid gap-3 to space-y-6 for consistent spacing */}
                     {filteredAndSortedReviews.map((review) => (
-                        <ReviewItem key={review.id} review={review} searchQuery={searchQuery} />
+                        <ReviewCard
+                            key={review.id}
+                            review={review}
+                            searchQuery={searchQuery} // Pass searchQuery to ReviewCard
+                        />
                     ))}
                 </div>
             ) : (

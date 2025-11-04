@@ -1,10 +1,11 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import Bottombar from "@/features/app/components/Bottombar"
 import Navbar from "@/features/app/components/Navbar"
 import NavbarMobile, { NavbarTitle } from "@/features/app/components/Navbar.mobile"
 import { useCurrentUser } from "@/lib/hooks/useUser"
+import { useAuthState } from "@/features/auth/context/useAuthState"
 import { LoadingSkeleton } from "@/features/myprofile/LoadingSkeleton"
 import ProfileEditForm from "@/features/myprofile/ProfileEditForm"
 import ChangePasswordForm from "@/features/myprofile/ChangePasswordForm"
@@ -14,10 +15,32 @@ import { ArrowLeftIcon } from "@radix-ui/react-icons"
 import { IconButton } from "@radix-ui/themes"
 import { useRouter } from "next/navigation"
 import Footer from "@/features/app/components/Footer"
+import envs from "@/lib/env"
+
+// Helper function to build avatar URL (same as in ExplorePage)
+export const buildAvatarUrl = (img?: string | null): string | null => {
+  if (!img) return null;
+  if (/^https?:\/\//i.test(img)) return img;
+  const base = envs.imageBaseUrl;
+  return `${base}/${img}`;
+};
 
 const MyProfile = () => {
   const { data: user, isFetched, isLoading: userLoading, refetch } = useCurrentUser()
-  const router = useRouter();
+  const { logout } = useAuthState()
+  const router = useRouter()
+  const [avatarBroken, setAvatarBroken] = useState(false)
+
+  const avatarUrl = buildAvatarUrl(user?.profileImage)
+
+  const handleLogout = () => {
+    logout()
+    router.push("/user/login")
+  }
+
+  const handleBack = () => {
+    router.back()
+  }
 
   if (!isFetched || userLoading) {
     return (
@@ -29,12 +52,8 @@ const MyProfile = () => {
     )
   }
 
-  const handleBack = () => {
-    router.back()
-  }
-
   return (
-    <div className="min-h-screen bg-gray-50 ">
+    <div className="min-h-screen bg-gray-50">
       <Navbar />
       <NavbarMobile
         className="px-4"
@@ -54,7 +73,6 @@ const MyProfile = () => {
         </div>
       </div>
 
-
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-0 sm:px-4 lg:px-8 py-0 sm:py-8">
         <div className="space-y-4 sm:space-y-6">
@@ -72,8 +90,14 @@ const MyProfile = () => {
 
       {/* Mobile Bottom Spacing */}
       <div className="h-10 sm:hidden bg-white"></div>
-      <Bottombar />
-      <Footer/>
+      <Bottombar
+        user={user}
+        avatarUrl={avatarUrl}
+        avatarBroken={avatarBroken}
+        setAvatarBroken={setAvatarBroken}
+        handleLogout={handleLogout}
+      />
+      <Footer />
     </div>
   )
 }
