@@ -116,7 +116,7 @@ export default function ServiceHeader({
                 
                 <div className="flex items-center gap-3 text-sm mt-1 flex-wrap">
                   <div className="flex items-center gap-1">
-                    <StarFilledIcon className="size-4 text-yellow-500" />
+                    <StarFilledIcon className="size-6 text-yellow-500" />
                     <span className="font-semibold text-gray-900">
                       {service.averageReviewScore}
                     </span>
