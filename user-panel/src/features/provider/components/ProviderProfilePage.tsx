@@ -114,7 +114,7 @@ export default function ProviderProfilePage({ providerId }: ProviderProfilePageP
         .filter((item) => item !== null)
     }
 
-    return educator.interests.map((id) => ({ id, name: id }))
+    return []
   }
 
   const getCleanedLanguages = (languages: string[]) => {
