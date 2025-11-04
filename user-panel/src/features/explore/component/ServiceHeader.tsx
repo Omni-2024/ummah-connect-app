@@ -123,10 +123,11 @@ export default function ServiceHeader({
                     <span className="text-gray-600">
                       ({service.totalReviewCount})
                     </span>
-                  </div>
-                  <StudentCountLabel
+                    <StudentCountLabel
                     count={Number(service.enrollmentCount)}
                   />
+                  </div>
+
                 </div>
               </div>
             </div>
