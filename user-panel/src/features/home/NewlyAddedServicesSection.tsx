@@ -31,9 +31,10 @@ const ServiceCard = ({ service, router }: { service: Service; router: ReturnType
 
   return (
     <div 
-      onClick={handleCardClick}
-      className="relative bg-white rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 cursor-pointer active:scale-95 sm:active:scale-100"
-    >
+  onClick={handleCardClick}
+  className="relative bg-white lg:w-64  rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer transition-all duration-300 active:scale-95 sm:active:scale-100 hover:shadow-lg"
+>
+
       {/* New badge ribbon */}
       {daysAgo <= 30 && (
         <div className="absolute top-3 sm:top-4 -right-10 sm:-right-12 rotate-45 bg-gradient-to-r from-emerald-500 to-green-600 text-white text-[10px] sm:text-xs font-bold py-0.5 sm:py-1 px-10 sm:px-12 shadow-lg z-10">
@@ -41,7 +42,7 @@ const ServiceCard = ({ service, router }: { service: Service; router: ReturnType
         </div>
       )}
       
-      <div className="relative h-40 sm:h-48 md:h-56 overflow-hidden">
+      <div className="relative h-36 sm:h-44 md:h-52 overflow-hidden">
         <img 
           src={service.coverImageUrl ? buildAvatarUrl(service.coverImageUrl) || `${S3_BUCKET_URL}/images/coverImage.png` : "/images/coverImage.png"}
           alt={service.title} 
