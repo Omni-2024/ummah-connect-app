@@ -177,14 +177,14 @@ export default function HomePage() {
         services={trendingServices}
         loading={servicesLoading}
         error={servicesError}
-        router={router}
+        // router={router}
       />
       {isAuthenticated && (
         <RecommendedServicesSection
           services={recommendedServices}
           loading={servicesLoading}
           error={servicesError}
-          router={router}
+          // router={router}
         />
       )}
       <RecentlySearchedServicesSection router={router} />
