@@ -5,14 +5,6 @@ import { ArrowRightIcon } from "@radix-ui/react-icons"
 import { useRouter } from "next/navigation"
 import useEmblaCarousel from "embla-carousel-react"
 import { Service } from "@/types"
-import { Card, CardDescription, CardTitle } from "@/components/base/Card"
-import { cn } from "@/lib/className"
-import { S3_BUCKET_URL } from "@/lib/constants"
-import StudentCountLabel from "@/components/widgets/StudentCountLabel"
-import { useGeneralUser } from "@/lib/hooks/useUser"
-import Image from "next/image"
-import { buildAvatarUrl } from "@/features/app/components/Navbar"
-import { formatDurationFromSeconds } from "@/lib/helpers/formatUtils"
 import { SkeletonServicesCard } from "@/features/explore/component/SkeletonCourseCard"
 import ServiceCard from "@/features/app/components/ServiceCard"
 
@@ -20,123 +12,14 @@ interface RecommendedServicesSectionProps {
   services: Service[]
   loading: boolean
   error: Error | null
-  router: ReturnType<typeof useRouter>
-}
-
-interface ServiceCardProps {
-  size?: "sm" | "md"
-  service?: Service
-  className?: string
-}
-
-const ServiceCardComponent = ({ size = "md", service, className }: ServiceCardProps) => {
-  const router = useRouter()
-  const { data: educator } = useGeneralUser(service ? service?.providerId : "1")
-
-  const handleCardClick = () => {
-    if (service) {
-      router.push(`/service/${service.slug}`)
-    } else {
-      router.push(`/course/n-a`)
-    }
-  }
-
-  return (
-    <Card
-      onClick={handleCardClick}
-      className={cn(
-        "flex h-full w-full min-w-80 max-w-[25rem] cursor-pointer select-none flex-col space-y-2 overflow-hidden rounded-3xl p-4 transition-colors duration-300 ease-in-out hover:border-primary-100 hover:bg-primary-50/60 active:border-primary-300 lg:space-y-3.5",
-        {
-          "space-y-3 p-3.5 lg:min-w-72 lg:max-w-72": size === "sm",
-        },
-        className
-      )}
-    >
-      <img
-        alt="cover"
-        src={
-          service?.coverImageUrl
-            ? buildAvatarUrl(service.coverImageUrl) || `${S3_BUCKET_URL}/images/coverImage.png`
-            : "/images/coverImage.png"
-        }
-        className={cn("h-44 w-full rounded-2xl object-cover", {
-          "h-36": size === "sm",
-        })}
-      />
-
-      <div
-        className={cn("flex items-center gap-2.5 text-sm font-semibold", {
-          "gap-1.5 text-xs": size === "sm",
-        })}
-      >
-        <span
-          className={cn("flex items-center gap-2", {
-            "gap-1": size === "sm",
-          })}
-        >
-          <img
-            alt="trophy"
-            src="/icons/filled/trophy.svg"
-            className={cn("size-5 object-cover", {
-              "size-4": size === "sm",
-            })}
-          />
-          {service?.averageReviewScore ?? 5} ★
-          <span>({service?.totalReviewCount ?? 0} reviews)</span>
-        </span>
-      </div>
-
-      <div
-        className={cn("space-y-1", {
-          "space-y-0.5": size === "sm",
-        })}
-      >
-        <CardTitle
-          className={cn("line-clamp-2 text-base leading-tight lg:text-lg", {
-            "text-[.92rem] font-medium leading-tight": size === "sm",
-          })}
-        >
-          {service
-            ? service?.title
-            : "Vivamus ex augue tempus id diam at, dictum cursus metus"}
-        </CardTitle>
-
-        <CardDescription
-          className={cn("line-clamp-1 font-normal", {
-            "text-xs": size === "sm",
-          })}
-        >
-          {educator?.name || "N/A"}
-        </CardDescription>
-      </div>
-
-      <CardDescription
-        className={cn("line-clamp-3", {
-          "text-xs": size === "sm",
-        })}
-      >
-        {service
-          ? service?.tagline
-          : "Praesent non orci eu augue egestas lobortis. Fusce dapibus, urna non dignissim ultrices, libero dolor porta tellus, eget tincidunt mi."}
-      </CardDescription>
-
-      <CardDescription
-        className={cn("!mt-auto flex items-center gap-2 pt-3", {
-          "pt-3 text-xs": size === "sm",
-        })}
-      >
-        <StudentCountLabel count={Number(service?.enrollmentCount)} />
-      </CardDescription>
-    </Card>
-  )
 }
 
 function RecommendedServicesSection({
   services,
   loading,
   error,
-  router,
 }: RecommendedServicesSectionProps) {
+  const router = useRouter()
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     slidesToScroll: 1,
@@ -145,22 +28,17 @@ function RecommendedServicesSection({
       "(min-width: 1024px)": { slidesToScroll: 3 },
     },
   })
-
   const [selectedIndex, setSelectedIndex] = React.useState(0)
-
   const scrollPrev = React.useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev()
   }, [emblaApi])
-
   const scrollNext = React.useCallback(() => {
     if (emblaApi) emblaApi.scrollNext()
   }, [emblaApi])
-
   const onSelect = React.useCallback(() => {
     if (!emblaApi) return
     setSelectedIndex(emblaApi.selectedScrollSnap())
   }, [emblaApi])
-
   React.useEffect(() => {
     if (!emblaApi) return
     onSelect()
@@ -169,7 +47,6 @@ function RecommendedServicesSection({
       emblaApi.off("select", onSelect)
     }
   }, [emblaApi, onSelect])
-
   if (loading) {
     return (
       <section className="py-8 sm:py-10 lg:py-16 bg-white">
@@ -183,20 +60,19 @@ function RecommendedServicesSection({
           </div>
           <div className="flex flex-col sm:flex-row sm:gap-6 lg:gap-8 justify-center">
             <div className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] mb-6 sm:mb-0">
-              <SkeletonServicesCard />
+              <SkeletonServicesCard size="sm" />
             </div>
             <div className="hidden sm:block flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] mb-6 lg:mb-0">
-              <SkeletonServicesCard />
+              <SkeletonServicesCard size="sm" />
             </div>
             <div className="hidden lg:block flex-[0_0_100%] lg:flex-[0_0_calc(33.333%-16px)]">
-              <SkeletonServicesCard />
+              <SkeletonServicesCard size="sm" />
             </div>
           </div>
         </div>
       </section>
     )
   }
-
   if (error) {
     return (
       <section className="py-10 sm:py-16 text-center px-4">
@@ -204,11 +80,9 @@ function RecommendedServicesSection({
       </section>
     )
   }
-
   if (!services || services.length === 0) {
     return null
   }
-
   return (
     <section className="py-8 sm:py-10 lg:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -221,7 +95,6 @@ function RecommendedServicesSection({
             Services tailored to your interests and professional goals
           </p>
         </div>
-
         <div className="relative">
           {services.length > 1 && (
             <>
@@ -245,17 +118,15 @@ function RecommendedServicesSection({
               </button>
             </>
           )}
-
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-4 sm:gap-6">
               {services.map((service) => (
                 <div key={service.id} className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)]">
-                  <ServiceCard service={service} size="md" />
+                  <ServiceCard service={service} size="sm" variant="default" />
                 </div>
               ))}
             </div>
           </div>
-
           {services.length > 1 && (
             <div className="flex justify-center gap-2 mt-6 md:hidden">
               {services.map((_, index) => (
@@ -272,7 +143,6 @@ function RecommendedServicesSection({
               ))}
             </div>
           )}
-
           {services.length > 1 && (
             <div className="flex justify-center items-center gap-2 mt-4 text-xs sm:text-sm text-gray-500 md:hidden">
               <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -285,7 +155,6 @@ function RecommendedServicesSection({
             </div>
           )}
         </div>
-
         {/* <div className="text-center mt-12">
           <button
             onClick={() => router.push("/explore")}
