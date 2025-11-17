@@ -15,7 +15,7 @@ import {
 import { Public } from '../auth/decorator/public.decorator';
 import { Roles } from '../auth/decorator/role.decorator';
 import { UserRole } from '../users/entities/abstract.user.entity';
-import { CreateReviewDto, GetReviewResponseDto } from './dto/review.dto';
+import { CreateReviewDto, GetReviewResponseDto, UpdateReviewDto } from './dto/review.dto';
 import { ReviewService } from './review.service';
 
 @Controller('review')
@@ -68,6 +68,18 @@ export class ReviewController {
   @Get(':id')
   async getReviewById(@Param('id') id: string) {
     return await this.reviewService.getReviewById(id);
+  }
+
+  @Patch(':id')
+  @Roles([UserRole.USER, UserRole.BUSINESS_USER, UserRole.BUSINESS_ADMIN])
+  async update(
+    @Param('id') id: string,
+    @Body() updateReviewDto: Omit<UpdateReviewDto, 'id'>,
+  ) {
+    return await this.reviewService.updateReview({
+      id,
+      ...updateReviewDto,
+    });
   }
 
   @Delete(':id')
