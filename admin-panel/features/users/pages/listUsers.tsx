@@ -15,6 +15,7 @@ import { deleteUserFn } from "@/lib/endpoints/usersFns";
 import { UserEditPopup } from "@/features/app/components/EditUserPopup";
 import Request from "@/lib/http";
 import { getProfessionsFn } from "@/lib/endpoints/categoriesFns";
+import { Users } from "lucide-react";
 
 type ListUsersProps = {
   search: string;
