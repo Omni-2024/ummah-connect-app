@@ -4,19 +4,20 @@ import {
     DialogContent,
     DialogFooter,
     DialogHeader,
+    DialogTitle,
 } from "@/components/base/Dialog";
+
 import Spinner from "@/components/base/Spinner";
 import LoadingError from "@/components/widget/loadingError";
+
 import { useGeneralUser } from "@/lib/hooks/useGeneralUsers";
 import Image from "next/image";
 import { useAvatarUrl } from "@/hooks/userAvatarUrl";
+
 import { useEffect, useState, MouseEventHandler } from "react";
 import { Teacher, TickCircle, CloseCircle } from "iconsax-react";
 
-import { getProfessionsFn, getProfessionByIdFn } from "@/lib/endpoints/categoriesFns";
-import { getCategoriesFn } from "@/lib/endpoints/categoriesFns";
-
-// For specialists:
+import { getProfessionsFn } from "@/lib/endpoints/categoriesFns";
 import Request from "@/lib/http";
 
 const ViewUser = (props: {
@@ -27,13 +28,20 @@ const ViewUser = (props: {
     onDelete: MouseEventHandler<HTMLButtonElement> | undefined;
 }) => {
 
+    /** USER DATA */
     const { data: userData, isLoading, isError, error, refetch } =
         useGeneralUser(props.id);
 
+    /** AVATAR HOOK — valid usage */
     const [imageError, setImageError] = useState(false);
     const avatarSrc = useAvatarUrl(userData?.profileImage);
 
-    // State for categories
+    /** RESET IMAGE ERROR WHEN USER CHANGES */
+    useEffect(() => {
+        setImageError(false);
+    }, [userData?.profileImage, props.open]);
+
+    /** CATEGORY DATA */
     const [professions, setProfessions] = useState<any[]>([]);
     const [specialists, setSpecialists] = useState<any[]>([]);
     const [loadingCategories, setLoadingCategories] = useState(true);
@@ -42,14 +50,13 @@ const ViewUser = (props: {
         loadCategoryData();
     }, []);
 
-    /** Load professions + specialists */
     const loadCategoryData = async () => {
         try {
             const profRes = await getProfessionsFn();
             setProfessions(profRes);
 
-            // Fetch specialists for each profession
             const allSpecs: any[] = [];
+
             for (const p of profRes) {
                 try {
                     const res = await Request<any[]>({
@@ -60,7 +67,7 @@ const ViewUser = (props: {
                     if (res?.data) {
                         allSpecs.push(...res.data);
                     }
-                } catch (error) {
+                } catch (err) {
                     console.warn("Failed to load specialists for:", p.id);
                 }
             }
@@ -71,27 +78,33 @@ const ViewUser = (props: {
         }
     };
 
-    const formatDate = (value: any) =>
-        value ? new Date(value).toLocaleDateString() : "—";
+    const formatDate = (v: any) =>
+        v ? new Date(v).toLocaleDateString() : "—";
 
-    /** Convert ID → Profession Name */
     const getProfessionName = (id: string) =>
         professions.find((p) => p.id === id)?.name || id;
 
-    /** Convert ID → Specialist Name */
     const getSpecialistName = (id: string) =>
         specialists.find((s) => s.id === id)?.name || id;
 
     return (
         <Dialog open={props.open} onOpenChange={props.onClose}>
-            <DialogContent className="w-[92%] max-w-[750px] rounded-2xl shadow-xl !p-0 bg-white max-h-[85vh] flex flex-col">
+            <DialogContent
+                className="w-[92%] max-w-[750px] rounded-2xl shadow-xl !p-0 bg-white max-h-[85vh] flex flex-col"
+            >
+
+                {/* REQUIRED TO FIX ACCESSIBILITY ERROR */}
+                <DialogTitle className="sr-only">
+                    View User Details
+                </DialogTitle>
 
                 {/* HEADER */}
-                <DialogHeader className="p-6 flex flex-col gap-4 border-b hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white group hover:shadow-sm transition-all rounded-t-2xl">
+                <DialogHeader className="p-6 flex flex-col gap-4 border-b bg-gradient-to-r from-slate-50 to-white rounded-t-2xl">
+
                     <div className="flex items-center gap-6">
 
-                        {/* Avatar */}
-                        {!imageError ? (
+                        {/* AVATAR */}
+                        {!imageError && avatarSrc ? (
                             <Image
                                 src={avatarSrc}
                                 height={120}
@@ -107,7 +120,7 @@ const ViewUser = (props: {
                             </div>
                         )}
 
-                        {/* Right info */}
+                        {/* RIGHT SIDE INFO */}
                         <div className="flex flex-col gap-2">
                             <div className="text-2xl font-bold text-gray-900">
                                 {userData?.name}
@@ -143,26 +156,27 @@ const ViewUser = (props: {
 
                 {/* BODY */}
                 <div className="p-5 flex-1 overflow-y-auto bg-white">
+
                     {isError ? (
                         <LoadingError error={error.message} reload={refetch} />
                     ) : isLoading || loadingCategories ? (
-                        <div className="flex justify-center items-center py-20">
+                        <div className="flex justify-center py-20">
                             <Spinner size={40} />
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                             {/* GENDER */}
-                            <div className="border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white p-4 rounded-xl group hover:shadow-sm transition-all">
-                                <p className="text-gray-500 text-xs font-medium">Gender</p>
+                            <div className="border p-4 rounded-xl bg-gradient-to-r from-slate-50 to-white">
+                                <p className="text-xs text-gray-500">Gender</p>
                                 <p className="mt-1 font-semibold text-gray-900">
                                     {userData?.gender || "—"}
                                 </p>
                             </div>
 
                             {/* SAME GENDER ALLOWED */}
-                            <div className="border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white p-4 rounded-xl group hover:shadow-sm transition-all">
-                                <p className="text-gray-500 text-xs font-medium">Same Gender Allowed</p>
+                            <div className="border p-4 rounded-xl bg-gradient-to-r from-slate-50 to-white">
+                                <p className="text-xs text-gray-500">Same Gender Allowed</p>
                                 {userData?.sameGenderAllowed ? (
                                     <span className="inline-flex items-center gap-2 mt-2 text-sm font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">
                                         <TickCircle size={18} color="#16a34a" /> Allowed
@@ -175,35 +189,34 @@ const ViewUser = (props: {
                             </div>
 
                             {/* DESIGNATIONS */}
-                            <div className="border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white p-4 rounded-xl group hover:shadow-sm transition-all">
-                                <p className="text-gray-500 text-xs font-medium">Designations</p>
+                            <div className="border p-4 rounded-xl bg-gradient-to-r from-slate-50 to-white">
+                                <p className="text-xs text-gray-500">Designations</p>
                                 <p className="mt-1 font-semibold text-gray-900">
                                     {userData?.designations?.length
                                         ? userData.designations
-                                            .map((id: string) => getProfessionName(id))
-                                            .join(", ")
+                                              .map((id: string) => getProfessionName(id))
+                                              .join(", ")
                                         : "—"}
                                 </p>
                             </div>
 
                             {/* INTERESTS */}
-                            <div className="border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white p-4 rounded-xl group hover:shadow-sm transition-all">
-                                <p className="text-gray-500 text-xs font-medium">Interests</p>
+                            <div className="border p-4 rounded-xl bg-gradient-to-r from-slate-50 to-white">
+                                <p className="text-xs text-gray-500">Interests</p>
                                 <p className="mt-1 font-semibold text-gray-900">
                                     {userData?.interests?.length
                                         ? userData.interests
-                                            .map((id: string) => getSpecialistName(id))
-                                            .join(", ")
+                                              .map((id: string) => getSpecialistName(id))
+                                              .join(", ")
                                         : "—"}
                                 </p>
                             </div>
-
                         </div>
                     )}
                 </div>
 
                 {/* FOOTER */}
-                <DialogFooter className="p-5 flex justify-end">
+                <DialogFooter className="p-5">
                     <Button variant="secondary" onClick={props.onDelete}>
                         Remove User
                     </Button>
