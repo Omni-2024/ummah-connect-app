@@ -72,14 +72,12 @@ export const ReviewSection: React.FC<ReviewSectionProps> = ({ serviceId, status 
     try {
       let updatedReview: Review
       if (hasSubmittedReview && submittedReview) {
-        // Update existing review
         updatedReview = await updateReview({
           id: submittedReview.id,
           description: reviewText,
           stars: rating,
         })
       } else {
-        // Create new review
         updatedReview = await createReview({
           serviceId,
           userId: user.id,
@@ -118,7 +116,6 @@ export const ReviewSection: React.FC<ReviewSectionProps> = ({ serviceId, status 
     }
   }
 
-  // Only show review section for completed purchases
   if (status !== "succeeded") {
     return null
   }
@@ -189,16 +186,13 @@ export const ReviewSection: React.FC<ReviewSectionProps> = ({ serviceId, status 
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               placeholder="Share your experience with this service..."
-              rows={4}
+              rows={6}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none text-sm"
-              maxLength={500}
+              // maxLength removed → unlimited length
             />
-            <div className="flex justify-between items-center mt-1">
+            <div className="flex justify-end items-center mt-1">
               <span className="text-xs text-gray-500">
-                {reviewText.length}/500 characters
-              </span>
-              <span className="text-xs text-gray-500">
-                Minimum 10 characters
+                Minimum 10 characters ({reviewText.length} written)
               </span>
             </div>
           </div>
