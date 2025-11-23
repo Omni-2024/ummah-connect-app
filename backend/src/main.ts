@@ -23,6 +23,8 @@ async function bootstrap() {
     optionsSuccessStatus: 204,
   });
 
-  await app.listen(process.env.PORT ? parseInt(process.env.PORT, 10) : 3035);
-}
+  await app.listen(
+    process.env.PORT ? parseInt(process.env.PORT, 10) : 3035,
+    '0.0.0.0'
+  );}
 bootstrap();
