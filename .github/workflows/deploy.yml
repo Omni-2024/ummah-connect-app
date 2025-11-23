@@ -1,0 +1,44 @@
+name: Deploy UmmahConnect
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Ensure Docker is running
+        run: |
+          systemctl start docker
+          systemctl enable docker
+
+      - name: Sync repo to deployment directory (keep .env files)
+        run: |
+          REPO_DIR="$PWD"
+          DEPLOY_DIR="/home/deploy/ummah-connect-app"
+
+          mkdir -p "$DEPLOY_DIR"
+
+          rsync -av \
+            --exclude 'backend/.env' \
+            --exclude 'user-panel/.env' \
+            --exclude 'admin-panel/.env' \
+            "$REPO_DIR"/ "$DEPLOY_DIR"/
+
+      - name: Rebuild and restart Docker containers
+        run: |
+          cd /home/deploy/ummah-connect-app
+          docker compose down
+          docker compose up -d --build
+          docker compose ps
+
+      - name: Reload Nginx
+        run: |
+          nginx -t
+          systemctl reload nginx
