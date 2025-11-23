@@ -21,7 +21,7 @@ services:
       context: ./backend
     container_name: ummah-backend
     ports:
-      - "3035:3035"
+      - "3035:3000"
 #    depends_on:
 #      - postgres
     env_file:
@@ -35,7 +35,7 @@ services:
       context: ./user-panel
     container_name: ummah-frontend
     ports:
-      - "3000:3035"
+      - "3000:3000"
     depends_on:
       - backend
     env_file:
@@ -47,7 +47,7 @@ services:
       context: ./admin-panel
     container_name: ummah-admin-panel
     ports:
-      - "3001:3035"
+      - "3001:3000"
     depends_on:
       - backend
     env_file:
