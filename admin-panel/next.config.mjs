@@ -2,7 +2,7 @@
 const nextConfig = {
   images: {
     domains: [
-      "pub-08208f7576844a018495f0edfac47490.r2.dev",
+      "pub-0645568747e54fed9de457bf607a6ddd.r2.dev",
       "lh3.googleusercontent.com"
     ],
   },
