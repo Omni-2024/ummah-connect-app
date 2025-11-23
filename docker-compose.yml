@@ -25,7 +25,7 @@ services:
 #    depends_on:
 #      - postgres
     env_file:
-      - .env
+      - ./backend/.env
     environment:
       DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require"
     restart: always
@@ -39,7 +39,7 @@ services:
     depends_on:
       - backend
     env_file:
-      - .env
+      - ./user-panel/.env
     restart: always
 
   admin-panel:
@@ -51,7 +51,7 @@ services:
     depends_on:
       - backend
     env_file:
-      - .env
+      - ./admin-panel/.env
     restart: always
 
 volumes:
