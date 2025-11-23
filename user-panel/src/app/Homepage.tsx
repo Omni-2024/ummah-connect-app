@@ -26,14 +26,8 @@ import { useCurrentUser } from "@/lib/hooks/useUser"
 import envs from "@/lib/env"
 import Button from "@/components/base/Button"
 import { ArrowRightIcon } from "@radix-ui/react-icons"
+import {buildAvatarUrl} from "@/lib/buildAvatarUrl";
 
-// Helper function to build avatar URL (same as in ExplorePage)
-export const buildAvatarUrl = (img?: string | null): string | null => {
-  if (!img) return null
-  if (/^https?:\/\//i.test(img)) return img
-  const base = envs.imageBaseUrl
-  return `${base}/${img}`
-}
 
 export default function HomePage() {
   const { isAuthenticated, id: userId, logout } = useAuthState()

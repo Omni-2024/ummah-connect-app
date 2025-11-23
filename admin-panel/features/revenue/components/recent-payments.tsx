@@ -31,7 +31,7 @@ export default function RecentPayments({ payments }: RecentPaymentsProps) {
               <tbody>
                 {payments.map((p) => (
                   <tr key={p.paymentIntent} className="border-b last:border-0">
-                    <td className="p-2">{p.courseName ?? "N/A"}</td>
+                    <td className="p-2">{p.serviceName ?? "N/A"}</td>
                     <td className="p-2">${(p.amount / 100).toFixed(2)}</td>
                     <td className="p-2">{p.paymentMethod}</td>
                     <td className="p-2 capitalize">{p.status}</td>

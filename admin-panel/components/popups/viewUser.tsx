@@ -177,7 +177,7 @@ const ViewUser = (props: {
                             {/* SAME GENDER ALLOWED */}
                             <div className="border p-4 rounded-xl bg-gradient-to-r from-slate-50 to-white">
                                 <p className="text-xs text-gray-500">Same Gender Allowed</p>
-                                {userData?.sameGenderAllowed ? (
+                                {userData?.sameGenderAllow ? (
                                     <span className="inline-flex items-center gap-2 mt-2 text-sm font-semibold text-green-700 bg-green-100 px-3 py-1 rounded-full">
                                         <TickCircle size={18} color="#16a34a" /> Allowed
                                     </span>
