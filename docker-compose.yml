@@ -1,21 +1,21 @@
 version: "3.8"
 
 services:
-  # Postgres service
-  postgres:
-    image: postgres:14
-    container_name: ummah-postgres
-    restart: always
-    environment:
-      POSTGRES_DB: ummah-connect
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: ummah-postgres
-    ports:
-      - "1000:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+#  postgres:
+#    image: postgres:14
+#    container_name: ummah-postgres
+#    restart: always
+#    env_file:
+#      - .env
+#    environment:
+#       POSTGRES_DB: ${POSTGRES_DB}
+#       POSTGRES_USER: ${POSTGRES_USER}
+#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#    ports:
+#      - "1000:5432"
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
 
-  # Backend service (NestJS)
   backend:
     build:
       context: ./backend
@@ -24,30 +24,34 @@ services:
       - "3035:3000"
     depends_on:
       - postgres
+    env_file:
+      - .env
     environment:
-      DATABASE_URL: postgres://admin:ummah-postgres@postgres:5432/ummah-connect
+      DATABASE_URL: "postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require"
     restart: always
 
-  # Frontend service (Next.js - User Panel)
   user-panel:
     build:
       context: ./user-panel
     container_name: ummah-frontend
     ports:
-      - "3001:3000"
+      - "3000:3000"
     depends_on:
       - backend
+    env_file:
+      - .env
     restart: always
 
-  # Admin Panel service (Next.js)
   admin-panel:
     build:
       context: ./admin-panel
     container_name: ummah-admin-panel
     ports:
-      - "3002:3000"
+      - "3001:3001"
     depends_on:
       - backend
+    env_file:
+      - .env
     restart: always
 
 volumes:
