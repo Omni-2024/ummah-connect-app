@@ -20,7 +20,7 @@ jobs:
 
       - name: Sync repo to deployment directory (keep .env files)
         run: |
-          REPO_DIR="$PWD"
+          REPO_DIR="/root/$PWD"
           DEPLOY_DIR="/root/home/deploy/ummah-connect-app"
 
           mkdir -p "$DEPLOY_DIR"
