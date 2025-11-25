@@ -26,6 +26,7 @@ export interface UserData {
   active: boolean;
   verified: boolean;
   stripeId: string | null;
+  stripeConnectAccountId:string | null;
   designations: string[];
   interests: string[];
   profileImage: string | null;

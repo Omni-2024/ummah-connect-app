@@ -186,7 +186,7 @@ export class UsersService {
       };
     }
 
-    if (role === UserRole.BUSINESS_USER && !user.stripeConnectAccountId) {
+    if (role === UserRole.BUSINESS_ADMIN && !user.stripeConnectAccountId) {
       const { stripeConnectAccountId } =
         await this.stripeService.createConnectedAccount(user.id);
 
