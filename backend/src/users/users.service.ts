@@ -21,6 +21,7 @@ export class UsersService {
     private readonly userRepo: UserRepository,
     private readonly configService: ConfigService,
     private readonly streamService: StreamService,
+    private readonly stripeService: StripeService,
   ) {}
 
   async findAll({ limit, offset, query }: SearchUserDto) {
@@ -163,17 +164,41 @@ export class UsersService {
     }
   }
 
+  // async changeRole(id: string, role: UserRole) {
+  //   const user = await this.userRepo.changeRole(id, role);
+  //     if (!user) {
+  //       return {
+  //         status: HttpStatus.NOT_FOUND,
+  //         error: 'Provider not found',
+  //       };
+  //     }
+  //   return {
+  //     status: HttpStatus.OK,
+  //   };
+  // }
+
   async changeRole(id: string, role: UserRole) {
-    const user = await this.userRepo.changeRole(id, role);
-      if (!user) {
-        return {
-          status: HttpStatus.NOT_FOUND,
-          error: 'Provider not found',
-        };
+    const user = await this.userRepo.findOneById(id);
+    if (!user) {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        error: 'Provider not found',
+      };
+    }
+
+    if (role === UserRole.BUSINESS_USER && !user.stripeConnectAccountId) {
+      const { stripeConnectAccountId } =
+        await this.stripeService.createConnectedAccount(user.id);
+
+      if (stripeConnectAccountId) {
+        user.stripeConnectAccountId = stripeConnectAccountId;
       }
-    return {
-      status: HttpStatus.OK,
-    };
+    }
+
+    user.role = role;
+    await this.userRepo.save(user);
+
+    return { status: HttpStatus.OK };
   }
 
   async changePassword(

@@ -6,14 +6,12 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
 import { PaginatedRequestDto } from './dto/base.dto';
-import { StripeService } from '../common/stripe/stripe.service';
 
 @Injectable()
 export class UserRepository {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-    private readonly stripeService: StripeService,
   ) {}
 
   async save(user: UserEntity): Promise<UserEntity> {
@@ -238,12 +236,6 @@ export class UserRepository {
       const user = await this.userRepository.findOneBy({ id });
       if (!user) {
         throw new NotFoundException('Provider not found');
-      }
-      if (role === UserRole.BUSINESS_USER && !user.stripeConnectAccountId){
-        const stripeConnectAccount = await this.stripeService.createConnectedAccount(user.id)
-        if (!stripeConnectAccount.stripeConnectAccountId) {
-          user.stripeConnectAccountId=stripeConnectAccount.stripeConnectAccountId
-        }
       }
       user.role = role;
       return await this.userRepository.save(user);

@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  forwardRef,
   HttpStatus,
+  Inject,
   Injectable,
 } from '@nestjs/common';
 
@@ -31,6 +33,7 @@ export class StripeService {
 
   constructor(
     private readonly configService: ConfigService,
+    @Inject(forwardRef(() => UsersService))
     private readonly userService: UsersService,
     private readonly userRepo: UserRepository,
     private readonly serviceRepo: ServiceRepository,
