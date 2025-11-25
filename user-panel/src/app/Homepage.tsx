@@ -116,6 +116,12 @@ export default function HomePage() {
       .slice(0, 10) // Limit to 10 services for performance
   }, [servicesData])
 
+  // Get all published services for recently viewed section
+  const allServices = React.useMemo(() => {
+    if (!servicesData?.data) return []
+    return servicesData.data.filter(s => s.isPublished && !s.isArchived)
+  }, [servicesData])
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -181,7 +187,11 @@ export default function HomePage() {
           // router={router}
         />
       )}
-      <RecentlySearchedServicesSection router={router} />
+      {/* Pass all services to RecentlySearchedServicesSection */}
+      <RecentlySearchedServicesSection 
+        router={router} 
+        allServices={allServices}
+      />
       <FeaturesSection />
       <IslamicValuesSection />
       <IslamicLearningPathsSection />
