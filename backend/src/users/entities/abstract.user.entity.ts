@@ -38,6 +38,7 @@ export declare abstract class AbstractUserEntity extends AbstractBaseEntity {
   active: boolean;
   verified: boolean;
   stripeId: string;
+  stripeConnectAccountId: string;
   designations: string[];
   interests: string[];
   profileImage: string;

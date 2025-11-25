@@ -24,6 +24,24 @@ export class StripeController {
     return await this.stripeService.createCustomer(createCustomer);
   }
 
+  @Roles([UserRole.BUSINESS_ADMIN])
+  @Post('create-connected-account')
+  async createConnectedAccount(@Body() body: { providerId: string }) {
+    return await this.stripeService.createConnectedAccount(body.providerId);
+  }
+
+  @Roles([UserRole.BUSINESS_ADMIN])
+  @Get('onboarding-link')
+  async generateOnboardingLink(@Query('accountId') accountId: string) {
+    return await this.stripeService.generateOnboardingLink(accountId);
+  }
+
+  @Roles([UserRole.BUSINESS_ADMIN])
+  @Get('connected-account-status')
+  async checkConnectedAccountStatus(@Query('accountId') accountId: string) {
+    return await this.stripeService.checkConnectedAccountStatus(accountId);
+  }
+
   @Roles([UserRole.USER, UserRole.BUSINESS_ADMIN])
   @Post('create-checkout-session')
   async createCheckout(@Body() createCheckoutDto: {

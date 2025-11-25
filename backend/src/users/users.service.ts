@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { ConfigService } from '@nestjs/config';
 import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
@@ -6,9 +11,7 @@ import { UserEntity } from './entities/user.entity';
 import { UserRole } from './entities/abstract.user.entity';
 import { ChangePasswordDtoNoOTP } from './dto/change-password-noOtp';
 import { StreamService } from '../common/getStream/stream.service';
-import { CreateCustomerDto } from '../common/stripe/dto/strip.dto';
 import { StripeService } from '../common/stripe/stripe.service';
-
 
 @Injectable()
 export class UsersService {
@@ -18,14 +21,9 @@ export class UsersService {
     private readonly userRepo: UserRepository,
     private readonly configService: ConfigService,
     private readonly streamService: StreamService,
-    // private readonly stripeService: StripeService,
   ) {}
 
-  async findAll({
-                  limit,
-                  offset,
-                  query,
-                }: SearchUserDto) {
+  async findAll({ limit, offset, query }: SearchUserDto) {
     try {
       let users, total;
       if (query) {
@@ -51,7 +49,8 @@ export class UsersService {
         total
       ) {
         return {
-         data: users, meta: { total, limit, offset  }
+          data: users,
+          meta: { total, limit, offset },
         };
       }
       return { status: HttpStatus.NOT_FOUND, error: 'No users found' };
@@ -59,7 +58,6 @@ export class UsersService {
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
     }
   }
-
 
   async retrieveUser(id: string) {
     const user = await this.userRepo.findOneById(id);
@@ -71,15 +69,16 @@ export class UsersService {
     }
 
     await this.userRepo.retrieveUser(user);
-    return user
+    return user;
   }
 
-
-  async updateUser(
-    updateUserDto: UpdateUserDto,
-  ){
+  async updateUser(updateUserDto: UpdateUserDto) {
     const user = await this.userRepo.updateUser(updateUserDto);
-    await this.streamService.upsertUser(user.id, user.name ?? user.email, user.role);
+    await this.streamService.upsertUser(
+      user.id,
+      user.name ?? user.email,
+      user.role,
+    );
 
     // if (user.stripeCustomerId==null){
     //   const customer: CreateCustomerDto = {
@@ -99,7 +98,7 @@ export class UsersService {
 
     // TODO: Send email to user
 
-    return user
+    return user;
   }
 
   async getUser(id: string) {
@@ -110,12 +109,10 @@ export class UsersService {
         error: 'User not found',
       };
     }
-    return user
+    return user;
   }
 
-  async deleteCurrentUser(
-    id: string,
-  ) {
+  async deleteCurrentUser(id: string) {
     try {
       const user = await this.userRepo.findOneById(id);
       if (!user) {
@@ -132,8 +129,7 @@ export class UsersService {
     }
   }
 
-
-  async deleteUser(id: string){
+  async deleteUser(id: string) {
     const user = await this.userRepo.findOneById(id);
     if (!user) {
       return {
@@ -143,13 +139,10 @@ export class UsersService {
     }
 
     await this.userRepo.deleteUser(user);
-    return user
+    return user;
   }
 
-  async changeStatus(
-    id: string,
-    status: boolean,
-  ) {
+  async changeStatus(id: string, status: boolean) {
     try {
       const user = await this.userRepo.changeStatus(id, status);
 
@@ -170,45 +163,38 @@ export class UsersService {
     }
   }
 
-  async changeRole(
-    id: string,
-    role: UserRole,
-  ) {
-      const user = await this.userRepo.changeRole(id, role);
-
+  async changeRole(id: string, role: UserRole) {
+    const user = await this.userRepo.changeRole(id, role);
       if (!user) {
         return {
           status: HttpStatus.NOT_FOUND,
           error: 'Provider not found',
         };
       }
-      return {
-        status: HttpStatus.OK,
-      };
+    return {
+      status: HttpStatus.OK,
+    };
   }
 
+  async changePassword(
+    dto: ChangePasswordDtoNoOTP,
+  ): Promise<{ message: string }> {
+    const { id, oldPassword, newPassword } = dto;
 
-  async changePassword(dto: ChangePasswordDtoNoOTP): Promise<{ message: string }> {
-  const { id, oldPassword, newPassword } = dto;
+    const user = await this.userRepo.findOneById(id);
+    if (!user) throw new NotFoundException('User not found');
 
-  const user = await this.userRepo.findOneById(id);
-  if (!user) throw new NotFoundException("User not found");
+    const isMatch = await user.comparePassword(oldPassword);
+    if (!isMatch) throw new UnauthorizedException('Old password is incorrect');
 
-  const isMatch = await user.comparePassword(oldPassword);
-  if (!isMatch) throw new UnauthorizedException("Old password is incorrect");
+    user.password = newPassword;
+    await user.hashPassword();
+    await this.userRepo.save(user); // ✅ now works
 
-  user.password = newPassword;
-  await user.hashPassword();
-  await this.userRepo.save(user);   // ✅ now works
+    return { message: 'Password updated successfully' };
+  }
 
-  return { message: "Password updated successfully" };
-
-}
-
-  async updateCustomerId(
-    id: string,
-    stripeCustomerId: string,
-  ) {
+  async updateCustomerId(id: string, stripeCustomerId: string) {
     try {
       const user = await this.userRepo.updateCustomerId(id, stripeCustomerId);
 
@@ -228,7 +214,4 @@ export class UsersService {
       };
     }
   }
-
-
-
 }
