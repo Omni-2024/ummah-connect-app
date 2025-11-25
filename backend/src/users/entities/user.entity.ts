@@ -75,6 +75,9 @@ export class UserEntity extends BaseEntity implements AbstractUserEntity {
   @Column({ default: false })
   verified: boolean;
 
+  @Column({ name: 'stripe_connect_acc_id', nullable: true, default: null })
+  stripeConnectAccountId: string;
+
   @Column({ name: 'stripe_id', nullable: true, default: null })
   stripeId: string;
 

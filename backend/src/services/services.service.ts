@@ -11,6 +11,9 @@ import { PaginatedRequestDto } from '../users/dto/base.dto';
 import { Service } from './entities/service.entity';
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from '../users/user.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from '../users/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ServiceService {
@@ -18,7 +21,8 @@ export class ServiceService {
 
   constructor(
    private readonly serviceRepo: ServiceRepository,
-   private readonly userRepo: UserRepository,
+   @InjectRepository(UserEntity)
+   private readonly userRepo: Repository<UserEntity>,
    private readonly configService: ConfigService,
 
 

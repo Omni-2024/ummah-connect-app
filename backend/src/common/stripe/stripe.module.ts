@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { StripeService } from './stripe.service';
 import { StripeController } from './stripe.controller';
 import { UsersModule } from '../../users/users.module';
@@ -11,7 +11,7 @@ import { Profession } from '../../categories/profession/entities/profession.enti
 
 @Module({
   imports: [
-    UsersModule,
+    forwardRef(() => UsersModule),
     ServiceModule,
     PaymentModule,
     TypeOrmModule.forFeature([UserEntity, Service, Profession]),

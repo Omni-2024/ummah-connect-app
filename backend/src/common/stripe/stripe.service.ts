@@ -1,6 +1,8 @@
 import {
   BadRequestException,
+  forwardRef,
   HttpStatus,
+  Inject,
   Injectable,
 } from '@nestjs/common';
 
@@ -31,6 +33,7 @@ export class StripeService {
 
   constructor(
     private readonly configService: ConfigService,
+    @Inject(forwardRef(() => UsersService))
     private readonly userService: UsersService,
     private readonly userRepo: UserRepository,
     private readonly serviceRepo: ServiceRepository,
@@ -69,6 +72,57 @@ export class StripeService {
       return { status: HttpStatus.OK };
   }
 
+  async createConnectedAccount(providerId: string) {
+    const provider = await this.userRepo.findOneById(providerId);
+    if (!provider) throw new BadRequestException('Provider not found');
+
+    if (!provider.stripeConnectAccountId) {
+      const account = await this.stripe.accounts.create({
+        type: 'express', // or 'standard' based on your flow
+        email: provider.email,
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true },
+        },
+      });
+
+      provider.stripeConnectAccountId = account.id;
+
+      await this.userRepo.update(provider);
+
+      return { status: HttpStatus.OK, stripeConnectAccountId: account.id };
+    }
+
+    return { status: HttpStatus.OK, stripeConnectAccountId: provider.stripeConnectAccountId };
+  }
+
+  async generateOnboardingLink(providerId: string) {
+    const provider = await this.userRepo.findOneById(providerId);
+    if (!provider?.stripeConnectAccountId)
+      throw new BadRequestException('Provider has no Stripe account');
+
+    const accountLink = await this.stripe.accountLinks.create({
+      account: provider.stripeConnectAccountId,
+      refresh_url: `${this.baseUrl}/dashboard/payments/onboarding/refresh`,
+      return_url: `${this.baseUrl}/dashboard/payments/onboarding/complete`,
+      type: 'account_onboarding',
+    });
+
+    return { url: accountLink.url };
+  }
+
+  async checkConnectedAccountStatus(providerId: string) {
+    const provider = await this.userRepo.findOneById(providerId);
+    if (!provider?.stripeConnectAccountId)
+      throw new BadRequestException('Provider has no Stripe account');
+
+    const account = await this.stripe.accounts.retrieve(provider.stripeConnectAccountId);
+    return {
+      chargesEnabled: account.charges_enabled,
+      payoutsEnabled: account.payouts_enabled,
+    };
+  }
+
   async createCheckout(createCheckoutDto: {
     userId: string;
     serviceId: string;
@@ -99,6 +153,10 @@ export class StripeService {
 
 
       const service=await this.serviceRepo.getServiceById({id:createCheckoutDto.serviceId})
+      if (!service) {
+        return { status: HttpStatus.NOT_FOUND, error: 'Service not found' };
+      }
+
       productName = (service as AbstractServiceEntity).title;
       productTagline = (service as AbstractServiceEntity).tagline;
       productImage = (service as AbstractServiceEntity).coverImageUrl;
@@ -111,6 +169,10 @@ export class StripeService {
         user_id: createCheckoutDto.userId,
         service_name: productName,
       };
+
+      const provider: any = await this.userService.getUser(
+        service.providerId,
+      );
 
 
       if (discountEnabled && discount > 0) {
@@ -142,6 +204,12 @@ export class StripeService {
                   customer: stripeCustomerId,
                   saved_payment_method_options: {
                       payment_method_save: 'enabled',
+                  },
+                  payment_intent_data: {
+                    application_fee_amount: 10 * 100, // 10% of $100 = 10 dollars (in cents)
+                    transfer_data: {
+                      destination: provider.stripeConnectAccountId, // Provider gets 90%
+                    },
                   },
                   metadata: metadata,
               });
