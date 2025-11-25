@@ -45,7 +45,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
                 <Button
                   variant="unstyled"
                   onClick={() => router.push("/user/signup")}
-                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-4 sm:px-8 sm:py-6 rounded-xl transition-all duration-200 text-base sm:text-lg font-semibold shadow-lg hover:from-emerald-600 hover:to-emerald-700 hover:-translate-y-1 hover:shadow-xl transform flex items-center justify-center gap-2 w-full sm:w-auto"
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-4 sm:px-8 sm:py-6 rounded-xl text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl hover:text-white transform flex items-center justify-center gap-2 w-full sm:w-auto"
                 >
                   Begin Your Journey
                   <ArrowRightIcon className="w-5 h-5" />
@@ -53,7 +53,7 @@ export default function HeroSection({ isAuthenticated, router }: { isAuthenticat
                 <Button
                   variant="unstyled"
                   onClick={() => router.push("/explore")}
-                  className="border-2 border-emerald-500 text-emerald-600 px-6 py-4 sm:px-8 sm:py-6 rounded-xl transition-all duration-200 text-base sm:text-lg font-semibold hover:bg-emerald-500 hover:text-white hover:-translate-y-1 transform w-full sm:w-auto"
+                  className="border-2 border-emerald-500 text-color px-6 py-4 sm:px-8 sm:py-6 rounded-xl text-base sm:text-lg font-semibold hover:bg-background-light hover:shadow-xl w-full sm:w-auto"
                 >
                   Explore Services
                 </Button>

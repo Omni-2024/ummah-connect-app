@@ -147,16 +147,19 @@ const ServiceCard = ({
       )}
     >
       {trendingIndex !== undefined && (
-        <div className="absolute top-0 left-0 z-10 flex items-center gap-1 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-2 py-1 rounded-full shadow-md">
-          <TrendingUp className={cn("w-4 h-4 text-white", {
-            "w-3 h-3": size === "sm",
-          })} />
-          <span className={cn("text-white font-bold text-sm", {
-            "text-xs": size === "sm",
-          })}>
-            #{trendingIndex + 1} Trending
-          </span>
-        </div>
+        <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-3 py-1.5 rounded-full shadow-lg border border-white/20">
+        <TrendingUp 
+          className={cn("w-4 h-4 text-white", {
+            "w-3.5 h-3.5": size === "sm",
+          })} 
+        />
+        <span className={cn("font-bold tracking-wider", {
+          "text-sm": size === "md",
+          "text-xs": size === "sm",
+        })}>
+          Trending #{trendingIndex + 1} 
+        </span>
+      </div>
       )}
       
       <div className={cn("relative m-0 h-44 w-full rounded-t-3xl overflow-hidden", {
