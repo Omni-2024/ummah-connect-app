@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"
-import { PersonIcon, CameraIcon, CheckIcon, ArrowRightIcon } from "@radix-ui/react-icons"
+import React, { useState, useEffect, useRef } from "react"
+import { PersonIcon, CameraIcon, CheckIcon, ArrowRightIcon, ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons"
 import Image from "next/image"
 import { buildAvatarUrl } from "@/features/app/components/Navbar"
 import { updateUserFn, Gender } from "@/lib/endpoints/userFns"
@@ -24,6 +24,11 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
   const [imageManuallyUpdated, setImageManuallyUpdated] = useState(false)
   const [countryCode, setCountryCode] = useState("+44")
   const [phoneNumber, setPhoneNumber] = useState("")
+  const [isCountryOpen, setIsCountryOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
   const [profileData, setProfileData] = useState({
     name: "",
     email: "",
@@ -37,7 +42,7 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
     country: "",
     languages: [] as string[],
   })
-  
+
   const [isSavingProfile, setIsSavingProfile] = useState(false)
   const [saveMessage, setSaveMessage] = useState("")
   const [professionMap, setProfessionMap] = useState<{[key: string]: string}>({})
@@ -49,7 +54,25 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
     { value: Gender.FEMALE, label: 'Female' }
   ]
 
-  // Load professions on component mount
+  // Filter countries based on search
+  const filteredCountries = COUNTRY_CODES.filter(c =>
+    c.country.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.code.includes(searchTerm)
+  )
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setIsCountryOpen(false)
+        setSearchTerm("")
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  // Sync user data
   useEffect(() => {
     const loadProfessions = async () => {
       try {
@@ -102,21 +125,21 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
       // Parse existing contact number to extract country code and phone number
       const contact = user.contactNumber || ""
       if (contact) {
-        // Find matching country code
-        const matchedCode = COUNTRY_CODES.find(cc => contact.startsWith(cc.code))
-        if (matchedCode) {
-          setCountryCode(matchedCode.code)
-          setPhoneNumber(contact.substring(matchedCode.code.length))
+       // Find matching country code
+        const matched = COUNTRY_CODES.find(cc => contact.startsWith(cc.code))
+        if (matched) {
+          setCountryCode(matched.code)
+          setPhoneNumber(contact.substring(matched.code.length))
         } else {
           // If no match, treat entire number as phone number
           setPhoneNumber(contact)
         }
       }
-      
+
       setProfileData(prev => ({
         name: user.name || "",
         email: user.email || "",
-        contact: contact,
+        contact,
         profileImage: imageManuallyUpdated ? prev.profileImage : (avatarUrl || ""),
         gender: user.gender || Gender.MALE,
         designation: Array.isArray(user.designations) ? user.designations : [],
@@ -279,67 +302,73 @@ export default function ProfileEditForm({ user, refetch }: ProfileEditFormProps)
                 readOnly
               />
             </div>
-            <div>
-              <Dropdown
-                label="Languages"
-                value={profileData.languages}
-                options={languages.map(l => l.label)}
-                onChange={(value) => handleInputChange('languages', value)}
-                multiple
-                maxHeight="200px"
-              />
-            </div>
+            <div><Dropdown label="Languages" value={profileData.languages} options={languages.map(l => l.label)} onChange={(v) => handleInputChange('languages', v)} multiple maxHeight="200px" /></div>
+            <div><Dropdown label="Country" value={profileData.country} options={COUNTRY_LIST.map(c => c.value)} onChange={(v) => handleInputChange('country', v as string)} required maxHeight="200px" /></div>
+            <div><Dropdown label="Gender" value={profileData.gender} options={genderOptions.map(g => g.label)} onChange={(v) => handleInputChange('gender', genderOptions.find(g => g.label === v)?.value || Gender.MALE)} required /></div>
 
-            <div>
-              <Dropdown
-                label="Country"
-                value={profileData.country}
-                options={COUNTRY_LIST.map(c => c.value)}
-                onChange={(value) => handleInputChange('country', value as string)}
-                required
-                maxHeight="200px"
-              />
-            </div>
+            {/* SEARCHABLE COUNTRY CODE DROPDOWN - Opens UPWARDS */}
+            <div className="relative">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Contact Number</label>
+              <div className="flex gap-2">
+                {/* Country Code Selector */}
+                <div ref={dropdownRef} className="relative w-[130px]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCountryOpen(prev => !prev);
+                      if (!isCountryOpen) {
+                        setTimeout(() => inputRef.current?.focus(), 100);
+                      }
+                    }}
+                    className="w-full px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-left text-sm flex items-center justify-between hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                  >
+                    <span className="truncate">{countryCode}</span>
+                    {isCountryOpen ? <ChevronUpIcon className="w-4 h-4" /> : <ChevronDownIcon className="w-4 h-4" />}
+                  </button>
 
-            <div>
-              <Dropdown
-                label="Gender"
-                value={profileData.gender}
-                options={genderOptions.map(g => g.label)}
-                onChange={(value) => {
-                  const selectedGender = genderOptions.find(g => g.label === value)?.value || Gender.MALE
-                  handleInputChange('gender', selectedGender)
-                }}
-                required
-              />
-            </div>
+                  {/* Dropdown that opens UPWARDS */}
+                  {isCountryOpen && (
+                    <div className="absolute w-[200px] bottom-full left-0 right-0 mb-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-64 overflow-hidden">
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        placeholder="Search..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full px-3 py-2 border-b border-gray-200 text-sm outline-none sticky top-0 bg-white z-10"
+                      />
+                      <div className="overflow-y-auto max-h-56">
+                        {filteredCountries.length === 0 ? (
+                          <div className="px-3 py-2 text-sm text-gray-500">No results</div>
+                        ) : (
+                          filteredCountries.map((c) => (
+                            <button
+                              key={c.code}
+                              type="button"
+                              onClick={() => {
+                                setCountryCode(c.code);
+                                setIsCountryOpen(false);
+                                setSearchTerm("");
+                              }}
+                              className="w-full px-3 py-2 text-left text-sm hover:bg-emerald-50 flex justify-between items-center transition-colors"
+                            >
+                              <span className="font-medium">{c.code}</span>
+                              <span className="text-gray-600 text-xs truncate ml-2">{c.country}</span>
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 ">Contact Number</label>
-              <div className="grid grid-cols-[140px_1fr] gap-2">
-                <Dropdown
-                  label=""
-                  value={`${countryCode} ${COUNTRY_CODES.find(cc => cc.code === countryCode)?.country || ''}`}
-                  options={COUNTRY_CODES.map(cc => `${cc.code} ${cc.country}`)}
-                  onChange={(value) => {
-                    if (typeof value === 'string') {
-                      const code = value.split(' ')[0]
-                      setCountryCode(code)
-                    }
-                  }}
-                  maxHeight={isMobile ? "90px" : "100px"} 
-
-                />
+                {/* Phone Number Input */}
                 <input
                   type="tel"
                   value={phoneNumber}
-                  onChange={(e) => {
-                    // Only allow numbers
-                    const value = e.target.value.replace(/\D/g, '')
-                    setPhoneNumber(value)
-                  }}
-                  placeholder="712345678"
-                  className="px-3 mt-1.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
+                  onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
+                  placeholder="76543210"
+                  className="flex-1 px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
                 />
               </div>
             </div>
