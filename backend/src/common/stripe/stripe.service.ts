@@ -30,6 +30,7 @@ export class StripeService {
   private readonly baseUrl;
   private readonly r2BaseUrl;
   private readonly webhookSecret;
+  private readonly commissionPercentage;
 
   constructor(
     private readonly configService: ConfigService,
@@ -42,6 +43,7 @@ export class StripeService {
 
   ) {
     this.r2BaseUrl=this.configService.getOrThrow<string>('R2_PUBLIC_BASE_URL')
+    this.commissionPercentage=this.configService.getOrThrow<string>('STRIPE_COMMISSION_PERCENTAGE')
     const stripeSecret=this.configService.getOrThrow<string>('STRIPE_SECRET')
     this.stripe = new Stripe(stripeSecret);
     this.baseUrl = this.configService.getOrThrow<string>('APP_BASE_URL');
@@ -195,6 +197,9 @@ export class StripeService {
       ];
 
       if (createCheckoutDto.mode === 'embedded') {
+        const platformFeePercentage = this.commissionPercentage;
+        const amountInCents = Math.round(price * 100);
+        const applicationFeeAmount = Math.round(amountInCents * platformFeePercentage);
               const session = await this.stripe.checkout.sessions.create({
                   ui_mode: 'embedded',
                   payment_method_types: ['card'],
@@ -206,9 +211,9 @@ export class StripeService {
                       payment_method_save: 'enabled',
                   },
                   payment_intent_data: {
-                    application_fee_amount: 10 * 100, // 10% of $100 = 10 dollars (in cents)
+                    application_fee_amount: applicationFeeAmount,
                     transfer_data: {
-                      destination: provider.stripeConnectAccountId, // Provider gets 90%
+                      destination: provider.stripeConnectAccountId,
                     },
                   },
                   metadata: metadata,
