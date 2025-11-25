@@ -20,7 +20,7 @@ export class StorageService {
     });
 
     this.bucket = this.config.getOrThrow<string>('R2_BUCKET_NAME');
-    this.publicBaseUrl = this.config.getOrThrow<string>('R2_PUBLIC_BASE_URL'); // ← points to public domain, NOT the API endpoint
+    this.publicBaseUrl = this.config.getOrThrow<string>('R2_PUBLIC_BASE_URL');
   }
 
   async uploadFile(key: string, body: Buffer, contentType: string) {
