@@ -14,18 +14,12 @@ type PopularServicesSectionProps = {
 }
 
 const getCategoryIcon = (categoryName: string) => {
-  const iconClass = "w-5 h-5 transition-transform duration-300 group-hover:scale-110"
+  const iconClass = "w-6 h-6 transition-transform duration-300 group-hover:scale-110"
   const name = categoryName.toLowerCase()
 
-  if (name.includes("spiritual") || name.includes("religious")) {
-    return <ReaderIcon className={iconClass} />
-  }
-  if (name.includes("community") || name.includes("lifestyle")) {
-    return <GlobeIcon className={iconClass} />
-  }
-  if (name.includes("education") || name.includes("skill") || name.includes("learn")) {
-    return <LightningBoltIcon className={iconClass} />
-  }
+  if (name.includes("spiritual") || name.includes("religious")) return <ReaderIcon className={iconClass} />
+  if (name.includes("community") || name.includes("lifestyle")) return <GlobeIcon className={iconClass} />
+  if (name.includes("education") || name.includes("skill") || name.includes("learn")) return <LightningBoltIcon className={iconClass} />
   return <StarIcon className={iconClass} />
 }
 
@@ -45,55 +39,58 @@ const PopularServicesSection: React.FC<PopularServicesSectionProps> = ({
   }
 
   return (
-    <section className="py-8 sm:py-12" aria-labelledby="popular-services-heading">
+    <section className="py-8 sm:py-12 bg-gradient-to-b from-slate-50/50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {categoriesLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-            {[...Array(6)].map((_, index) => (
-              <div key={index} className="animate-pulse">
-                <div className="bg-gradient-to-br from-slate-100 to-slate-50 rounded-2xl p-4 sm:p-5 aspect-square flex flex-col items-center justify-center">
-                  <Skeleton className="w-12 h-12 sm:w-14 sm:h-14 rounded-full mb-2.5 sm:mb-3" />
-                  <Skeleton className="h-3 w-20 rounded" />
+          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
+            <div className="flex gap-4">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="flex-shrink-0 w-36 animate-pulse">
+                  <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 aspect-square flex flex-col items-center justify-center">
+                    <Skeleton className="w-14 h-14 rounded-full mb-3" />
+                    <Skeleton className="h-3 w-20 rounded" />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         ) : categoriesError ? (
-          <div className="text-center py-8 sm:py-14 text-red-600 text-sm sm:text-base">
-            Error loading categories
-          </div>
+          <div className="text-center py-12 text-red-600 text-sm">Error loading categories</div>
         ) : (
           <>
-            {/* Responsive Grid - 2 cols mobile, 3 cols tablet, 6 cols desktop */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-              {exploreCategories
-                .sort((a, b) => a.order - b.order)
-                .map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => handleRedirect(category)}
-                    className="group relative overflow-hidden bg-gradient-to-br from-white to-slate-50/50 hover:from-emerald-50 hover:to-teal-50 rounded-2xl p-4 sm:p-5 border border-slate-400 hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-100/50 transition-all duration-300 aspect-square flex flex-col items-center justify-center text-center active:scale-95"
-                    aria-label={`Explore ${category.name}`}
-                  >
-                    {/* Subtle background gradient on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/0 to-teal-400/0 group-hover:from-emerald-400/5 group-hover:to-teal-400/5 transition-all duration-300"></div>
-                    
-                    {/* Icon container */}
-                    <div className="relative z-10 flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 mb-2.5 sm:mb-3 bg-gradient-to-br from-emerald-100 to-teal-100 group-hover:from-emerald-200 group-hover:to-teal-200 rounded-full transition-all duration-300 group-hover:rotate-6">
-                      <div className="text-emerald-600 group-hover:text-emerald-700">
-                        {getCategoryIcon(category.name)}
-                      </div>
-                    </div>
-                    
-                    {/* Text */}
-                    <p className="relative z-10 text-xs sm:text-sm font-semibold text-slate-700 group-hover:text-emerald-700 transition-colors duration-300 leading-snug px-1 line-clamp-2">
-                      {category.name}
-                    </p>
+            {/* Horizontal Scrollable Carousel – Always Left-Aligned */}
+            <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
+              <div className="flex gap-4 snap-x snap-mandatory">
+                {exploreCategories
+                  .sort((a, b) => a.order - b.order)
+                  .map((category) => (
+                    <div
+                      key={category.id}
+                      className="snap-start flex-shrink-0 w-36" // Fixed width → clean & predictable
+                    >
+                      <button
+                        onClick={() => handleRedirect(category)}
+                        className="group relative w-full bg-white hover:bg-emerald-50/80 rounded-2xl p-5 border border-slate-200 hover:border-emerald-400 hover:shadow-xl transition-all duration-300 active:scale-95 flex flex-col items-center justify-center text-center aspect-square"
+                        aria-label={`Explore ${category.name}`}
+                      >
+                        {/* Subtle hover glow */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/5 to-teal-400/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                    {/* Decorative corner accent */}
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-emerald-400/0 to-teal-400/0 group-hover:from-emerald-400/10 group-hover:to-teal-400/10 rounded-bl-full transition-all duration-300"></div>
-                  </button>
-                ))}
+                        {/* Icon */}
+                        <div className="relative z-10 mb-3 flex items-center justify-center w-14 h-14 bg-gradient-to-br from-emerald-100 to-teal-100 group-hover:from-emerald-200 group-hover:to-teal-200 rounded-full transition-all duration-300 shadow-md">
+                          <div className="text-emerald-600 group-hover:text-emerald-700">
+                            {getCategoryIcon(category.name)}
+                          </div>
+                        </div>
+
+                        {/* Name */}
+                        <p className="relative z-10 text-xs font-bold text-slate-700 group-hover:text-emerald-700 transition-colors duration-300 leading-tight px-2 line-clamp-2">
+                          {category.name}
+                        </p>
+                      </button>
+                    </div>
+                  ))}
+              </div>
             </div>
           </>
         )}
