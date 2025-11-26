@@ -25,6 +25,15 @@ export function ProfileHeader() {
     if (!profile || !e.target.files?.[0]) return;
 
     const file = e.target.files[0];
+    const allowedFormats = ['image/png', 'image/jpeg', 'image/jpg', 'image/heic'];
+    
+    // Validate file type
+    if (!allowedFormats.includes(file.type)) {
+      console.error("Invalid file format. Only PNG, JPG, JPEG, and HEIC are allowed.");
+      alert("Invalid file format. Only PNG, JPG, JPEG, and HEIC are allowed.");
+      return;
+    }
+    
     try {
       setUploading(true);
       const uploadResult = await uploadPublicFn({ imageFile: file });
@@ -78,7 +87,7 @@ export function ProfileHeader() {
               <input
                 id="profileImageUpload"
                 type="file"
-                accept="image/*"
+                accept=".png,.jpg,.jpeg,.heic"
                 className="hidden"
                 onChange={handleImageChange}
                 disabled={uploading}

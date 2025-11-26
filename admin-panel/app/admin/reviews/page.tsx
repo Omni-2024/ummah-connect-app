@@ -4,6 +4,10 @@ import { useState } from "react";
 import ProviderList from "@/features/reviews/ProviderList";
 import ReviewList from "@/features/reviews/components/ReviewList";
 import type { ReviewQuery } from "@/features/reviews/components/ReviewList";
+import withAuth from "@/components/withAuth";
+import { ADMIN_ROLES } from "@/lib/constants";
+
+
 
 export default function AdminReviewPage() {
   const [query, setQuery] = useState<ReviewQuery>({
@@ -13,12 +17,11 @@ export default function AdminReviewPage() {
     offset: 0,
   });
   
-  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
+  // derive selected provider from query to avoid race between two states
+  const selectedProviderId = query.providerId || null;
 
   const handleProviderSelect = (providerId: string) => {
-    // update query first so `ReviewList` mounts with the correct providerId
     setQuery({ providerId, stars: 0, limit: 10, offset: 0 });
-    setSelectedProviderId(providerId);
   };
 
   return (
@@ -48,3 +51,9 @@ export default function AdminReviewPage() {
     </div>
   );
 }
+
+
+const Page = withAuth(AdminReviewPage, [
+    ADMIN_ROLES.ADMIN,
+    ADMIN_ROLES.ROOT,
+]);
