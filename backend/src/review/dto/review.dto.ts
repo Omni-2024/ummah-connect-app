@@ -19,6 +19,29 @@ export class CreateReviewDto {
   @IsNumber()
   stars: number;
 }
+export class CreateReviewRepoDto {
+  @IsOptional()
+  @IsString()
+  userId?: string;
+
+  @IsOptional()
+  @IsString()
+  providerId?: string;
+
+  @IsOptional()
+  @IsString()
+  serviceId?: string;
+
+  @IsString()
+  description: string;
+
+  @IsOptional()
+  @IsString()
+  status?: string;
+
+  @IsNumber()
+  stars: number;
+}
 
 export class GetReviewResponseDto {
 

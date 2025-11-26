@@ -42,12 +42,12 @@ export class ReviewEntity extends BaseEntity {
   @Column({ nullable: true, default: 'pending' })
   status?: string;
 
-  // Enforcing validation that either serviceId must be provided, but not both or neither
-  @BeforeInsert()
-  @BeforeUpdate()
-  validateCourseOrWebinarId() {
-    if ((this.serviceId ) || (!this.serviceId)) {
-      throw new Error('Either serviceId  must be provided, but not both or neither.');
-    }
-  }
+  // // Enforcing validation that either serviceId must be provided, but not both or neither
+  // @BeforeInsert()
+  // @BeforeUpdate()
+  // validateCourseOrWebinarId() {
+  //   if ((this.serviceId ) || (!this.serviceId)) {
+  //     throw new Error('Either serviceId  must be provided, but not both or neither.');
+  //   }
+  // }
 }

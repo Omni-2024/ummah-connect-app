@@ -39,13 +39,13 @@ const ServiceCard = ({
     ? parseInt(service.enrollmentCount, 10) 
     : service?.enrollmentCount;
 
-  // Default variant (original design)
+  // Default variant
   if (variant === "default") {
     return (
       <Card
         onClick={handleCardClick}
         className={cn(
-          "flex h-full w-full min-w-80 max-w-[25rem] cursor-pointer select-none flex-col space-y-2 overflow-hidden rounded-3xl p-4 transition-colors duration-300 ease-in-out hover:border-primary-100 hover:bg-primary-50/60 active:border-primary-300 lg:space-y-3.5",
+          "flex h-full w-full min-w-64 max-w-[18rem] sm:min-w-72 sm:max-w-[22rem] md:min-w-80 md:max-w-[25rem] cursor-pointer select-none flex-col space-y-2 overflow-hidden rounded-3xl p-4 transition-colors duration-300 ease-in-out hover:border-primary-100 hover:bg-primary-50/60 active:border-primary-300 lg:space-y-3.5",
           {
             "space-y-3 p-3.5 lg:min-w-72 lg:max-w-72": size === "sm",
           },
@@ -134,18 +134,19 @@ const ServiceCard = ({
     );
   }
 
-  // Trending variant (new design with same dimensions)
+  // Trending variant
   return (
     <Card
-      onClick={handleCardClick}
-      className={cn(
-        "relative flex h-full w-full min-w-80 max-w-[25rem] cursor-pointer select-none flex-col space-y-0 overflow-hidden rounded-3xl p-0 bg-white transition-all duration-300 ease-in-out hover:border-primary-100 hover:shadow-xl active:border-primary-300",
-        {
-          "lg:min-w-72 lg:max-w-72": size === "sm",
-        },
-        className,
-      )}
-    >
+        onClick={handleCardClick}
+        className={cn(
+          "relative flex h-full w-full min-w-64 max-w-[18rem] sm:min-w-72 sm:max-w-[22rem] md:min-w-80 md:max-w-[25rem] cursor-pointer select-none flex-col space-y-0 overflow-hidden rounded-3xl p-0 bg-white transition-all duration-300 ease-in-out hover:border-primary-100 hover:shadow-xl active:border-primary-300",
+          {
+            "lg:min-w-72 lg:max-w-72": size === "sm",
+          },
+          className,
+        )}
+      >
+
       {trendingIndex !== undefined && (
         <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5 bg-gradient-to-r from-emerald-500 to-green-600 text-white px-3 py-1.5 rounded-full shadow-lg border border-white/20">
         <TrendingUp 
