@@ -49,7 +49,6 @@ export default function TrendingServicesSection({
 
   if (!services || services.length === 0) return null
 
-
   const trendingServices = [...services]
     .map(s => ({
       ...s,
@@ -60,6 +59,8 @@ export default function TrendingServicesSection({
     .slice(0, 10)
 
   if (trendingServices.length === 0) return null
+
+  const isSingleCard = trendingServices.length === 1
 
   return (
     <section className="py-8 sm:py-12 bg-gradient-to-br from-emerald-50 via-teal-50 to-green-50 relative overflow-hidden">
@@ -74,7 +75,7 @@ export default function TrendingServicesSection({
         <div className="text-center mb-6 sm:mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white shadow-md rounded-full mb-3 border border-green-200">
             <span className="text-xs sm:text-sm font-bold text-green-700">
-              🔥 Hot Right Now
+             🔥 Hot Right Now
             </span>
           </div>
 
@@ -87,11 +88,28 @@ export default function TrendingServicesSection({
           </p>
         </div>
 
-        {/* Horizontal scroll carousel */}
+        {/* Horizontal scroll carousel – centers single card on mobile */}
         <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex gap-6 snap-x snap-mandatory px-1">
+          <div
+            className={`
+              flex gap-6 snap-x snap-mandatory px-1
+              ${isSingleCard ? "justify-center" : "justify-start"}
+              ${isSingleCard ? "md:justify-start" : ""}   {/* revert to normal layout on larger screens */}
+            `}
+            // When there is only one card we force the flex container width so the outer overflow container centers it perfectly
+            style={
+              isSingleCard
+                ? { width: "fit-content", margin: "0 auto" }
+                : undefined
+            }
+          >
             {trendingServices.map((service, index) => (
-              <div key={service.id} className="snap-start flex-shrink-0">
+              <div
+                key={service.id}
+                className="snap-start flex-shrink-0"
+                // optional: give a fixed width on mobile so centering works reliably
+                style={isSingleCard ? { width: "280px" } : undefined}  
+              >
                 <ServiceCard
                   service={service}
                   variant="trending"
