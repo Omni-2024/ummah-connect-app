@@ -30,7 +30,8 @@ export class ReviewService {
     createReviewDto: CreateReviewDto,
   ) {
     try {
-      const review: any = await this.reviewRepo.createReview(createReviewDto);
+      const service = await this.serviceRepository.findOne({where:{id:createReviewDto.serviceId}});
+      const review: any = await this.reviewRepo.createReview({...createReviewDto,providerId:service?.providerId});
 
       const [averageScore, reviewCount,averageScoreProvider,reviewCountProvider] = await Promise.all([
         await this.reviewRepo.getAverageReviewScoreForService(review.serviceId),
