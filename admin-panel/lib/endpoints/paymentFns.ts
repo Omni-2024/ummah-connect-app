@@ -43,6 +43,12 @@ export interface Payment {
   chargeId: string;
   createdAt: string;
   updatedAt: string;
+  amount_gross?: number;
+  provider_amount?: number;
+  platform_fee_amount?: number;
+  stripeTransferId: string;
+  providerTransferStatus: 'pending' | 'transferred';
+  providerTransferredAt: Date;
 }
 
 export interface StatsFilters {
@@ -181,7 +187,7 @@ export const getPaymentsByServiceFn = async (id: string) => {
   try {
     const res = await Request<GetAllPaymentsFnRes>({
       method: "get",
-      url: `/payment/course/${id}`,
+      url: `/payment/service/${id}`,
     });
     return res.data;
   } catch (e) {
