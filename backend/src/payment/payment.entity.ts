@@ -32,6 +32,24 @@ export class PaymentEntity extends BaseEntity {
   status?: string;
 
   @Column({ nullable: true })
+  amount_gross?: number;
+
+  @Column({ nullable: true })
+  provider_amount?: number;
+
+  @Column({ nullable: true })
+  platform_fee_amount?: number;
+
+  @Column({ nullable: true })
+  stripeTransferId: string;
+
+  @Column({ type: 'varchar', default: 'pending' })
+  providerTransferStatus: 'pending' | 'transferred';
+
+  @Column({ type: 'timestamptz', nullable: true })
+  providerTransferredAt: Date;
+
+  @Column({ nullable: true })
   receiptUrl?: string;
 
   @Column({ nullable: true })

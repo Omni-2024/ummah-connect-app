@@ -30,6 +30,7 @@ export class StripeService {
   private readonly baseUrl;
   private readonly r2BaseUrl;
   private readonly webhookSecret;
+  private readonly commissionStr;
   private readonly commissionPercentage;
 
   constructor(
@@ -43,7 +44,14 @@ export class StripeService {
 
   ) {
     this.r2BaseUrl=this.configService.getOrThrow<string>('R2_PUBLIC_BASE_URL')
-    this.commissionPercentage=this.configService.getOrThrow<string>('STRIPE_COMMISSION_PERCENTAGE')
+    this.commissionStr=this.configService.getOrThrow<string>('STRIPE_COMMISSION_PERCENTAGE')
+    const commissionNum = Number(this.commissionStr);
+
+    if (Number.isNaN(commissionNum) || commissionNum < 0 || commissionNum > 100) {
+      throw new Error('Invalid STRIPE_COMMISSION_PERCENTAGE');
+    }
+
+    this.commissionPercentage = commissionNum / 100;
     const stripeSecret=this.configService.getOrThrow<string>('STRIPE_SECRET')
     this.stripe = new Stripe(stripeSecret);
     this.baseUrl = this.configService.getOrThrow<string>('APP_BASE_URL');
@@ -165,21 +173,29 @@ export class StripeService {
       price = (service as AbstractServiceEntity).price;
       discount = (service as AbstractServiceEntity).discount;
       discountEnabled = (service as AbstractServiceEntity).discountEnabled;
-      metadata = {
-        type: 'service',
-        service_id: createCheckoutDto.serviceId,
-        user_id: createCheckoutDto.userId,
-        service_name: productName,
-      };
 
       const provider: any = await this.userService.getUser(
         service.providerId,
       );
 
-
       if (discountEnabled && discount > 0) {
         price = price - (price / 100) * discount;
       }
+
+      const platformFeePercentage = this.commissionPercentage;
+      const amountInCents = Math.round(price * 100);
+      const platformFeeAmount = Math.round(amountInCents * platformFeePercentage);
+      const providerAmount = amountInCents - platformFeeAmount;
+
+      metadata = {
+        type: 'service',
+        service_id: createCheckoutDto.serviceId,
+        user_id: createCheckoutDto.userId,
+        service_name: productName,
+        amount_gross: amountInCents.toString(),
+        provider_amount: providerAmount.toString(),
+        platform_fee_amount: platformFeeAmount.toString(),
+      };
 
       const lineItems = [
         {
@@ -504,11 +520,18 @@ export class StripeService {
         const payment_intent = session.payment_intent as string;
         const metadata = session.metadata;
 
+        const amountGross = Number(metadata?.amount_gross || session.amount_total);
+        const providerAmount = Number(metadata?.provider_amount);
+        const platformFeeAmount = Number(metadata?.platform_fee_amount);
+
         const upsertPaymentDto: UpsertPaymentDto = {
           userId: metadata?.user_id,
           serviceId: metadata?.service_id,
           serviceName: metadata?.service_name,
           paymentIntent: payment_intent,
+          amount_gross:amountGross,
+          provider_amount:providerAmount,
+          platform_fee_amount:platformFeeAmount
         }
 
         // const upsertPayment = await firstValueFrom(
@@ -535,19 +558,24 @@ export class StripeService {
       // !Only for the mobile app payments
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        const charge = event.data.object as unknown as Stripe.Charge;
+        const payment_method_details = charge.payment_method_details as Stripe.Charge.PaymentMethodDetails;
+
         const metadata = paymentIntent.metadata;
 
         // Check if all required metadata fields are present
-        if (!metadata?.user_id || !metadata?.course_id || !metadata?.course_name) {
+        if (!metadata?.user_id || !metadata?.service_id || !metadata?.service_name) {
           console.error('Required metadata is missing, skipping payment upsert.');
           break;
         }
 
         const upsertPaymentDto: UpsertPaymentDto = {
+          paymentIntent: charge.payment_intent as string,
+          chargeId: paymentIntent.id,
           userId: metadata.user_id,
           serviceId: metadata.service_id,
           serviceName: metadata.service_name,
-          paymentIntent: paymentIntent.id,
+          status:'succeeded'
         };
 
         // const upsertPayment = await firstValueFrom(
@@ -570,6 +598,28 @@ export class StripeService {
 
         break;
       }
+
+      case 'transfer.created': {
+        const transfer = event.data.object as Stripe.Transfer;
+
+        // For destination charges, this links back to the charge
+        const sourceTransaction = transfer.source_transaction as string | null;
+
+        if (!sourceTransaction) {
+          break;
+        }
+
+        // Upsert your payment using chargeId (you already store it in charge.succeeded)
+        await this.paymentService.upsertPayment({
+          chargeId: sourceTransaction,
+          stripeTransferId: transfer.id,
+          providerTransferStatus: 'transferred',
+          providerTransferredAt: new Date(transfer.created * 1000),
+        });
+
+        break;
+      }
+
 
       default:
         return {
