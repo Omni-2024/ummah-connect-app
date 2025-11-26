@@ -167,6 +167,10 @@ export default function HomePage() {
         categoriesLoading={categoriesLoading}
         categoriesError={categoriesError}
       />
+      <RecentlySearchedServicesSection 
+        router={router} 
+        allServices={allServices}
+      />
       <NewlyAddedServicesSection
         services={newlyAddedServices}
         loading={servicesLoading}
@@ -187,11 +191,6 @@ export default function HomePage() {
           // router={router}
         />
       )}
-      {/* Pass all services to RecentlySearchedServicesSection */}
-      <RecentlySearchedServicesSection 
-        router={router} 
-        allServices={allServices}
-      />
       <FeaturesSection />
       <IslamicValuesSection />
       <IslamicLearningPathsSection />
