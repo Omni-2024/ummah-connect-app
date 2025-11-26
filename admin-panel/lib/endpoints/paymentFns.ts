@@ -187,7 +187,7 @@ export const getPaymentsByServiceFn = async (id: string) => {
   try {
     const res = await Request<GetAllPaymentsFnRes>({
       method: "get",
-      url: `/payment/course/${id}`,
+      url: `/payment/service/${id}`,
     });
     return res.data;
   } catch (e) {
