@@ -168,7 +168,7 @@ export default function HomePage() {
         categoriesError={categoriesError}
       />
       <RecentlySearchedServicesSection 
-        router={router} 
+        // router={router} 
         allServices={allServices}
       />
       <NewlyAddedServicesSection
