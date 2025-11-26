@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpStatus,
   Injectable,
   NotFoundException,
@@ -92,7 +93,7 @@ export class ReviewService {
   ) {
     const review = await this.reviewRepo.getReviewById(id);
     if (!review) {
-      return { status: HttpStatus.NOT_FOUND };
+      throw new BadRequestException('Review not found');
     }
     return review ;
   }
@@ -103,7 +104,7 @@ export class ReviewService {
     const review = await this.reviewRepo.getReviewById(updateReviewDto.id);
 
     if (!review) {
-      return { status: HttpStatus.NOT_FOUND };
+      throw new BadRequestException('Review not found');
     }
 
     const { id, ...rest } = updateReviewDto;
@@ -132,7 +133,7 @@ export class ReviewService {
   async deleteReview(id: string) {
     const review = await this.reviewRepo.getReviewById(id);
     if (!review) {
-      return { status: HttpStatus.NOT_FOUND };
+      throw new BadRequestException('Review not found');
     }
     try {
       await this.reviewRepo.deleteReview(id);
@@ -254,7 +255,7 @@ export class ReviewService {
       serviceId,
     );
     if (!review) {
-      return { status: HttpStatus.NOT_FOUND };
+      throw new BadRequestException('Review not found');
     }
 
     const user = await this.userRepo.findOneById(review.userId);
