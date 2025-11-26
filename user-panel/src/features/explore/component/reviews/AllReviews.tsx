@@ -116,11 +116,11 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
         <div className="mb-6">
             <div className="flex items-baseline gap-3">
                 <h2 className="text-2xl font-bold text-gray-900 mt-6">All Reviews</h2>
-                {totalReviews != null && totalReviews > 0 && (
+                {/* {totalReviews != null && totalReviews > 0 && (
                     <span className="text-lg text-gray-600 font-medium">
-                        {totalReviews.toLocaleString()} review{totalReviews !== 1 ? "s" : ""}
+                        ({totalReviews.toLocaleString()} review{totalReviews !== 1 ? "s" : ""})
                     </span>
-                )}
+                )} */}
             </div>
         </div>
 
