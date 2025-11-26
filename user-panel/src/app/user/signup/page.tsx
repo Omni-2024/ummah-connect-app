@@ -70,12 +70,15 @@ const GeneralUserSignupRoute = () => {
             name,
           },
           {
-            onSuccess: () => {
+              onSuccess: () => {
+              console.log("successssss");
               setEmail(email);
               router.push("/email-sent");
             },
             onError: (err:any) => {
-              // TODO: Handle error message
+                console.log("errrrrrorrrr");
+
+                // TODO: Handle error message
               const message = getErrorMessage(err, "An error occurred!");
               Toast.error(message);
             },

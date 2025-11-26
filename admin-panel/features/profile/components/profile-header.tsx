@@ -13,6 +13,9 @@ import { Teacher } from "iconsax-react";
 import Image from "next/image";
 import { useAvatarUrl } from "@/hooks/userAvatarUrl";
 import { ProfileHeaderSkeleton } from "../skeletons/profile-header-skeleton";
+import Button from "@/components/base/button";
+import {useAccountStats, useOnboardingLink} from "@/lib/hooks/useStripe";
+
 
 export function ProfileHeader() {
   const { role } = useAuthState();
@@ -21,7 +24,10 @@ export function ProfileHeader() {
   const [imageError, setImageError] = useState(false);
   const avatarSrc = useAvatarUrl(profile?.profileImage);
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+   const { data: accountStat, isError: isAccountStatError } = useAccountStats(profile?.id ?? "")
+
+
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!profile || !e.target.files?.[0]) return;
 
     const file = e.target.files[0];
@@ -48,6 +54,21 @@ export function ProfileHeader() {
       setUploading(false);
     }
   };
+
+    const {
+        data: onboardingData,
+        refetch: fetchOnboarding,
+    } = useOnboardingLink(profile?.id ?? "");
+
+
+    const getOnboarding = async () => {
+        if (!profile?.stripeConnectAccountId) return;
+
+        const result = await fetchOnboarding();
+        console.log("Onboarding link result:", result.data?.url);
+    };
+
+
 
   useEffect(() => setImageError(false), [profile?.profileImage]);
 
@@ -149,6 +170,10 @@ export function ProfileHeader() {
             </div>
           </div>
         </div>
+          {
+              (!accountStat?.chargesEnabled || !accountStat.payoutsEnabled) &&
+              <Button variant="primary" onClick={getOnboarding}>OnboardingLink</Button>
+          }
       </CardContent>
     </Card>
   );

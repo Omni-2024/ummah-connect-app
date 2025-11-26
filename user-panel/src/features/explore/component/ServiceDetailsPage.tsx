@@ -38,6 +38,7 @@ import { generateSlug } from "@/lib/helpers/strings"
 import { buildAvatarUrl } from "@/features/app/components/Navbar"
 import { getInitials } from "@/features/explore/component/ServiceHeader"
 import ProviderServices from "./ProviderServices"
+import { saveRecentlyViewedService } from "@/features/home/RecentlySearchedServicesSection"
 
 function timeAgo(iso?: string) {
   if (!iso) return ""
@@ -103,6 +104,13 @@ export default function ServiceDetailsPage() {
       Toast.error("Enrollment failed. Please try again.")
     },
   })
+
+  // Track service view when service data is loaded
+  useEffect(() => {
+    if (service?.serviceDetails?.data?.id) {
+      saveRecentlyViewedService(service.serviceDetails.data.id)
+    }
+  }, [service?.serviceDetails?.data?.id])
 
   // Fetch ALL reviews for statistics (unfiltered)
   const {

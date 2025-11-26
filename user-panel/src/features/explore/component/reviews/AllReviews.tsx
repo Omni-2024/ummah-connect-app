@@ -112,27 +112,35 @@ const AllReviews = forwardRef<HTMLDivElement, AllReviewsProps>(({
     const currentSortOption = sortOptions.find(opt => opt.value === sortBy);
 
     return (
-        <div id="all-reviews" className="w-full my-6 p-4 rounded-lg pl-0 pr-0" ref={ref}>
-            <h2 className="text-xl text-gray-800 font-semibold mb-3 mt-3">All Reviews</h2>
-            
-            {ratingBreakdown && totalReviews && totalReviews > 0 && (
-                <RatingSummary
-                    averageRating={averageRating}
-                    totalReviews={totalReviews}
-                    ratingBreakdown={ratingBreakdown}
-                    activeStarFilter={activeStarFilter}
-                    onStarFilter={handleStarFilter}
-                    searchQuery={searchQuery}
-                    setSearchQuery={setSearchQuery}
-                    sortBy={sortBy}
-                    setSortBy={setSortBy}
-                    isDropdownOpen={isDropdownOpen}
-                    setIsDropdownOpen={setIsDropdownOpen}
-                    sortOptions={sortOptions}
-                    currentSortOption={currentSortOption}
-                />
-            )}
+        <div id="all-reviews" className="w-full my-6" ref={ref}>
+        <div className="mb-6">
+            <div className="flex items-baseline gap-3">
+                <h2 className="text-2xl font-bold text-gray-900 mt-6">All Reviews</h2>
+                {totalReviews != null && totalReviews > 0 && (
+                    <span className="text-lg text-gray-600 font-medium">
+                        {totalReviews.toLocaleString()} review{totalReviews !== 1 ? "s" : ""}
+                    </span>
+                )}
+            </div>
+        </div>
 
+        {totalReviews != null && totalReviews > 0 && ratingBreakdown && (
+            <RatingSummary
+                averageRating={averageRating}
+                totalReviews={totalReviews}
+                ratingBreakdown={ratingBreakdown}
+                activeStarFilter={activeStarFilter}
+                onStarFilter={handleStarFilter}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                sortBy={sortBy}
+                setSortBy={setSortBy}
+                isDropdownOpen={isDropdownOpen}
+                setIsDropdownOpen={setIsDropdownOpen}
+                sortOptions={sortOptions}
+                currentSortOption={currentSortOption}
+            />
+        )}
             {activeFiltersCount > 0 && (
                 <div className="mb-3 flex flex-wrap gap-2 items-center bg-blue-50 p-2.5 rounded-lg border border-blue-100">
                     <span className="text-xs text-blue-900 font-medium">
