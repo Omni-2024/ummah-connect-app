@@ -141,8 +141,6 @@ export class StripeService {
   }){
     const { platform = 'legacy' } = createCheckoutDto;
 
-        //find user by id
-      //need to remove any after updating common
       const user: any = await this.userService.getUser(
         createCheckoutDto.userId,
       );
