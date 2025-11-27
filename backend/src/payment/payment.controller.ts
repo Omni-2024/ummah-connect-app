@@ -43,6 +43,18 @@ export class PaymentController {
         });
     }
 
+    @Roles([UserRole.USER, UserRole.BUSINESS_ADMIN, UserRole.ROOT])
+    @Get()
+    async getAllPayments(
+      @Query('limit') limit?: number,
+      @Query('offset') offset?: number,
+    ) {
+      return await this.paymentService.getAllPayments({
+        limit,
+        offset,
+      });
+    }
+
     @Roles([UserRole.USER, UserRole.BUSINESS_ADMIN])
     @Get(':id')
     async getPaymentById(

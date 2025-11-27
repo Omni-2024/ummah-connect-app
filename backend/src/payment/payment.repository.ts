@@ -80,14 +80,39 @@ export class PaymentRepository {
     await this.paymentRepository.delete({ id });
   }
 
-  async getAllPayments(): Promise<PaymentEntity[]> {
-    return await this.paymentRepository.find();
-  }
+  // async getAllPayments(): Promise<PaymentEntity[]> {
+  //   return await this.paymentRepository.find();
+  // }
 
   // Method to get all payments by userId
   // async findAllByUserId(userId: string): Promise<PaymentEntity[]> {
   //   return this.paymentRepository.find({ where: { userId } });
   // }
+
+  async getAllPayments({
+                          limit,
+                          offset,
+                        }: {
+    limit?: number;
+    offset?: number;
+  }): Promise<{ paymentList: PaymentEntity[]; count: number }> {
+    try {
+      const options: FindOptions = {};
+      if (limit && limit > 0) {
+        options.take = limit;
+      }
+      if (offset && offset > 0) {
+        options.skip = offset;
+      }
+      const [paymentList, count] = await this.paymentRepository.findAndCount({
+        ...options
+      });
+
+      return { paymentList, count };
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async findAllByUserId({
     query,
@@ -116,6 +141,8 @@ export class PaymentRepository {
       throw error;
     }
   }
+
+
 
   async findAllByServiceId(serviceId: string): Promise<PaymentEntity[]> {
     return this.paymentRepository.find({ where: { serviceId } });
