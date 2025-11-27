@@ -94,4 +94,14 @@ export class EmailService {
       this.config.get<string>('EMAILJS_TEMPLATE_PROVIDER_BOOK_CONFIRMATION') || '';
     return this.send(templateId, opts);
   }
+
+  async resetPassword(opts: {
+    name:string;
+    email: string;
+    reset_link: string;
+  }): Promise<boolean> {
+    const templateId =
+      this.config.get<string>('EMAILJS_TEMPLATE_RESET_PASSWORD') || '';
+    return this.send(templateId, opts);
+  }
 }
