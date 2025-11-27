@@ -45,9 +45,9 @@ const ResetPasswordContent = () => {
             onSuccess: () => {
               router.push("/user/login");
             },
-            onError: () => {
-              Toast.error("Failed to reset password");
-            },
+            onError: (error) => {
+                const message =  error?.message || "Failed to verify email";
+                Toast.error(message);              },
           },
       );
     },

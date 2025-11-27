@@ -22,9 +22,10 @@ const EnterEmailCard = () => {
       onSuccess: () => {
         setForgotPasswordStep("check-inbox");
       },
-      onError: () => {
-        Toast.error("Failed to verify email");
-      },
+      onError: (error) => {
+          const message =  error?.message || "Failed to verify email";
+          Toast.error(message);
+          },
     });
   };
 

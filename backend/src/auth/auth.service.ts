@@ -284,10 +284,7 @@ export class AuthService {
       }
 
       if (user.signinMethod === SigninMethod.SOCIAL) {
-        return {
-          status: HttpStatus.UNAUTHORIZED,
-          error: 'Please use social login to access your account',
-        };
+        throw new UnauthorizedException('Please use social login to access your account');
       }
 
       const emailToken = await this.jwtService.signAsync(
@@ -322,10 +319,7 @@ export class AuthService {
       }
 
       if (user.signinMethod === SigninMethod.SOCIAL) {
-        return {
-          status: HttpStatus.UNAUTHORIZED,
-          error: 'Please use social login to access your account',
-        };
+        throw new UnauthorizedException('Please use social login to access your account');
       }
 
       if (user.token === token) {
@@ -336,11 +330,7 @@ export class AuthService {
         await this.userRepo.update(user);
         return { status: HttpStatus.OK };
       }
-      return {
-        status: HttpStatus.NOT_ACCEPTABLE,
-        error:
-          'Your password reset link has expired. Please request a new one from the login page',
-      };
+      throw new UnauthorizedException('Your password reset link has expired. Please request a new one from the login page');
 
   }
 
