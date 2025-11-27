@@ -300,11 +300,11 @@ export class AuthService {
 
       const link=`${this.appBaseUrl}/reset-password?token=${emailToken}`
 
-      const test=await this.emailService.sendEmailConformation(
+      await this.emailService.resetPassword(
         {
           name:user.name,
           email,
-          link
+          reset_link:link
         })
 
       return { status: HttpStatus.OK };

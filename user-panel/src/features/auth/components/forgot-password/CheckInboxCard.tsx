@@ -13,7 +13,7 @@ const CheckInboxCard = () => {
   return (
     <CardWrapper className="flex h-svh min-w-[40vw] flex-col items-center justify-center space-y-6 p-4 sm:h-auto md:p-8">
       <div className="flex size-12 items-center justify-center rounded-full bg-tertiary-50">
-        <SmsIcon className="text-tertiary-500" />
+        <SmsIcon color="#307E7E" className="text-tertiary-500" />
       </div>
 
       <div className="space-y-1">
