@@ -68,4 +68,30 @@ export class EmailService {
       this.config.get<string>('EMAILJS_TEMPLATE_EMAIL_CONFORMATION') || '';
     return this.send(templateId, opts);
   }
+
+  async sendEmailUserBookConfirmation(opts: {
+    name:string;
+    email: string;
+    service_name: string;
+    order_id: string;
+    amount: number;
+    date: string;
+    link: string;
+  }): Promise<boolean> {
+    const templateId =
+      this.config.get<string>('EMAILJS_TEMPLATE_USER_BOOK_CONFIRMATION') || '';
+    return this.send(templateId, opts);
+  }
+
+  async sendEmailProviderBookConfirmation(opts: {
+    provider_name:string;
+    email: string;
+    service_name: string;
+    order_id: string;
+    link: string;
+  }): Promise<boolean> {
+    const templateId =
+      this.config.get<string>('EMAILJS_TEMPLATE_PROVIDER_BOOK_CONFIRMATION') || '';
+    return this.send(templateId, opts);
+  }
 }

@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { Repository } from 'typeorm';
 import { ReviewEntity } from './entities/review.entity';
+import { CreateReviewDto, CreateReviewRepoDto } from './dto/review.dto';
 
 @Injectable()
 export class ReviewRepository {
@@ -20,9 +21,9 @@ export class ReviewRepository {
     return review;
   }
 
-  async createReview(reviewData: Partial<ReviewEntity>): Promise<ReviewEntity> {
+  async createReview(reviewData: CreateReviewRepoDto): Promise<ReviewEntity> {
     const review = this.reviewRepository.create(reviewData);
-    return await this.reviewRepository.save(review);
+    return  await this.reviewRepository.save(review);
   }
 
   async updateReview(

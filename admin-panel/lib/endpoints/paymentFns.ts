@@ -149,6 +149,38 @@ export const getStatsFn = async (params: GetStatsParams) => {
   }
 };
 
+export const getPayments = async (
+    limit: number,
+    offset: number,
+) => {
+    try {
+        const res = await Request<GetAllPaymentsFnRes>({
+            method: "get",
+            url: "/payment/",
+            params: { limit, offset },
+        });
+
+        return res.data;
+    } catch (e) {
+        if (isAxiosError(e)) {
+            if (e.response?.status === 404) {
+                return {
+                    data: [],
+                    meta: {
+                        total: 0,
+                        page: 1,
+                        totalPages: 1,
+                        limit: 10,
+                    },
+                };
+            }
+        }
+        throw e;
+    }
+
+    //
+};
+
 export const getPaymentsByUserIdFn = async (
   userId: string,
   limit: number,

@@ -67,14 +67,14 @@ export class PaymentService {
     }
   }
 
-  async getAllPayments(){
-    const payments = await this.paymentRepo.getAllPayments();
-    if (!payments || payments.length === 0) {
-      return { status: HttpStatus.NOT_FOUND };
-    }
-
-    return { status: HttpStatus.OK, data: payments };
-  }
+  // async getAllPayments(){
+  //   const payments = await this.paymentRepo.getAllPayments();
+  //   if (!payments || payments.length === 0) {
+  //     return { status: HttpStatus.NOT_FOUND };
+  //   }
+  //
+  //   return { status: HttpStatus.OK, data: payments };
+  // }
 
   // Service method to get all payments by userId
   // async getAllPaymentsByUserId(
@@ -87,6 +87,41 @@ export class PaymentService {
 
   //   return { status: HttpStatus.OK, data: payments };
   // }
+
+
+  async getAllPayments({
+                                 limit,
+                                 offset,
+                               }: {
+    limit?: number;
+    offset?: number;
+  }) {
+    try {
+      let payments, total;
+
+      const { paymentList, count } = await this.paymentRepo.getAllPayments({
+        limit,
+        offset,
+      });
+      payments = paymentList;
+      total = count;
+
+      if (
+        payments instanceof Array &&
+        payments.length > 0 &&
+        payments[0] instanceof PaymentEntity &&
+        total
+      ) {
+        return {
+          data: { data: payments, meta: { total, limit, offset } },
+        };
+      }
+      throw new NotFoundException("payment not found")
+    } catch (e) {
+      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
+    }
+  }
+
 
   async getAllPaymentsByUserId({
     limit,

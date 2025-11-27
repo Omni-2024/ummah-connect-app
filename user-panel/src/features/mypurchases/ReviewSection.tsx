@@ -9,7 +9,7 @@ import { StarRating } from "./StarRating"
 
 interface ReviewSectionProps {
   serviceId: string
-  status: string
+  status: string,
 }
 
 function formatDate(dateString: string): string {
