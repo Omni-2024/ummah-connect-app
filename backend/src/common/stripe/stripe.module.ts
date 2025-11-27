@@ -8,12 +8,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
 import { Service } from '../../services/entities/service.entity';
 import { Profession } from '../../categories/profession/entities/profession.entity';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
     ServiceModule,
     PaymentModule,
+    EmailModule,
     TypeOrmModule.forFeature([UserEntity, Service, Profession]),
   ],
   providers: [StripeService],
