@@ -19,6 +19,7 @@ import { Toast } from "@/components/base/Toast";
 import { uploadPublicFn } from "@/lib/endpoints/fileUploadFns";
 import { COUNTRY_LIST, MAX_IMAGE_BYTES, languages, COUNTRY_CODES } from "@/lib/constants";
 import { Dropdown } from "@/features/myprofile/Dropdown";
+import CustomSelectUp from "@/components/base/CustomSelect";
 
 const SetupAccountStep = () => {
   const router = useRouter();
@@ -221,25 +222,29 @@ const SetupAccountStep = () => {
 
             <div className="w-full space-y-1">
               <Label>Contact Number</Label>
-              <div className="flex gap-2" ref={dropdownRef}>
+              <div className="flex gap-2">
                 {/* Custom Country Code Dropdown - Opens UPWARDS */}
-                <div className="relative">
+                <div className="relative" ref={dropdownRef}>
                   <button
                     type="button"
                     onClick={() => setIsCountryOpen((prev) => !prev)}
-                    className="w-[110px] px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-left text-sm flex items-center justify-between hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
+                    className="w-[140px] px-3 py-2.5 border border-gray-300 rounded-lg bg-white text-left text-sm flex items-center justify-between hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors"
                   >
-                    <span className="truncate text-xs">{countryCode}</span>
+                    <span className="truncate">{countryCode}</span>
                     {isCountryOpen ? (
-                      <ChevronUpIcon className="w-4 h-4 ml-1 flex-shrink-0" />
+                      <ChevronUpIcon className="w-4 h-4 ml-1" />
                     ) : (
-                      <ChevronDownIcon className="w-4 h-4 ml-1 flex-shrink-0" />
+                      <ChevronDownIcon className="w-4 h-4 ml-1" />
                     )}
                   </button>
 
-                  {/* Dropdown opens UPWARDS */}
+                  {/* Dropdown opens UPWARDS with fixed positioning */}
                   {isCountryOpen && (
-                    <div className="fixed lg:absolute bottom-full left-4 right-4 lg:left-0 lg:right-auto mb-1 lg:w-[280px] bg-white border border-gray-300 rounded-lg shadow-2xl z-50 max-h-64 overflow-hidden">
+                    <div className="fixed z-[9999] w-[280px] bg-white border border-gray-300 rounded-lg shadow-2xl max-h-64 overflow-hidden"
+                         style={{
+                           bottom: `calc(100vh - ${dropdownRef.current?.getBoundingClientRect().top}px + 8px)`,
+                           left: `${dropdownRef.current?.getBoundingClientRect().left}px`
+                         }}>
                       <input
                         type="text"
                         placeholder="Search country or code..."
@@ -279,42 +284,44 @@ const SetupAccountStep = () => {
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ""))}
                   placeholder="76543210"
-                  className="flex-1 min-w-0 px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
+                  className="flex-1 px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none text-sm hover:border-gray-400 transition-colors"
                 />
               </div>
             </div>
 
             <div className="w-full space-y-1">
               <Label>Country</Label>
-              <ComboBox
-                onChange={(value) => setCountry(value)}
-                placeholder="Select your country"
+              <CustomSelectUp
                 items={COUNTRY_LIST}
+                value={country}
+                onChange={setCountry}
+                placeholder="Select your country"
+                className="w-full max-w-sm"
               />
             </div>
 
             <div className="w-full space-y-1">
               <Label>Languages</Label>
-              <ComboBox
+              <CustomSelectUp
+                items={languages.map(l => ({ value: l.label, label: l.label }))}
+                value={selectedLanguages[0] || ""}
                 onChange={handleLanguageSelect}
-                placeholder="Select languages you speak"
-                items={languages.map(lang => ({
-                  label: lang.label,
-                  value: lang.label
-                }))}
+                placeholder="Add language"
+                className="w-full max-w-sm"
               />
+
+              {/* Show selected languages as chips */}
               {selectedLanguages.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-2">
+                <div className="flex flex-wrap gap-2 mt-3">
                   {selectedLanguages.map((lang) => (
                     <span
                       key={lang}
-                      className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-dark-50 text-dark-600 border border-dark-100"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800"
                     >
                       {lang}
                       <button
-                        type="button"
                         onClick={() => setSelectedLanguages(prev => prev.filter(l => l !== lang))}
-                        className="ml-1 text-dark-400 hover:text-dark-600"
+                        className="ml-2 hover:text-emerald-900"
                       >
                         ×
                       </button>
