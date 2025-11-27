@@ -23,7 +23,13 @@ const EnterEmailCard = () => {
         setForgotPasswordStep("check-inbox");
       },
       onError: (error) => {
-          const message =  error?.message || "Failed to verify email";
+          const apiError = error as { response?: { data?: any; status?: number; statusText?: string } };
+          const message =
+              apiError?.response?.data?.message ||
+              apiError?.response?.data?.error ||
+              apiError?.response?.statusText ||
+              (error instanceof Error ? error.message : "") ||
+              "Something went wrong";
           Toast.error(message);
           },
     });
