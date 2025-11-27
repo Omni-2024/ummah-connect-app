@@ -1,5 +1,6 @@
 "use client"
 
+import ProviderPayments from "@/features/revenue/revenue-dashboard"
 import RevenueDashboard from "@/features/revenue/revenue-dashboard" // 👈 
 
 export default function AdminRevenuePage() {
@@ -13,7 +14,7 @@ export default function AdminRevenuePage() {
       </div>
 
       {/* Revenue Dashboard */}
-      <RevenueDashboard />
+      <ProviderPayments />
     </div>
   )
 }

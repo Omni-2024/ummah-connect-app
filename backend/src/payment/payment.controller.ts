@@ -66,7 +66,7 @@ export class PaymentController {
         return await this.paymentService.deletePayment(id);
     }
 
-
+    @Roles([UserRole.USER, UserRole.BUSINESS_ADMIN, UserRole.ADMIN, UserRole.ROOT])
     @Get('service/:serviceId')
     async getAllPaymentsByServiceId(
         @Param('serviceId') serviceId: string,

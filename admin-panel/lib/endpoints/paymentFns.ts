@@ -157,7 +157,7 @@ export const getPaymentsByUserIdFn = async (
   try {
     const res = await Request<GetAllPaymentsFnRes>({
       method: "get",
-      url: "/payment/user",
+      url: "/api/payment/user",
       params: { userId, limit, offset },
     });
 
@@ -187,7 +187,7 @@ export const getPaymentsByServiceFn = async (id: string) => {
   try {
     const res = await Request<GetAllPaymentsFnRes>({
       method: "get",
-      url: `/payment/service/${id}`,
+      url: `/api/payment/service/${id}`,
     });
     return res.data;
   } catch (e) {
@@ -211,7 +211,7 @@ export const getPaymentsByServiceFn = async (id: string) => {
 export const getPaymentByIdFn = async (userId: string, serviceId: string) => {
   const res = await Request<Payment>({
     method: "get",
-    url: `/payment/single/payment`,
+    url: `/api/payment/single/payment`,
     params: { userId, serviceId },
   });
   return res.data;
