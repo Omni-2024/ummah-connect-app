@@ -23,6 +23,7 @@ import { AbstractProfessionCategoryEntity } from '../../categories/profession/en
 import { ProfessionRepository } from '../../categories/profession/profession.repository';
 import { UpsertPaymentDto } from '../../payment/dto/payment.dto';
 import { PaymentService } from '../../payment/payment.service';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class StripeService {
@@ -41,6 +42,7 @@ export class StripeService {
     private readonly serviceRepo: ServiceRepository,
     private readonly professionRepo: ProfessionRepository,
     private readonly paymentService: PaymentService,
+    private readonly emailService: EmailService,
 
   ) {
     this.r2BaseUrl=this.configService.getOrThrow<string>('R2_PUBLIC_BASE_URL')
@@ -303,15 +305,43 @@ export class StripeService {
           if (enrollData.serviceId) {
             const service=await this.serviceRepo.getServiceById({id:enrollData.serviceId})
 
-
             if (!service) {
-              throw new BadRequestException('Course not found');
+              throw new BadRequestException('Service not found');
             }
+
+            const provider = await this.userRepo.findOneById(service.providerId);
+
+
+            if (!provider) {
+              throw new BadRequestException('Provider not found');
+            }
+
 
             const { title, slug } = Array.isArray(service)
               ? service[0]
               : service;
 
+            await this.emailService.sendEmailUserBookConfirmation(
+              {
+                name:user.name,
+                email:user.email,
+                service_name:service.title ,
+                order_id: service.id,
+                amount:service.price ,
+                date: "",
+                link: "https://ummahconnect.online/my-purchases"
+              }
+            );
+
+            await this.emailService.sendEmailProviderBookConfirmation(
+              {
+                provider_name:provider.name,
+                email:provider.email,
+                service_name:service.title ,
+                order_id: service.id,
+                link: "https://admin.ummahconnect.online/admin/orders"
+              }
+            );
 
             // Send the email
             //TODO:email
