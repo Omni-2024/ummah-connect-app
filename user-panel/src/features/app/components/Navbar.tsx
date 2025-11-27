@@ -238,6 +238,9 @@ const NotLoggedInNavbar = ({
             {/*))}*/}
 
             <div className="flex items-center justify-center gap-4">
+              <Link href="/start-selling" >
+              <Button variant="unstyled">Become a Seller</Button>
+              </Link>
               <Link href="/user/login">
                 <Button variant="secondary" disabled={isLoading}>
                   Login
