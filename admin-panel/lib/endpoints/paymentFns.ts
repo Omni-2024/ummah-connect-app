@@ -149,15 +149,20 @@ export const getStatsFn = async (params: GetStatsParams) => {
   }
 };
 
+interface GetAllPaymentFns{
+
+    limit: number;
+    offset: number;
+
+}
 export const getPayments = async (
-    limit: number,
-    offset: number,
+    params: GetAllPaymentFns
 ) => {
     try {
         const res = await Request<GetAllPaymentsFnRes>({
             method: "get",
-            url: "/payment/",
-            params: { limit, offset },
+            url: "/api/payment/",
+            params: params,
         });
 
         return res.data;

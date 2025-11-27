@@ -117,7 +117,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card"
 import Button from "@/components/base/button"
 import { getAllGeneralProvidersFn } from "@/lib/endpoints/providersFns"
-import { getPaymentsByServiceFn, Payment } from "@/lib/endpoints/paymentFns"
+import { getPayments, getPaymentsByServiceFn, Payment } from "@/lib/endpoints/paymentFns"
 import type { UserData } from "@/types/data"
 import { Avatar, AvatarFallback } from "@/components/base/avatar"
 import { Badge } from "@/components/base/badge"
@@ -155,7 +155,7 @@ export default function ProviderPayments() {
         const allPayments: PaymentRecord[] = []
 
         for (const provider of providerData) {
-          const paymentsRes = await getPaymentsByServiceFn(provider.id) // assuming serviceId = provider.id
+          const paymentsRes = await getPayments({ limit: 100, offset: 0} ) // assuming serviceId = provider.id
           const paymentData: Payment[] = paymentsRes.data
 
           const mapped = paymentData.map(p => ({

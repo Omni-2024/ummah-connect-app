@@ -43,7 +43,7 @@ export class PaymentController {
         });
     }
 
-    @Roles([UserRole.USER, UserRole.BUSINESS_ADMIN, UserRole.ROOT])
+    @Roles([UserRole.USER, UserRole.BUSINESS_ADMIN, UserRole.ROOT, UserRole.ADMIN])
     @Get()
     async getAllPayments(
       @Query('limit') limit?: number,
