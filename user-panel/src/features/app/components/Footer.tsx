@@ -69,13 +69,13 @@ export default function Footer() {
               </li>
               <li>
                 <button 
-                  onClick={() => handleNavigation('/instructors')}
+                  onClick={() => handleNavigation('/start-selling')}
                   className="text-sm text-gray-700 hover:text-blue-600 transition-colors"
                 >
-                  Find Instructors
+                  Become a Seller
                 </button>
               </li>
-              <li>
+              {/* <li>
                 <button 
                   onClick={() => handleNavigation('/certifications')}
                   className="text-sm text-gray-700 hover:text-blue-600 transition-colors"
@@ -90,7 +90,7 @@ export default function Footer() {
                 >
                   Community
                 </button>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -143,7 +143,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link 
-                  href="/privacy"
+                  href="/privacy-policy"
                   className="text-sm text-gray-700 hover:text-blue-600 transition-colors"
                 >
                   Privacy Policy
