@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import {useEffect, useState} from "react"
 import Link from "next/link"
 import {
   Activity,
@@ -35,6 +35,8 @@ import {
 import { GetStatsParams, ScopeType } from "@/lib/endpoints/paymentFns"
 import { useStats } from "@/hooks/usePayments"
 import { Skeleton } from "./skeleton/skeleton"
+import {useCurrentUser} from "@/lib/hooks/useUserInfo";
+import {USER_ROLES} from "@/lib/constants";
 
 /* utils */
 function fmtNumber(n?: number) {
@@ -47,11 +49,25 @@ function fmtCurrency(n?: number) {
 }
 
 export default function ModernAdminDashboard() {
+  const {data,isError:userDataError}=useCurrentUser()
   const [params, setParams] = useState<GetStatsParams>({
     scope: ScopeType.LAST_30D,
     groupBy: "day",
     topLimit: 5,
-  } as GetStatsParams)
+    providerId : null
+} as GetStatsParams)
+
+    useEffect(() => {
+        if (data) {
+            console.log("Updating params after user loaded", data.role, data.id);
+
+            setParams(prev => ({
+                ...prev,
+                providerId:
+                    data.role === String (USER_ROLES.BUSINESS_ADMIN) ? data.id : null,
+            }));
+        }
+    }, [data]);
 
   const {
     data: stats,
