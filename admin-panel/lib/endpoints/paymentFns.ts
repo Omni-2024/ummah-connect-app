@@ -26,7 +26,7 @@ export interface GetStatsParams {
   year?: number;
   start?: string;
   end?: string;
-  providerId?: string;
+  providerId?: string | null;
   topLimit?: number;
 }
 

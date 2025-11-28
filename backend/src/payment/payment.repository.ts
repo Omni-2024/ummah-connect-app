@@ -163,6 +163,11 @@ export class PaymentRepository {
   async aggregateStats(args: AggregateArgs): Promise<AggregateReturn> {
       const { start, end, groupBy, topLimit, scope } = args;
 
+      const amountField =
+        scope.mode === 'GLOBAL'
+          ? 'p.platform_fee_amount'
+          : 'p.provider_amount';
+
       // base payments query
       const baseQB = this.paymentRepository
         .createQueryBuilder('p')
@@ -176,8 +181,9 @@ export class PaymentRepository {
     }
 
     // payments-based totals (revenue, orders)
-    const payTotals = await baseQB.clone()
-      .select('COALESCE(SUM(p.amount), 0)', 'revenue')
+    const payTotals = await baseQB
+      .clone()
+      .select(`COALESCE(SUM(${amountField}), 0)`, 'revenue')
       .addSelect('COUNT(*)', 'paymentsCount')
       .getRawOne<{ revenue: string | number; paymentsCount: string | number }>();
 
