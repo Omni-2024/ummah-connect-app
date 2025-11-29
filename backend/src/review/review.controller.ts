@@ -50,7 +50,7 @@ export class ReviewController {
   @Public()
   @Get('provider')
   async getReviewByProvider(
-    @Param('providerId') providerId: string,
+    @Query('providerId') providerId: string,
     @Query('limit') limit?: number,
     @Query('offset') offset?: number,
     @Query('stars') stars?: number,
