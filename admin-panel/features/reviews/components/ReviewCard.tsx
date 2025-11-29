@@ -8,7 +8,7 @@ type ReviewCardProps = {
 
 export default function ReviewCard({ review }: ReviewCardProps) {
   return (
-    <div className="border rounded-xl bg-white shadow p-4 flex gap-4">
+    <div className="border rounded-xl hover:shadow-sm transition-all duration-200 border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white p-4 flex gap-4">
       <img
         src={review.userImageUrl}
         className="w-12 h-12 rounded-full border object-cover"
