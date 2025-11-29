@@ -76,3 +76,12 @@ export const catchAxiosErrorTyped = async <T>(
 };
 
 export default Request;
+
+export type WithPagination<T> = {
+  data: T[];
+  meta: {
+    total: number;
+    limit: number;
+    offset: number;
+  };
+};

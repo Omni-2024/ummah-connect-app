@@ -77,10 +77,13 @@ export class PaymentController {
     return await this.paymentService.deletePayment(id);
   }
 
-  @Get('service/:serviceId')
-  async getAllPaymentsByServiceId(@Param('serviceId') serviceId: string) {
-    return await this.paymentService.getAllPaymentsByServiceId(serviceId);
-  }
+    @Roles([UserRole.USER, UserRole.BUSINESS_ADMIN, UserRole.ADMIN, UserRole.ROOT])
+    @Get('service/:serviceId')
+    async getAllPaymentsByServiceId(
+        @Param('serviceId') serviceId: string,
+    ) {
+        return await this.paymentService.getAllPaymentsByServiceId(serviceId);
+    }
 
   @Roles([UserRole.USER, UserRole.BUSINESS_ADMIN])
   @Get('single/payment')
