@@ -113,7 +113,7 @@ export class PaymentService {
         total
       ) {
         return {
-          data: { data: payments, meta: { total, limit, offset } },
+           data: payments, meta: { total, limit, offset } ,
         };
       }
       throw new NotFoundException("payment not found")
