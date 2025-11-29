@@ -1,6 +1,8 @@
 "use client"
 
-import ProviderPayments from "@/features/revenue/revenue-dashboard"
+// import ProviderPaymentsProviderView from "@/features/revenue/payments/provider-payment"
+// import ProviderPayments from "@/features/revenue/payments/provider-payment"
+import ProviderPaymentsMerged from "@/features/revenue/revenue-dashboard"
 import RevenueDashboard from "@/features/revenue/revenue-dashboard" // 👈 
 
 export default function AdminRevenuePage() {
@@ -14,7 +16,7 @@ export default function AdminRevenuePage() {
       </div>
 
       {/* Revenue Dashboard */}
-      <ProviderPayments />
+      <ProviderPaymentsMerged />
     </div>
   )
 }
