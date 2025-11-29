@@ -1,130 +1,3 @@
-
-// "use client"
-
-// import { useEffect, useState } from "react"
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card"
-// import Button from "@/components/base/button"
-// import { getPayments, type Payment } from "@/lib/endpoints/paymentFns"
-// import { getAllServicesFn, type Service } from "@/lib/endpoints/serviceFns"
-// import { Avatar, AvatarFallback } from "@/components/base/avatar"
-// import { Badge } from "@/components/base/badge"
-// import { Calendar } from "lucide-react"
-// import dayjs from "dayjs"
-// import ProviderPaymentsSkeleton from "./skeleton/ProviderCardSkeleton"
-// import { useAuthState } from "@/features/auth/context/useAuthState"
-
-// export default function ProviderPaymentsProviderView() {
-//   const { id: providerId } = useAuthState() // logged-in provider id
-//   const [payments, setPayments] = useState<Payment[]>([])
-//   const [services, setServices] = useState<Service[]>([])
-//   const [loading, setLoading] = useState(true)
-//   const [visibleCount, setVisibleCount] = useState(20)
-
-//   useEffect(() => {
-//     async function fetchData() {
-//       if (!providerId) return
-//       try {
-//         // fetch all services for this provider
-//         const servicesRes = await getAllServicesFn({ limit: 500, offset: 0 })
-//         const providerServices = servicesRes.data?.filter(s => s.providerId === providerId) ?? []
-//         setServices(providerServices)
-
-//         // fetch all payments and filter by provider's services
-//         const paymentsRes = await getPayments({ limit: 500, offset: 0 })
-//         const providerServiceIds = providerServices.map(s => s.id)
-//         const providerPayments = paymentsRes.data?.data?.filter(p => providerServiceIds.includes(p.serviceId)) ?? []
-//         setPayments(providerPayments)
-//       } catch (err) {
-//         console.error("Failed to load provider payments", err)
-//       } finally {
-//         setLoading(false)
-//       }
-//     }
-
-//     fetchData()
-//   }, [providerId])
-
-//   const getReceiveStatusColor = (status: string) => {
-//     switch (status) {
-//       case "succeeded": return "bg-green-100 text-green-800"
-//       case "failed": return "bg-red-100 text-red-800"
-//       default: return "bg-yellow-100 text-yellow-800"
-//     }
-//   }
-
-//   if (!providerId) return <p>Please log in to view your payments.</p>
-
-//   return (
-//     <div className="space-y-4">
-//       {loading ? (
-//         <ProviderPaymentsSkeleton count={3} />
-//       ) : payments.length === 0 ? (
-//         <p className="text-center text-muted-foreground">No payments found.</p>
-//       ) : (
-//         <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}>
-//           {payments.slice(0, visibleCount).map(p => {
-//             const service = services.find(s => s.id === p.serviceId)
-//             const payerName = p.userId ?? "Unknown User" // assuming your payment has userName, otherwise use userId
-
-//             return (
-//               <Card key={p.paymentIntent} className="border-primary-100 hover:border-primary/30 bg-white rounded-xl flex flex-col justify-between">
-//                 <CardHeader className="flex flex-row items-start justify-between pb-3 border-b border-primary-100">
-//                   <div className="flex items-start gap-3 w-full">
-//                     <Avatar>
-//                       <AvatarFallback>{payerName[0]?.toUpperCase()}</AvatarFallback>
-//                     </Avatar>
-
-//                     <div className="flex flex-col flex-1">
-//                       <CardTitle className="text-md font-bold text-primary leading-snug">
-//                         {p.serviceName}
-//                       </CardTitle>
-
-//                       <p className="text-sm mt-1 text-primary-700 bg-primary-50 px-2 py-1 rounded-full border w-fit">
-//                         {payerName}
-//                       </p>
-//                     </div>
-//                   </div>
-
-//                   <Badge className={getReceiveStatusColor(p.status)}>
-//                     {p.status === "succeeded" ? "Succeeded" : p.status === "failed" ? "Failed" : "Pending"}
-//                   </Badge>
-//                 </CardHeader>
-
-//                 <CardContent className="pt-4 space-y-3">
-//                   <div className="flex justify-between text-sm">
-//                     <span className="text-muted-foreground">Paid to Provider</span>
-//                     <span className="font-semibold text-lg">
-//                       ${(p.provider_amount ?? p.amount_gross ?? p.amount).toFixed(2)}
-//                     </span>
-//                   </div>
-
-//                   <div className="flex justify-between text-sm">
-//                     <span className="text-muted-foreground">Paid Date</span>
-//                     <span className="flex items-center gap-1 font-semibold text-sm">
-//                       <Calendar className="w-4 h-4" />
-//                       {dayjs(p.updatedAt).format("MMM D, YYYY")}
-//                     </span>
-//                   </div>
-//                 </CardContent>
-//               </Card>
-//             )
-//           })}
-//         </div>
-//       )}
-
-//       {!loading && visibleCount < payments.length && (
-//         <Button onClick={() => setVisibleCount(v => v + 20)} className="mt-4 w-full">
-//           Load More
-//         </Button>
-//       )}
-//     </div>
-//   )
-// }
-
-//PROVIDER payments VIEW FOR BUSINESS ADMIN ONLY
-
-
-
 "use client"
 
 import { useEffect, useState } from "react"
@@ -133,7 +6,7 @@ import Button from "@/components/base/button"
 import { getPayments, type Payment } from "@/lib/endpoints/paymentFns"
 import { getAllServicesFn, type Service } from "@/lib/endpoints/serviceFns"
 import { getAllGeneralProvidersFn } from "@/lib/endpoints/providersFns"
-import { getAllGeneralUsersFn, type UserData } from "@/lib/endpoints/usersFns"
+import { getAllGeneralUsersFn } from "@/lib/endpoints/usersFns"
 import { Avatar, AvatarFallback } from "@/components/base/avatar"
 import { Badge } from "@/components/base/badge"
 import { Calendar } from "lucide-react"
@@ -141,6 +14,7 @@ import dayjs from "dayjs"
 import ProviderPaymentsSkeleton from "./skeleton/ProviderCardSkeleton"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import { ADMIN_ROLES } from "@/lib/constants"
+import {UserData} from "@/types/data";
 
 export default function ProviderPaymentsMerged() {
   const { id: userId, role } = useAuthState()
@@ -164,7 +38,7 @@ export default function ProviderPaymentsMerged() {
         setServices(fetchedServices)
 
         const paymentsRes = await getPayments({ limit: 500, offset: 0 })
-        const allPayments = paymentsRes.data?.data ?? []
+        const allPayments = paymentsRes.data ?? []
 
         if (role === ADMIN_ROLES.BUSINESS_ADMIN && userId) {
           // Business admin: show only their services/payments
