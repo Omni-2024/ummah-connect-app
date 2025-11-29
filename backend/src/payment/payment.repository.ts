@@ -183,7 +183,7 @@ export class PaymentRepository {
     // payments-based totals (revenue, orders)
     const payTotals = await baseQB
       .clone()
-      .select(`COALESCE(SUM(${amountField}) * 100, 0)`, 'revenue')
+      .select(`(COALESCE(SUM(${amountField}), 0) / 100.0)::numeric`, 'revenue')
       .addSelect('COUNT(*)', 'paymentsCount')
       .getRawOne<{ revenue: string | number; paymentsCount: string | number }>();
 
