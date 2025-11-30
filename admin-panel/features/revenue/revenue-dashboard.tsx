@@ -47,32 +47,56 @@ export default function ProviderPaymentsMerged() {
     );
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      if (!role) return;
-      setLoading(true);
+useEffect(() => {
+  async function fetchData() {
+    if (!role) return;
+    setLoading(true);
 
-      try {
-        const servicesRes = await getAllServicesFn({ limit: 500, offset: 0 });
-        setServices(servicesRes.data ?? []);
+    try {
+      const servicesRes = await getAllServicesFn({ limit: 500, offset: 0 });
+      const servicesList = servicesRes.data ?? [];
+      setServices(servicesList);
 
-        if (role === ADMIN_ROLES.ADMIN) {
-          const providersRes = await getAllGeneralProvidersFn({ limit: 100, offset: 0 });
-          setProviders(providersRes.data ?? []);
-          if ((providersRes.data ?? []).length > 0) setSelectedProviderId(providersRes.data[0].id);
+      if (role === ADMIN_ROLES.ADMIN) {
+        const providersRes = await getAllGeneralProvidersFn({ limit: 500, offset: 0 });
+        const providersList = providersRes.data ?? [];
+        setProviders(providersList);
 
-          const usersRes = await getAllGeneralUsersFn({ limit: 500, offset: 0 });
-          setUsers(usersRes.data ?? []);
+        const usersRes = await getAllGeneralUsersFn({ limit: 500, offset: 0 });
+        setUsers(usersRes.data ?? []);
+
+        // 👉 Fetch payments only once (for provider chooser)
+        const paymentsRes = await getPayments({ limit: 500, offset: 0 });
+        const allPayments = paymentsRes.data ?? [];
+
+        // Map provider -> services owned
+        const providersWithPayments = providersList.filter((p) => {
+          // Get provider services
+          const providerServiceIds = servicesList
+            .filter((s) => s.providerId === p.id)
+            .map((s) => s.id);
+
+          if (providerServiceIds.length === 0) return false;
+
+          // Check payments
+          return allPayments.some((pay) => providerServiceIds.includes(pay.serviceId));
+        });
+
+        // Default: first provider who has payments
+        if (providersWithPayments.length > 0) {
+          setSelectedProviderId(providersWithPayments[0].id);
         }
-      } catch (err) {
-        console.error("Failed to load initial data", err);
-      } finally {
-        setLoading(false);
       }
+    } catch (err) {
+      console.error("Failed to load initial data", err);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    fetchData();
-  }, [role, userId]);
+  fetchData();
+}, [role, userId]);
+
 
   useEffect(() => {
     async function fetchPayments() {
