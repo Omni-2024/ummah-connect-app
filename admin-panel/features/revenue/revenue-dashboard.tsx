@@ -1,95 +1,124 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card"
-import Button from "@/components/base/button"
-import { getPayments, type Payment } from "@/lib/endpoints/paymentFns"
-import { getAllServicesFn, type Service } from "@/lib/endpoints/serviceFns"
-import { getAllGeneralProvidersFn } from "@/lib/endpoints/providersFns"
-import { getAllGeneralUsersFn } from "@/lib/endpoints/usersFns"
-import { Avatar, AvatarFallback } from "@/components/base/avatar"
-import { Badge } from "@/components/base/badge"
-import { Calendar } from "lucide-react"
-import dayjs from "dayjs"
-import ProviderPaymentsSkeleton from "./skeleton/ProviderCardSkeleton"
-import { useAuthState } from "@/features/auth/context/useAuthState"
-import { ADMIN_ROLES } from "@/lib/constants"
-import {UserData} from "@/types/data";
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/base/card";
+import { getPayments, type Payment } from "@/lib/endpoints/paymentFns";
+import { getAllServicesFn, type Service } from "@/lib/endpoints/serviceFns";
+import { getAllGeneralProvidersFn } from "@/lib/endpoints/providersFns";
+import { getAllGeneralUsersFn } from "@/lib/endpoints/usersFns";
+import { Avatar, AvatarFallback } from "@/components/base/avatar";
+import { Badge } from "@/components/base/badge";
+import { Calendar } from "lucide-react";
+import dayjs from "dayjs";
+import ProviderPaymentsSkeleton from "./skeleton/ProviderCardSkeleton";
+import { useAuthState } from "@/features/auth/context/useAuthState";
+import { ADMIN_ROLES } from "@/lib/constants";
+import { UserData } from "@/types/data";
+import AdvancedPagination from "@/components/widget/advancedPagination";
+import { useAvatarUrl } from "@/hooks/userAvatarUrl";
 
 export default function ProviderPaymentsMerged() {
-  const { id: userId, role } = useAuthState()
+  const { id: userId, role } = useAuthState();
+  const PAGE_SIZE = 20;
 
-  const [payments, setPayments] = useState<Payment[]>([])
-  const [providers, setProviders] = useState<UserData[]>([])
-  const [users, setUsers] = useState<UserData[]>([])
-  const [services, setServices] = useState<Service[]>([])
-  const [loading, setLoading] = useState(true)
-  const [visibleCount, setVisibleCount] = useState(20)
-  const [selectedProviderId, setSelectedProviderId] = useState<string>("")
-  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [providers, setProviders] = useState<UserData[]>([]);
+  const [users, setUsers] = useState<UserData[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedProviderId, setSelectedProviderId] = useState<string>("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPayments, setTotalPayments] = useState(0);
+
+  // Helper component for Avatar
+  const AvatarWithHook = ({ user }: { user?: UserData }) => {
+    const name = user?.name ?? "Unknown";
+    const avatarUrl = useAvatarUrl(user?.profileImage ?? null);
+
+    return (
+      <Avatar>
+        {avatarUrl ? (
+          <img src={avatarUrl} alt={name} className="object-cover w-full h-full" />
+        ) : (
+          <AvatarFallback>{name[0].toUpperCase()}</AvatarFallback>
+        )}
+      </Avatar>
+    );
+  };
 
   useEffect(() => {
     async function fetchData() {
-      if (!role) return
-      setLoading(true)
+      if (!role) return;
+      setLoading(true);
+
       try {
-        const servicesRes = await getAllServicesFn({ limit: 500, offset: 0 })
-        const fetchedServices = servicesRes.data ?? []
-        setServices(fetchedServices)
+        const servicesRes = await getAllServicesFn({ limit: 500, offset: 0 });
+        setServices(servicesRes.data ?? []);
 
-        const paymentsRes = await getPayments({ limit: 500, offset: 0 })
-        const allPayments = paymentsRes.data ?? []
+        if (role === ADMIN_ROLES.ADMIN) {
+          const providersRes = await getAllGeneralProvidersFn({ limit: 100, offset: 0 });
+          setProviders(providersRes.data ?? []);
+          if ((providersRes.data ?? []).length > 0) setSelectedProviderId(providersRes.data[0].id);
 
-        if (role === ADMIN_ROLES.BUSINESS_ADMIN && userId) {
-          // Business admin: show only their services/payments
-          const providerServices = fetchedServices.filter(s => s.providerId === userId)
-          const providerServiceIds = providerServices.map(s => s.id)
-          const providerPayments = allPayments.filter(p => providerServiceIds.includes(p.serviceId))
-          setPayments(providerPayments)
-        } else if (role === ADMIN_ROLES.ADMIN) {
-          // Admin: show all payments
-          setPayments(allPayments)
-
-          const providersRes = await getAllGeneralProvidersFn({ limit: 100, offset: 0 })
-          setProviders(providersRes.data ?? [])
-
-          const usersRes = await getAllGeneralUsersFn({ limit: 500, offset: 0 })
-          setUsers(usersRes.data ?? [])
-
-          if ((providersRes.data ?? []).length > 0) setSelectedProviderId(providersRes.data[0].id)
+          const usersRes = await getAllGeneralUsersFn({ limit: 500, offset: 0 });
+          setUsers(usersRes.data ?? []);
         }
       } catch (err) {
-        console.error("Failed to load payments", err)
+        console.error("Failed to load initial data", err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     }
 
-    fetchData()
-  }, [role, userId])
+    fetchData();
+  }, [role, userId]);
 
-  const serviceToProviderMap = services.reduce<Record<string, string>>((acc, service) => {
-    acc[service.id] = service.providerId
-    return acc
-  }, {})
+  useEffect(() => {
+    async function fetchPayments() {
+      if (!role) return;
+      setLoading(true);
 
-  const filteredPayments =
-    role === ADMIN_ROLES.BUSINESS_ADMIN
-      ? payments
-      : payments.filter(p => serviceToProviderMap[p.serviceId] === selectedProviderId)
+      try {
+        const allServices = services.filter(s =>
+          role === ADMIN_ROLES.BUSINESS_ADMIN ? s.providerId === userId : true
+        );
+
+        let serviceIds = allServices.map(s => s.id);
+
+        if (role === ADMIN_ROLES.ADMIN && selectedProviderId) {
+          serviceIds = allServices.filter(s => s.providerId === selectedProviderId).map(s => s.id);
+        }
+
+        const offset = (page - 1) * PAGE_SIZE;
+        const paymentsRes = await getPayments({ limit: PAGE_SIZE, offset });
+        const allPayments = paymentsRes.data ?? [];
+        const filteredPayments = allPayments.filter(p => serviceIds.includes(p.serviceId));
+
+        setPayments(filteredPayments);
+        setTotalPayments(paymentsRes.meta?.total ?? filteredPayments.length);
+      } catch (err) {
+        console.error("Failed to load payments", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchPayments();
+  }, [page, selectedProviderId, services, role, userId]);
 
   const getReceiveStatusColor = (status: string) => {
     switch (status) {
       case "succeeded":
-        return "bg-green-100 text-green-800"
+        return "bg-green-100 text-green-800";
       case "failed":
-        return "bg-red-100 text-red-800"
+        return "bg-red-100 text-red-800";
       default:
-        return "bg-yellow-100 text-yellow-800"
+        return "bg-yellow-100 text-yellow-800";
     }
-  }
+  };
 
-  if (!role) return <p>Please log in to view payments.</p>
+  if (!role) return <p>Please log in to view payments.</p>;
 
   return (
     <div className="space-y-4">
@@ -97,12 +126,9 @@ export default function ProviderPaymentsMerged() {
         <ProviderPaymentsSkeleton count={3} />
       ) : (
         <>
-          {/* Admin Dropdown Filter */}
           {role === ADMIN_ROLES.ADMIN && (
             <div className="mb-4 w-full flex justify-end relative">
               <div className="w-80 relative">
-                
-
                 <button
                   type="button"
                   className="w-full border border-primary-700 rounded-full px-4 py-4 bg-white text-primary-700 text-left focus:outline-none focus:ring-0 focus:ring-primary-300"
@@ -119,8 +145,9 @@ export default function ProviderPaymentsMerged() {
                         key={pr.id}
                         className="cursor-pointer px-4 py-3 text-primary-700 hover:bg-primary-500 hover:text-white"
                         onClick={() => {
-                          setSelectedProviderId(pr.id)
-                          setDropdownOpen(false)
+                          setSelectedProviderId(pr.id);
+                          setPage(1);
+                          setDropdownOpen(false);
                         }}
                       >
                         {pr.name}
@@ -132,21 +159,26 @@ export default function ProviderPaymentsMerged() {
             </div>
           )}
 
-          {filteredPayments.length === 0 ? (
-            <p className="text-center text-muted-foreground">No payments found.</p>
+          {payments.length === 0 ? (
+            <div className="flex justify-center mt-16">
+              <div className="p-6 w-full max-w-md text-center hover:shadow-sm transition-all duration-200 border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white rounded-2xl">
+                <p className="text-primary text-lg font-semibold">No payments available</p>
+                <p className="text-primary-600 text-sm mt-1">There are no payments to display at this time.</p>
+              </div>
+            </div>
           ) : (
             <div
               className="grid gap-4"
               style={{ gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))" }}
             >
-              {filteredPayments.slice(0, visibleCount).map(p => {
-                const service = services.find(s => s.id === p.serviceId)
-                const provider = providers.find(pr => pr.id === service?.providerId)
-                const payer = users.find(u => u.id === p.userId)
+              {payments.map(p => {
+                const service = services.find(s => s.id === p.serviceId);
+                const provider = providers.find(pr => pr.id === service?.providerId);
+                const payer = users.find(u => u.id === p.userId);
 
                 const providerName =
-                  role === ADMIN_ROLES.ADMIN ? provider?.name ?? "Unknown Provider" : ""
-                const payerName = payer?.name ?? p.userId ?? "Unknown User"
+                  role === ADMIN_ROLES.ADMIN ? provider?.name ?? "Unknown Provider" : "";
+                const payerName = payer?.name ?? p.userId ?? "Unknown User";
 
                 return (
                   <Card
@@ -155,17 +187,7 @@ export default function ProviderPaymentsMerged() {
                   >
                     <CardHeader className="flex flex-row items-start justify-between pb-3 border-b border-primary-100">
                       <div className="flex items-start gap-3 w-full">
-                        <Avatar>
-                          {payer?.profileImage ? (
-                            <img
-                              src={payer.profileImage}
-                              alt={payerName}
-                              className="object-cover w-full h-full"
-                            />
-                          ) : (
-                            <AvatarFallback>{payerName[0]?.toUpperCase()}</AvatarFallback>
-                          )}
-                        </Avatar>
+                        <AvatarWithHook user={payer} />
 
                         <div className="flex flex-col flex-1">
                           <CardTitle className="text-md font-bold text-primary leading-snug">
@@ -222,18 +244,20 @@ export default function ProviderPaymentsMerged() {
                       </div>
                     </CardContent>
                   </Card>
-                )
+                );
               })}
             </div>
           )}
 
-          {!loading && visibleCount < filteredPayments.length && (
-            <Button onClick={() => setVisibleCount(v => v + 20)} className="mt-4 w-full">
-              Load More
-            </Button>
+          {totalPayments > PAGE_SIZE && (
+            <AdvancedPagination
+              currentPage={page}
+              totalPages={Math.ceil(totalPayments / PAGE_SIZE)}
+              onChange={setPage}
+            />
           )}
         </>
       )}
     </div>
-  )
+  );
 }
