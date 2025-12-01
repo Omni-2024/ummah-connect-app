@@ -9,6 +9,7 @@ import {
 } from "@radix-ui/react-icons";
 import { useChat } from "@/components/getStream/chat/ChatContextProvider";
 import { buildAvatarUrl } from "@/features/app/components/Navbar";
+import { useCurrentUser } from "@/lib/hooks/useUser";
 
 interface ServiceContentProps {
   service: any;
@@ -19,6 +20,7 @@ interface ServiceContentProps {
 export default function ServiceContent({ service, educator, providerId }: ServiceContentProps) {
   const router = useRouter();
   const { setUserId } = useChat();
+  const { data: user } = useCurrentUser();
 
   const handleViewProfile = () => {
     if (educator?.id) {
@@ -36,6 +38,10 @@ export default function ServiceContent({ service, educator, providerId }: Servic
   };
 
   const handleChat = () => {
+    if (!user) {
+      router.push("/user/login");
+      return;
+    }
     if (providerId) {
       setUserId(providerId);
     }

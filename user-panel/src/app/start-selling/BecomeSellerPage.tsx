@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from "react"
+import React, { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import Navbar from "@/features/app/components/Navbar"
 import NavbarMobile, { NavbarTitle } from "@/features/app/components/Navbar.mobile"
@@ -28,6 +28,7 @@ import { useCurrentUser } from "@/lib/hooks/useUser"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import envs from "@/lib/env"
 import { IconButton } from "@radix-ui/themes"
+import { ContactFormSection } from "@/features/becomeaseller/ContactFormModal"
 
 // Helper function to build avatar URL (same as in ExplorePage)
 export const buildAvatarUrl = (img?: string | null): string | null => {
@@ -46,6 +47,11 @@ export default function BecomeSellerPage() {
   const [avatarBroken, setAvatarBroken] = useState(false)
 
   const avatarUrl = buildAvatarUrl(user?.profileImage)
+  const formRef = useRef<HTMLDivElement>(null!);
+
+  const scrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const handleLogout = () => {
     logout()
@@ -224,7 +230,7 @@ export default function BecomeSellerPage() {
               <Button 
                 size="lg" 
                 className="bg-white text-emerald-600 hover:bg-gray-100 font-semibold px-6"
-                onClick={handleGetStarted}
+                onClick={scrollToForm}
               >
                 <RocketIcon className="mr-2" />
                 Get Started Now
@@ -404,6 +410,8 @@ export default function BecomeSellerPage() {
             ))}
           </div>
         </div>
+        
+        <ContactFormSection formRef={formRef} />
 
         {/* Final CTA - More Compelling */}
         <div className="py-16">
@@ -416,7 +424,7 @@ export default function BecomeSellerPage() {
               Join thousands of Muslims who've already started their journey to financial independence 
               while serving the Ummah
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
                 className="px-8 py-4 bg-white text-emerald-600 hover:bg-gray-100 font-semibold"
@@ -433,7 +441,7 @@ export default function BecomeSellerPage() {
                 <ChatBubbleIcon className="mr-2" />
                 Talk to Our Team
               </Button>
-            </div>
+            </div> */}
             <p className="text-sm text-emerald-200 mt-6">
               💚 Free to join • 24-hour approval • No hidden fees
             </p>

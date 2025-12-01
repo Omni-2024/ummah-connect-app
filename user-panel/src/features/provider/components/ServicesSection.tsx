@@ -75,8 +75,8 @@ export default function ServicesSection({ services, servicesLoading, router, bui
       ) : services && services.data && services.data.length > 0 ? (
         <>
           {displayedServices.map((service: any) => (
-            <Card key={service.id} className="p-6 hover:shadow-lg transition-shadow">
-              <div className="flex flex-col md:flex-row gap-6">
+            <Card key={service.id} className="p-6 hover:shadow-lg transition-shadow" >
+              <div className="flex flex-col md:flex-row gap-6 cursor-pointer" onClick={() => router.push(`/service/${service.slug}`)}>
                 <div className="md:w-48 flex-shrink-0">
                   {service.coverImageUrl ? (
                     <img
