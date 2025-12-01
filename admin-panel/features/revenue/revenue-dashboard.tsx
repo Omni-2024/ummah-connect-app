@@ -213,7 +213,7 @@ export default function ProviderPaymentsMerged() {
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Paid to Provider</span>
                         <span className="font-semibold text-lg">
-                          ${(p.provider_amount ?? p.amount_gross ?? p.amount).toFixed(2)}
+                          ${Number((p.provider_amount ?? p.amount_gross ?? p.amount).toFixed(2)) /100}
                         </span>
                       </div>
 
@@ -222,14 +222,14 @@ export default function ProviderPaymentsMerged() {
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground">Commission Fee</span>
                             <span className="font-semibold text-lg">
-                              ${(p.platform_fee_amount ?? 0).toFixed(2)}
+                              ${Number((p.platform_fee_amount ?? 0).toFixed(2))/100}
                             </span>
                           </div>
 
                           <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground">Gross Amount</span>
                             <span className="font-semibold text-lg">
-                              ${(p.amount_gross ?? p.amount).toFixed(2)}
+                              ${Number((p.amount_gross ?? p.amount).toFixed(2))/100}
                             </span>
                           </div>
                         </>
