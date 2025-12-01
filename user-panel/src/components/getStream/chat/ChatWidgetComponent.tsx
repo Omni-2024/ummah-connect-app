@@ -156,11 +156,16 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                             ? "w-[900px] h-[650px] max-w-[95vw] max-h-[90vh]"
                                             : "w-96 h-[550px] max-w-[95vw] max-h-[90vh]"
                                 }`}
-                            style={isMobile ? {
-                                top: '1rem',
-                                bottom: '5.5rem', // 5.5rem accounts for bottom bar (4rem/64px) + spacing
-                                height: 'auto'
-                            } : undefined}
+                            style={
+                            isMobile
+                                ? {
+                                    top: "5rem",
+                                    bottom: "6rem",
+                                    height: "auto",
+                                    maxHeight: "80vh",
+                                }
+                                : undefined
+                            }
                         >
                             {/* Chat Header */}
                             <div className="bg-primary-500 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
