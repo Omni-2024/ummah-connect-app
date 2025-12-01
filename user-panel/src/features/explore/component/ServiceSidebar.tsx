@@ -12,6 +12,8 @@ import { useChat } from "@/components/getStream/chat/ChatContextProvider";
 import QuoteRequestModal from "./QuoteRequestModal";
 import { useAppState } from "@/features/app/context/useAppState";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCurrentUser } from "@/lib/hooks/useUser";
+import router from "next/router";
 
 interface ServiceSidebarProps {
   service: any;
@@ -45,23 +47,32 @@ export default function ServiceSidebar({
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [isLearningPointsOpen, setIsLearningPointsOpen] = useState(false);
   const { setShowServiceShareModal } = useAppState();
-
+  const { data: user } = useCurrentUser();
+  
   const handleContactClick = () => {
     setShowContactOptions(!showContactOptions);
   };
 
   const handleGetQuote = () => {
+    if (!user) {
+      router.push("/user/signup");
+      return;
+    }
     setShowContactOptions(false);
     setShowQuoteModal(true);
   };
 
   const handleChat = () => {
+    if (!user) {
+      router.push("/user/signup");
+      return;
+    }
     setShowContactOptions(false);
     if (providerId) {
       setUserId(providerId);
-    }
-    onContact();
-  };
+    onContact?.(); 
+  }
+};
 
   const toggleLearningPoints = () => {
     setIsLearningPointsOpen(!isLearningPointsOpen);

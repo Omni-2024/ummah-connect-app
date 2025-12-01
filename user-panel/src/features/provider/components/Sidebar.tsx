@@ -1,3 +1,5 @@
+"use client";
+
 import { Card } from "@/components/base/Card";
 import Button from "@/components/base/Button";
 import {
@@ -7,6 +9,8 @@ import {
   StarFilledIcon,
 } from "@radix-ui/react-icons";
 import { BuildingLibraryIcon } from "@heroicons/react/16/solid";
+import { useRouter } from "next/navigation";           // ← Correct import
+import { useCurrentUser } from "@/lib/hooks/useUser";   // ← Your auth hook
 
 interface SidebarProps {
   educator: any;
@@ -14,12 +18,24 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ educator, handleContact }: SidebarProps) {
+  const router = useRouter();
+  const { data: user } = useCurrentUser(); // ← null = not logged in
+
   const formatJoinDate = (dateString: string) => {
     if (!dateString) return "Not specified";
     return new Date(dateString).toLocaleDateString("en-US", {
       month: "long",
       year: "numeric",
     });
+  };
+
+  // Protected contact handler
+  const onContactClick = () => {
+    if (!user) {
+      router.push("/user/signup");
+      return;
+    }
+    handleContact(); // Only runs if user is logged in
   };
 
   return (
@@ -35,10 +51,10 @@ export default function Sidebar({ educator, handleContact }: SidebarProps) {
           </div>
         </div>
 
-        {/* Contact Button */}
+        {/* Contact Button - Now Protected */}
         <div>
           <Button
-            onClick={handleContact}
+            onClick={onContactClick}
             variant="primary"
             className="w-full flex items-center justify-center gap-2"
           >
@@ -49,8 +65,6 @@ export default function Sidebar({ educator, handleContact }: SidebarProps) {
 
         {/* Contact Info Section */}
         <div className="border-t border-gray-100 pt-4 space-y-4">
-          {/* <h4 className="font-medium text-gray-900">Contact Information</h4> */}
-
           {/* Location */}
           <div className="flex items-start gap-3">
             <GlobeIcon className="size-4 text-gray-400 mt-1" />
@@ -73,6 +87,7 @@ export default function Sidebar({ educator, handleContact }: SidebarProps) {
             </div>
           </div>
 
+          {/* Organization */}
           <div className="flex items-start gap-3">
             <BuildingLibraryIcon className="size-4 text-gray-400 mt-1" />
             <div>
@@ -96,8 +111,6 @@ export default function Sidebar({ educator, handleContact }: SidebarProps) {
             </div>
           </div>
         </div>
-
-
       </Card>
     </div>
   );

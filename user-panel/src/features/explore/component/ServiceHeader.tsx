@@ -13,6 +13,8 @@ import StudentCountLabel from "@/components/widgets/StudentCountLabel";
 import { buildAvatarUrl } from "@/features/app/components/Navbar";
 import { useChat } from "@/components/getStream/chat/ChatContextProvider";
 import QuoteRequestModal from "./QuoteRequestModal";
+import { useCurrentUser } from "@/lib/hooks/useUser";
+import { useRouter } from "next/navigation";
 
 interface ServiceHeaderProps {
   service: any;
@@ -45,24 +47,33 @@ export default function ServiceHeader({
   const { setUserId } = useChat();
   const [showContactOptions, setShowContactOptions] = useState(false);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
+  const { data: user } = useCurrentUser();
+  const router = useRouter();
 
   const handleContactClick = () => {
     setShowContactOptions(!showContactOptions);
   };
 
   const handleGetQuote = () => {
-    console.log("Get a Quote button clicked");
+    if (!user) {
+      router.push("/user/login");
+      return;
+    }
     setShowContactOptions(false);
     setShowQuoteModal(true);
   };
 
   const handleChat = () => {
+    if (!user) {
+      router.push("/user/login");
+      return;
+    }
     setShowContactOptions(false);
     if (providerId) {
       setUserId(providerId);
-    }
-    onContact();
-  };
+    onContact?.(); // optional chaining in case it's undefined
+  }
+};
 
   return (
     <>
