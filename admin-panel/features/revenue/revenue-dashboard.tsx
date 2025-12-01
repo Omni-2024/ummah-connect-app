@@ -50,8 +50,6 @@ export default function ProviderPaymentsMerged() {
 useEffect(() => {
   async function fetchData() {
     if (!role) return;
-    setLoading(true);
-
     try {
       const servicesRes = await getAllServicesFn({ limit: 500, offset: 0 });
       const servicesList = servicesRes.data ?? [];
@@ -87,6 +85,8 @@ useEffect(() => {
           setSelectedProviderId(providersWithPayments[0].id);
         }
       }
+        setLoading(true);
+
     } catch (err) {
       console.error("Failed to load initial data", err);
     } finally {
