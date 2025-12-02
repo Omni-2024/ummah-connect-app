@@ -32,9 +32,9 @@ export function ProfileHeader() {
     refetch: fetchOnboarding,
   } = useOnboardingLink(profile?.id ?? "");
 
-  // ================================
+  // ===============================
   // 📌 Handle Profile Image Upload
-  // ================================
+  // ===============================
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!profile || !e.target.files?.[0]) return;
 
