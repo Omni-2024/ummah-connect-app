@@ -1,11 +1,11 @@
 "use client"
 
 import React from "react"
-import { ArrowRightIcon } from "@radix-ui/react-icons"
-import { useRouter } from "next/navigation"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import ServiceCard from "@/features/app/components/ServiceCard"
 import { SkeletonServicesCard } from "@/features/explore/component/SkeletonCourseCard"
 import { Service } from "@/types"
+import { cn } from "@/lib/className"
 
 interface RecommendedServicesSectionProps {
   services: Service[]
@@ -18,102 +18,149 @@ function RecommendedServicesSection({
   loading,
   error,
 }: RecommendedServicesSectionProps) {
-  const router = useRouter()
+  const scrollRef = React.useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = React.useState(false)
+  const [canScrollRight, setCanScrollRight] = React.useState(false)
 
+  const updateArrows = () => {
+    if (!scrollRef.current) return
+    const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+    setCanScrollLeft(scrollLeft > 10)
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10)
+  }
+
+  React.useEffect(() => {
+    updateArrows()
+    const ref = scrollRef.current
+    if (ref) {
+      ref.addEventListener("scroll", updateArrows)
+      window.addEventListener("resize", updateArrows)
+      return () => {
+        ref.removeEventListener("scroll", updateArrows)
+        window.removeEventListener("resize", updateArrows)
+      }
+    }
+  }, [services, loading])
+
+  const scrollLeft = () => scrollRef.current?.scrollBy({ left: -300, behavior: "smooth" })
+  const scrollRight = () => scrollRef.current?.scrollBy({ left: 300, behavior: "smooth" })
+
+  const isSingleCard = services.length === 1
+
+  // FULL LOADING STATE — With Header Skeleton + Single Card Centered
   if (loading) {
     return (
       <section className="py-8 sm:py-10 lg:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <div className="inline-flex items-center px-3 py-1.5 bg-emerald-50 rounded-full mb-4">
-              <div className="h-4 sm:h-5 w-24 sm:w-32 bg-gray-200 rounded animate-pulse" />
+          {/* Header Skeleton */}
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-emerald-50 rounded-full mb-4">
+              <div className="h-5 w-48 bg-gray-200 rounded animate-pulse" />
             </div>
-            <div className="h-6 sm:h-8 w-48 sm:w-64 bg-gray-200 rounded mx-auto mb-3 animate-pulse" />
-            <div className="h-4 sm:h-5 w-72 sm:w-96 max-w-full bg-gray-200 rounded mx-auto animate-pulse" />
+            <div className="h-8 sm:h-10 w-64 sm:w-80 bg-gray-200 rounded mx-auto mb-3 animate-pulse" />
+            <div className="h-5 w-72 sm:w-96 max-w-full bg-gray-200 rounded mx-auto animate-pulse" />
           </div>
-          <div className="flex justify-center gap-6 overflow-x-auto scrollbar-hide px-1">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="flex-shrink-0 w-72">
-                <SkeletonServicesCard size="sm" />
-              </div>
-            ))}
+
+          {/* Mobile & Desktop: 1 centered skeleton when loading */}
+          <div className="flex justify-center px-4">
+            <div className="w-72">
+              <SkeletonServicesCard size="sm" />
+            </div>
           </div>
         </div>
       </section>
     )
   }
 
-  if (error) {
-    return (
-      <section className="py-10 sm:py-16 text-center px-4">
-        <p className="text-gray-500 text-sm sm:text-base">
-          {error.message || "Failed to load recommended services."}
-        </p>
-      </section>
-    )
-  }
-
-  if (!services || services.length === 0) return null
-
-  const isSingleCard = services.length === 1
+  if (error || !services || services.length === 0) return null
 
   return (
     <section className="py-8 sm:py-10 lg:py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-8 sm:mb-12 lg:mb-8">
-          <span className="inline-flex items-center px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full text-xs sm:text-sm font-medium mb-3 sm:mb-4">
+        {/* Header */}
+        <div className="text-center mb-8 sm:mb-12">
+          <span className="inline-flex items-center px-4 py-2 bg-emerald-50 text-emerald-700 rounded-full text-sm font-medium mb-4">
             Personalized Learning Path
           </span>
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 sm:mb-3 px-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 mb-3">
             Recommended for You
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto px-4">
+          <p className="text-slate-600 max-w-2xl mx-auto">
             Services tailored to your interests and professional goals
           </p>
         </div>
 
-        {/* Horizontal Scroll Carousel - Same as Trending Section */}
-        <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
-          <div
-            className={`
-              flex gap-6 snap-x snap-mandatory
-              ${isSingleCard ? "justify-center" : "justify-start"}
-              ${isSingleCard ? "md:justify-start" : ""}
-            `}
-            style={
-              isSingleCard
-                ? { width: "fit-content", margin: "0 auto" }
-                : undefined
-            }
+        {/* Carousel Container */}
+        <div className="relative">
+          {/* Left Arrow */}
+          <button
+            onClick={scrollLeft}
+            disabled={!canScrollLeft}
+            className={cn(
+              "absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2.5 shadow-lg transition-all duration-300",
+              canScrollLeft
+                ? "opacity-100 hover:shadow-xl hover:bg-emerald-50"
+                : "opacity-0 pointer-events-none"
+            )}
+            aria-label="Previous"
           >
-            {services.map((service, index) => (
-              <div
-                key={service.id}
-                className="snap-start flex-shrink-0"
-                style={isSingleCard ? { width: "280px" } : undefined} 
-              >
-                <ServiceCard
-                  service={service}
-                  size="sm"
-                  variant="default"
-                  trendingIndex={index} 
-                />
-              </div>
-            ))}
+            <ChevronLeft className="w-6 h-6 text-slate-700" />
+          </button>
+
+          {/* Scrollable Area */}
+          <div
+            ref={scrollRef}
+            className="overflow-x-auto scrollbar-hide scroll-smooth px-4"
+            onScroll={updateArrows}
+          >
+            <div
+              className={cn(
+                "flex gap-6 py-4",
+                isSingleCard && "justify-center"
+              )}
+              style={{
+                // This ensures perfect centering when only one card exists
+                minWidth: isSingleCard ? "fit-content" : "max-content",
+              }}
+            >
+              {services.map((service, index) => (
+                <div
+                  key={service.id}
+                  className="w-72 flex-shrink-0 snap-start"
+                  // Force fixed width so centering works perfectly
+                  style={{ width: "288px" }}
+                >
+                  <ServiceCard
+                    service={service}
+                    size="sm"
+                    variant="default"
+                    trendingIndex={index + 1}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={scrollRight}
+            disabled={!canScrollRight}
+            className={cn(
+              "absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-2.5 shadow-lg transition-all duration-300",
+              canScrollRight
+                ? "opacity-100 hover:shadow-xl hover:bg-emerald-50"
+                : "opacity-0 pointer-events-none"
+            )}
+            aria-label="Next"
+          >
+            <ChevronRight className="w-6 h-6 text-slate-700" />
+          </button>
         </div>
 
-        {services.length > 4 && (
-          <div className="flex justify-center items-center gap-2 mt-4 text-xs sm:text-sm text-gray-500">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16l-4-4m0 0l4-4m-4 4h18" />
-            </svg>
-            <span>Swipe to explore</span>
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </div>
-        )}
+        {/* Mobile hint */}
+        <div className="block md:hidden text-center mt-4 text-xs text-slate-500">
+          Swipe or use arrows to explore
+        </div>
       </div>
     </section>
   )
