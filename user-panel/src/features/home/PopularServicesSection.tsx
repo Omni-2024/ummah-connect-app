@@ -45,7 +45,7 @@ const PopularServicesSection: React.FC<PopularServicesSectionProps> = ({
           <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
             <div className="flex gap-4">
               {[...Array(8)].map((_, i) => (
-                <div key={i} className="flex-shrink-0 w-36 animate-pulse">
+                <div key={i} className="flex-shrink-0 w-36 animate-pulse rounded-2xl ">
                   <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 aspect-square flex flex-col items-center justify-center">
                     <Skeleton className="w-14 h-14 rounded-full mb-3" />
                     <Skeleton className="h-3 w-20 rounded" />
@@ -76,17 +76,19 @@ const PopularServicesSection: React.FC<PopularServicesSectionProps> = ({
                         {/* Subtle hover glow */}
                         <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/5 to-teal-400/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                        {/* Icon */}
+                        {/* Icon*/}
                         <div className="relative z-10 mb-3 flex items-center justify-center w-14 h-14 bg-gradient-to-br from-emerald-100 to-teal-100 group-hover:from-emerald-200 group-hover:to-teal-200 rounded-full transition-all duration-300 shadow-md">
                           <div className="text-emerald-600 group-hover:text-emerald-700">
                             {getCategoryIcon(category.name)}
                           </div>
                         </div>
 
-                        {/* Name */}
-                        <p className="relative z-10 text-xs font-bold text-slate-700 group-hover:text-emerald-700 transition-colors duration-300 leading-tight px-2 line-clamp-2">
-                          {category.name}
-                        </p>
+                        {/* Name*/}
+                        <div className="relative z-10 mt-2 h-8 flex items-center justify-center px-2">
+                          <p className="text-xs font-bold text-slate-700 group-hover:text-emerald-700 transition-colors duration-300 leading-tight line-clamp-2 text-center w-full">
+                            {category.name}
+                          </p>
+                        </div>
                       </button>
                     </div>
                   ))}

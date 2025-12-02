@@ -10,7 +10,7 @@ import { buildAvatarUrl } from "@/features/app/components/Navbar"
 const RECENTLY_VIEWED_KEY = 'recentlyViewedServices'
 const MAX_RECENTLY_VIEWED = 5
 
-// LocalStorage helpers (unchanged)
+
 export const saveRecentlyViewedService = (serviceId: string) => {
   if (typeof window === 'undefined') return
   try {
@@ -38,6 +38,7 @@ interface Props {
   allServices?: Service[]
 }
 
+
 const ServiceCard = ({ service, rank }: { service: Service; rank: number }) => {
   const router = useRouter()
 
@@ -49,11 +50,10 @@ const ServiceCard = ({ service, rank }: { service: Service; rank: number }) => {
   return (
     <div
       onClick={handleClick}
-      className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 border border-slate-100"
+      className="group relative bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 border border-slate-100 h-full flex flex-col"
     >
-
       {/* Image */}
-      <div className="relative h-36 overflow-hidden">
+      <div className="relative h-36 overflow-hidden flex-shrink-0">
         <img
           src={
             service.coverImageUrl
@@ -70,15 +70,15 @@ const ServiceCard = ({ service, rank }: { service: Service; rank: number }) => {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="p-4">
-        <h3 className="font-bold text-slate-900 line-clamp-2 text-sm group-hover:text-emerald-600 transition-colors">
+      {/*Content Area */}
+      <div className="p-4 flex flex-col flex-grow">
+        <h3 className="font-bold text-slate-900 line-clamp-2 text-sm group-hover:text-emerald-600 transition-colors min-h-10">
           {service.title}
         </h3>
-        <p className="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">
+        <p className="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed flex-grow">
           {service.tagline || "Continue exploring"}
         </p>
-        <div className="mt-3 flex items-center justify-between">
+        <div className="mt-4 flex items-center justify-between">
           <span className="text-xs text-emerald-600 flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" />
             Recent
@@ -104,11 +104,8 @@ export default function RecentlyViewedServicesSection({ allServices = [] }: Prop
 
   if (services.length === 0) return null
 
-  const isSingle = services.length === 1
-
   return (
     <section className="py-8 sm:py-10 relative overflow-hidden bg-gradient-to-b from-green-50/30 to-transparent">
-      {/* Decorative background elements */}
       <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-green-200 rounded-full opacity-20 blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 sm:w-96 sm:h-96 bg-emerald-200 rounded-full opacity-20 blur-3xl"></div>
       
@@ -125,22 +122,20 @@ export default function RecentlyViewedServicesSection({ allServices = [] }: Prop
           <p className="text-sm sm:text-base text-slate-600">Continue exploring services you recently viewed</p>
         </div>
 
-        {/* Mobile: Carousel (narrow cards) | Desktop: Grid */}
+        {/* Mobile: */}
         <div className="block lg:hidden">
-          {/* Mobile Horizontal Scroll Carousel */}
-          <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
-            <div
-              className={`
-                flex gap-4 snap-x snap-mandatory
-                ${isSingle ? "justify-center" : "justify-start"}
-              `}
-              style={isSingle ? { width: "fit-content", margin: "0 auto" } : undefined}
+          <div 
+            className="overflow-x-auto scrollbar-hide"
+            style={{ scrollPaddingInline: '1rem' }}
+          >
+            <div 
+              className="flex gap-4 px-4 py-2"
+              style={{ scrollSnapType: 'x mandatory' }}
             >
               {services.map((service, i) => (
                 <div
                   key={service.id}
-                  className="snap-start flex-shrink-0"
-                  style={isSingle ? { width: "260px" } : { width: "280px" }} // Narrower on mobile
+                  className="snap-start flex-shrink-0 w-[280px]"
                 >
                   <ServiceCard service={service} rank={i + 1} />
                 </div>
@@ -148,29 +143,30 @@ export default function RecentlyViewedServicesSection({ allServices = [] }: Prop
             </div>
           </div>
 
-          {/* Mobile Dots */}
+          {/*dots*/}
           {services.length > 1 && (
             <div className="flex justify-center gap-2 mt-6">
               {services.map((_, i) => (
                 <div
                   key={i}
-                  className="h-1.5 rounded-full transition-all duration-300 bg-gray-300"
-                  style={{ width: i === 0 ? "20px" : "6px", backgroundColor: i === 0 ? "#10b981" : "#d1d5db" }}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === 0 ? 'w-8 bg-emerald-500' : 'w-2 bg-gray-300'
+                  }`}
                 />
               ))}
             </div>
           )}
         </div>
 
-        {/* Tablet & Desktop: Grid */}
-        <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        {/* Tablet */}
+        <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 gap-6 lg:hidden">
           {services.map((service, i) => (
             <ServiceCard key={service.id} service={service} rank={i + 1} />
           ))}
         </div>
 
-        {/* Tablet fallback (2–3 columns) */}
-        <div className="hidden sm:grid sm:grid-cols-2 md:grid-cols-3 gap-6 lg:hidden">
+        {/* Desktop */}
+        <div className="hidden lg:grid lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {services.map((service, i) => (
             <ServiceCard key={service.id} service={service} rank={i + 1} />
           ))}
