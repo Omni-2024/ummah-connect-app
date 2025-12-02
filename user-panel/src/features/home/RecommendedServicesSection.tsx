@@ -156,11 +156,6 @@ function RecommendedServicesSection({
             <ChevronRight className="w-6 h-6 text-slate-700" />
           </button>
         </div>
-
-        {/* Mobile hint */}
-        <div className="block md:hidden text-center mt-4 text-xs text-slate-500">
-          Swipe or use arrows to explore
-        </div>
       </div>
     </section>
   )
