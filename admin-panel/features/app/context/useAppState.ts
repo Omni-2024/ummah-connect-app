@@ -12,3 +12,8 @@ export const useAppState = () => {
         setOnboardingSuccess:setOnboardingSuccess,
     };
 };
+
+// const {
+//     setShowNavDrawer,
+//     setShowNotificationsModal,
+// } = useAppState()
