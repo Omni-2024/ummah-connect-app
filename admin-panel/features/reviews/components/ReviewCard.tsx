@@ -1,11 +1,10 @@
 "use client";
 
+import { useAvatarUrl } from "@/hooks/userAvatarUrl";
 import { Review } from "@/lib/endpoints/reviewsFns";
 import { Teacher } from "iconsax-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
-const CDN_BASE = process.env.NEXT_PUBLIC_CDN_URL || "https://pub-08208f7576844a018495f0edfac47490.r2.dev/";
 
 type ReviewCardProps = {
   review: Review;
@@ -13,13 +12,7 @@ type ReviewCardProps = {
 
 export default function ReviewCard({ review }: ReviewCardProps) {
   const [imageError, setImageError] = useState(false);
-
-  // FIX: Normalize image source
-  const avatarSrc = (() => {
-    if (!review.userImageUrl) return null;
-    if (review.userImageUrl.startsWith("http")) return review.userImageUrl;
-    return CDN_BASE + review.userImageUrl; // prepend for local / R2
-  })();
+    const avatarSrc = useAvatarUrl(review.userImageUrl);
 
   useEffect(() => {
     setImageError(false);
@@ -30,18 +23,18 @@ export default function ReviewCard({ review }: ReviewCardProps) {
 
       {/* === AVATAR === */}
       <div className="relative w-14 h-14 rounded-full border-2 border-[#337f7c] overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-500">
-        {imageError || !avatarSrc ? (
-          <Teacher className="w-full h-full p-3 text-white" />
-        ) : (
-          <Image
-            src={avatarSrc}
-            alt={review.userName ?? "User Avatar"}
-            fill
-            className="object-cover rounded-full"
-            unoptimized
-            onError={() => setImageError(true)}
-          />
-        )}
+        {imageError ? (
+                                <Teacher />
+                            ) : (
+                                <Image
+                                    src={avatarSrc}
+                                    fill
+                                    alt={review.userImageUrl}
+                                    className="rounded-full object-cover"
+                                    unoptimized
+                                    onError={() => setImageError(true)}
+                                />
+                            )}
       </div>
 
       <div className="flex-1">

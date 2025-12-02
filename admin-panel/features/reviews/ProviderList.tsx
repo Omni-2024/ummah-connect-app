@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useGeneralProviders } from "@/lib/hooks/useGeneralProviders";
-import { Search } from "lucide-react";
+import { Search, X } from "lucide-react";
+import ProviderListSkeleton from "./skeleton/ProviderListReviewSkeleton";
 
 type ProviderListProps = {
   onSelect: (providerId: string) => void;
@@ -12,37 +13,48 @@ export default function ProviderList({ onSelect }: ProviderListProps) {
   const PAGE_SIZE = 10;
   const [page, setPage] = useState(1);
 
-  // sent to API
-  const [search, setSearch] = useState("");
-
-  // user typing
   const [pendingSearch, setPendingSearch] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { data, isLoading, isError, refetch } = useGeneralProviders({
+  const { data, isLoading, isError } = useGeneralProviders({
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
-    search,
+    search: "",
   });
 
-  // page fix
   useEffect(() => {
     if ((data?.data?.length ?? 0) === 0 && page > 1) {
       setPage((prev) => prev - 1);
     }
   }, [data?.data?.length, page]);
 
+  const filteredProviders = useMemo(() => {
+    if (!searchQuery) return data?.data || [];
+    const q = searchQuery.toLowerCase();
+    return (data?.data || []).filter((p) =>
+      p.name.toLowerCase().startsWith(q)
+    );
+  }, [data?.data, searchQuery]);
+
   const handleSelect = (id: string) => {
     setSelectedId(id);
     onSelect(id);
   };
 
-  // Search trigger
   const executeSearch = () => {
-    setSearch(pendingSearch);
+    setSearchQuery(pendingSearch.trim());
     setPage(1);
   };
+
+  const clearSearch = () => {
+    setPendingSearch("");
+    setSearchQuery("");
+    setPage(1);
+  };
+
+  if (isLoading || !data) return <ProviderListSkeleton />;
 
   return (
     <div className="space-y-4 p-4 mt-16 rounded-xl border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white">
@@ -54,15 +66,22 @@ export default function ProviderList({ onSelect }: ProviderListProps) {
           placeholder="Search provider..."
           value={pendingSearch}
           onChange={(e) => setPendingSearch(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") executeSearch();
-          }}
-          className="w-full pl-4 pr-10 py-2 bg-white/80 border border-primary/20 rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+          onKeyDown={(e) => e.key === "Enter" && executeSearch()}
+          className="w-full pl-4 pr-12 py-2 bg-white/80 border border-primary/20 rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
         />
+
+        {pendingSearch && (
+          <button
+            onClick={clearSearch}
+            className="absolute right-10 top-1/2 -translate-y-2.5 text-gray-500 hover:text-red-500 transition"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
 
         <button
           onClick={executeSearch}
-          className="absolute right-2 top-1/2 -translate-y-2.5 p-1.5 rounded-lg bg-primary text-white bg-primary-600 transition"
+          className="absolute right-2 top-1/2 -translate-y-2.5 p-1.5 rounded-lg bg-primary-700 text-white hover:bg-primary-800 transition"
         >
           <Search className="w-4 h-4" />
         </button>
@@ -70,7 +89,7 @@ export default function ProviderList({ onSelect }: ProviderListProps) {
 
       {/* Providers */}
       <ul className="space-y-2 pt-2">
-        {data?.data?.map((provider) => {
+        {filteredProviders.map((provider) => {
           const isSelected = selectedId === provider.id;
           return (
             <li
@@ -89,7 +108,6 @@ export default function ProviderList({ onSelect }: ProviderListProps) {
         })}
       </ul>
 
-      {/* Pagination */}
       {data?.meta?.total && data.meta.total > PAGE_SIZE && (
         <div className="flex justify-between mt-6">
           <button

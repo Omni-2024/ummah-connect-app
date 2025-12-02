@@ -6,7 +6,7 @@ import ReviewList from "@/features/reviews/components/ReviewList";
 import type { ReviewQuery } from "@/features/reviews/components/ReviewList";
 import withAuth from "@/components/withAuth";
 import { ADMIN_ROLES } from "@/lib/constants";
-
+import { Star } from "lucide-react";
 
 
 export default function AdminReviewPage() {
@@ -16,8 +16,7 @@ export default function AdminReviewPage() {
     limit: 10,
     offset: 0,
   });
-  
-  // derive selected provider from query to avoid race between two states
+
   const selectedProviderId = query.providerId || null;
 
   const handleProviderSelect = (providerId: string) => {
@@ -44,7 +43,15 @@ export default function AdminReviewPage() {
               setQuery={setQuery}
             />
           ) : (
-            <p className="text-gray-500">Select a provider to view reviews.</p>
+            <div className="flex flex-col items-center justify-center h-full py-16 border border-dashed border-primary/20 rounded-xl bg-white/60 dark:bg-slate-800/40">
+              <Star className="w-12 h-12 text-primary-500 mb-3" />
+              <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                Select a provider
+              </h2>
+              <p className="text-gray-500 text-sm mt-1">
+                Choose a provider from the panel to view their reviews.
+              </p>
+            </div>
           )}
         </div>
       </div>
@@ -52,8 +59,8 @@ export default function AdminReviewPage() {
   );
 }
 
-
 const Page = withAuth(AdminReviewPage, [
-    ADMIN_ROLES.ADMIN,
-    ADMIN_ROLES.ROOT,
+  ADMIN_ROLES.ADMIN,
+  ADMIN_ROLES.ROOT,
 ]);
+

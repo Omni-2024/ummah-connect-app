@@ -66,23 +66,24 @@ const InterestStep = () => {
             specialists?.map(({ id, name }) => {
               const isSelected = !!selectedInterests.find((i) => i.id === id);
               return (
-                <Button
+                <button
                   key={id}
-                  size="md"
-                  leftIcon={
-                    !isMobile &&
-                    isSelected && (
-                      <div className="flex size-4 items-center justify-center rounded-full bg-white">
-                        <CheckIcon className="size-3 rounded-full text-primary-500" />
-                      </div>
-                    )
-                  }
-                  className="md:min-w-64"
+                  type="button"
+                  className={cn(
+                    "px-4 py-2 inline-flex items-center gap-2 font-secondary justify-center rounded-full text-sm transition-colors focus-visible:outline-none select-none ease-in focus-visible:ring-1 disabled:pointer-events-none cursor-pointer ring-primary-200 border text-center",
+                    isSelected 
+                      ? "bg-primary-500 text-white border-primary-500 hover:bg-primary-500" 
+                      : "bg-white text-primary-500 border-primary-500 hover:bg-primary-50 hover:border-transparent active:text-primary-700 active:border-transparent active:bg-primary-100"
+                  )}
                   onClick={() => onInterestSelect(id)}
-                  variant={isSelected ? "primary" : "secondary"}
                 >
-                  {name}
-                </Button>
+                  {isSelected && !isMobile && (
+                    <div className="flex size-4 items-center justify-center rounded-full bg-white shrink-0">
+                      <CheckIcon className="size-3 text-primary-500" />
+                    </div>
+                  )}
+                  <span className="break-words">{name}</span>
+                </button>
               );
             })
           )}

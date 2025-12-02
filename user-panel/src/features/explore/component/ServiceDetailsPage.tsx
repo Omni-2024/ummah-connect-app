@@ -421,9 +421,9 @@ export default function ServiceDetailsPage() {
               onClick={handleBookmark}
               className="hover:bg-gray-100 transition-colors"
             >
-              <BookmarkIcon
+              {/* <BookmarkIcon
                 className={`size-5 ${isBookmarked ? "fill-primary-500 text-primary-500" : ""}`}
-              />
+              /> */}
             </IconButton>
             <IconButton
               onClick={handleShareService}
