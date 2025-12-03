@@ -6,6 +6,7 @@ import Input from "@/components/base/form/Input";
 import ListProviders from "@/features/providers/pages/listProviders";
 import withAuth from "@/components/withAuth";
 import {ADMIN_ROLES} from "@/lib/constants";
+import { OnboardingGuard } from "@/features/auth/onboardingGuard";
 
 
 const SuperAdminProviders = ()=> {
@@ -64,7 +65,12 @@ const Page = withAuth(SuperAdminProviders, [
 ]);
 
 export default function ProvidersPage(props: any) {
-    return <Page {...props} />;
+    return (
+    
+    <OnboardingGuard>
+    <Page {...props} />;
+    </OnboardingGuard>
+  )
 }
 
 

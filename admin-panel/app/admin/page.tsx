@@ -1,5 +1,12 @@
+import { OnboardingGuard } from "@/features/auth/onboardingGuard"
 import ModernAdminDashboard from "@/features/dashboard/ModernAdminDashboard"
 
 export default function Page() {
-  return <ModernAdminDashboard />
+  return (
+      <OnboardingGuard>
+  
+        <ModernAdminDashboard />
+      
+      </OnboardingGuard>
+  )
 }
