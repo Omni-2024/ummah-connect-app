@@ -5,6 +5,7 @@ import LoadingError from "@/components/widget/loadingError";
 import CategoriesSkeletonList from "@/features/categories/skeletons/categories";
 import withAuth from "@/components/withAuth";
 import {ADMIN_ROLES} from "@/lib/constants";
+import { OnboardingGuard } from "@/features/auth/onboardingGuard";
 
 const  SuperAdminCategoriesDashboard=()=> {
     const {
@@ -26,5 +27,5 @@ const Page = withAuth(SuperAdminCategoriesDashboard, [
 ]);
 
 export default function CategoriesPage(props: any) {
-    return <Page {...props} />;
+    return (<OnboardingGuard> <Page {...props} /> </OnboardingGuard>)
 }

@@ -359,3 +359,151 @@ export default function ModernAdminDashboard() {
     </div>
   )
 }
+
+
+// "use client";
+
+// import { useCurrentUser } from "@/lib/hooks/useUserInfo";
+// import { ADMIN_ROLES } from "@/lib/constants";
+// import { Badge } from "@/components/base/badge";
+// import { Button } from "@/components/ui/button";
+// import {
+//   Card,
+//   CardHeader,
+//   CardTitle,
+//   CardDescription,
+//   CardContent,
+// } from "@/components/base/card";
+// import { Settings } from "lucide-react";
+
+// import { useAccountStats } from "@/lib/hooks/useStripe";
+// import { OnboardingPopup } from "./components/onboardPopUp";
+
+// export default function ModernAdminDashboard() {
+//   const { data: profile } = useCurrentUser();
+
+//   // Load Stripe account status
+//   const { data: accountStat } = useAccountStats(profile?.id ?? "");
+
+//   // IMPORTANT: Loading guard
+//   const isStripeLoading = accountStat === undefined;
+
+//   // Extract onboarding flag
+//   const isOnboarded =
+//     accountStat?.chargesEnabled && accountStat?.payoutsEnabled;
+
+//   const isBusinessAdmin =
+//     String(profile?.role) === ADMIN_ROLES.BUSINESS_ADMIN;
+
+//   // Popup should only show AFTER Stripe status is loaded
+//   const shouldShowPopup =
+//     !isStripeLoading && isBusinessAdmin && !isOnboarded;
+
+//   return (
+//     <div className="min-h-screen bg-background relative">
+
+//       {/* Show popup ONLY after loading completes */}
+//       {shouldShowPopup && <OnboardingPopup />}
+
+//       <div
+//         className={`space-y-8 p-8 ${
+//           shouldShowPopup ? "blur-sm pointer-events-none" : ""
+//         }`}
+//       >
+//         {/* Header */}
+//         <div className="flex items-center justify-between">
+//           <div>
+//             <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
+//             <p className="text-muted-foreground mt-2">
+//               Monitor your business performance and key metrics
+//             </p>
+//           </div>
+
+//           <div className="flex items-center gap-3">
+//             <Badge variant="secondary" className="gap-2 px-3 py-1">
+//               Live
+//             </Badge>
+//             <Button variant="outline" size="sm">
+//               <Settings className="h-4 w-4" />
+//             </Button>
+//           </div>
+//         </div>
+
+//         {/* Content */}
+//         <Card>
+//           <CardHeader>
+//             <CardTitle>Dashboard</CardTitle>
+//             <CardDescription>
+//               Content removed as requested — add widgets here.
+//             </CardDescription>
+//           </CardHeader>
+
+//           <CardContent className="py-10 text-center text-muted-foreground">
+//             No data displayed. This page is now blank and ready for new content.
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+// "use client";
+
+// import { useCurrentUser } from "@/lib/hooks/useUserInfo";
+// import { Badge } from "@/components/base/badge";
+// import { Button } from "@/components/ui/button";
+// import {
+//   Card,
+//   CardHeader,
+//   CardTitle,
+//   CardDescription,
+//   CardContent,
+// } from "@/components/base/card";
+// import { Settings } from "lucide-react";
+
+// export default function ModernAdminDashboard() {
+//   const { data: profile } = useCurrentUser();
+
+//   return (
+//     <div className="min-h-screen bg-background relative">
+//       <div className="space-y-8 p-8">
+        
+//         {/* Header */}
+//         <div className="flex items-center justify-between">
+//           <div>
+//             <h1 className="text-3xl font-bold tracking-tight">
+//               Analytics Dashboard
+//             </h1>
+//             <p className="text-muted-foreground mt-2">
+//               Monitor your business performance and key metrics
+//             </p>
+//           </div>
+
+//           <div className="flex items-center gap-3">
+//             <Badge variant="secondary" className="gap-2 px-3 py-1">
+//               Live
+//             </Badge>
+//             <Button variant="outline" size="sm">
+//               <Settings className="h-4 w-4" />
+//             </Button>
+//           </div>
+//         </div>
+
+//         {/* Content */}
+//         <Card>
+//           <CardHeader>
+//             <CardTitle>Dashboard</CardTitle>
+//             <CardDescription>
+//               Content removed as requested — add widgets here.
+//             </CardDescription>
+//           </CardHeader>
+
+//           <CardContent className="py-10 text-center text-muted-foreground">
+//             No data displayed. This page is now blank and ready for new content.
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   );
+// }

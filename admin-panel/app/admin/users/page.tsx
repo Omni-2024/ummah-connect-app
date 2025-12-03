@@ -5,12 +5,14 @@ import Input from "@/components/base/form/Input";
 import React, { useRef, useState } from "react";
 import { ADMIN_ROLES } from "@/lib/constants";
 import ListUsers from "@/features/users/pages/listUsers";
+import { OnboardingGuard } from "@/features/auth/onboardingGuard";
 
 const SuperAdminUsers = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
     return (
+        <OnboardingGuard>
         <div className="px-6 py-8">
             <div>
                 <form
@@ -52,6 +54,7 @@ const SuperAdminUsers = () => {
                 />
             </div>
         </div>
+        </OnboardingGuard>
     );
 };
 

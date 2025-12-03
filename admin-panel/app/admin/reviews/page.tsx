@@ -7,6 +7,7 @@ import type { ReviewQuery } from "@/features/reviews/components/ReviewList";
 import withAuth from "@/components/withAuth";
 import { ADMIN_ROLES } from "@/lib/constants";
 import { Star } from "lucide-react";
+import { OnboardingGuard } from "@/features/auth/onboardingGuard";
 
 
 export default function AdminReviewPage() {
@@ -24,6 +25,7 @@ export default function AdminReviewPage() {
   };
 
   return (
+    <OnboardingGuard>
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Admin Reviews</h1>
 
@@ -56,6 +58,7 @@ export default function AdminReviewPage() {
         </div>
       </div>
     </div>
+    </OnboardingGuard>
   );
 }
 

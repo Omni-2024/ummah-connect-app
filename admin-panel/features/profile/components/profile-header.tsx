@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/base/card";
 import { Badge } from "@/components/base/badge";
-import { Shield, Star } from "lucide-react";
+import { Shield } from "lucide-react";
 import { CameraIcon } from "@radix-ui/react-icons";
 import { useAuthState } from "@/features/auth/context/useAuthState";
 import { useCurrentUser } from "@/hooks/useUserInfo";
@@ -13,8 +13,7 @@ import { Teacher } from "iconsax-react";
 import Image from "next/image";
 import { useAvatarUrl } from "@/hooks/userAvatarUrl";
 import { ProfileHeaderSkeleton } from "../skeletons/profile-header-skeleton";
-import Button from "@/components/base/button";
-import { useAccountStats, useOnboardingLink } from "@/lib/hooks/useStripe";
+import { useAccountStats } from "@/lib/hooks/useStripe";
 import { ADMIN_ROLES } from "@/lib/constants";
 
 export function ProfileHeader() {
@@ -27,14 +26,9 @@ export function ProfileHeader() {
 
   const { data: accountStat } = useAccountStats(profile?.id ?? "");
 
-  const {
-    data: onboardingData,
-    refetch: fetchOnboarding,
-  } = useOnboardingLink(profile?.id ?? "");
-
-  // ===============================
+  // ================================
   // 📌 Handle Profile Image Upload
-  // ===============================
+  // ================================
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!profile || !e.target.files?.[0]) return;
 
@@ -63,22 +57,6 @@ export function ProfileHeader() {
     }
   };
 
-  // ================================
-  // 📌 Handle Stripe Onboarding
-  // ================================
-  const getOnboarding = async () => {
-    if (!profile?.stripeConnectAccountId) return;
-
-    const result = await fetchOnboarding();
-
-    const url = result.data?.url;
-    if (url) {
-      window.open(url, "_blank");
-    } else {
-      console.error("Onboarding URL missing");
-    }
-  };
-
   useEffect(() => setImageError(false), [profile?.profileImage]);
 
   if (isLoading) {
@@ -88,8 +66,7 @@ export function ProfileHeader() {
   // ================================
   // 📌 Check if Already Onboarded
   // ================================
-  const isOnboarded =
-    accountStat?.chargesEnabled && accountStat?.payoutsEnabled;
+  const isOnboarded = accountStat?.chargesEnabled && accountStat?.payoutsEnabled;
 
   return (
     <Card className="border-[#3E6563]/50 shadow-lg">
@@ -142,6 +119,7 @@ export function ProfileHeader() {
                   {profile?.email ?? "No email available"}
                 </p>
 
+                {/* Badges */}
                 <div className="flex items-center space-x-2 mt-2">
                   <Badge
                     variant="secondary"
@@ -151,12 +129,36 @@ export function ProfileHeader() {
                     {role === "admin" ? "Admin" : "User"}
                   </Badge>
 
-                  {profile?.verified && (
+                  {/* Show onboarded badge for Business Admins */}
+                  {role === ADMIN_ROLES.BUSINESS_ADMIN && isOnboarded && (
+                    <Badge
+                      variant="outline"
+                      className="bg-primary-700 border-primary-700 text-white flex items-center gap-1"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-3 w-3"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={3}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      Onboarded
+                    </Badge>
+                  )}
+
+                  {/* Optional: show Verified badge for non-business-admins */}
+                  {profile?.verified && role !== ADMIN_ROLES.BUSINESS_ADMIN && (
                     <Badge
                       variant="outline"
                       className="bg-primary-600 border-primary-50 text-white"
                     >
-                      <Star className="w-3 h-3 mr-1" />
                       Verified
                     </Badge>
                   )}
@@ -172,9 +174,7 @@ export function ProfileHeader() {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-accent">89</div>
-                <div className="text-sm text-muted-foreground">
-                  Active Providers
-                </div>
+                <div className="text-sm text-muted-foreground">Active Providers</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-accent">156</div>
@@ -183,28 +183,6 @@ export function ProfileHeader() {
             </div>
           </div>
         </div>
-
-        {/* ============================
-            ONBOARDING BUTTON
-        ============================= */}
-        {/* ============================
-    ONBOARDING BUTTON (Business Admin only)
-============================= */}
-{role === ADMIN_ROLES.BUSINESS_ADMIN && (
-  <Button
-    variant="primary"
-    onClick={getOnboarding}
-    disabled={isOnboarded}
-    className={
-      isOnboarded
-        ? "bg-gray-400 hover:bg-gray-400 cursor-not-allowed mt-6"
-        : "mt-6"
-    }
-  >
-    {isOnboarded ? "Onboarded" : "Onboarding Link"}
-  </Button>
-)}
-
       </CardContent>
     </Card>
   );

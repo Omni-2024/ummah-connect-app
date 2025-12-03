@@ -18,6 +18,7 @@ import {Plus} from "lucide-react";
 import {useRouter} from "next/navigation";
 import ServiceCardSkeletonList from "@/features/services/component/skeleton/serviceCardSkeleton";
 import ServiceCard from "@/features/services/component/cards/ServiceCard";
+import { OnboardingGuard } from "@/features/auth/onboardingGuard";
 
 
 
@@ -172,7 +173,8 @@ export default function AdminGigsPage() {
         }
     }
 
-    return <>
+    return (
+        <OnboardingGuard>
         <div>
             <div className="flex justify-between py-8 px-4">
                 <FilterTabs
@@ -295,5 +297,6 @@ export default function AdminGigsPage() {
             </FilterSheet>
 
         </div>
-    </>
+    </OnboardingGuard>
+    )
 }
