@@ -9,30 +9,22 @@ export function OnboardingGuard({ children }: { children: React.ReactNode }) {
   const { data: profile, isLoading: profileLoading } = useCurrentUser();
   const { data: accountStat, isLoading: stripeLoading } = useAccountStats(profile?.id ?? "");
 
-  // 🔥 1. Role check
   const isBusinessAdmin = String(profile?.role) === ADMIN_ROLES.BUSINESS_ADMIN;
 
-  // 🔥 2. Determine onboarding status
-  const isOnboarded =
-    accountStat?.chargesEnabled && accountStat?.payoutsEnabled;
-
-  // 🔥 3. Loading state — show only for BUSINESS_ADMIN not onboarded
-  const shouldShowLoader = isBusinessAdmin && !isOnboarded && (profileLoading || stripeLoading);
-
-  if (shouldShowLoader) {
+  // Loading state: show spinner while data is still fetching
+  if (isBusinessAdmin && (profileLoading || stripeLoading)) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-background text-muted-foreground">
-        {/* Spinner */}
         <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-
-        {/* Loading Text */}
         <p className="text-lg font-medium">Loading your profile...</p>
         <p className="text-sm text-muted-foreground mt-1">Please wait a moment</p>
       </div>
     );
   }
 
-  // 🔥 4. If NOT onboarded → show popup + block page
+  const isOnboarded = accountStat?.chargesEnabled && accountStat?.payoutsEnabled;
+
+  // Show onboarding popup **only if we know the user is not onboarded**
   if (isBusinessAdmin && !isOnboarded) {
     return (
       <>
@@ -44,6 +36,6 @@ export function OnboardingGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // 🔥 5. Otherwise allow normal access
+  // Normal access
   return <>{children}</>;
 }
