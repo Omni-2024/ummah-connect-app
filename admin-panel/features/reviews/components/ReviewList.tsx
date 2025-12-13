@@ -50,16 +50,15 @@ export default function ReviewList({ filterType, query, setQuery }: ReviewListPr
   const active = filterType === "service" ? queryService : queryProvider;
   const { data, isLoading, isError, refetch } = active;
 
-if (isLoading) {
-  // Show multiple skeletons
-  return (
-    <div className="grid gap-4">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <ReviewCardSkeleton key={i} />
-      ))}
-    </div>
-  );
-}
+  if (isLoading) {
+    return (
+      <div className="grid gap-4">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <ReviewCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
 
   if (isError) {
     return (
@@ -72,17 +71,18 @@ if (isLoading) {
     );
   }
 
-if (!data?.data || data.data.length === 0) {
-  return (
-    <div className="flex justify-center mt-16">
-      <div className="p-6 w-full max-w-md text-center hover:shadow-sm transition-all duration-200 border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white rounded-2xl">
-        <p className="text-primary text-lg font-semibold">No reviews available</p>
-        <p className="text-primary-600 text-sm mt-1">This provider has no reviews yet.</p>
+  if (!data?.data || data.data.length === 0) {
+    return (
+      <div className="flex justify-center mt-16">
+        <div className="p-6 w-full max-w-md text-center hover:shadow-sm transition-all duration-200 border border-border/50 hover:border-primary/30 bg-gradient-to-r from-slate-50 to-white rounded-2xl">
+          <p className="text-primary text-lg font-semibold">No reviews available</p>
+          <p className="text-primary-600 text-sm mt-1">
+            This provider has no reviews yet.
+          </p>
+        </div>
       </div>
-    </div>
-  );
-}
-
+    );
+  }
 
   const sortedReviews = [...data.data].sort((a, b) =>
     sortOrder === "high" ? b.stars - a.stars : a.stars - b.stars
@@ -90,16 +90,15 @@ if (!data?.data || data.data.length === 0) {
 
   return (
     <div className="space-y-4 relative">
-      
-      {/* Dropdown SORT (Top Right) */}
+
+      {/* === SORT DROPDOWN === */}
       <div className="flex justify-end relative">
         <div className="w-72 relative">
           <button
             type="button"
             onClick={() => setDropdownOpen((p) => !p)}
             className="w-full border border-primary-700 rounded-full px-5 py-3 bg-white text-primary-700 
-                       text-left font-medium flex justify-between items-center
-                       focus:outline-none focus:ring-0 focus:ring-primary-300"
+                       text-left font-medium flex justify-between items-center"
           >
             Sort by Rating:
             <span className="ml-2">
@@ -108,9 +107,7 @@ if (!data?.data || data.data.length === 0) {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-full max-h-48 overflow-auto z-20
-                            bg-white rounded-3xl shadow-lg border border-primary-700">
-              
+            <div className="absolute right-0 mt-2 w-full z-20 bg-white rounded-3xl shadow-lg border border-primary-700">
               <div
                 className="px-4 py-3 cursor-pointer text-primary-700 hover:bg-primary-500 hover:text-white"
                 onClick={() => {
@@ -122,7 +119,7 @@ if (!data?.data || data.data.length === 0) {
               </div>
 
               <div
-                className="px-4 py-3 cursor-pointer text-primary-700 hover:bg-primary-500 hover:text-white "
+                className="px-4 py-3 cursor-pointer text-primary-700 hover:bg-primary-500 hover:text-white"
                 onClick={() => {
                   setSortOrder("high");
                   setDropdownOpen(false);
@@ -135,10 +132,14 @@ if (!data?.data || data.data.length === 0) {
         </div>
       </div>
 
-      {/* Reviews */}
+      {/* === REVIEWS === */}
       <div className="grid gap-4">
         {sortedReviews.map((review) => (
-          <ReviewCard key={review.id} review={review} />
+          <ReviewCard
+            key={review.id}
+            review={review}
+            onDeleted={refetch} // 👈 refresh after delete
+          />
         ))}
       </div>
 
