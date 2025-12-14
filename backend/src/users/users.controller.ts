@@ -1,28 +1,29 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Query } from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Query,
+} from '@nestjs/common';
 import { Roles } from '../auth/decorator/role.decorator';
 import { UserRole } from './entities/abstract.user.entity';
 import { UsersService } from './users.service';
 import { Public } from '../auth/decorator/public.decorator';
-import { SearchUserDto, UpdateUserDto } from './dto/user.dto';
-import { ChangePasswordDtoNoOTP } from './dto/change-password-noOtp';
-
+import { UpdateUserDto } from './dto/user.dto';
 
 @Controller('user')
 export class UsersController {
-  constructor(
-    private readonly userService: UsersService
-  ) {
-  }
+  constructor(private readonly userService: UsersService) {}
 
-  @Roles([UserRole.ADMIN, UserRole.ROOT])
+  @Roles([UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
   @Get('/all')
   async findAll(
-  @Query('limit') limit?: number,
-  @Query('offset') offset?: number,
-  @Query('query') query?: string,
+    @Query('limit') limit?: number,
+    @Query('offset') offset?: number,
+    @Query('query') query?: string,
   ) {
-
     return await this.userService.findAll({
       limit,
       offset,
@@ -35,13 +36,18 @@ export class UsersController {
     return await this.userService.retrieveUser(id);
   }
 
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
+  @Roles([
+    UserRole.USER,
+    UserRole.ADMIN,
+    UserRole.ROOT,
+    UserRole.BUSINESS_ADMIN,
+  ])
   @Patch('/:id')
   async updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
-    return await this.userService.updateUser( { ...updateUserDto, id });
+    return await this.userService.updateUser({ ...updateUserDto, id });
   }
 
   // TODO: Should get user id from AuthGuard
@@ -53,13 +59,23 @@ export class UsersController {
   }
 
   // TODO: Should get user id from AuthGuard
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
+  @Roles([
+    UserRole.USER,
+    UserRole.ADMIN,
+    UserRole.ROOT,
+    UserRole.BUSINESS_ADMIN,
+  ])
   @Delete('/:id/delete')
   async deleteCurrentUser(@Param('id') id: string) {
     return await this.userService.deleteCurrentUser(id);
   }
 
-  @Roles([UserRole.USER, UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
+  @Roles([
+    UserRole.USER,
+    UserRole.ADMIN,
+    UserRole.ROOT,
+    UserRole.BUSINESS_ADMIN,
+  ])
   @Delete('/:id')
   async deleteUser(@Param('id') id: string) {
     return await this.userService.deleteUser(id);
@@ -76,15 +92,11 @@ export class UsersController {
 
   @Roles([UserRole.ADMIN, UserRole.ROOT])
   @Patch('/:id/change-role')
-  async changeRole(
-    @Param('id') id: string,
-    @Body() body: { role: UserRole },
-  ) {
+  async changeRole(@Param('id') id: string, @Body() body: { role: UserRole }) {
     return await this.userService.changeRole(id, body.role);
   }
 
-
-   // ✅ Updated change password route
+  // ✅ Updated change password route
   @Patch('/:id/change-password')
   async changePasswordNoOtp(
     @Param('id') id: string,

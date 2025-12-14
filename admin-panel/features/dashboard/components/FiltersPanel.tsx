@@ -98,17 +98,19 @@ export function FiltersPanel({
 
   return (
     <Popover open={filterOpen} onOpenChange={setFilterOpen}>
-      <PopoverTrigger asChild>
-        <div className="flex justify-end w-full">
+      <div className="flex justify-end w-full">
+        {/* 💡 PopoverTrigger must wrap the Button */}
+        <PopoverTrigger asChild>
           <Button
             size="sm"
             variant="outline"
             className="flex items-center gap-2 rounded-md"
           >
-            <Filter className="h-4 w-4" /> Filters
+            <Filter className="h-4 w-4" />
+            Filters
           </Button>
-        </div>
-      </PopoverTrigger>
+        </PopoverTrigger>
+      </div>
 
       <PopoverContent
         side="bottom"
@@ -128,9 +130,11 @@ export function FiltersPanel({
         <div className="space-y-2">
           <span className="text-xs font-medium text-gray-500">Quick Filters</span>
           <div className="grid grid-cols-2 gap-4">
-            {[{ scope: ScopeType.ALL, label: "All Time", desc: "Show all payments", icon: Infinity }, 
-              { scope: ScopeType.LAST_WEEK, label: "Last 7 Days", desc: "Recent activity", icon: Timer }, 
-              { scope: ScopeType.LAST_30D, label: "Last 30 Days", desc: "This month's data", icon: History }].map((btn) => {
+            {[
+              { scope: ScopeType.ALL, label: "All Time", desc: "Show all payments", icon: Infinity },
+              { scope: ScopeType.LAST_WEEK, label: "Last 7 Days", desc: "Recent activity", icon: Timer },
+              { scope: ScopeType.LAST_30D, label: "Last 30 Days", desc: "This month's data", icon: History },
+            ].map((btn) => {
               const Icon = btn.icon
               return (
                 <Button
@@ -171,7 +175,7 @@ export function FiltersPanel({
               <SelectTrigger className="w-full justify-between px-4 py-6 rounded-lg text-left bg-white border">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-gray-500" />
-                  <SelectValue placeholder="Pick a month"/>
+                  <SelectValue placeholder="Pick a month" />
                 </div>
               </SelectTrigger>
               <SelectContent className="bg-white border rounded-md shadow-md">
@@ -192,6 +196,7 @@ export function FiltersPanel({
         {/* Custom Range */}
         <div className="space-y-2">
           <span className="text-xs font-medium text-gray-500">Custom Range</span>
+
           <Popover open={rangePopoverOpen} onOpenChange={setRangePopoverOpen}>
             <PopoverTrigger asChild>
               <Button
@@ -214,26 +219,36 @@ export function FiltersPanel({
             <PopoverContent className="w-full p-4 bg-white rounded-lg shadow-lg border">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="start-date" className="text-xs text-gray-400">From</Label>
+                  <Label htmlFor="start-date" className="text-xs text-gray-400">
+                    From
+                  </Label>
                   <Input
                     id="start-date"
                     type="date"
                     value={value.start ? value.start.split("T")[0] : ""}
-                    onChange={(e) => handleStartDateChange(e.target.value ? new Date(e.target.value).toISOString() : "")}
+                    onChange={(e) =>
+                      handleStartDateChange(e.target.value ? new Date(e.target.value).toISOString() : "")
+                    }
                     className="text-sm rounded-lg bg-gray-50 w-full"
                   />
                 </div>
+
                 <div>
-                  <Label htmlFor="end-date" className="text-xs text-gray-400">To</Label>
+                  <Label htmlFor="end-date" className="text-xs text-gray-400">
+                    To
+                  </Label>
                   <Input
                     id="end-date"
                     type="date"
                     value={value.end ? value.end.split("T")[0] : ""}
-                    onChange={(e) => handleEndDateChange(e.target.value ? new Date(e.target.value).toISOString() : "")}
+                    onChange={(e) =>
+                      handleEndDateChange(e.target.value ? new Date(e.target.value).toISOString() : "")
+                    }
                     className="text-sm rounded-lg bg-gray-50 w-full"
                   />
                 </div>
               </div>
+
               <div className="flex justify-end mt-3">
                 <Button variant="outline" size="sm" onClick={() => onChange({ ...value, start: undefined, end: undefined })}>
                   Clear
@@ -243,7 +258,7 @@ export function FiltersPanel({
           </Popover>
         </div>
 
-        {/* Only Reset button aligned right */}
+        {/* Reset Button */}
         <div className="flex justify-end items-center">
           <Button variant="ghost" size="sm" className="flex items-center gap-1" onClick={handleClearFilters}>
             <RefreshCw className="h-4 w-4" /> Reset

@@ -1,36 +1,60 @@
-"use client"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
-import { Card } from "@/components/base/card"
-import { navigation } from "../../../lib/navigation"
-import AdminSidebarFooter from "./AdminSidebarFooter"
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { Card } from "@/components/base/card";
+import AdminSidebarFooter from "./AdminSidebarFooter";
 import Image from "next/image";
-import {NAV_LOGO_SRC} from "@/lib/constants";
+import { NAV_LOGO_SRC, ADMIN_ROLES } from "@/lib/constants";
+import { navigation } from "../../../lib/navigation";
+import { useCurrentUser } from "@/hooks/useUserInfo";
+import AdminSidebarSkeleton from "./AdminSIdebarSkeleton";
 
 export default function AdminSidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
+  const { data: profile, isLoading } = useCurrentUser();
+
+  // 👉 Immediately show skeleton before anything loads
+  if (isLoading || !profile) return <AdminSidebarSkeleton />;
+
+  const role = profile.role;
+
+  const sidebarAccess: Record<string, string[]> = {
+    [ADMIN_ROLES.ADMIN]: navigation.map((n) => n.href),
+    [ADMIN_ROLES.OPERATIONAL_ADMIN]: navigation.map((n) => n.href),
+    [ADMIN_ROLES.ROOT]: navigation.map((n) => n.href),
+    [ADMIN_ROLES.BUSINESS_ADMIN]: [
+      "/admin",
+      "/admin/services",
+      "/admin/revenue",
+      "/admin/profile",
+    ],
+  };
+
+  const allowedLinks = sidebarAccess[role] ?? [];
+  const filteredNavigation = navigation.filter((item) =>
+    allowedLinks.includes(item.href)
+  );
 
   return (
     <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-64 lg:flex-col">
       <Card className="flex grow flex-col border-r border-border rounded-none">
-        <div className="flex items-center justify-between p-6 ">
-          {/*<Link href="/admin-panel/public" className="flex items-center space-x-2">*/}
-          {/*  <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-[#669f9d] to-[#337f7c] flex items-center justify-center">*/}
-          {/*    <Shield className="h-4 w-4 text-destructive-foreground" />*/}
-          {/*  </div>*/}
-          {/*  <span className="text-lg font-bold text-foreground">*/}
-          {/*    Admin Panel*/}
-          {/*  </span>*/}
-          {/*</Link>*/}
-          <Image width={140} height={40} src={NAV_LOGO_SRC} alt="Ummah-comunity"/>
+        <div className="flex items-center justify-between p-6">
+          <Image
+            width={140}
+            height={40}
+            src={NAV_LOGO_SRC}
+            alt="Ummah-community"
+          />
         </div>
+
         <nav className="flex flex-1 flex-col px-6 py-0">
-          <ul role="list" className="flex flex-1 flex-col gap-y-7">
+          <ul className="flex flex-1 flex-col gap-y-7">
             <li>
-              <ul role="list" className="-mx-2 space-y-1">
-                {navigation.map((item) => {
-                  const Icon = item.icon
+              <ul className="-mx-2 space-y-1">
+                {filteredNavigation.map((item) => {
+                  const Icon = item.icon;
                   return (
                     <li key={item.name}>
                       <Link
@@ -46,14 +70,15 @@ export default function AdminSidebar() {
                         {item.name}
                       </Link>
                     </li>
-                  )
+                  );
                 })}
               </ul>
             </li>
           </ul>
         </nav>
+
         <AdminSidebarFooter />
       </Card>
     </div>
-  )
+  );
 }

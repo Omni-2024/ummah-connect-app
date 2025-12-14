@@ -19,6 +19,8 @@ import {useRouter} from "next/navigation";
 import ServiceCardSkeletonList from "@/features/services/component/skeleton/serviceCardSkeleton";
 import ServiceCard from "@/features/services/component/cards/ServiceCard";
 import { OnboardingGuard } from "@/features/auth/onboardingGuard";
+import withAuth from "@/components/withAuth";
+import { ADMIN_ROLES } from "@/lib/constants";
 
 
 
@@ -300,3 +302,10 @@ export default function AdminGigsPage() {
     </OnboardingGuard>
     )
 }
+
+const Page = withAuth(AdminGigsPage, [
+    ADMIN_ROLES.ADMIN,
+    ADMIN_ROLES.OPERATIONAL_ADMIN,
+    ADMIN_ROLES.BUSINESS_ADMIN,
+    ADMIN_ROLES.ROOT,
+]);
