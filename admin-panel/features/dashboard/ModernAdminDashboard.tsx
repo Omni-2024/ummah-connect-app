@@ -146,9 +146,6 @@ export default function ModernAdminDashboard() {
                 ? "Error"
                 : "Live Data"}
             </Badge>
-            <Button variant="outline" size="sm">
-              <Settings className="h-4 w-4" />
-            </Button>
           </div>
         </div>
 
