@@ -66,10 +66,6 @@ export default function AdminGigsPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
 
-    /* =========================
-       BUSINESS ADMIN LOCK
-       Backend: Roles.Admin === Business Admin
-       ========================= */
     useEffect(() => {
         if (!data?.id || !data?.role) return;
 
