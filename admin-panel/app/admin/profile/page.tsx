@@ -1,3 +1,4 @@
+"use client"
 import withAuth from "@/components/withAuth";
 import { OnboardingGuard } from "@/features/auth/onboardingGuard"
 import { ProfileManagement } from "@/features/profile/profile-management"

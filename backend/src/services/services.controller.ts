@@ -1,18 +1,18 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
 
 import { Roles } from '../auth/decorator/role.decorator';
 import { Public } from '../auth/decorator/public.decorator';
 import { UserRole } from 'src/users/entities/abstract.user.entity';
-import {  ServiceService } from './services.service';
+import { ServiceService } from './services.service';
 import { ServiceDetailService } from './service.detail.service';
 import { CreateServiceDto, UpdateServiceDto } from './dto/service.dto';
 
@@ -20,10 +20,10 @@ import { CreateServiceDto, UpdateServiceDto } from './dto/service.dto';
 export class ServiceController {
   constructor(
     private readonly serviceService: ServiceService,
-    private readonly serviceDetailService: ServiceDetailService
-) { }
+    private readonly serviceDetailService: ServiceDetailService,
+  ) {}
 
-  @Roles([UserRole.ADMIN, UserRole.ROOT])
+  @Roles([UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
   @Post()
   async create(@Body() createServiceDto: CreateServiceDto) {
     return await this.serviceService.create(createServiceDto);
@@ -59,17 +59,16 @@ export class ServiceController {
     if (isPopular === undefined) {
       isPopular = false;
     }
-    if (providerId){
+    if (providerId) {
       return await this.serviceService.findAllByProviders({
         limit,
         offset,
         providerId,
         isPublished,
         isArchived,
-        userId
-      })
-    }
-    else {
+        userId,
+      });
+    } else {
       return await this.serviceService.search({
         limit,
         offset,
@@ -86,7 +85,7 @@ export class ServiceController {
         isArchived,
         providerIds,
         isPopular,
-        userId
+        userId,
       });
     }
   }
@@ -94,21 +93,19 @@ export class ServiceController {
   @Public()
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return this.serviceService.findOne({id});
+    return this.serviceService.findOne({ id });
   }
-
 
   @Public()
   @Get('detail/:id')
   async findOneDetail(@Param('id') id: string) {
-    return this.serviceDetailService.findOneDetail({id});
+    return this.serviceDetailService.findOneDetail({ id });
   }
-
 
   @Public()
   @Get('detail/slug/:slug')
   async findOneDetailBySlug(@Param('slug') slug: string) {
-    return this.serviceDetailService.findOneDetailBySlug({slug});
+    return this.serviceDetailService.findOneDetailBySlug({ slug });
   }
 
   @Roles([UserRole.ADMIN, UserRole.ROOT])
@@ -120,13 +117,11 @@ export class ServiceController {
     return await this.serviceService.update({ ...updateServiceDto, id });
   }
 
-
   @Roles([UserRole.ADMIN, UserRole.ROOT])
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return await this.serviceService.remove({id});
+    return await this.serviceService.remove({ id });
   }
-
 
   @Public()
   @Get('/all/services')
