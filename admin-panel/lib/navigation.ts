@@ -17,10 +17,10 @@ export const navigation = [
   { name: "Providers", href: "/admin/providers", icon: Users },
   { name: "Categories", href: "/admin/categories", icon: Tags },
   { name: "Services", href: "/admin/services", icon: Briefcase },
-  { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  // { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { name: "Messages", href: "/admin/messages", icon: MessageSquare },
   { name: "Revenue", href: "/admin/revenue", icon: DollarSign },
-  { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  // { name: "Analytics", href: "/admin/analytics", icon: BarChart3 },
   { name: "Reviews", href: "/admin/reviews", icon: Star },
   { name: "Profile", href: "/admin/profile", icon: User },
 ]
