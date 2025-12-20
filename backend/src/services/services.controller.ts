@@ -37,7 +37,7 @@ export class ServiceController {
     @Query('search') search?: string,
     @Query('provider') providerId?: string,
     @Query('userId') userId?: string,
-    @Query('providers') providerIds?: string[],
+    @Query('providers[]') providerIds?: string[],
     @Query('profession') professionId?: string,
     @Query('professions') professionIds?: string[],
     @Query('type') typeId?: string,
