@@ -83,7 +83,7 @@ export default function AdminGigsPage() {
                 offset: calculateOffset(currentPage),
                 search,
                 isPublished,
-                providers,
+                provider:providers[0],
                 profession,
                 specialties: specialist,
             }) as GetAllServiceParams,
