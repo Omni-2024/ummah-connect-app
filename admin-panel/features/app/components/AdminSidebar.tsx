@@ -21,15 +21,25 @@ export default function AdminSidebar() {
   const role = profile.role;
 
   const sidebarAccess: Record<string, string[]> = {
-    [ADMIN_ROLES.ADMIN]: navigation.map((n) => n.href),
-    [ADMIN_ROLES.OPERATIONAL_ADMIN]: navigation.map((n) => n.href),
-    [ADMIN_ROLES.ROOT]: navigation.map((n) => n.href),
-    [ADMIN_ROLES.BUSINESS_ADMIN]: [
-      "/admin",
-      "/admin/services",
-      "/admin/revenue",
-      "/admin/profile",
-    ],
+    [ADMIN_ROLES.ADMIN]: [
+    "/admin",
+    "/admin/users",
+    "/admin/providers",
+    "/admin/categories",
+    "/admin/services",
+    "/admin/revenue",
+    "/admin/reviews",
+    "/admin/profile",
+  ],
+  [ADMIN_ROLES.BUSINESS_ADMIN]: [
+    "/admin",
+    "/admin/services",
+    "/admin/revenue",
+    "/admin/messages",
+    "/admin/profile",
+  ],
+  [ADMIN_ROLES.OPERATIONAL_ADMIN]: navigation.map((n) => n.href),
+  [ADMIN_ROLES.ROOT]: navigation.map((n) => n.href),
   };
 
   const allowedLinks = sidebarAccess[role] ?? [];

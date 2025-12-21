@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useReviewByProvider, useReviewByService } from "@/hooks/useReviews";
 import ReviewCard from "./ReviewCard";
-import Pagination from "./Pagination";
 import ReviewCardSkeleton from "../skeleton/ReviewCardSkeleton";
+import AdvancedPagination from "@/components/widget/advancedPagination";
 
 export type FilterType = "service" | "provider";
 
@@ -23,10 +23,24 @@ type ReviewListProps = {
   setQuery: (q: ReviewQuery) => void;
 };
 
-export default function ReviewList({ filterType, query, setQuery }: ReviewListProps) {
+export default function ReviewList({
+  filterType,
+  query,
+  setQuery,
+}: ReviewListProps) {
+  const PAGE_SIZE = query.limit;
+
   const [sortOrder, setSortOrder] = useState<"high" | "low">("low");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
+  // page is derived from offset (same pattern as users page)
+  const [page, setPage] = useState(
+    Math.floor(query.offset / PAGE_SIZE) + 1
+  );
+
+  /* -----------------------------------------
+     DATA FETCH
+  ------------------------------------------ */
   const queryService = useReviewByService(
     {
       serviceId: query.serviceId || "",
@@ -50,6 +64,33 @@ export default function ReviewList({ filterType, query, setQuery }: ReviewListPr
   const active = filterType === "service" ? queryService : queryProvider;
   const { data, isLoading, isError, refetch } = active;
 
+  /* -----------------------------------------
+     SYNC PAGE → OFFSET (same as users page)
+  ------------------------------------------ */
+  useEffect(() => {
+    setQuery({
+      ...query,
+      offset: (page - 1) * PAGE_SIZE,
+    });
+  }, [page]);
+
+  /* -----------------------------------------
+     AUTO FIX PAGE WHEN EMPTY
+  ------------------------------------------ */
+  const totalPages = Math.max(
+    1,
+    Math.ceil((data?.meta?.total ?? 0) / PAGE_SIZE)
+  );
+
+  useEffect(() => {
+    if ((data?.data?.length ?? 0) === 0 && page > 1) {
+      setPage((prev) => Math.min(prev - 1, totalPages));
+    }
+  }, [data?.data?.length, page, totalPages]);
+
+  /* -----------------------------------------
+     LOADING / ERROR / EMPTY STATES
+  ------------------------------------------ */
   if (isLoading) {
     return (
       <div className="grid gap-4">
@@ -75,7 +116,9 @@ export default function ReviewList({ filterType, query, setQuery }: ReviewListPr
     return (
       <div className="flex justify-center mt-16">
         <div className="p-6 w-full max-w-md text-center border border-border/50 bg-gradient-to-r from-slate-50 to-white rounded-2xl">
-          <p className="text-primary text-lg font-semibold">No reviews available</p>
+          <p className="text-primary text-lg font-semibold">
+            No reviews available
+          </p>
           <p className="text-primary-600 text-sm mt-1">
             This provider has no reviews yet.
           </p>
@@ -84,13 +127,18 @@ export default function ReviewList({ filterType, query, setQuery }: ReviewListPr
     );
   }
 
+  /* -----------------------------------------
+     SORTING
+  ------------------------------------------ */
   const sortedReviews = [...data.data].sort((a, b) =>
     sortOrder === "high" ? b.stars - a.stars : a.stars - b.stars
   );
 
+  /* -----------------------------------------
+     UI
+  ------------------------------------------ */
   return (
     <div className="space-y-4 relative">
-
       {/* === SORT DROPDOWN === */}
       <div className="flex justify-end">
         <div className="w-72 relative">
@@ -143,7 +191,14 @@ export default function ReviewList({ filterType, query, setQuery }: ReviewListPr
         ))}
       </div>
 
-      <Pagination meta={data.meta} query={query} setQuery={setQuery} />
+      {/* === ADVANCED PAGINATION (SAME AS USERS PAGE) === */}
+      {data?.meta?.total > PAGE_SIZE && (
+        <AdvancedPagination
+          currentPage={page}
+          totalPages={Math.ceil(data.meta.total / PAGE_SIZE)}
+          onChange={setPage}
+        />
+      )}
     </div>
   );
 }

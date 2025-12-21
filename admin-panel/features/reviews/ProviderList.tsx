@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useGeneralProviders } from "@/lib/hooks/useGeneralProviders";
-import { Search, X } from "lucide-react";
 import ProviderListSkeleton from "./skeleton/ProviderListReviewSkeleton";
 
 type ProviderListProps = {
@@ -12,18 +11,16 @@ type ProviderListProps = {
 export default function ProviderList({ onSelect }: ProviderListProps) {
   const PAGE_SIZE = 10;
   const [page, setPage] = useState(1);
-
-  const [pendingSearch, setPendingSearch] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const { data, isLoading, isError } = useGeneralProviders({
+  const { data, isLoading } = useGeneralProviders({
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
-    search: "",
+    search: "", // keep API search empty, we filter client-side
   });
 
+  // Auto adjust page if no results
   useEffect(() => {
     if ((data?.data?.length ?? 0) === 0 && page > 1) {
       setPage((prev) => prev - 1);
@@ -43,17 +40,6 @@ export default function ProviderList({ onSelect }: ProviderListProps) {
     onSelect(id);
   };
 
-  const executeSearch = () => {
-    setSearchQuery(pendingSearch.trim());
-    setPage(1);
-  };
-
-  const clearSearch = () => {
-    setPendingSearch("");
-    setSearchQuery("");
-    setPage(1);
-  };
-
   if (isLoading || !data) return <ProviderListSkeleton />;
 
   return (
@@ -64,27 +50,13 @@ export default function ProviderList({ onSelect }: ProviderListProps) {
         <input
           type="text"
           placeholder="Search provider..."
-          value={pendingSearch}
-          onChange={(e) => setPendingSearch(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && executeSearch()}
-          className="w-full pl-4 pr-12 py-2 bg-white/80 border border-primary/20 rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
+          value={searchQuery}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            setPage(1); // reset page when typing
+          }}
+          className="w-full pl-4 py-2 bg-white/80 border border-primary/20 rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"
         />
-
-        {pendingSearch && (
-          <button
-            onClick={clearSearch}
-            className="absolute right-10 top-1/2 -translate-y-2.5 text-gray-500 hover:text-red-500 transition"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        )}
-
-        <button
-          onClick={executeSearch}
-          className="absolute right-2 top-1/2 -translate-y-2.5 p-1.5 rounded-lg bg-primary-700 text-white hover:bg-primary-800 transition"
-        >
-          <Search className="w-4 h-4" />
-        </button>
       </div>
 
       {/* Providers */}
@@ -106,8 +78,12 @@ export default function ProviderList({ onSelect }: ProviderListProps) {
             </li>
           );
         })}
+        {!filteredProviders.length && (
+          <li className="p-3 text-center text-gray-500">No providers found</li>
+        )}
       </ul>
 
+      {/* Pagination */}
       {data?.meta?.total && data.meta.total > PAGE_SIZE && (
         <div className="flex justify-between mt-6">
           <button
