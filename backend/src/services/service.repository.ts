@@ -242,6 +242,7 @@ export class ServiceRepository {
                  upperCmeRange,
                  isPublished,
                  isArchived,
+                 isApproved,
                  providerIds,
                  doGender,
                  hasUser,
@@ -254,6 +255,8 @@ export class ServiceRepository {
     // simple filters (only apply when provided)
     qb.andWhere('s.isPublished = :isPublished', { isPublished });
     qb.andWhere('s.isArchived = :isArchived', { isArchived });
+    qb.andWhere('s.isApproved = :isApproved', { isApproved });
+
 
     if (professionId) qb.andWhere('s.professionId = :professionId', { professionId });
     if (specialtyIds?.length) qb.andWhere('s.specialtyId IN (:...specialtyIds)', { specialtyIds });

@@ -85,7 +85,7 @@ export class ServiceService {
       ...searchServiceDto,
       doGender,
       hasUser,
-      userGender,        // undefined => no gender restrictions when no user
+      userGender,
     } as any);
 
     if (!services.length) throw new NotFoundException('No services found');

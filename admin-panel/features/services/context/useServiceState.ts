@@ -1,6 +1,6 @@
 import { useSnapshot } from "valtio";
 import {
-  courseState,
+  serviceState,
   setCMEDown,
   setCMEUp,
   setProviders,
@@ -14,7 +14,7 @@ import {
 } from "./ServiceState";
 
 export const useServiceState = () => {
-  const snap = useSnapshot(courseState);
+  const snap = useSnapshot(serviceState);
   return {
     limit: snap.limit,
     offset: snap.offset,

@@ -102,6 +102,10 @@ export class FindAllByProviderServiceDto extends PaginatedRequestDto {
   isArchived: boolean;
 
   @IsOptional()
+  @IsBoolean()
+  isApproved: boolean;
+
+  @IsOptional()
   @IsString()
   userId?: string;
 
@@ -164,12 +168,14 @@ export class SearchServiceDto extends PaginatedRequestDto {
   isPublished: boolean;
 
   @IsBoolean()
+  isApproved: boolean;
+
+  @IsBoolean()
   isArchived: boolean;
 
   @IsOptional()
   @IsString()
   providerIds?: string[];
-
 
   @IsOptional()
   @IsBoolean()
@@ -190,8 +196,6 @@ export class SearchServiceDto extends PaginatedRequestDto {
   @IsOptional()
   @IsBoolean()
   hasUser?: boolean;
-
-
 }
 
 export class ProviderDto {

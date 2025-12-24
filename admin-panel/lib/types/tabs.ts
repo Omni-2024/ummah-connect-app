@@ -5,6 +5,7 @@ export enum UserPageTabs {
 
 export enum ServicesPageTabs {
   Published = "published",
+  NotApproved = "notApproved",
   Drafts = "drafts",
 }
 export const UserPageTabTiles = {
@@ -19,5 +20,6 @@ export const UserPageTabsQuery = {
 
 export const ServicesPageTabTiles = {
   [ServicesPageTabs.Published]: "Published",
+  [ServicesPageTabs.NotApproved]: "NotApproved",
   [ServicesPageTabs.Drafts]: "Drafts",
 };

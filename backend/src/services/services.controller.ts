@@ -47,6 +47,7 @@ export class ServiceController {
     @Query('cmeUp') upperCmeRange?: number,
     @Query('cmeDown') lowerCmeRange?: number,
     @Query('isPublished') isPublished?: boolean,
+    @Query('isApproved') isApproved?: boolean,
     @Query('isArchived') isArchived?: boolean,
     @Query('isPopular') isPopular?: boolean,
   ) {
@@ -55,6 +56,9 @@ export class ServiceController {
     }
     if (isArchived === undefined) {
       isArchived = false;
+    }
+    if (isApproved === undefined) {
+      isApproved = true;
     }
     if (isPopular === undefined) {
       isPopular = false;
@@ -66,6 +70,7 @@ export class ServiceController {
         providerId,
         isPublished,
         isArchived,
+        isApproved,
         userId,
       });
     } else {
@@ -82,6 +87,7 @@ export class ServiceController {
         upperCmeRange,
         lowerCmeRange,
         isPublished,
+        isApproved,
         isArchived,
         providerIds,
         isPopular,

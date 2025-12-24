@@ -73,75 +73,75 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
 
     return (
         <>
-            {isOpen && isMobile && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 bg-black/50 z-50 md:hidden"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
+            {/*{isOpen && isMobile && (*/}
+            {/*    <motion.div*/}
+            {/*        initial={{ opacity: 0 }}*/}
+            {/*        animate={{ opacity: 1 }}*/}
+            {/*        exit={{ opacity: 0 }}*/}
+            {/*        className="fixed inset-0 bg-black/50 z-50 md:hidden"*/}
+            {/*        onClick={() => setIsOpen(false)}*/}
+            {/*    />*/}
+            {/*)}*/}
 
             <div className="fixed bottom-4 right-4 z-50">
                 <AnimatePresence>
-                    {!isOpen && (
-                        <motion.div className="relative">
-                            <motion.button
-                                initial={{ scale: 0, rotate: -180 }}
-                                animate={{ scale: 1, rotate: 0 }}
-                                exit={{ scale: 0, rotate: 180 }}
-                                whileHover={{ scale: 1.1 }}
-                                whileTap={{ scale: 0.9 }}
-                                onClick={handleChatOpen}
-                                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-colors duration-200 relative"
-                            >
-                                <MessageCircle color="black " width={25} size={24} />
+                    {/*{!isOpen && (*/}
+                    {/*    <motion.div className="relative">*/}
+                    {/*        <motion.button*/}
+                    {/*            initial={{ scale: 0, rotate: -180 }}*/}
+                    {/*            animate={{ scale: 1, rotate: 0 }}*/}
+                    {/*            exit={{ scale: 0, rotate: 180 }}*/}
+                    {/*            whileHover={{ scale: 1.1 }}*/}
+                    {/*            whileTap={{ scale: 0.9 }}*/}
+                    {/*            onClick={handleChatOpen}*/}
+                    {/*            className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg flex items-center justify-center transition-colors duration-200 relative"*/}
+                    {/*        >*/}
+                    {/*            <MessageCircle color="black " width={25} size={24} />*/}
 
-                                {/* Enhanced Notification Badge */}
-                                <AnimatePresence>
-                                    {totalUnreadCount > 0 && (
-                                        <motion.div
-                                            initial={{ scale: 0 }}
-                                            animate={{ scale: 1 }}
-                                            exit={{ scale: 0 }}
-                                            className="absolute -top-2 -right-2 min-w-[24px] h-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center px-2 shadow-lg"
-                                        >
-                                            {totalUnreadCount > 99 ? "99+" : totalUnreadCount}
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
+                    {/*            /!* Enhanced Notification Badge *!/*/}
+                    {/*            <AnimatePresence>*/}
+                    {/*                {totalUnreadCount > 0 && (*/}
+                    {/*                    <motion.div*/}
+                    {/*                        initial={{ scale: 0 }}*/}
+                    {/*                        animate={{ scale: 1 }}*/}
+                    {/*                        exit={{ scale: 0 }}*/}
+                    {/*                        className="absolute -top-2 -right-2 min-w-[24px] h-6 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center px-2 shadow-lg"*/}
+                    {/*                    >*/}
+                    {/*                        {totalUnreadCount > 99 ? "99+" : totalUnreadCount}*/}
+                    {/*                    </motion.div>*/}
+                    {/*                )}*/}
+                    {/*            </AnimatePresence>*/}
 
-                                {/* Pulsing Ring for New Messages */}
-                                <AnimatePresence>
-                                    {hasNewMessages && (
-                                        <motion.div
-                                            initial={{ scale: 1, opacity: 1 }}
-                                            animate={{ scale: 1.5, opacity: 0 }}
-                                            exit={{ scale: 1, opacity: 0 }}
-                                            transition={{ repeat: Number.POSITIVE_INFINITY, duration: 2 }}
-                                            className="absolute inset-0 border-4 border-red-400 rounded-full"
-                                        />
-                                    )}
-                                </AnimatePresence>
-                            </motion.button>
+                    {/*            /!* Pulsing Ring for New Messages *!/*/}
+                    {/*            <AnimatePresence>*/}
+                    {/*                {hasNewMessages && (*/}
+                    {/*                    <motion.div*/}
+                    {/*                        initial={{ scale: 1, opacity: 1 }}*/}
+                    {/*                        animate={{ scale: 1.5, opacity: 0 }}*/}
+                    {/*                        exit={{ scale: 1, opacity: 0 }}*/}
+                    {/*                        transition={{ repeat: Number.POSITIVE_INFINITY, duration: 2 }}*/}
+                    {/*                        className="absolute inset-0 border-4 border-red-400 rounded-full"*/}
+                    {/*                    />*/}
+                    {/*                )}*/}
+                    {/*            </AnimatePresence>*/}
+                    {/*        </motion.button>*/}
 
-                            {/* Floating Unread Count Indicator */}
-                            {totalUnreadCount > 0 && !isMobile && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 10 }}
-                                    className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap shadow-lg"
-                                >
-                                    {totalUnreadCount} new message{totalUnreadCount !== 1 ? "s" : ""}
-                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
-                                </motion.div>
-                            )}
-                        </motion.div>
-                    )}
+                    {/*        /!* Floating Unread Count Indicator *!/*/}
+                    {/*        {totalUnreadCount > 0 && !isMobile && (*/}
+                    {/*            <motion.div*/}
+                    {/*                initial={{ opacity: 0, y: 10 }}*/}
+                    {/*                animate={{ opacity: 1, y: 0 }}*/}
+                    {/*                exit={{ opacity: 0, y: 10 }}*/}
+                    {/*                className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-3 py-1 rounded-lg text-sm font-medium whitespace-nowrap shadow-lg"*/}
+                    {/*            >*/}
+                    {/*                {totalUnreadCount} new message{totalUnreadCount !== 1 ? "s" : ""}*/}
+                    {/*                <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />*/}
+                    {/*            </motion.div>*/}
+                    {/*        )}*/}
+                    {/*    </motion.div>*/}
+                    {/*)}*/}
 
-                    {isOpen && (
+                    {/*{isOpen && (*/}
                         <motion.div
                             initial={{ opacity: 0, y: 20, scale: 0.95 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -364,7 +364,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                 )}
                             </AnimatePresence>
                         </motion.div>
-                    )}
+                    {/*)}*/}
                 </AnimatePresence>
             </div>
         </>
