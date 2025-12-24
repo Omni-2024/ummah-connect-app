@@ -67,6 +67,9 @@ export abstract class AbstractServiceEntity extends AbstractBaseEntity {
   isPublished?: boolean;
 
   @IsBoolean()
+  isApproved?: boolean;
+
+  @IsBoolean()
   isArchived?: boolean;
 
   @IsString()

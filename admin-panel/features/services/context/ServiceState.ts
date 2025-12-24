@@ -25,48 +25,48 @@ const initialState: ServiceState = {
   specialist: [],
 };
 
-export const courseState = proxy<ServiceState>(initialState);
+export const serviceState = proxy<ServiceState>(initialState);
 
 export const setLimit = (limit: number) => {
-  courseState.limit = limit;
+  serviceState.limit = limit;
 };
 
 export const setOffset = (offset: number) => {
-  courseState.offset = offset;
+  serviceState.offset = offset;
 };
 
 export const setCMEUp = (cmeUp: number) => {
-  courseState.cmeUp = cmeUp;
+  serviceState.cmeUp = cmeUp;
 };
 
 export const setCMEDown = (cmeDown: number) => {
-  courseState.cmeDown = cmeDown;
+  serviceState.cmeDown = cmeDown;
 };
 
 export const setSearch = (search: string) => {
-  courseState.search = search;
+  serviceState.search = search;
 };
 
 export const setIsPublished = (isPublished: boolean) => {
-  courseState.isPublished = isPublished;
+  serviceState.isPublished = isPublished;
 };
 
 export const setProviders = (edu: string[]) => {
-  courseState.providers = edu;
+  serviceState.providers = edu;
 };
 
 export const removeProviders = (id: string) => {
   // Filter out the educator by id
-  courseState.providers = courseState.providers.filter(
+  serviceState.providers = serviceState.providers.filter(
     (providerId) => providerId !== id
   );
 };
 
 export const setProfession = (pro: string) => {
-  courseState.profession = pro;
+  serviceState.profession = pro;
 };
 
 
 export const setSpecialist = (spe: string[]) => {
-  courseState.specialist = spe;
+  serviceState.specialist = spe;
 };

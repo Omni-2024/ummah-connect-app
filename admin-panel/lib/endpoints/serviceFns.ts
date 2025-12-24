@@ -11,6 +11,7 @@ export interface GetAllServiceParams {
   profession?: string;
   specialties?: string[];
   isPublished?: boolean;
+  isApproved?:boolean,
   providers?: string[];
 }
 

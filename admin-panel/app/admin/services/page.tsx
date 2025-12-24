@@ -34,9 +34,6 @@ export default function AdminGigsPage() {
     const router = useRouter();
     const { data } = useCurrentUser();
 
-    /* =========================
-       SERVICE STATE (MUST BE FIRST)
-       ========================= */
     const {
         limit,
         offset,
@@ -53,11 +50,9 @@ export default function AdminGigsPage() {
         profession,
     } = useServiceState();
 
-    /* =========================
-       LOCAL UI STATE
-       ========================= */
     const [selectedTab, setSelectedTab] = useState(ServicesPageTabs.Published);
     const [tabPublished, setTabPublished] = useState(true);
+    const [tabApproved, setTabApproved] = useState(false);
     const [filteredEducators, setFilteredEducators] = useState<string[]>([]);
     const [filterSheetOpen, setFilterSheetOpen] = useState(false);
     const [categoryFilter, setCategoryFilter] = useState<
@@ -82,9 +77,10 @@ export default function AdminGigsPage() {
                 limit: ITEMS_PER_PAGE,
                 offset: calculateOffset(currentPage),
                 search,
-                isPublished,
+                isPublished: tabApproved ? true : isPublished,
                 provider:providers[0],
                 profession,
+                isApproved:!tabApproved,
                 specialties: specialist,
             }) as GetAllServiceParams,
         [currentPage, search, isPublished, providers, profession, specialist]
@@ -100,9 +96,7 @@ export default function AdminGigsPage() {
         setOffset(0);
     }, [search, providers, profession, specialist, setOffset]);
 
-    /* =========================
-       HANDLERS
-       ========================= */
+
     const handlePageChange = (page: number) => {
         const valid = Math.min(page, totalPages);
         setCurrentPage(valid);
@@ -169,6 +163,8 @@ export default function AdminGigsPage() {
                         onTabChange={(tab) => {
                             setSelectedTab(tab as ServicesPageTabs);
                             const published = tab === ServicesPageTabs.Published;
+                            const approved = tab === ServicesPageTabs.NotApproved;
+                            setTabApproved(approved)
                             setIsPublished(published);
                             setTabPublished(published);
                         }}

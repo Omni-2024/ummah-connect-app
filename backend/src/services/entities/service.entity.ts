@@ -102,6 +102,9 @@ export class Service extends BaseEntity implements AbstractServiceEntity {
   @Column({ name: 'is_published', default: false })
   isPublished: boolean;
 
+  @Column({ name: 'is_approved', default: false })
+  isApproved: boolean;
+
   @Column({ name: 'is_archived', default: false })
   isArchived: boolean;
 

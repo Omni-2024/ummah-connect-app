@@ -26,7 +26,7 @@ import { useCurrentUser } from "@/lib/hooks/useUser"
 import envs from "@/lib/env"
 import Button from "@/components/base/Button"
 import { ArrowRightIcon } from "@radix-ui/react-icons"
-import {buildAvatarUrl} from "@/lib/buildAvatarUrl";
+import { buildAvatarUrl } from "@/lib/buildAvatarUrl";
 
 
 export default function HomePage() {
@@ -139,11 +139,11 @@ export default function HomePage() {
         right={
           <div className="flex items-center gap-4">
             {isAuthenticated ? (
-                <Link href="/start-selling">
-                  <Button variant="unstyled" className="text-sm font-medium h-9 pr-0">
-                    Become a Seller
-                  </Button>
-                </Link>            ) : (
+              <Link href="/start-selling">
+                <Button variant="unstyled" className="text-sm font-medium h-9 pr-0">
+                  Become a Seller
+                </Button>
+              </Link>) : (
               <>
                 <Link href="/start-selling">
                   <Button variant="unstyled" className="text-sm font-medium h-9 ">
@@ -167,7 +167,7 @@ export default function HomePage() {
         categoriesLoading={categoriesLoading}
         categoriesError={categoriesError}
       />
-      <RecentlySearchedServicesSection 
+      <RecentlySearchedServicesSection
         // router={router} 
         allServices={allServices}
       />
@@ -181,14 +181,14 @@ export default function HomePage() {
         services={trendingServices}
         loading={servicesLoading}
         error={servicesError}
-        // router={router}
+      // router={router}
       />
       {isAuthenticated && (
         <RecommendedServicesSection
           services={recommendedServices}
           loading={servicesLoading}
           error={servicesError}
-          // router={router}
+        // router={router}
         />
       )}
       <FeaturesSection />
