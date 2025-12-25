@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import HelpCenterPage from "@/app/help-center/HelpCenterPage";
+import CommunityGuidelinesPage from "@/app//guidelines/CommunityGuidelinesPage";
 
 export const metadata: Metadata = {
-    title: "Help Center - Ummah Connect | Connecting the Islamic Community",
-    alternates: { canonical: "/help-center" },
+    title: "Community Guidelines - Ummah Connect | Connecting the Islamic Community",
+    alternates: { canonical: "/guidelines" },
 };
 
- function HelpCenterLoading() {
+ function CommunityGuidelinesLoading() {
     return (
         <div className="min-h-screen bg-gray-50 sm:bg-white">
             <div className="animate-pulse">
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
 
 export default function Page() {
     return (
-        <Suspense fallback={<HelpCenterLoading />}>
-            <HelpCenterPage />
+        <Suspense fallback={<CommunityGuidelinesLoading />}>
+            <CommunityGuidelinesPage  />
         </Suspense>
     );
 }
