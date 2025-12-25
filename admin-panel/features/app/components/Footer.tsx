@@ -109,7 +109,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/help" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/help-center" className="text-muted-foreground hover:text-foreground transition-colors">
                   Help Center
                 </Link>
               </li>
