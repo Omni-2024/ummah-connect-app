@@ -19,8 +19,8 @@ export default function HeroSection({
     ];
 
     return (
-        <section className="relative overflow-hidden bg-red-400">
-            <div className="relative min-h-[680px] sm:min-h-[740px] lg:min-h-[800px] bg-red-400">
+        <section className="relative overflow-hidden ">
+            <div className="relative min-h-[680px] sm:min-h-[740px] lg:min-h-[800px] ">
                 <Image
                     src="/images/banner.png"
                     alt="Ummah Connect Hero Background"
@@ -100,18 +100,18 @@ export default function HeroSection({
                             )}
                         </div>
 
-                        <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto">
-                            {stats.map((stat, index) => (
-                                <div key={index} className="text-center">
-                                    <div className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">
-                                        {stat.value}
-                                    </div>
-                                    <div className="text-xs sm:text-sm text-slate-600 mt-1">
-                                        {stat.label}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        {/*<div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-2xl mx-auto">*/}
+                        {/*    {stats.map((stat, index) => (*/}
+                        {/*        <div key={index} className="text-center">*/}
+                        {/*            <div className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900">*/}
+                        {/*                {stat.value}*/}
+                        {/*            </div>*/}
+                        {/*            <div className="text-xs sm:text-sm text-slate-600 mt-1">*/}
+                        {/*                {stat.label}*/}
+                        {/*            </div>*/}
+                        {/*        </div>*/}
+                        {/*    ))}*/}
+                        {/*</div>*/}
 
                     </div>
                 </div>
