@@ -195,9 +195,9 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                             <Minimize2 color="white" size={18} />
                                         </button>
                                     )}
-                                    <button onClick={() => setIsOpen(false)} className="hover:bg-primary-600 p-2 rounded transition-colors">
-                                        <CloseCircle color="white" size={18} />
-                                    </button>
+                                    {/*<button onClick={() => setIsOpen(false)} className="hover:bg-primary-600 p-2 rounded transition-colors">*/}
+                                    {/*    <CloseCircle color="white" size={18} />*/}
+                                    {/*</button>*/}
                                 </div>
                             </div>
 
