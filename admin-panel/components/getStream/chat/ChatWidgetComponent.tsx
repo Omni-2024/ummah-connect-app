@@ -157,12 +157,12 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                 }`}
                         >
                             {/* Chat Header */}
-                            <div className="bg-blue-600 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
+                            <div className="bg-primary-500 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
                                 <div className="flex items-center gap-3 flex-1 min-w-0 pr-3">
                                     {isAdmin && (
                                         <button
                                             onClick={toggleChannelList}
-                                            className="hover:bg-blue-500 p-1 rounded transition-colors flex-shrink-0"
+                                            className="hover:bg-primary-600 p-1 rounded transition-colors flex-shrink-0"
                                         >
                                             <Menu color="white" size={20} />
                                         </button>
@@ -178,7 +178,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                     {/* Settings Button */}
                                     <button
                                         onClick={() => setShowSettings(!showSettings)}
-                                        className="hover:bg-blue-500 p-2 rounded transition-colors relative"
+                                        className="hover:bg-primary-600 p-2 rounded transition-colors relative"
                                         title="Notification Settings"
                                     >
                                         <Settings color="white" size={18} />
@@ -190,12 +190,12 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                     {!isMobile && (
                                         <button
                                             onClick={() => setIsMinimized(!isMinimized)}
-                                            className="hover:bg-blue-500 p-2 rounded transition-colors"
+                                            className="hover:bg-primary-600 p-2 rounded transition-colors"
                                         >
                                             <Minimize2 color="white" size={18} />
                                         </button>
                                     )}
-                                    <button onClick={() => setIsOpen(false)} className="hover:bg-blue-500 p-2 rounded transition-colors">
+                                    <button onClick={() => setIsOpen(false)} className="hover:bg-primary-600 p-2 rounded transition-colors">
                                         <CloseCircle color="white" size={18} />
                                     </button>
                                 </div>
@@ -276,7 +276,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                                     whileHover={{ scale: 1.02 }}
                                                                                     whileTap={{ scale: 0.98 }}
                                                                                     className={`w-full text-left p-3 rounded-lg text-sm transition-all duration-200 relative ${channel?.id === ch.id || channel?.cid === ch.cid
-                                                                                            ? "bg-blue-100 border-l-4 border-blue-500 text-blue-900"
+                                                                                            ? "bg-blue-100 border-l-4 border-primary-500 text-primary-600"
                                                                                             : "hover:bg-gray-100 text-gray-700"
                                                                                         }`}
                                                                                 >
