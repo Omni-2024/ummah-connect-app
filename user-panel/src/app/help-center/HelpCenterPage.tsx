@@ -44,16 +44,16 @@ const HelpCenterPage = () => {
   };
 
   const helpCategories = [
-    {
-      title: "Getting Started",
-      icon: "🚀",
-      // topics: [
-      //   { name: "Creating Your Account", link: "#create-account" },
-      //   { name: "Setting Up Your Profile", link: "#setup-profile" },
-      //   { name: "Navigating the Platform", link: "#navigation" },
-      //   { name: "Understanding Service Categories", link: "#categories" },
-      // ],
-    },
+    // {
+    //   title: "Getting Started",
+    //   icon: "🚀",
+    //   // topics: [
+    //   //   { name: "Creating Your Account", link: "#create-account" },
+    //   //   { name: "Setting Up Your Profile", link: "#setup-profile" },
+    //   //   { name: "Navigating the Platform", link: "#navigation" },
+    //   //   { name: "Understanding Service Categories", link: "#categories" },
+    //   // ],
+    // },
     {
       title: "Finding Services",
       icon: "🔍",
@@ -64,18 +64,18 @@ const HelpCenterPage = () => {
       //   { name: "Reading Reviews & Ratings", link: "#reviews" },
       // ],
     },
+    // {
+    //   title: "Placing Orders",
+    //   icon: "📝",
+    //   // topics: [
+    //   //   { name: "How to Order a Service", link: "#order-service" },
+    //   //   { name: "Messaging Sellers", link: "#message-sellers" },
+    //   //   { name: "Payment Methods & Security", link: "#payments" },
+    //   //   { name: "Custom Orders & Requirements", link: "#custom-orders" },
+    //   // ],
+    // },
     {
-      title: "Placing Orders",
-      icon: "📝",
-      // topics: [
-      //   { name: "How to Order a Service", link: "#order-service" },
-      //   { name: "Messaging Sellers", link: "#message-sellers" },
-      //   { name: "Payment Methods & Security", link: "#payments" },
-      //   { name: "Custom Orders & Requirements", link: "#custom-orders" },
-      // ],
-    },
-    {
-      title: "Becoming a Service Provider",
+      title: "Become a Service Provider",
       icon: "💼",
       // topics: [
       //   { name: "Seller Registration", link: "#seller-registration" },
@@ -84,36 +84,16 @@ const HelpCenterPage = () => {
       //   { name: "Islamic Credentials Verification", link: "#credentials" },
       // ],
     },
-    {
-      title: "Islamic Learning Services",
-      icon: "📖",
-      // topics: [
-      //   { name: "Quran Tutoring & Memorization", link: "#quran-tutoring" },
-      //   { name: "Arabic Language Classes", link: "#arabic-classes" },
-      //   { name: "Islamic Studies & Fiqh", link: "#islamic-studies" },
-      //   { name: "Scheduling Live Sessions", link: "#live-sessions" },
-      // ],
-    },
-    {
-      title: "Professional Services",
-      icon: "💻",
-      // topics: [
-      //   { name: "Islamic Finance Consulting", link: "#islamic-finance" },
-      //   { name: "Halal Business Advice", link: "#halal-business" },
-      //   { name: "Islamic Content & Translation", link: "#content" },
-      //   { name: "Halal Design & Development", link: "#design-dev" },
-      // ],
-    },
-    {
-      title: "Orders & Delivery",
-      icon: "✅",
-      // topics: [
-      //   { name: "Tracking Your Order", link: "#track-order" },
-      //   { name: "Delivery Timeframes", link: "#delivery-time" },
-      //   { name: "Requesting Revisions", link: "#revisions" },
-      //   { name: "Completing & Reviewing Orders", link: "#complete-order" },
-      // ],
-    },
+    // {
+    //   title: "Professional Services",
+    //   icon: "💻",
+    //   // topics: [
+    //   //   { name: "Islamic Finance Consulting", link: "#islamic-finance" },
+    //   //   { name: "Halal Business Advice", link: "#halal-business" },
+    //   //   { name: "Islamic Content & Translation", link: "#content" },
+    //   //   { name: "Halal Design & Development", link: "#design-dev" },
+    //   // ],
+    // },
     {
       title: "Payments & Earnings",
       icon: "💰",
@@ -132,16 +112,6 @@ const HelpCenterPage = () => {
       //   { name: "Notification Preferences", link: "#notifications" },
       //   { name: "Privacy & Security", link: "#privacy" },
       //   { name: "Closing Your Account", link: "#close-account" },
-      // ],
-    },
-    {
-      title: "Islamic Guidelines",
-      icon: "🕌",
-      // topics: [
-      //   { name: "Platform Islamic Values", link: "#islamic-values" },
-      //   { name: "Halal Service Standards", link: "#halal-standards" },
-      //   { name: "Prayer Time Accommodations", link: "#prayer-times" },
-      //   { name: "Ramadan & Holiday Policies", link: "#ramadan" },
       // ],
     },
     {
@@ -220,26 +190,15 @@ const HelpCenterPage = () => {
           {helpCategories.map((category, idx) => (
             <div
               key={idx}
-              className="rounded-lg border border-gray-200 bg-white p-6 hover:shadow-md transition-shadow"
+              className="rounded-lg border border-gray-200 bg-white p-6 hover:shadow-md transition-shadow flex flex-col"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-3xl">{category.icon}</span>
-                <h2 className="text-xl font-semibold text-dark-500">
+              <div className="flex flex-col items-center text-center mb-4">
+                <span className="text-4xl mb-3">{category.icon}</span>
+                <p className="text-xl font-semibold text-dark-500">
                   {category.title}
-                </h2>
+                </p>
               </div>
-              {/* <ul className="space-y-2">
-                {category.topics.map((topic, topicIdx) => (
-                  <li key={topicIdx}>
-                    <Link
-                      href={topic.link}
-                      className="text-base text-dark-400 hover:text-status-blue hover:underline transition-colors"
-                    >
-                      {topic.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul> */}
+              {/* Future topics list can go here if you uncomment it */}
             </div>
           ))}
         </div>
@@ -321,31 +280,6 @@ const HelpCenterPage = () => {
         </div>
 
         <div className="mt-12 space-y-6">
-          <div className="rounded-lg border border-gray-200 bg-white p-6">
-            <h3 className="text-xl font-semibold text-dark-500 mb-3">
-              Popular Topics
-            </h3>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <h4 className="font-medium text-dark-500 mb-2">For Buyers:</h4>
-                <ul className="space-y-1 text-dark-400">
-                  <li>• How to find qualified Quran tutors</li>
-                  <li>• Understanding seller credentials</li>
-                  <li>• Scheduling live Islamic lessons</li>
-                  <li>• Getting refunds for services</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-medium text-dark-500 mb-2">For Sellers:</h4>
-                <ul className="space-y-1 text-dark-400">
-                  <li>• Creating compelling service listings</li>
-                  <li>• Pricing your Islamic services</li>
-                  <li>• Getting verified credentials</li>
-                  <li>• Managing Ramadan schedule</li>
-                </ul>
-              </div>
-            </div>
-          </div>
 
           <div className="rounded-lg border-2 border-primary-200 bg-primary-50 p-6">
             <div className="flex items-start gap-3">
