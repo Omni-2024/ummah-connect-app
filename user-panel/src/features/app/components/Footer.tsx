@@ -102,7 +102,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <button 
-                  onClick={() => handleNavigation('/help')}
+                  onClick={() => handleNavigation('/help-center')}
                   className="text-sm text-gray-700 hover:text-blue-600 transition-colors"
                 >
                   Help Center
@@ -110,7 +110,7 @@ export default function Footer() {
               </li>
               <li>
                 <button 
-                  onClick={() => handleNavigation('/contact')}
+                  onClick={() => handleNavigation('/contact-us')}
                   className="text-sm text-gray-700 hover:text-blue-600 transition-colors"
                 >
                   Contact Us
