@@ -284,7 +284,7 @@ const HelpCenterPage = () => {
               </li>
               <li>
                 <Link
-                  href="/community-guidelines"
+                  href="/guidelines"
                   className="text-base text-status-blue hover:underline"
                 >
                   Community Guidelines

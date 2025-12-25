@@ -369,7 +369,7 @@ const RefundPolicyPage = () => {
               Help Center
             </Link>{" "}
             or review our{" "}
-            <Link href="/community-guidelines" className="text-status-blue underline">
+            <Link href="/guidelines" className="text-status-blue underline">
               Community Guidelines
             </Link>
             .
