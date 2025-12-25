@@ -4,7 +4,7 @@ import ContactUsPage from "@/app/contact-us/ContactUsPage";
 
 export const metadata: Metadata = {
     title: "Contact Us - Ummah Connect | Connecting the Islamic Community",
-    alternates: { canonical: "/privacy-policy" },
+    alternates: { canonical: "/contact-us" },
 };
 
  function ContactUsLoading() {

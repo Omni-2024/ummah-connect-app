@@ -4,7 +4,7 @@ import HelpCenterPage from "@/app/help-center/HelpCenterPage";
 
 export const metadata: Metadata = {
     title: "Help Center - Ummah Connect | Connecting the Islamic Community",
-    alternates: { canonical: "/privacy-policy" },
+    alternates: { canonical: "/help-center" },
 };
 
  function HelpCenterLoading() {
