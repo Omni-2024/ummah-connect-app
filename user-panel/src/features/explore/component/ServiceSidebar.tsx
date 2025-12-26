@@ -62,17 +62,40 @@ export default function ServiceSidebar({
     setShowQuoteModal(true);
   };
 
-  const handleChat = () => {
-    if (!user) {
-      router.push("/user/signup");
-      return;
-    }
-    setShowContactOptions(false);
-    if (providerId) {
-      setUserId(providerId);
-    onContact?.(); 
-  }
-};
+//   const handleChat = () => {
+//     if (!user) {
+//       router.push("/user/signup");
+//       return;
+//     }
+//     setShowContactOptions(false);
+//     if (providerId) {
+//       setUserId(providerId);
+//     onContact?.();
+//   }
+// };
+
+    const handleChat = () => {
+        if (!user) {
+            router.push("/user/signup");
+            return;
+        }
+
+        setShowContactOptions(false);
+
+        if (!providerId) {
+            console.error("Provider ID is missing");
+            // Optionally show a toast notification
+            return;
+        }
+
+        // Set the user ID first, then trigger contact
+        setUserId(providerId);
+
+        // Small delay to ensure state updates
+        setTimeout(() => {
+            onContact?.();
+        }, 100);
+    };
 
   const toggleLearningPoints = () => {
     setIsLearningPointsOpen(!isLearningPointsOpen);
