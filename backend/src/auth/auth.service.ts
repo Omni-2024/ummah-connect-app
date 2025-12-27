@@ -206,7 +206,7 @@ export class AuthService {
       return genToken.data
 
     } catch (error) {
-      return { status: HttpStatus.UNAUTHORIZED, error };
+      throw new UnauthorizedException('Unauthorized access');
     }
   }
 
