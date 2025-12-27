@@ -7,9 +7,15 @@ interface EditInfoButtonProps {
   isEditing: boolean;
   onClick: () => void;
   saving: boolean;
+  disabled?: boolean; // ✅ ADD THIS
 }
 
-export function EditInfoButton({ isEditing, onClick, saving }: EditInfoButtonProps) {
+export function EditInfoButton({
+  isEditing,
+  onClick,
+  saving,
+  disabled = false,
+}: EditInfoButtonProps) {
   const baseClasses = `
     px-4 py-2
     text-sm
@@ -17,24 +23,22 @@ export function EditInfoButton({ isEditing, onClick, saving }: EditInfoButtonPro
     transition-colors duration-300
   `;
 
-  const saveBtnClasses = "bg-primary-500";
-  const editBtnClasses = "bg-primary-500";
+  const appliedClasses = "bg-primary-500";
 
-  // Logic: 
-  // - if editing, button is Save => blue
-  // - if not editing, button is Edit => red
-  const appliedClasses = isEditing ? saveBtnClasses : editBtnClasses;
+  const isDisabled = saving || disabled; // ✅ MERGED LOGIC
 
   return (
     <Button
       onClick={onClick}
-      disabled={saving}
-      className={`${baseClasses} ${appliedClasses}`}
+      disabled={isDisabled}
+      className={`${baseClasses} ${appliedClasses} ${
+        isDisabled ? "opacity-50 cursor-not-allowed" : ""
+      }`}
     >
       {isEditing ? (
         <>
           <Save className="w-4 h-4 mr-2" />
-          Save Changes
+          {saving ? "Saving..." : "Save Changes"}
         </>
       ) : (
         <>

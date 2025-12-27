@@ -49,7 +49,7 @@ export default function ProviderList({ onSelect }: ProviderListProps) {
       <div className="relative pt-2">
         <input
           type="text"
-          placeholder="Search provider..."
+          placeholder="Search freelancer..."
           value={searchQuery}
           onChange={(e) => {
             setSearchQuery(e.target.value);
@@ -79,7 +79,7 @@ export default function ProviderList({ onSelect }: ProviderListProps) {
           );
         })}
         {!filteredProviders.length && (
-          <li className="p-3 text-center text-gray-500">No providers found</li>
+          <li className="p-3 text-center text-gray-500">No Freelancers found</li>
         )}
       </ul>
 

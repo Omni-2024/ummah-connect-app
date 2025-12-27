@@ -200,7 +200,7 @@ export default function ProviderPaymentsMerged() {
                   className="w-full border rounded-full px-4 py-3 text-left"
                   onClick={() => setDropdownOpen(v => !v)}
                 >
-                  <b>Provider:</b>{" "}
+                  <b>Freelancer:</b>{" "}
                   {providers.find(p => p.id === selectedProviderId)?.name}
                 </button>
 
@@ -246,7 +246,7 @@ export default function ProviderPaymentsMerged() {
                   <Row
                     label={
                       role === ADMIN_ROLES.ADMIN
-                        ? "Paid to Provider"
+                        ? "Paid to Freelancer"
                         : "Amount Paid"
                     }
                     value={`$${(p.provider_amount ?? p.amount) / 100}`}
