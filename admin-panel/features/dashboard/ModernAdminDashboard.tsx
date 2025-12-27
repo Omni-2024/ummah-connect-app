@@ -106,7 +106,7 @@ export default function ModernAdminDashboard() {
       bgColor: "bg-purple-500/10",
     },
     {
-      title: "Providers",
+      title: "Freelancer",
       value: stats?.data?.totals?.registeredProviders,
       format: fmtNumber,
       growth: stats?.data?.growth?.providersPct,
@@ -307,13 +307,13 @@ export default function ModernAdminDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2">
-                    Top Providers
+                    Top Freelancers
                     <Badge variant="secondary" className="text-xs">
                       {params.topLimit ?? 5}
                     </Badge>
                   </CardTitle>
                   <CardDescription>
-                    Highest performing service providers
+                    Highest performing service freelancers
                   </CardDescription>
                 </div>
                 <Button variant="outline" size="sm" asChild>
@@ -334,7 +334,7 @@ export default function ModernAdminDashboard() {
               ) : stats?.data?.topProviders?.length === 0 ? (
                 <div className="text-center py-8 text-muted-foreground">
                   <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                  <p>No providers data available</p>
+                  <p>No freelancers data available</p>
                 </div>
               ) : (
                 <div className="space-y-2">
