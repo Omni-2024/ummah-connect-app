@@ -120,7 +120,7 @@ export default function ReviewList({
             No reviews available
           </p>
           <p className="text-primary-600 text-sm mt-1">
-            This provider has no reviews yet.
+            This freelancer has no reviews yet.
           </p>
         </div>
       </div>

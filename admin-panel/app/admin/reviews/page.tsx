@@ -48,10 +48,10 @@ export default function AdminReviewPage() {
             <div className="flex flex-col items-center justify-center h-full py-16 border border-dashed border-primary/20 rounded-xl bg-white/60 dark:bg-slate-800/40">
               <Star className="w-12 h-12 text-primary-500 mb-3" />
               <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-                Select a provider
+                Select a freelancer
               </h2>
               <p className="text-gray-500 text-sm mt-1">
-                Choose a provider from the panel to view their reviews.
+                Choose a freelancer from the panel to view their reviews.
               </p>
             </div>
           )}
