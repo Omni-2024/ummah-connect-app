@@ -15,8 +15,10 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
     const [showChannelList, setShowChannelList] = useState(false)
     const [showSettings, setShowSettings] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
-    const { client, channel, isAdmin, selectChannel, allChannels } = useChatClient(userId, otherUserId)
-
+    const { client, channel, isAdmin, selectChannel, allChannels } = useChatClient(
+        userId,
+        otherUserId
+    )
 
     const {
         totalUnreadCount,
@@ -55,6 +57,32 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
     }, [isOpen, markNotificationsAsSeen])
 
     if (!client || !channel) return null
+
+    if (isOpen && (!client || !channel)) {
+        return (
+            <div className={`fixed z-[48] ${isMobile ? 'bottom-20 right-4' : 'bottom-4 right-4'}`}>
+                <motion.div
+                    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${
+                        isMobile
+                            ? "fixed inset-x-4 z-[48]"
+                            : "w-96 h-[550px]"
+                    }`}
+                >
+                    <div className="bg-primary-500 text-white p-4 flex items-center justify-between rounded-t-lg">
+                        <h3 className="font-semibold">Loading Chat...</h3>
+                        <button onClick={() => setIsOpen(false)} className="hover:bg-primary-400 p-2 rounded">
+                            <CloseCircle color="white" size={18} />
+                        </button>
+                    </div>
+                    <div className="flex-1 flex items-center justify-center">
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+                    </div>
+                </motion.div>
+            </div>
+        )
+    }
 
     const toggleChannelList = () => {
         setShowChannelList(!showChannelList)
