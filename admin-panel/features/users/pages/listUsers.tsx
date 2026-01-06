@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { Toast } from "@/components/base/toast";
 import LoadingError from "@/components/widget/loadingError";
@@ -29,21 +29,40 @@ enum PopupType {
   DeleteUser = "deleteUser",
 }
 
-const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
-  const PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
 
+const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
   const [popupType, setPopupType] = useState<PopupType | null>(null);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [page, setPage] = useState(1);
-  const [editRoleUser, setEditRoleUser] = useState<{ id: string; role: string } | null>(null);
+  const [editRoleUser, setEditRoleUser] =
+    useState<{ id: string; role: string } | null>(null);
 
-  /** USER DATA */
-  const { data: userData, isLoading, error: userLoadingError, isError, refetch: refetchUsers } =
-    useGeneralUsers({
-      limit: PAGE_SIZE,
-      offset: (page - 1) * PAGE_SIZE,
-      search,
-    });
+  /** 🚫 API SEARCH DISABLED */
+  const {
+    data: userData,
+    isLoading,
+    error: userLoadingError,
+    isError,
+    refetch: refetchUsers,
+  } = useGeneralUsers({
+    limit: PAGE_SIZE,
+    offset: (page - 1) * PAGE_SIZE,
+    search: "", // 👈 IMPORTANT
+  });
+
+  /** -----------------------------
+   * CLIENT-SIDE SEARCH
+   * ----------------------------*/
+  const filteredUsers = useMemo(() => {
+    if (!search) return userData?.data || [];
+    const q = search.toLowerCase();
+
+    return (userData?.data || []).filter((u: any) =>
+      u.name?.toLowerCase().startsWith(q) ||
+      u.email?.toLowerCase().startsWith(q)
+    );
+  }, [userData?.data, search]);
 
   /** DELETE USER */
   const { mutate: deleteUser, isPending: isDeleting } = useMutation({
@@ -56,15 +75,19 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
     },
   });
 
-  const totalPages = Math.max(1, Math.ceil((userData?.meta?.total ?? 0) / PAGE_SIZE));
+  const totalPages = Math.max(
+    1,
+    Math.ceil((userData?.meta?.total ?? 0) / PAGE_SIZE)
+  );
 
-  /** PAGINATION FIX */
+  /** AUTO PAGE FIX */
   useEffect(() => {
-    if ((userData?.data?.length ?? 0) === 0 && page > 1) {
+    if (filteredUsers.length === 0 && page > 1) {
       setPage((prev) => Math.min(prev - 1, totalPages));
     }
-  }, [userData?.data?.length, page, totalPages]);
+  }, [filteredUsers.length, page, totalPages]);
 
+  /** RESET PAGE ON SEARCH */
   useEffect(() => {
     setPage(1);
   }, [search]);
@@ -91,7 +114,7 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
             url: `/api/specialist?professionId=${p.id}`,
           });
           if (res?.data) allSpecs.push(...res.data);
-        } catch (err) {
+        } catch {
           console.warn("Failed to load specialists for:", p.id);
         }
       }
@@ -108,14 +131,22 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
     specialists.find((s) => s.id === id)?.name || id;
 
   if (isError) {
-    return <LoadingError error={userLoadingError.message} reload={refetchUsers} />;
+    return (
+      <LoadingError
+        error={userLoadingError.message}
+        reload={refetchUsers}
+      />
+    );
   }
 
-  if (isLoading || !userData || loadingCategories) return <UserCardSkeletonList />;
+  if (isLoading || !userData || loadingCategories) {
+    return <UserCardSkeletonList />;
+  }
 
   return (
     <>
-      {!userData?.data || userData.data.length === 0 ? (
+      {/* EMPTY STATES */}
+      {!filteredUsers.length ? (
         search ? (
           <ListEmptyStateWithSearch
             name="user"
@@ -127,21 +158,33 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
             <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center">
               <Users size={36} className="text-gray-400" />
             </div>
-            <h2 className="text-2xl font-semibold text-gray-900">No Users Available</h2>
-            <p className="text-gray-600 max-w-sm">There are currently no users in the system.</p>
+            <h2 className="text-2xl font-semibold text-gray-900">
+              No Users Available
+            </h2>
+            <p className="text-gray-600 max-w-sm">
+              There are currently no users in the system.
+            </p>
           </div>
         )
       ) : (
         <div className="grid grid-cols-[repeat(auto-fit,_minmax(377px,1fr))] gap-4 py-12">
-          {userData.data.map((user) => (
+          {filteredUsers.map((user: any) => (
             <UserCard
               key={user.id}
               data={{
                 ...user,
-                designations: user.designations?.map((id: string) => getProfessionName(id)) || [],
-                interests: user.interests?.map((id: string) => getSpecialistName(id)) || [],
+                designations:
+                  user.designations?.map((id: string) =>
+                    getProfessionName(id)
+                  ) || [],
+                interests:
+                  user.interests?.map((id: string) =>
+                    getSpecialistName(id)
+                  ) || [],
               }}
-              onEdit={() => setEditRoleUser({ id: user.id, role: user.role })}
+              onEdit={() =>
+                setEditRoleUser({ id: user.id, role: user.role })
+              }
               onDelete={() => {
                 setSelectedUser(user.id);
                 setPopupType(PopupType.DeleteUser);
@@ -155,7 +198,8 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
         </div>
       )}
 
-      {userData?.meta?.total > PAGE_SIZE && (
+      {/* PAGINATION (HIDDEN DURING SEARCH) */}
+      {userData?.meta?.total > PAGE_SIZE && !search && (
         <AdvancedPagination
           currentPage={page}
           totalPages={Math.ceil(userData.meta.total / PAGE_SIZE)}
@@ -163,6 +207,7 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
         />
       )}
 
+      {/* VIEW USER */}
       <ViewUser
         open={popupType === PopupType.ViewUser}
         id={selectedUser ?? undefined}
@@ -170,7 +215,7 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
           setPopupType(null);
           setSelectedUser(null);
         }}
-        setEditUser={(id: string | undefined) => {
+        setEditUser={(id?: string) => {
           if (id) {
             setSelectedUser(id);
             setPopupType(PopupType.EditUser);
@@ -181,8 +226,11 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
         }}
       />
 
+      {/* DELETE */}
       <RemoveDialog
         name="user"
+        open={popupType === PopupType.DeleteUser}
+        loading={isDeleting}
         onRemove={() => {
           if (selectedUser) deleteUser(selectedUser);
         }}
@@ -190,10 +238,9 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
           setPopupType(null);
           setSelectedUser(null);
         }}
-        open={popupType === PopupType.DeleteUser}
-        loading={isDeleting}
       />
 
+      {/* EDIT */}
       <UserEditPopup
         open={!!editRoleUser}
         userId={editRoleUser?.id ?? null}
