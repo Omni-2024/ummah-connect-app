@@ -80,10 +80,10 @@ export default function AdminGigsPage() {
                 isPublished: tabApproved ? true : isPublished,
                 provider:providers[0],
                 profession,
-                isApproved:!tabApproved,
+                isApproved:selectedTab === ServicesPageTabs.Drafts ? false : !tabApproved,
                 specialties: specialist,
             }) as GetAllServiceParams,
-        [currentPage, search, isPublished, providers, profession, specialist]
+        [currentPage, search, isPublished, providers, profession, specialist, tabApproved]
     );
 
     const { data: services, isLoading, refetch } = useServices(serviceParams);
@@ -220,6 +220,7 @@ export default function AdminGigsPage() {
                                 key={service.id}
                                 service={service}
                                 refetchAll={refetch}
+                                Activetab={selectedTab}
                             />
                         ))
                     )}

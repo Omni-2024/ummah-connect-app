@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import {
+  ApproveServiceDto,
   CreateServiceDto,
   FindAllByProviderServiceDto,
   FindOneServiceDto,
@@ -97,6 +98,8 @@ export class ServiceService {
   async findAllByProviders(dto: FindAllByProviderServiceDto) {
     const { limit, offset, userId } = dto;
 
+    console.log("Yarra nee",dto);
+
     // normalize genderBase possibly arriving as "true"/"false" strings
     const doGender = this.genderBase
 
@@ -143,6 +146,16 @@ export class ServiceService {
     updateServiceDto: UpdateServiceDto,
   ){
       const service = await this.serviceRepo.updateService(updateServiceDto);
+      if (service instanceof Service) {
+        return service;
+      }
+      throw new NotFoundException('No services found');
+  }
+
+  async approve(
+    approveServiceDto: ApproveServiceDto,
+  ){
+      const service = await this.serviceRepo.updateService(approveServiceDto);
       if (service instanceof Service) {
         return service;
       }

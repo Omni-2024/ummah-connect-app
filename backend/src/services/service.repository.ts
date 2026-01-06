@@ -26,7 +26,7 @@ export class ServiceRepository {
   constructor(
     @InjectRepository(Service)
     private serviceRepository: Repository<Service>,
-  ) { }
+  ) {}
   async createService(createServiceDto: CreateServiceDto): Promise<Service> {
     try {
       const service = this.serviceRepository.create(createServiceDto);
@@ -46,7 +46,9 @@ export class ServiceRepository {
     }
   }
 
-  async getServiceBySlug({ slug }: FindServiceBySlugDto): Promise<Service | null> {
+  async getServiceBySlug({
+    slug,
+  }: FindServiceBySlugDto): Promise<Service | null> {
     try {
       return await this.serviceRepository.findOne({
         where: { slug },
@@ -57,9 +59,9 @@ export class ServiceRepository {
   }
 
   async getServices({
-                     limit,
-                     offset,
-                   }: PaginatedRequestDto): Promise<Service[] | null> {
+    limit,
+    offset,
+  }: PaginatedRequestDto): Promise<Service[] | null> {
     try {
       const options: FindManyOptions<Service> = {
         where: { isArchived: false },
@@ -87,13 +89,13 @@ export class ServiceRepository {
   }
 
   async countProviders({
-                         providerId,
-                         isPublished,
-                         isArchived,
-                         doGender,
-                         hasUser,
-                         userGender,
-                       }: FindAllByProviderServiceDto): Promise<number> {
+    providerId,
+    isPublished,
+    isArchived,
+    doGender,
+    hasUser,
+    userGender,
+  }: FindAllByProviderServiceDto): Promise<number> {
     const qb = this.serviceRepository
       .createQueryBuilder('s')
       .select('COUNT(1)', 'cnt')
@@ -105,11 +107,11 @@ export class ServiceRepository {
     qb.leftJoin(
       'user',
       'p',
-      `p._id::text = s.provider_id::text AND p.deleted_at IS NULL`
+      `p._id::text = s.provider_id::text AND p.deleted_at IS NULL`,
     );
 
     if (hasUser && userGender) {
-      if (doGender==="true") {
+      if (doGender === 'true') {
         qb.andWhere('p.gender = :userGender', { userGender });
       } else {
         qb.andWhere(
@@ -124,7 +126,6 @@ export class ServiceRepository {
     const row = await qb.getRawOne<{ cnt: string }>();
     return Number(row?.cnt ?? 0);
   }
-
 
   async updateService(
     updateServiceDto: UpdateServiceDto,
@@ -147,7 +148,6 @@ export class ServiceRepository {
     findOneServiceDto: FindOneServiceDto,
   ): Promise<Service | Error | null> {
     try {
-
       // Fetch the service based on the criteria
       const service = await this.serviceRepository.findOne({
         where: findOneServiceDto,
@@ -173,32 +173,34 @@ export class ServiceRepository {
   }
 
   async findServicesByProvider({
-                                 providerId,
-                                 limit,
-                                 offset,
-                                 isPublished,
-                                 isArchived,
-                                 doGender,
-                                 hasUser,
-                                 userGender,
-                               }: FindAllByProviderServiceDto): Promise<Service[]> {
+    providerId,
+    limit,
+    offset,
+    isPublished,
+    isArchived,
+    doGender,
+    hasUser,
+    userGender,
+    isApproved,
+  }: FindAllByProviderServiceDto): Promise<Service[]> {
     const qb = this.serviceRepository
       .createQueryBuilder('s')
       .where('s.providerId = :providerId', { providerId });
 
     qb.andWhere('s.isPublished = :isPublished', { isPublished });
     qb.andWhere('s.isArchived = :isArchived', { isArchived });
+    qb.andWhere('s.isApproved = :isApproved', { isApproved });
 
     // Join provider (user) to get gender / flags / best-seller
     qb.leftJoin(
       'user',
       'p',
-      `p._id::text = s.provider_id::text AND p.deleted_at IS NULL`
+      `p._id::text = s.provider_id::text AND p.deleted_at IS NULL`,
     );
 
     // ----- Gender rules -----
     if (hasUser && userGender) {
-      if (doGender==="true") {
+      if (doGender === 'true') {
         // A) doGender true: strictly same gender only
         qb.andWhere('p.gender = :userGender', { userGender });
       } else {
@@ -219,7 +221,7 @@ export class ServiceRepository {
     // Best sellers (not expired) first, then title ASC, then createdAt DESC
     qb.addSelect(
       `CASE WHEN p.best_seller_expires IS NOT NULL AND p.best_seller_expires > NOW() THEN 1 ELSE 0 END`,
-      'best_seller_first'
+      'best_seller_first',
     );
     qb.orderBy('best_seller_first', 'DESC')
       .addOrderBy('s.title', 'ASC')
@@ -232,40 +234,43 @@ export class ServiceRepository {
   }
 
   async search({
-                 limit,
-                 offset,
-                 search,
-                 professionId,
-                 specialtyIds,
-                 typeIds,
-                 lowerCmeRange,
-                 upperCmeRange,
-                 isPublished,
-                 isArchived,
-                 isApproved,
-                 providerIds,
-                 doGender,
-                 hasUser,
-                 userGender,
-               }: SearchServiceDto): Promise<{ services: Service[]; count: number }> {
-    const qb = this.serviceRepository
-      .createQueryBuilder('s')
-      .where('1=1');
+    limit,
+    offset,
+    search,
+    professionId,
+    specialtyIds,
+    typeIds,
+    lowerCmeRange,
+    upperCmeRange,
+    isPublished,
+    isArchived,
+    isApproved,
+    providerIds,
+    doGender,
+    hasUser,
+    userGender,
+  }: SearchServiceDto): Promise<{ services: Service[]; count: number }> {
+    const qb = this.serviceRepository.createQueryBuilder('s').where('1=1');
 
     // simple filters (only apply when provided)
     qb.andWhere('s.isPublished = :isPublished', { isPublished });
     qb.andWhere('s.isArchived = :isArchived', { isArchived });
     qb.andWhere('s.isApproved = :isApproved', { isApproved });
 
-
-    if (professionId) qb.andWhere('s.professionId = :professionId', { professionId });
-    if (specialtyIds?.length) qb.andWhere('s.specialtyId IN (:...specialtyIds)', { specialtyIds });
+    if (professionId)
+      qb.andWhere('s.professionId = :professionId', { professionId });
+    if (specialtyIds?.length)
+      qb.andWhere('s.specialtyId IN (:...specialtyIds)', { specialtyIds });
     if (typeIds?.length) qb.andWhere('s.typeId IN (:...typeIds)', { typeIds });
-    if (providerIds?.length) qb.andWhere('s.providerId IN (:...providerIds)', { providerIds });
+    if (providerIds?.length)
+      qb.andWhere('s.providerId IN (:...providerIds)', { providerIds });
 
     // numeric ranges
     if (lowerCmeRange != null && upperCmeRange != null) {
-      qb.andWhere('s.cmePoints BETWEEN :l AND :u', { l: lowerCmeRange, u: upperCmeRange });
+      qb.andWhere('s.cmePoints BETWEEN :l AND :u', {
+        l: lowerCmeRange,
+        u: upperCmeRange,
+      });
     } else if (lowerCmeRange != null) {
       qb.andWhere('s.cmePoints >= :l', { l: lowerCmeRange });
     } else if (upperCmeRange != null) {
@@ -275,24 +280,26 @@ export class ServiceRepository {
     // keyword
     if (search?.trim()) {
       const q = `%${search.trim()}%`;
-      qb.andWhere(new Brackets(w => {
-        w.where('s.title ILIKE :q', { q })
-          .orWhere('s.tagline ILIKE :q', { q })
-          .orWhere('s.description ILIKE :q', { q });
-      }));
+      qb.andWhere(
+        new Brackets((w) => {
+          w.where('s.title ILIKE :q', { q })
+            .orWhere('s.tagline ILIKE :q', { q })
+            .orWhere('s.description ILIKE :q', { q });
+        }),
+      );
     }
 
     // join provider (user) to access gender / same_gender_allow / best_seller_expires
     qb.leftJoin(
       'user',
       'p',
-      `p._id::text = s.provider_id::text AND p.deleted_at IS NULL`
+      `p._id::text = s.provider_id::text AND p.deleted_at IS NULL`,
     );
     // If migrated to UUID, use:  `p._id = s.provider_id AND p.deleted_at IS NULL`
 
     // 3-condition gender logic
     if (hasUser && userGender) {
-      if (doGender==="true") {
+      if (doGender === 'true') {
         // A) doGender true → strictly same gender only
         qb.andWhere('p.gender = :userGender', { userGender });
       } else {
@@ -311,7 +318,7 @@ export class ServiceRepository {
     // ordering: best sellers first, then title ASC, then createdAt DESC
     qb.addSelect(
       `CASE WHEN p.best_seller_expires IS NOT NULL AND p.best_seller_expires > NOW() THEN 1 ELSE 0 END`,
-      'best_seller_first'
+      'best_seller_first',
     );
     qb.orderBy('best_seller_first', 'DESC')
       .addOrderBy('s.title', 'ASC')
@@ -323,8 +330,6 @@ export class ServiceRepository {
     const [services, count] = await qb.getManyAndCount();
     return { services, count };
   }
-
-
 }
 
 interface FindOptionsProvider extends FindOptions {
