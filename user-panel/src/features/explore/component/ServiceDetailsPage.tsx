@@ -40,17 +40,6 @@ import { getInitials } from "@/features/explore/component/ServiceHeader"
 import ProviderServices from "./ProviderServices"
 import { saveRecentlyViewedService } from "@/features/home/RecentlySearchedServicesSection"
 
-function timeAgo(iso?: string) {
-  if (!iso) return ""
-  const diff = Date.now() - new Date(iso).getTime()
-  const d = Math.floor(diff / (1000 * 60 * 60 * 24))
-  if (d >= 7) return `${Math.floor(d / 7)} weeks ago`
-  if (d >= 1) return `${d} day${d > 1 ? "s" : ""} ago`
-  const h = Math.floor(diff / (1000 * 60 * 60))
-  if (h >= 1) return `${h} hour${h > 1 ? "s" : ""} ago`
-  const m = Math.floor(diff / (1000 * 60))
-  return `${m} min ago`
-}
 
 export default function ServiceDetailsPage() {
   const params = useParams()

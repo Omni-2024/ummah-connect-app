@@ -18,6 +18,7 @@ import { useAvatarUrl } from "@/hooks/userAvatarUrl";
 import { Teacher } from "iconsax-react";
 import { useCurrentUser } from "@/lib/hooks/useUserInfo";
 import { Roles } from "@/types/data";
+import {ServicesPageTabs} from "@/lib/types/tabs";
 
 type ServiceCardProps = {
   service: Service;
@@ -209,7 +210,7 @@ const ServiceCard: React.FC<ServiceCardProps> = (props) => {
                 )}
               </div>
             </div>
-            {data?.role === Roles.Admin && !props.service.isApproved && (
+            {data?.role === Roles.Admin && !props.service.isApproved && props.Activetab === ServicesPageTabs.NotApproved && (
               <Button
                 variant="primary"
                 className="mt-3 w-full"
