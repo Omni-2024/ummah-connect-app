@@ -30,6 +30,7 @@ enum PopupType {
 }
 
 const PAGE_SIZE = 10;
+const SEARCH_LIMIT = 1000;
 
 const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
   const [popupType, setPopupType] = useState<PopupType | null>(null);
@@ -38,7 +39,14 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
   const [editRoleUser, setEditRoleUser] =
     useState<{ id: string; role: string } | null>(null);
 
-  /** 🚫 API SEARCH DISABLED */
+  // ---------------------------------------------
+  // SEARCH MODE
+  // ---------------------------------------------
+  const isSearching = Boolean(search);
+  const limit = isSearching ? SEARCH_LIMIT : PAGE_SIZE;
+  const offset = isSearching ? 0 : (page - 1) * PAGE_SIZE;
+
+  /** 🚫 API SEARCH DISABLED (CLIENT-SIDE SEARCH) */
   const {
     data: userData,
     isLoading,
@@ -46,9 +54,9 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
     isError,
     refetch: refetchUsers,
   } = useGeneralUsers({
-    limit: PAGE_SIZE,
-    offset: (page - 1) * PAGE_SIZE,
-    search: "", // 👈 IMPORTANT
+    limit,
+    offset,
+    search: "",
   });
 
   /** -----------------------------
@@ -80,12 +88,12 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
     Math.ceil((userData?.meta?.total ?? 0) / PAGE_SIZE)
   );
 
-  /** AUTO PAGE FIX */
+  /** AUTO PAGE FIX (NON-SEARCH MODE) */
   useEffect(() => {
-    if (filteredUsers.length === 0 && page > 1) {
+    if (!isSearching && filteredUsers.length === 0 && page > 1) {
       setPage((prev) => Math.min(prev - 1, totalPages));
     }
-  }, [filteredUsers.length, page, totalPages]);
+  }, [filteredUsers.length, page, totalPages, isSearching]);
 
   /** RESET PAGE ON SEARCH */
   useEffect(() => {
@@ -198,8 +206,8 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
         </div>
       )}
 
-      {/* PAGINATION (HIDDEN DURING SEARCH) */}
-      {userData?.meta?.total > PAGE_SIZE && !search && (
+      {/* PAGINATION (DISABLED DURING SEARCH) */}
+      {userData?.meta?.total > PAGE_SIZE && !isSearching && (
         <AdvancedPagination
           currentPage={page}
           totalPages={Math.ceil(userData.meta.total / PAGE_SIZE)}
