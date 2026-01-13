@@ -14,7 +14,7 @@ import { Public } from '../auth/decorator/public.decorator';
 import { UserRole } from 'src/users/entities/abstract.user.entity';
 import { ServiceService } from './services.service';
 import { ServiceDetailService } from './service.detail.service';
-import { CreateServiceDto, UpdateServiceDto } from './dto/service.dto';
+import { ApproveServiceDto, CreateServiceDto, UpdateServiceDto } from './dto/service.dto';
 
 @Controller('service')
 export class ServiceController {
@@ -121,6 +121,15 @@ export class ServiceController {
     @Body() updateServiceDto: UpdateServiceDto,
   ) {
     return await this.serviceService.update({ ...updateServiceDto, id });
+  }
+
+  @Roles([UserRole.ADMIN, UserRole.ROOT])
+  @Patch('/approve/:id')
+  async approve(
+    @Param('id') id: string,
+    @Body() approveServiceDto: ApproveServiceDto,
+  ) {
+    return await this.serviceService.approve({ ...approveServiceDto, id });
   }
 
   @Roles([UserRole.ADMIN, UserRole.ROOT])

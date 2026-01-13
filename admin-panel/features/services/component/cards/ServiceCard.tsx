@@ -7,7 +7,7 @@ import { Edit, Trash, Expand } from "lucide-react";
 import LinkButton from "@/components/base/LinkButton";
 import RemoveServiceDialog from "@/components/widget/removeServiceDialog";
 import { Badge } from "@/components/base/badge";
-import { archiveServiceFn, Service } from "@/lib/endpoints/serviceFns";
+import { approveServiceFn, archiveServiceFn, Service, updateServiceFn } from "@/lib/endpoints/serviceFns";
 import { useGeneralUser } from "@/lib/hooks/useGeneralUsers";
 import { useMutation } from "@tanstack/react-query";
 import { Toast } from "@/components/base/toast";
@@ -16,9 +16,13 @@ import { useProfession } from "@/hooks/useProfessions";
 import Image from "next/image";
 import { useAvatarUrl } from "@/hooks/userAvatarUrl";
 import { Teacher } from "iconsax-react";
+import { useCurrentUser } from "@/lib/hooks/useUserInfo";
+import { Roles } from "@/types/data";
+import {ServicesPageTabs} from "@/lib/types/tabs";
 
 type ServiceCardProps = {
   service: Service;
+  Activetab?: string;
   refetchAll: () => void;
 };
 
@@ -57,8 +61,11 @@ const ProviderAvatar = ({
 
 const ServiceCard: React.FC<ServiceCardProps> = (props) => {
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
+  const { data } = useCurrentUser();
   const { data: provider } = useGeneralUser(props.service.providerId);
   const { data: profession } = useProfession(props.service.professionId);
+  const [approveDialogOpen, setApproveDialogOpen] = useState(false);
+
 
   const { mutate: softDeleteService, isPending: isSoftDeleteLoading } =
     useMutation({
@@ -73,6 +80,8 @@ const ServiceCard: React.FC<ServiceCardProps> = (props) => {
       },
     });
 
+  console.log(data?.role === Roles.Admin)
+
   const { mutate: hardDeleteService, isPending: isHardDeleteLoading } =
     useMutation({
       mutationFn: () => archiveServiceFn(props.service.id),
@@ -86,98 +95,166 @@ const ServiceCard: React.FC<ServiceCardProps> = (props) => {
       },
     });
 
+  const { mutate: approveServiceMutate, isPending: isApproveServicePending } =
+    useMutation({
+      mutationFn: approveServiceFn,
+      onSuccess: () => {
+        Toast.success("Service approved successfully");
+        setApproveDialogOpen(false);
+        props.refetchAll();
+      },
+      onError: () => {
+        Toast.error("Failed to approve service");
+      },
+    });
+
+
+  const handleApproveService = () => {
+    approveServiceMutate({
+      id: props.service.id,
+      data: {
+        isApproved: true,
+      },
+    });
+  };
+
+
+
   const discountedPrice = props.service.discountEnabled
     ? props.service.price - (props.service.price * props.service.discount) / 100
     : props.service.price;
 
   return (
-    <Card
-      key={props.service.id}
-      className="bg-white border border-gray-200 hover:shadow-lg transition-shadow"
-    >
-      <CardContent className="p-0">
-        {/* Service Image */}
-        <div className="relative">
-          <img
-            src={`${envs.imageBaseUrl}/${props.service.coverImageUrl}`}
-            alt={props.service.title}
-            className="w-full h-48 object-cover rounded-t-lg"
-          />
-          <div className="absolute top-3 right-3 flex gap-2">
-            <LinkButton
-              href={`services/edit/${props.service.id}`}
-              variant="icon"
-              className="w-10 px-0 shrink-0 rounded-lg border border-primary-500 text-primary-500"
-            >
-              <Edit className="h-4 w-4" />
-            </LinkButton>
-            <LinkButton
-              target="_blank"
-              variant="icon"
-              href={`${envs.mainBaseUrl}/service/${props.service.slug}`}
-              className="w-10 px-0 shrink-0 rounded-lg border border-primary-500 text-primary-500"
-              title="View Service"
-            >
-              <Expand className="h-4 w-4" />
-            </LinkButton>
-            <RemoveServiceDialog
-              enrollmentCount={props.service.enrollmentCount}
-              onSoftDelete={() => softDeleteService()}
-              onHardDelete={() => hardDeleteService()}
-              onClose={() => setRemoveDialogOpen(false)}
-              open={removeDialogOpen}
-              loading={isSoftDeleteLoading || isHardDeleteLoading}
-            >
-              <Button
+    <>
+      <Card
+        key={props.service.id}
+        className="bg-white border border-gray-200 hover:shadow-lg transition-shadow"
+      >
+        <CardContent className="p-0">
+          {/* Service Image */}
+          <div className="relative">
+            <img
+              src={`${envs.imageBaseUrl}/${props.service.coverImageUrl}`}
+              alt={props.service.title}
+              className="w-full h-48 object-cover rounded-t-lg"
+            />
+            <div className="absolute top-3 right-3 flex gap-2">
+              <LinkButton
+                href={`services/edit/${props.service.id}`}
                 variant="icon"
                 className="w-10 px-0 shrink-0 rounded-lg border border-primary-500 text-primary-500"
-                onClick={() => setRemoveDialogOpen(true)}
-                title="Remove Service"
               >
-                <Trash className="h-4 w-4" />
-              </Button>
-            </RemoveServiceDialog>
+                <Edit className="h-4 w-4" />
+              </LinkButton>
+              <LinkButton
+                target="_blank"
+                variant="icon"
+                href={`${envs.mainBaseUrl}/service/${props.service.slug}`}
+                className="w-10 px-0 shrink-0 rounded-lg border border-primary-500 text-primary-500"
+                title="View Service"
+              >
+                <Expand className="h-4 w-4" />
+              </LinkButton>
+              <RemoveServiceDialog
+                enrollmentCount={props.service.enrollmentCount}
+                onSoftDelete={() => softDeleteService()}
+                onHardDelete={() => hardDeleteService()}
+                onClose={() => setRemoveDialogOpen(false)}
+                open={removeDialogOpen}
+                loading={isSoftDeleteLoading || isHardDeleteLoading}
+              >
+                <Button
+                  variant="icon"
+                  className="w-10 px-0 shrink-0 rounded-lg border border-primary-500 text-primary-500"
+                  onClick={() => setRemoveDialogOpen(true)}
+                  title="Remove Service"
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              </RemoveServiceDialog>
+            </div>
+
+            {/* Provider Avatar (updated to match ProfileHeader style) */}
+            <div className="absolute bottom-3 left-3">
+              <ProviderAvatar
+                providerId={props.service.providerId}
+                alt={props.service.title}
+              />
+            </div>
           </div>
 
-          {/* Provider Avatar (updated to match ProfileHeader style) */}
-          <div className="absolute bottom-3 left-3">
-            <ProviderAvatar
-              providerId={props.service.providerId}
-              alt={props.service.title}
-            />
-          </div>
-        </div>
-
-        {/* Service Details */}
-        <div className="p-4">
-          <Badge
-            variant="secondary"
-            className="text-xs mb-2 bg-gray-100 text-gray-700"
-          >
-            {profession?.name}
-          </Badge>
-          <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">
-            {props.service.title}
-          </h3>
-          <p className="text-gray-600 text-sm mb-2">{provider?.name}</p>
-          <div className="flex items-center justify-between text-sm text-gray-500">
-            <span>
-              Enrollment count: {props.service.enrollmentCount || "N/A"}
-            </span>
-            <div className="flex items-baseline gap-2 mb-2">
-              <span className="text-xl font-bold text-gray-900">
-                ${discountedPrice}
+          {/* Service Details */}
+          <div className="p-4">
+            <Badge
+              variant="secondary"
+              className="text-xs mb-2 bg-gray-100 text-gray-700"
+            >
+              {profession?.name}
+            </Badge>
+            <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2">
+              {props.service.title}
+            </h3>
+            <p className="text-gray-600 text-sm mb-2">{provider?.name}</p>
+            <div className="flex items-center justify-between text-sm text-gray-500">
+              <span>
+                Enrollment count: {props.service.enrollmentCount || "N/A"}
               </span>
-              {props.service.discountEnabled && (
-                <span className="text-lg text-gray-400 line-through">
-                  ${props.service.price}
+              <div className="flex items-baseline gap-2 mb-2">
+                <span className="text-xl font-bold text-gray-900">
+                  ${discountedPrice}
                 </span>
-              )}
+                {props.service.discountEnabled && (
+                  <span className="text-lg text-gray-400 line-through">
+                    ${props.service.price}
+                  </span>
+                )}
+              </div>
+            </div>
+            {data?.role === Roles.Admin && !props.service.isApproved && props.Activetab === ServicesPageTabs.NotApproved && (
+              <Button
+                variant="primary"
+                className="mt-3 w-full"
+                onClick={() => setApproveDialogOpen(true)}
+              >
+                Approve
+              </Button>
+            )}
+
+          </div>
+        </CardContent>
+      </Card>
+      {approveDialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="bg-white rounded-lg p-6 w-[90%] max-w-sm">
+            <h3 className="text-lg font-semibold mb-2">
+              Are you sure?
+            </h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Do you want to approve this service?
+            </p>
+
+            <div className="flex justify-end gap-3">
+              <Button
+                variant="secondary"
+                onClick={() => setApproveDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                variant="primary"
+                isLoading={isApproveServicePending}
+                onClick={handleApproveService}
+              >
+                Yes, Approve
+              </Button>
+
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      )}
+
+    </>
   );
 };
 

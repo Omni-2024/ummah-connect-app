@@ -24,6 +24,11 @@ export const useChatClient = (userId: string | null, otherUserId: string | null)
     const chatClientRef = useRef<StreamChat | null>(null);
     const {isOneChat}=useProviderChatState()
 
+
+
+    const didConnectRef = useRef(false);       // ✅ new
+    const isCleaningUpRef = useRef(false);     // ✅ helps prevent race renders
+
     // Only fetch otherUserData when otherUserId exists
     const { data: otherUserData } = useGeneralUser(otherUserId || "");
     const currentUserData = useCurrentUser();
@@ -108,6 +113,9 @@ export const useChatClient = (userId: string | null, otherUserId: string | null)
         let mounted = true;
         const currentClient = chatClientRef.current!;
 
+        isCleaningUpRef.current = false;
+        setChannel(null);
+
         const init = async () => {
             try {
                 const token = await fetchChatToken({
@@ -116,38 +124,35 @@ export const useChatClient = (userId: string | null, otherUserId: string | null)
                     role,
                 } as GetChatTokenParams);
 
-                // Only connect if not already connected
-                if (!currentClient.userID) {
+                // ✅ Only connect if not connected OR different user
+                if (!currentClient.userID || currentClient.userID !== userId) {
+                    // If a different user is connected, disconnect first
+                    if (currentClient.userID && currentClient.userID !== userId) {
+                        await currentClient.disconnectUser();
+                    }
+
                     await currentClient.connectUser(
                         { id: userId, name: userData?.name ?? undefined },
                         token
                     );
+                    didConnectRef.current = true; // ✅ we own the connection
+                } else {
+                    didConnectRef.current = false; // ✅ someone else already connected it
                 }
 
                 if (!mounted) return;
 
                 setClient(currentClient);
 
-                // Role-based logic
                 if (!isOneChat) {
-                    // Admin mode - fetch all channels
                     const adminChannels = await fetchAdminChannels(currentClient);
-                    console.log("admin channel", adminChannels.length);
-
                     if (!mounted) return;
 
-                    if (adminChannels.length > 0) {
-                        await selectChannel(adminChannels[0]);
-                    } else {
-                        setChannel(null);
-                    }
-                } else if (isOneChat && otherUserId) {
-                    // One-on-one chat mode
-                    const sorted = [userId, otherUserId].sort();
+                    setAllChannels(adminChannels);
+                    setChannel(adminChannels[0] ?? null);
+                } else if (otherUserId) {
                     const channelId = createChannelId(userId, otherUserId);
-                    const channelName = createChannelName();
 
-                    // Try to find existing channel
                     const channels = await currentClient.queryChannels(
                         { type: "messaging", id: { $eq: channelId } },
                         {},
@@ -157,35 +162,38 @@ export const useChatClient = (userId: string | null, otherUserId: string | null)
                     if (!mounted) return;
 
                     if (channels.length === 0) {
-                        // Create new channel
                         const newChannel = currentClient.channel("messaging", channelId, {
-                            members: sorted,
+                            members: [userId, otherUserId].sort(),
                             created_by_id: userId,
-                            name: channelName,
+                            name: createChannelName(),
                         });
                         await newChannel.watch();
-
                         if (!mounted) return;
-
                         setChannel(newChannel);
                     } else {
                         setChannel(channels[0]);
                     }
                 }
             } catch (e: any) {
-                console.error("Error initializing chat:", e);
-                if (mounted) {
-                    Toast.error(getErrorMessage(e));
-                }
+                if (mounted) Toast.error(getErrorMessage(e));
             }
         };
 
         init();
 
+
+
         return () => {
             mounted = false;
             // Disconnect when component unmounts
-            if (currentClient.userID) {
+            isCleaningUpRef.current = true;
+
+            setChannel(null);
+            setAllChannels([]);
+            setClient(null);
+
+
+            if (didConnectRef.current && currentClient.userID) {
                 currentClient.disconnectUser().catch((err) => {
                     console.error("Error disconnecting user:", err);
                 });

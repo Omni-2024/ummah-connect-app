@@ -1,24 +1,38 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Chat, Channel, MessageList, MessageInput, Thread, Window } from "stream-chat-react"
-import { useChatClient } from "@/components/getStream/chat/useChatClient"
-import { motion, AnimatePresence } from "framer-motion"
-import { NotificationSettingsPanel } from "@/components/getStream/notification-settings-panel";
-import { useChatNotifications } from "@/components/getStream/useChatNotifications";
+import { useEffect, useMemo, useState } from "react";
+import { Chat, Channel, MessageList, MessageInput, Thread, Window } from "stream-chat-react";
+import type { Channel as StreamChannelType } from "stream-chat";
+import { motion, AnimatePresence } from "framer-motion";
 import { Menu, MessageCircle, Settings, User, CloseCircle } from "iconsax-react";
 import { Minimize2 } from "lucide-react";
 
-const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUserId: string }) => {
-    const [isOpen, setIsOpen] = useState(false)
-    const [isMinimized, setIsMinimized] = useState(false)
-    const [showChannelList, setShowChannelList] = useState(false)
-    const [showSettings, setShowSettings] = useState(false)
-    const [isMobile, setIsMobile] = useState(false)
-    const { client, channel, isAdmin, selectChannel, allChannels } = useChatClient(
-        userId,
-        otherUserId
-    )
+import { useChatClient } from "@/components/getStream/chat/useChatClient";
+import { NotificationSettingsPanel } from "@/components/getStream/notification-settings-panel";
+import { useChatNotifications } from "@/components/getStream/useChatNotifications";
+
+type Props = {
+    userId: string;
+    otherUserId: string;
+};
+
+const FloatingChatWidget = ({ userId, otherUserId }: Props) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [isMinimized, setIsMinimized] = useState(false);
+    const [showChannelList, setShowChannelList] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    const { client, channel, isAdmin, selectChannel, allChannels } = useChatClient(userId, otherUserId);
+
+    // ✅ "connected" is stronger than "client != null" (singleton client can exist while disconnected)
+    const isConnected = !!client?.userID;
+
+    // ✅ stream-chat-react <Channel /> expects `channel?: Channel` (undefined ok, null NOT ok)
+    const activeChannel: StreamChannelType | undefined = channel ?? undefined;
+
+    // ✅ stable key for notifications
+    const activeChannelKey = useMemo(() => activeChannel?.cid ?? activeChannel?.id ?? "", [activeChannel]);
 
     const {
         totalUnreadCount,
@@ -36,38 +50,46 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
         updateSettings,
         requestNotificationPermission,
         testNotification,
-    } = useChatNotifications(client, allChannels, channel?.id || channel?.cid)
+    } = useChatNotifications(client, allChannels, activeChannelKey);
 
     // Check if mobile
     useEffect(() => {
-        const checkMobile = () => {
-            setIsMobile(window.innerWidth < 1024) // lg breakpoint
-        }
-
-        checkMobile()
-        window.addEventListener("resize", checkMobile)
-        return () => window.removeEventListener("resize", checkMobile)
-    }, [])
+        const checkMobile = () => setIsMobile(window.innerWidth < 1024); // lg breakpoint
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     // Mark notifications as seen when chat is opened
     useEffect(() => {
-        if (isOpen) {
-            markNotificationsAsSeen()
-        }
-    }, [isOpen, markNotificationsAsSeen])
+        if (isOpen) markNotificationsAsSeen();
+    }, [isOpen, markNotificationsAsSeen]);
 
-    if (!client || !channel) return null
+    const toggleChannelList = () => setShowChannelList((v) => !v);
 
-    if (isOpen && (!client || !channel)) {
+    const handleChannelSelect = (ch: StreamChannelType) => {
+        selectChannel(ch);
+        setShowChannelList(false);
+    };
+
+    const handleChatOpen = () => {
+        setIsOpen(true);
+        setShowChannelList(false);
+        markNotificationsAsSeen();
+    };
+
+    // If not connected, show nothing (or you can still show a disabled button if you want)
+    if (!isConnected) return null;
+
+    // If open but channel not ready -> show loading UI
+    if (isOpen && !activeChannel) {
         return (
-            <div className={`fixed z-[48] ${isMobile ? 'bottom-20 right-4' : 'bottom-4 right-4'}`}>
+            <div className={`fixed z-[48] ${isMobile ? "bottom-20 right-4" : "bottom-4 right-4"}`}>
                 <motion.div
                     initial={{ opacity: 0, y: 20, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${
-                        isMobile
-                            ? "fixed inset-x-4 z-[48]"
-                            : "w-96 h-[550px]"
+                        isMobile ? "fixed inset-x-4 z-[48]" : "w-96 h-[550px]"
                     }`}
                 >
                     <div className="bg-primary-500 text-white p-4 flex items-center justify-between rounded-t-lg">
@@ -77,26 +99,11 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                         </button>
                     </div>
                     <div className="flex-1 flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500" />
                     </div>
                 </motion.div>
             </div>
-        )
-    }
-
-    const toggleChannelList = () => {
-        setShowChannelList(!showChannelList)
-    }
-
-    const handleChannelSelect = (ch: any) => {
-        selectChannel(ch)
-        setShowChannelList(false)
-    }
-
-    const handleChatOpen = () => {
-        setIsOpen(true)
-        setShowChannelList(false)
-        markNotificationsAsSeen()
+        );
     }
 
     return (
@@ -111,8 +118,8 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                 />
             )}
 
-            {/* Chat Widget Container - adjusted for mobile bottom bar */}
-            <div className={`fixed z-[48] ${isMobile ? 'bottom-20 right-4' : 'bottom-4 right-4'}`}>
+            {/* Chat Widget Container */}
+            <div className={`fixed z-[48] ${isMobile ? "bottom-20 right-4" : "bottom-4 right-4"}`}>
                 <AnimatePresence>
                     {!isOpen && (
                         <motion.div className="relative">
@@ -127,7 +134,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                             >
                                 <MessageCircle color="white" width={25} size={24} />
 
-                                {/* Enhanced Notification Badge */}
+                                {/* Notification Badge */}
                                 <AnimatePresence>
                                     {totalUnreadCount > 0 && (
                                         <motion.div
@@ -141,7 +148,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                     )}
                                 </AnimatePresence>
 
-                                {/* Pulsing Ring for New Messages */}
+                                {/* Pulsing ring */}
                                 <AnimatePresence>
                                     {hasNewMessages && (
                                         <motion.div
@@ -155,7 +162,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                 </AnimatePresence>
                             </motion.button>
 
-                            {/* Floating Unread Count Indicator */}
+                            {/* Floating Unread Indicator */}
                             {totalUnreadCount > 0 && !isMobile && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
@@ -176,26 +183,27 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 20, scale: 0.95 }}
                             transition={{ duration: 0.2, ease: "easeOut" }}
-                            className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${isMobile
+                            className={`bg-white rounded-lg shadow-2xl flex flex-col border border-gray-200 ${
+                                isMobile
                                     ? "fixed inset-x-4 z-[48] lg:relative lg:inset-auto"
                                     : isMinimized
                                         ? "w-80 h-14"
                                         : isAdmin
                                             ? "w-[900px] h-[650px] max-w-[95vw] max-h-[90vh]"
                                             : "w-96 h-[550px] max-w-[95vw] max-h-[90vh]"
-                                }`}
+                            }`}
                             style={
-                            isMobile
-                                ? {
-                                    top: "5rem",
-                                    bottom: "6rem",
-                                    height: "auto",
-                                    maxHeight: "80vh",
-                                }
-                                : undefined
+                                isMobile
+                                    ? {
+                                        top: "5rem",
+                                        bottom: "6rem",
+                                        height: "auto",
+                                        maxHeight: "80vh",
+                                    }
+                                    : undefined
                             }
                         >
-                            {/* Chat Header */}
+                            {/* Header */}
                             <div className="bg-primary-500 text-white p-4 flex items-center justify-between rounded-t-lg min-h-[64px] flex-shrink-0">
                                 <div className="flex items-center gap-3 flex-1 min-w-0 pr-3">
                                     {isAdmin && (
@@ -209,14 +217,14 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                     <div className="flex items-center gap-2 min-w-0 flex-1">
                                         <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse flex-shrink-0" />
                                         <h3 className="font-semibold truncate text-sm sm:text-base">
-                                            {channel.data?.name || "Support Chat"}
+                                            {activeChannel?.data?.name || "Support Chat"}
                                         </h3>
                                     </div>
                                 </div>
+
                                 <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-                                    {/* Settings Button */}
                                     <button
-                                        onClick={() => setShowSettings(!showSettings)}
+                                        onClick={() => setShowSettings((v) => !v)}
                                         className="hover:bg-primary-400 p-2 rounded transition-colors relative"
                                         title="Notification Settings"
                                     >
@@ -228,19 +236,23 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
 
                                     {!isMobile && (
                                         <button
-                                            onClick={() => setIsMinimized(!isMinimized)}
+                                            onClick={() => setIsMinimized((v) => !v)}
                                             className="hover:bg-primary-400 p-2 rounded transition-colors"
                                         >
                                             <Minimize2 color="white" width={20} size={18} />
                                         </button>
                                     )}
-                                    <button onClick={() => setIsOpen(false)} className="hover:bg-primary-500 p-2 rounded transition-colors">
+
+                                    <button
+                                        onClick={() => setIsOpen(false)}
+                                        className="hover:bg-primary-500 p-2 rounded transition-colors"
+                                    >
                                         <CloseCircle color="white" width={20} size={18} />
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Notification Settings Panel */}
+                            {/* Settings Panel */}
                             <NotificationSettingsPanel
                                 isOpen={showSettings}
                                 onClose={() => setShowSettings(false)}
@@ -257,7 +269,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                 onTestNotification={testNotification}
                             />
 
-                            {/* Chat Content */}
+                            {/* Content */}
                             <AnimatePresence>
                                 {!isMinimized && (
                                     <motion.div
@@ -266,7 +278,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                         exit={{ opacity: 0, height: 0 }}
                                         className="flex flex-1 bg-gray-50 rounded-b-lg overflow-hidden min-h-0"
                                     >
-                                        {/* Admin Channel List Overlay */}
+                                        {/* Admin Channel List */}
                                         {isAdmin && (
                                             <AnimatePresence>
                                                 {showChannelList && (
@@ -278,7 +290,6 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                         className="absolute inset-y-0 left-0 w-80 z-10 bg-white border-r border-gray-200 shadow-lg"
                                                     >
                                                         <div className="flex flex-col h-full">
-                                                            {/* Channel List Header */}
                                                             <div className="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
                                                                 <div className="flex items-center justify-between">
                                                                     <div className="flex items-center gap-2">
@@ -286,8 +297,8 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                         <h2 className="font-semibold text-gray-900">Channels</h2>
                                                                         {totalUnreadCount > 0 && (
                                                                             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                                                                                {totalUnreadCount}
-                                                                            </span>
+                                        {totalUnreadCount}
+                                      </span>
                                                                         )}
                                                                     </div>
                                                                     <button
@@ -297,37 +308,43 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                         <Menu color="black" size={18} />
                                                                     </button>
                                                                 </div>
-                                                                <p className="text-xs text-gray-500 mt-1">{allChannels.length} active conversations</p>
+                                                                <p className="text-xs text-gray-500 mt-1">
+                                                                    {allChannels.length} active conversations
+                                                                </p>
                                                             </div>
 
-                                                            {/* Channel List */}
                                                             <div className="flex-1 overflow-y-auto p-2 min-h-0">
                                                                 <div className="space-y-1">
                                                                     {allChannels.length > 0 ? (
                                                                         allChannels.map((ch) => {
-                                                                            const channelId = ch.id || ch.cid
-                                                                            const unreadCount = channelUnreadCounts[channelId] || 0
+                                                                            const channelKey = ch.cid ?? ch.id ?? "";
+                                                                            const unreadCount = channelUnreadCounts[channelKey] || 0;
+                                                                            const isActive = activeChannel?.cid
+                                                                                ? activeChannel.cid === ch.cid
+                                                                                : activeChannel?.id === ch.id;
 
                                                                             return (
                                                                                 <motion.button
-                                                                                    key={channelId}
+                                                                                    key={channelKey}
                                                                                     onClick={() => handleChannelSelect(ch)}
                                                                                     whileHover={{ scale: 1.02 }}
                                                                                     whileTap={{ scale: 0.98 }}
-                                                                                    className={`w-full text-left p-3 rounded-lg text-sm transition-all duration-200 relative ${channel?.id === ch.id || channel?.cid === ch.cid
+                                                                                    className={`w-full text-left p-3 rounded-lg text-sm transition-all duration-200 relative ${
+                                                                                        isActive
                                                                                             ? "bg-blue-100 border-l-4 border-blue-500 text-blue-900"
                                                                                             : "hover:bg-gray-100 text-gray-700"
-                                                                                        }`}
+                                                                                    }`}
                                                                                 >
                                                                                     <div className="flex items-center justify-between">
                                                                                         <div className="flex-1 min-w-0">
                                                                                             <div className="font-medium truncate">
-                                                                                                {ch.data?.name || `Chat ${channelId.slice(-4)}`}
+                                                                                                {ch.data?.name || `Chat ${String(channelKey).slice(-4)}`}
                                                                                             </div>
                                                                                             <div className="text-xs text-gray-500 truncate">
                                                                                                 {(ch.data as any)?.created_by?.name || "User"}
                                                                                             </div>
                                                                                         </div>
+
                                                                                         <div className="flex flex-col items-end gap-1">
                                                                                             {unreadCount > 0 && (
                                                                                                 <motion.div
@@ -342,7 +359,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                                                                         </div>
                                                                                     </div>
                                                                                 </motion.button>
-                                                                            )
+                                                                            );
                                                                         })
                                                                     ) : (
                                                                         <div className="text-center py-8">
@@ -358,46 +375,45 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                                             </AnimatePresence>
                                         )}
 
-                                        {/* Main Chat Area */}
+                                        {/* Main Chat */}
                                         <div className="flex-1 flex flex-col min-w-0 relative">
-                                            <Chat client={client}>
-                                                <Channel channel={channel}>
-                                                    <Window>
-                                                        <div className="flex flex-col h-full">
-                                                            {/* Custom Header */}
-                                                            <div className="flex-shrink-0 border-b border-gray-200 bg-white p-3">
-                                                                <div className="flex items-center justify-between">
-                                                                    <div className="flex items-center gap-3">
-                                                                        <div>
-                                                                            <h4 className="font-medium text-gray-900">
-                                                                                {channel.data?.name || "Support Chat"}
-                                                                            </h4>
-                                                                            <p className="text-xs text-gray-500">
-                                                                                {isAdmin ? "Admin Support" : "Customer Support"}
-                                                                            </p>
+                                            {activeChannel && (
+                                                <Chat client={client}>
+                                                    <Channel channel={activeChannel}>
+                                                        <Window>
+                                                            <div className="flex flex-col h-full">
+                                                                <div className="flex-shrink-0 border-b border-gray-200 bg-white p-3">
+                                                                    <div className="flex items-center justify-between">
+                                                                        <div className="flex items-center gap-3">
+                                                                            <div>
+                                                                                <h4 className="font-medium text-gray-900">
+                                                                                    {activeChannel?.data?.name || "Support Chat"}
+                                                                                </h4>
+                                                                                <p className="text-xs text-gray-500">
+                                                                                    {isAdmin ? "Admin Support" : "Customer Support"}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <div className="w-2 h-2 bg-green-400 rounded-full" />
+                                                                            <span className="text-xs text-gray-500">Online</span>
                                                                         </div>
                                                                     </div>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <div className="w-2 h-2 bg-green-400 rounded-full" />
-                                                                        <span className="text-xs text-gray-500">Online</span>
-                                                                    </div>
+                                                                </div>
+
+                                                                <div className="flex-1 overflow-hidden bg-gray-50 min-h-0">
+                                                                    <MessageList />
+                                                                </div>
+
+                                                                <div className="flex-shrink-0 border-t border-gray-200 bg-white">
+                                                                    <MessageInput maxRows={8} />
                                                                 </div>
                                                             </div>
-
-                                                            {/* Messages Area */}
-                                                            <div className="flex-1 overflow-hidden bg-gray-50 min-h-0">
-                                                                <MessageList />
-                                                            </div>
-
-                                                            {/* Message Input */}
-                                                            <div className="flex-shrink-0 border-t border-gray-200 bg-white">
-                                                                <MessageInput maxRows={8} />
-                                                            </div>
-                                                        </div>
-                                                    </Window>
-                                                    <Thread />
-                                                </Channel>
-                                            </Chat>
+                                                        </Window>
+                                                        <Thread />
+                                                    </Channel>
+                                                </Chat>
+                                            )}
                                         </div>
                                     </motion.div>
                                 )}
@@ -407,7 +423,7 @@ const FloatingChatWidget = ({ userId, otherUserId }: { userId: string; otherUser
                 </AnimatePresence>
             </div>
         </>
-    )
-}
+    );
+};
 
-export default FloatingChatWidget
+export default FloatingChatWidget;

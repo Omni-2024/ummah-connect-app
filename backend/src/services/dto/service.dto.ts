@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, isBoolean, IsBoolean, IsInt, IsNumber, IsOptional, IsString } from 'class-validator';
 import { PaginatedRequestDto } from '../../users/dto/base.dto';
 import { PartialType } from '@nestjs/mapped-types';
 
@@ -77,6 +77,14 @@ export class UpdateServiceDto extends PartialType(CreateServiceDto) {
 
   @IsString()
   id: string;
+}
+
+export class ApproveServiceDto {
+  @IsString()
+  id: string;
+
+  @IsBoolean()
+  isApproved: boolean;
 }
 
 export class FindOneServiceDto {

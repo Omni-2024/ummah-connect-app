@@ -62,6 +62,7 @@ export interface Service {
   duration: number;
   isPublished: boolean;
   isArchived: boolean;
+  isApproved: boolean;
   slug: string;
   enrollmentCount: number;
 }
@@ -130,6 +131,10 @@ export interface UpdateServiceFnArgs {
   isPublished?: boolean;
 }
 
+export interface approveServiceFnArgs {
+  isApproved?: boolean;
+}
+
 type GetAllServicesData = {
   categoryData: {
     profession: string;
@@ -189,6 +194,21 @@ export const archiveServiceFn = async (id: string) => {
   const res = await Request<Service>({
     method: "delete",
     url: `/api/service/${id}`,
+  });
+  return res.data;
+};
+
+export const approveServiceFn = async ({
+                                        id,
+                                        data,
+                                      }: {
+  id: string;
+  data: approveServiceFnArgs;
+}) => {
+  const res = await Request<Service>({
+    method: "patch",
+    url: `/api/service/approve/${id}`,
+    data,
   });
   return res.data;
 };
