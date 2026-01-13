@@ -25,6 +25,7 @@ enum PopupType {
 }
 
 const PAGE_SIZE = 10;
+const SEARCH_LIMIT = 1000;
 
 const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) => {
   const [popupType, setPopupType] = useState<PopupType | null>(null);
@@ -33,7 +34,17 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
   const [editRoleUser, setEditRoleUser] =
     useState<{ id: string; role: string } | null>(null);
 
-  // 🚫 API SEARCH DISABLED – FETCH NORMAL DATA
+  // ---------------------------------------------
+  // SEARCH MODE LOGIC
+  // ---------------------------------------------
+  const isSearching = Boolean(search);
+
+  const limit = isSearching ? SEARCH_LIMIT : PAGE_SIZE;
+  const offset = isSearching ? 0 : (page - 1) * PAGE_SIZE;
+
+  // ---------------------------------------------
+  // FETCH PROVIDERS
+  // ---------------------------------------------
   const {
     data: userData,
     isLoading,
@@ -41,13 +52,13 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
     error,
     refetch: refetchUsers,
   } = useGeneralProviders({
-    limit: PAGE_SIZE,
-    offset: (page - 1) * PAGE_SIZE,
-    search: "", // 👈 IMPORTANT (client-side filtering)
+    limit,
+    offset,
+    search: "", // client-side filtering
   });
 
   // ---------------------------------------------
-  // CLIENT-SIDE SEARCH (SAME AS YOUR EXAMPLE)
+  // CLIENT-SIDE SEARCH
   // ---------------------------------------------
   const filteredProviders = useMemo(() => {
     if (!search) return userData?.data || [];
@@ -71,15 +82,15 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
   });
 
   // ---------------------------------------------
-  // AUTO PAGE ADJUST
+  // AUTO PAGE ADJUST (non-search mode)
   // ---------------------------------------------
   useEffect(() => {
-    if ((filteredProviders.length ?? 0) === 0 && page > 1) {
+    if (!isSearching && filteredProviders.length === 0 && page > 1) {
       setPage((prev) => prev - 1);
     }
-  }, [filteredProviders.length, page]);
+  }, [filteredProviders.length, page, isSearching]);
 
-  // Reset page on search
+  // Reset page when search changes
   useEffect(() => {
     setPage(1);
   }, [search]);
@@ -139,8 +150,8 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
         </div>
       )}
 
-      {/* PAGINATION */}
-      {userData?.meta?.total > PAGE_SIZE && !search && (
+      {/* PAGINATION (DISABLED DURING SEARCH) */}
+      {userData?.meta?.total > PAGE_SIZE && !isSearching && (
         <AdvancedPagination
           currentPage={page}
           totalPages={Math.ceil(userData.meta.total / PAGE_SIZE)}
@@ -165,7 +176,7 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
         onDelete={() => {}}
       />
 
-      {/* DELETE */}
+      {/* DELETE USER */}
       <RemoveDialog
         name="user"
         open={popupType === PopupType.DeleteUser}
