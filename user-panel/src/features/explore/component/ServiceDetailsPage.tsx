@@ -31,8 +31,8 @@ import { createLoginUrl } from "@/lib/helpers/urls"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import Footer from "@/features/app/components/Footer"
 import { ServiceEnrollmentStatus } from "@/lib/endpoints/serviceFns"
-import { enrollUserToServiceFn } from "@/lib/endpoints/enrollmentFns"
-import { useMutation } from "@tanstack/react-query"
+import {completeUserToServiceFn, enrollUserToServiceFn} from "@/lib/endpoints/enrollmentFns"
+import {useMutation, useQueryClient} from "@tanstack/react-query"
 import { Toast } from "@/components/base/Toast"
 import { generateSlug } from "@/lib/helpers/strings"
 import { buildAvatarUrl } from "@/features/app/components/Navbar"
@@ -42,6 +42,7 @@ import { saveRecentlyViewedService } from "@/features/home/RecentlySearchedServi
 
 
 export default function ServiceDetailsPage() {
+  const queryClient = useQueryClient()
   const params = useParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -62,7 +63,24 @@ export default function ServiceDetailsPage() {
     isLoading,
     error,
   } = useServiceBySlug(serviceSlug || slug || "")
-  
+
+  const [showCompleteConfirm, setShowCompleteConfirm] = useState(false)
+
+  const openCompleteConfirm = () => setShowCompleteConfirm(true)
+  const closeCompleteConfirm = () => setShowCompleteConfirm(false)
+
+  const confirmComplete = () => {
+    if (!isAuthenticated) return router.push("/user/login")
+
+    completeEnrollUser({
+      serviceId: service?.serviceDetails.data?.id ?? "",
+      userId: currentUser?.id ?? "",
+    })
+
+    closeCompleteConfirm()
+  }
+
+
   // Only fetch educator data when we have the service and provider ID
   const { data: educator, isLoading: educatorLoading } = useGeneralUser(
     service?.serviceDetails?.data?.provider?.id ?? undefined
@@ -79,6 +97,7 @@ export default function ServiceDetailsPage() {
     data: enrollmentStatus,
     isLoading: isEnrollmentStatusLoading,
     isPending: isEnrollmentStatusPending,
+    refetch: refetchEnrollmentStatus,
   } = useServiceEnrollmentStatus({
     uid: currentUser?.id,
     service: service?.serviceDetails.data,
@@ -86,11 +105,24 @@ export default function ServiceDetailsPage() {
 
   const { mutate: enrollUser, isPending: isUserEnrolling } = useMutation({
     mutationFn: enrollUserToServiceFn,
-    onSuccess: () => {
+    onSuccess: async() => {
       Toast.success("Enrolled successfully!")
+      await refetchEnrollmentStatus()
+
     },
     onError: () => {
       Toast.error("Enrollment failed. Please try again.")
+    },
+  })
+
+  const { mutate: completeEnrollUser, isPending: isUserCompleteEnrolling } = useMutation({
+    mutationFn: completeUserToServiceFn,
+    onSuccess: async() => {
+      await refetchEnrollmentStatus()
+      Toast.success("Service completed successfully!")
+    },
+    onError: () => {
+      Toast.error("Service Completion failed. Please try again.")
     },
   })
 
@@ -235,17 +267,19 @@ export default function ServiceDetailsPage() {
         </Button>
       )
 
-    if (enrollmentStatus === ServiceEnrollmentStatus.GO_TO_COURSE)
+    if (enrollmentStatus === ServiceEnrollmentStatus.COMPLETE_NOW)
       return (
-        <Button
-          className="h-12 w-full"
-          size="lg"
-          onClick={goToService}
-          isLoading={isEnrollmentStatusPending}
-        >
-          Go to Service <ArrowRightIcon className="size-4" />
-        </Button>
+          <Button
+              className="h-12 w-full"
+              size="lg"
+              onClick={openCompleteConfirm}
+              disabled={isUserCompleteEnrolling}
+              isLoading={isUserCompleteEnrolling}
+          >
+            Mark as Complete <ArrowRightIcon className="size-4" />
+          </Button>
       )
+
 
     return (
       <Button className="h-12 w-full" size="lg" disabled>
@@ -529,6 +563,45 @@ export default function ServiceDetailsPage() {
         handleLogout={handleLogout}
       />
       <Footer />
+
+      {showCompleteConfirm && (
+          <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50 p-4">
+            <div className="w-full max-w-md rounded-2xl bg-white shadow-xl">
+              <div className="p-5">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Mark this service as complete?
+                </h3>
+
+                <p className="mt-2 text-sm text-gray-600">
+                  By continuing, you confirm the service has been completed. This action may affect your access,
+                  progress, certificates, or refunds (depending on your rules).
+                </p>
+
+                <div className="mt-5 flex items-center justify-end gap-3">
+                  <Button
+                      className="h-11"
+                      variant="secondary"
+                      onClick={closeCompleteConfirm}
+                      disabled={isUserCompleteEnrolling}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                      className="h-11"
+                      onClick={confirmComplete}
+                      isLoading={isUserCompleteEnrolling}
+                      disabled={isUserCompleteEnrolling}
+                  >
+                    Yes, Complete
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+      )}
+
+
     </div>
   )
 }

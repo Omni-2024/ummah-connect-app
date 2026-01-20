@@ -120,16 +120,16 @@ export default function Navbar({ clearPage }: NavbarProps) {
           <Link href="/start-selling">
             <Button variant="unstyled">Become a Seller</Button>
           </Link>
-            <button
-                className="relative rounded-lg p-2 text-slate-600 transition-all duration-200 hover:bg-slate-50 hover:text-emerald-600"
-                aria-label="Notifications"
-                type="button"
-            >
-                <BellIcon className="h-5 w-5" />
-                <span className="absolute -right-1 -top-1 flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-xs">
-                <span className="h-1.5 w-1.5 rounded-full bg-white" />
-              </span>
-            </button>
+            {/*<button*/}
+            {/*    className="relative rounded-lg p-2 text-slate-600 transition-all duration-200 hover:bg-slate-50 hover:text-emerald-600"*/}
+            {/*    aria-label="Notifications"*/}
+            {/*    type="button"*/}
+            {/*>*/}
+            {/*    <BellIcon className="h-5 w-5" />*/}
+            {/*    <span className="absolute -right-1 -top-1 flex h-3 w-3 items-center justify-center rounded-full bg-red-500 text-xs">*/}
+            {/*    <span className="h-1.5 w-1.5 rounded-full bg-white" />*/}
+            {/*  </span>*/}
+            {/*</button>*/}
 
             <ProfileDropdown
                 profileDropdownOpen={profileDropdownOpen}

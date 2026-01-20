@@ -23,6 +23,26 @@ export const enrollUserToServiceFn = async (data: EnrollUserToServiceParams) => 
   }
 };
 
+export const completeUserToServiceFn = async (data: EnrollUserToServiceParams) => {
+  try {
+    const res = await Request<EnrollUserToServiceFnRes>({
+      method: "post",
+      url: `/api/enrollment/complete`,
+      params: {
+        _action: "complete",
+        _callback: encodeURIComponent(`/service/${data.serviceId}`),
+      },
+      data,
+    });
+    return res.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(getErrorMessage(error));
+    }
+    throw new Error("Something went wrong!");
+  }
+};
+
 export interface EnrollUserToServiceParams {
   serviceId: string;
   userId: string;
