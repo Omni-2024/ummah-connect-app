@@ -39,7 +39,7 @@ export class PaymentRepository {
     private readonly paymentRepository: Repository<PaymentEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepo: Repository<UserEntity>,
-  ) { }
+  ) {}
 
   async getPaymentById(id: string): Promise<any> {
     const payment = await this.paymentRepository.findOne({ where: { id } });
@@ -68,7 +68,9 @@ export class PaymentRepository {
     return await this.getPaymentById(id);
   }
 
-  async upsertPayment(paymentData: Partial<PaymentEntity>): Promise<PaymentEntity | null> {
+  async upsertPayment(
+    paymentData: Partial<PaymentEntity>,
+  ): Promise<PaymentEntity | null> {
     await this.paymentRepository.upsert(paymentData, ['paymentIntent']);
     //
     return await this.paymentRepository.findOne({
@@ -90,9 +92,9 @@ export class PaymentRepository {
   // }
 
   async getAllPayments({
-                          limit,
-                          offset,
-                        }: {
+    limit,
+    offset,
+  }: {
     limit?: number;
     offset?: number;
   }): Promise<{ paymentList: PaymentEntity[]; count: number }> {
@@ -105,7 +107,7 @@ export class PaymentRepository {
         options.skip = offset;
       }
       const [paymentList, count] = await this.paymentRepository.findAndCount({
-        ...options
+        ...options,
       });
 
       return { paymentList, count };
@@ -142,8 +144,6 @@ export class PaymentRepository {
     }
   }
 
-
-
   async findAllByServiceId(serviceId: string): Promise<PaymentEntity[]> {
     return this.paymentRepository.find({ where: { serviceId } });
   }
@@ -157,35 +157,41 @@ export class PaymentRepository {
         serviceId,
         userId,
       },
+      order: {
+        createdAt: 'DESC', // 👈 latest record
+      },
     });
   }
 
   async aggregateStats(args: AggregateArgs): Promise<AggregateReturn> {
-      const { start, end, groupBy, topLimit, scope } = args;
+    const { start, end, groupBy, topLimit, scope } = args;
 
-      const amountField =
-        scope.mode === 'GLOBAL'
-          ? 'p.platform_fee_amount'
-          : 'p.provider_amount';
+    const amountField =
+      scope.mode === 'GLOBAL' ? 'p.platform_fee_amount' : 'p.provider_amount';
 
-      // base payments query
-      const baseQB = this.paymentRepository
-        .createQueryBuilder('p')
-        .leftJoin(Service, 's', 's._id = p.service_id')
-        .where('p.created_at >= :start', { start })
-        .andWhere('p.created_at < :end', { end })
-        .andWhere('p.status = :ok', { ok: 'succeeded' });
+    // base payments query
+    const baseQB = this.paymentRepository
+      .createQueryBuilder('p')
+      .leftJoin(Service, 's', 's._id = p.service_id')
+      .where('p.created_at >= :start', { start })
+      .andWhere('p.created_at < :end', { end })
+      .andWhere('p.status = :ok', { ok: 'succeeded' });
 
-      if (scope.mode === 'PROVIDER') {
-      baseQB.andWhere('s.provider_id = :providerId', { providerId: scope.providerId });
-      }
+    if (scope.mode === 'PROVIDER') {
+      baseQB.andWhere('s.provider_id = :providerId', {
+        providerId: scope.providerId,
+      });
+    }
 
     // payments-based totals (revenue, orders)
     const payTotals = await baseQB
       .clone()
       .select(`(COALESCE(SUM(${amountField}), 0) / 100.0)::numeric`, 'revenue')
       .addSelect('COUNT(*)', 'paymentsCount')
-      .getRawOne<{ revenue: string | number; paymentsCount: string | number }>();
+      .getRawOne<{
+        revenue: string | number;
+        paymentsCount: string | number;
+      }>();
 
     // registrations (ONLY thing we report for users/providers)
     const [registeredUsers, registeredProviders] = await Promise.all([
@@ -211,11 +217,15 @@ export class PaymentRepository {
     };
 
     // top services
-    const topServicesRaw = await baseQB.clone()
+    const topServicesRaw = await baseQB
+      .clone()
       .select('p.service_id', 'serviceId')
       .addSelect('MAX(p.serviceName)', 'serviceName')
       .addSelect('COUNT(*)', 'orders')
-      .addSelect(`(COALESCE(SUM(${amountField}), 0) / 100.0)::numeric`, 'revenue')
+      .addSelect(
+        `(COALESCE(SUM(${amountField}), 0) / 100.0)::numeric`,
+        'revenue',
+      )
       .groupBy('p.service_id')
       .orderBy('revenue', 'DESC')
       .addOrderBy('orders', 'DESC')
@@ -230,10 +240,14 @@ export class PaymentRepository {
     }));
 
     // top providers
-    const topProvidersRaw = await baseQB.clone()
+    const topProvidersRaw = await baseQB
+      .clone()
       .select('s.provider_id', 'providerId')
       .addSelect('COUNT(*)', 'orders')
-      .addSelect(`(COALESCE(SUM(${amountField}), 0) / 100.0)::numeric`, 'revenue')
+      .addSelect(
+        `(COALESCE(SUM(${amountField}), 0) / 100.0)::numeric`,
+        'revenue',
+      )
       .andWhere('s.provider_id IS NOT NULL')
       .groupBy('s.provider_id')
       .orderBy('revenue', 'DESC')
@@ -248,12 +262,21 @@ export class PaymentRepository {
     }));
 
     // time series
-    let series: Array<{ period: string; revenue: number; paymentsCount: number }> = [];
+    let series: Array<{
+      period: string;
+      revenue: number;
+      paymentsCount: number;
+    }> = [];
     if (groupBy !== 'none') {
-      const trunc = groupBy === 'day' ? 'day' : groupBy === 'week' ? 'week' : 'month';
-      const seriesRaw = await baseQB.clone()
+      const trunc =
+        groupBy === 'day' ? 'day' : groupBy === 'week' ? 'week' : 'month';
+      const seriesRaw = await baseQB
+        .clone()
         .select(`DATE_TRUNC('${trunc}', p.created_at)`, 'period')
-        .addSelect(`(COALESCE(SUM(${amountField}), 0) / 100.0)::numeric`, 'revenue')
+        .addSelect(
+          `(COALESCE(SUM(${amountField}), 0) / 100.0)::numeric`,
+          'revenue',
+        )
         .addSelect('COUNT(*)', 'paymentsCount')
         .groupBy(`DATE_TRUNC('${trunc}', p.created_at)`)
         .orderBy('period', 'ASC')

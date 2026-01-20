@@ -31,7 +31,7 @@ import { createLoginUrl } from "@/lib/helpers/urls"
 import { useAuthState } from "@/features/auth/context/useAuthState"
 import Footer from "@/features/app/components/Footer"
 import { ServiceEnrollmentStatus } from "@/lib/endpoints/serviceFns"
-import { enrollUserToServiceFn } from "@/lib/endpoints/enrollmentFns"
+import {completeUserToServiceFn, enrollUserToServiceFn} from "@/lib/endpoints/enrollmentFns"
 import { useMutation } from "@tanstack/react-query"
 import { Toast } from "@/components/base/Toast"
 import { generateSlug } from "@/lib/helpers/strings"
@@ -91,6 +91,16 @@ export default function ServiceDetailsPage() {
     },
     onError: () => {
       Toast.error("Enrollment failed. Please try again.")
+    },
+  })
+
+  const { mutate: completeEnrollUser, isPending: isUserCompleteEnrolling } = useMutation({
+    mutationFn: completeUserToServiceFn,
+    onSuccess: () => {
+      Toast.success("Service completed successfully!")
+    },
+    onError: () => {
+      Toast.error("Service Completion failed. Please try again.")
     },
   })
 
@@ -235,15 +245,21 @@ export default function ServiceDetailsPage() {
         </Button>
       )
 
-    if (enrollmentStatus === ServiceEnrollmentStatus.GO_TO_COURSE)
+    if (enrollmentStatus === ServiceEnrollmentStatus.COMPLETE_NOW)
       return (
         <Button
           className="h-12 w-full"
           size="lg"
-          onClick={goToService}
+          onClick={() => {
+            if (!isAuthenticated) return router.push("/user/login")
+            completeEnrollUser({
+              serviceId: service?.serviceDetails.data?.id ?? "",
+              userId: currentUser?.id ?? "",
+            })
+          }}
           isLoading={isEnrollmentStatusPending}
         >
-          Go to Service <ArrowRightIcon className="size-4" />
+          Mark as Complete  <ArrowRightIcon className="size-4" />
         </Button>
       )
 

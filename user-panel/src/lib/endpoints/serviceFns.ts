@@ -151,6 +151,7 @@ export enum ServiceEnrollmentStatus {
   PURCHASE_NOW = "PURCHASE_NOW",
   ENROLL_NOW = "ENROLL_NOW",
   GO_TO_COURSE = "GO_TO_COURSE",
+  COMPLETE_NOW = "COMPLETE_NOW",
 }
 
 export const getServiceEnrollmentStatusFn = async ({
@@ -171,16 +172,22 @@ export const getServiceEnrollmentStatusFn = async ({
     getPaymentByIdFn(uid, service.id),
   );
   //
-  if (!enrollError && enrollState) {
-    // User is enrolled
-    return ServiceEnrollmentStatus.GO_TO_COURSE;
+  if (!enrollError && enrollState  ) {
+    if (enrollState.completed){
+      return ServiceEnrollmentStatus.PURCHASE_NOW;
+    }
+    if (paymentState && !enrollState.completed) {
+      // User is enrolled
+      return ServiceEnrollmentStatus.COMPLETE_NOW;
+    }
+
   } else {
     if (service.price === 0) {
       // Free course
       return ServiceEnrollmentStatus.ENROLL_NOW;
     } else {
       // Paid course
-      if (!paymentError && paymentState) {
+      if (!paymentError && paymentState ) {
         // User has paid
         return ServiceEnrollmentStatus.ENROLL_NOW;
       } else {

@@ -16,6 +16,12 @@ export class EnrollmentController {
   }
 
   @Roles([UserRole.USER, UserRole.BUSINESS_USER])
+  @Post('/complete')
+  async complete(@Body() enrollDto: EnrollUserDto) {
+    return await this.enrollmentService.complete(enrollDto);
+  }
+
+  @Roles([UserRole.USER, UserRole.BUSINESS_USER])
   @Get('/status')
   async enrollGetStatus(
     @Query('userId') userId: string,
@@ -27,13 +33,10 @@ export class EnrollmentController {
     });
   }
 
-
   @Roles([UserRole.USER, UserRole.BUSINESS_USER])
   @Get()
   async getAllEnrollments(@Query('id') userId: string) {
-    return await this.enrollmentService.getAllForUser(
-      userId,
-    );
+    return await this.enrollmentService.getAllForUser(userId);
   }
 
   //   @Get('/active')

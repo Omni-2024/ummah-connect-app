@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EnrollmentEntity } from './enrollment.entity';
@@ -20,27 +21,24 @@ export class EnrollmentRepository {
     private enrollRepo: Repository<EnrollmentEntity>,
     private serviceRepo: ServiceRepository,
     private serviceDetailsRepo: ServiceDetailService,
-  ) { }
+  ) {}
 
   async getEnrollment({
     serviceId,
     userId,
   }: EnrollUserDto): Promise<EnrollmentEntity | null> {
-    const enroll = await this.enrollRepo.findOneBy({
-      userId,
-      serviceId,
+    return this.enrollRepo.findOne({
+      where: { userId, serviceId },
+      order: { createdAt: 'DESC' },
     });
-    if (!enroll) {
-      return null;
-    }
-    return enroll;
   }
-
 
   async newEnrollment(enrollUserDto: EnrollUserDto): Promise<void> {
     const enroll = this.enrollRepo.create(enrollUserDto);
 
-    const service= await this.serviceDetailsRepo.findOneDetail({id:enroll.serviceId})
+    const service = await this.serviceDetailsRepo.findOneDetail({
+      id: enroll.serviceId,
+    });
 
     if (!isServiceDetailDto(service)) {
       throw new BadRequestException(service?.error ?? 'Service not found');
@@ -53,16 +51,38 @@ export class EnrollmentRepository {
 
       await this.enrollRepo.save(enroll);
 
-
       if (serviceDetailDto.enrollmentCount) {
         const updateServiceDto = {
           enrollmentCount: Number(serviceDetailDto.enrollmentCount) + 1,
         };
 
-        await this.serviceRepo.updateService({...updateServiceDto,id:serviceDetailDto.id})
+        await this.serviceRepo.updateService({
+          ...updateServiceDto,
+          id: serviceDetailDto.id,
+        });
       }
       return;
     }
+  }
+
+  async completeEnrollment(enrollUserDto: EnrollUserDto): Promise<void> {
+    const enrollment = await this.enrollRepo.findOne({
+      where: {
+        serviceId: enrollUserDto.serviceId,
+        userId: enrollUserDto.userId,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    if (!enrollment) {
+      throw new NotFoundException('Enrollment not found');
+    }
+
+    enrollment.completed = true;
+
+    await this.enrollRepo.save(enrollment);
   }
 
   async updateEnrollment(enroll: EnrollmentEntity): Promise<void> {
@@ -74,8 +94,6 @@ export class EnrollmentRepository {
     await this.enrollRepo.save(mergedEnrollment);
     return;
   }
-
-
 
   async getEnrollmentByStatus({
     userId,
@@ -92,10 +110,6 @@ export class EnrollmentRepository {
     }
     return enroll;
   }
-
-
-
-
 
   async getStudentCountForService({
     serviceId,
