@@ -97,6 +97,7 @@ export default function ServiceDetailsPage() {
     data: enrollmentStatus,
     isLoading: isEnrollmentStatusLoading,
     isPending: isEnrollmentStatusPending,
+    refetch: refetchEnrollmentStatus,
   } = useServiceEnrollmentStatus({
     uid: currentUser?.id,
     service: service?.serviceDetails.data,
@@ -106,7 +107,7 @@ export default function ServiceDetailsPage() {
     mutationFn: enrollUserToServiceFn,
     onSuccess: async() => {
       Toast.success("Enrolled successfully!")
-      await queryClient.invalidateQueries({ queryKey: ["service-enrollment-status"] })
+      await refetchEnrollmentStatus()
 
     },
     onError: () => {
@@ -117,7 +118,7 @@ export default function ServiceDetailsPage() {
   const { mutate: completeEnrollUser, isPending: isUserCompleteEnrolling } = useMutation({
     mutationFn: completeUserToServiceFn,
     onSuccess: async() => {
-      await queryClient.invalidateQueries({ queryKey: ["service-enrollment-status"] })
+      await refetchEnrollmentStatus()
       Toast.success("Service completed successfully!")
     },
     onError: () => {
