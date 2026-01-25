@@ -22,7 +22,6 @@ async function bootstrap() {
     credentials: true,
     optionsSuccessStatus: 204,
   });
-  //
 
   await app.listen(
     process.env.PORT ? parseInt(process.env.PORT, 10) : 3035,
