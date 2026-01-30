@@ -214,7 +214,8 @@ export default function BecomeSellerPage() {
           <div className="max-w-3xl mx-auto text-center text-white">
             <div className="inline-flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 mb-6">
               <CheckCircledIcon className="size-4" />
-              <span className="text-sm">Join 10,000+ successful sellers</span>
+              {/*<span className="text-sm">Join 10,000+ successful sellers</span>*/}
+              <span className="text-sm">Join now</span>
             </div>
             
             <h1 className="text-3xl lg:text-4xl font-bold mb-4">
@@ -240,16 +241,16 @@ export default function BecomeSellerPage() {
 
             {/* Simple trust indicators */}
             <div className="flex justify-center items-center gap-6 text-sm text-emerald-200">
-              <div className="flex items-center gap-2">
-                <StarIcon className="size-4" />
-                <span>4.9 Rating</span>
-              </div>
-              <div className="w-1 h-1 bg-emerald-200 rounded-full"></div>
-              <div className="flex items-center gap-2">
-                <GlobeIcon className="size-4" />
-                <span>90+ Countries</span>
-              </div>
-              <div className="w-1 h-1 bg-emerald-200 rounded-full"></div>
+              {/*<div className="flex items-center gap-2">*/}
+              {/*  <StarIcon className="size-4" />*/}
+              {/*  <span>4.9 Rating</span>*/}
+              {/*</div>*/}
+              {/*<div className="w-1 h-1 bg-emerald-200 rounded-full"></div>*/}
+              {/*<div className="flex items-center gap-2">*/}
+              {/*  <GlobeIcon className="size-4" />*/}
+              {/*  <span>90+ Countries</span>*/}
+              {/*</div>*/}
+              {/*<div className="w-1 h-1 bg-emerald-200 rounded-full"></div>*/}
               <div className="flex items-center gap-2">
                 <LockClosedIcon className="size-4" />
                 <span>100% Halal</span>
@@ -318,34 +319,34 @@ export default function BecomeSellerPage() {
         </div>
 
         {/* Testimonials Section - Simplified */}
-        <div className="py-12">
-          <div className="max-w-2xl mx-auto text-center mb-8">
-            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
-              What Our Sellers Say
-            </h2>
-            <p className="text-gray-600">
-              Real success stories from our community
-            </p>
-          </div>
+        {/*<div className="py-12">*/}
+        {/*  <div className="max-w-2xl mx-auto text-center mb-8">*/}
+        {/*    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">*/}
+        {/*      What Our Sellers Say*/}
+        {/*    </h2>*/}
+        {/*    <p className="text-gray-600">*/}
+        {/*      Real success stories from our community*/}
+        {/*    </p>*/}
+        {/*  </div>*/}
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="p-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="text-2xl">{testimonial.avatar}</div>
-                  <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
-                    <p className="text-xs text-gray-600">{testimonial.role}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm font-semibold text-emerald-600">{testimonial.earnings}</div>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 italic">"{testimonial.quote}"</p>
-              </Card>
-            ))}
-          </div>
-        </div>
+        {/*  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">*/}
+        {/*    {testimonials.map((testimonial, index) => (*/}
+        {/*      <Card key={index} className="p-6">*/}
+        {/*        <div className="flex items-center gap-3 mb-3">*/}
+        {/*          <div className="text-2xl">{testimonial.avatar}</div>*/}
+        {/*          <div className="flex-1">*/}
+        {/*            <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>*/}
+        {/*            <p className="text-xs text-gray-600">{testimonial.role}</p>*/}
+        {/*          </div>*/}
+        {/*          <div className="text-right">*/}
+        {/*            <div className="text-sm font-semibold text-emerald-600">{testimonial.earnings}</div>*/}
+        {/*          </div>*/}
+        {/*        </div>*/}
+        {/*        <p className="text-sm text-gray-600 italic">"{testimonial.quote}"</p>*/}
+        {/*      </Card>*/}
+        {/*    ))}*/}
+        {/*  </div>*/}
+        {/*</div>*/}
 
         {/* Categories Section - Simplified */}
         <div className="py-12 bg-blue-50 rounded-xl my-12">

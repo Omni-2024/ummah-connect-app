@@ -182,7 +182,7 @@ const HelpCenterPage = () => {
         </div>
 
         <p className="mt-4 text-base text-dark-400">
-          As-salamu alaykum! Welcome to the Ummah Connect Help Center. Browse our comprehensive guides to get the most out of your Islamic service marketplace experience.
+          As-salamu alaykum! Welcome to the Ummah Connect Help Center. Get help and support across all areas of our Islamic service marketplace.
         </p>
 
 
