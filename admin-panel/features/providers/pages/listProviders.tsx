@@ -111,7 +111,7 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
       {!filteredProviders.length ? (
         search ? (
           <ListEmptyStateWithSearch
-            name="provider"
+            name="Freelancers"
             searchQuery={search}
             onClear={clearSearch}
           />
