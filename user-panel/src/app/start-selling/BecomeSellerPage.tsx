@@ -301,6 +301,8 @@ export default function BecomeSellerPage() {
         {/* Categories Section - Grid Layout (3 per row on mobile) */}
         <div className="py-8 bg-blue-50 rounded-xl my-8">
           <div className="px-4 lg:px-6">
+
+            {/* Header */}
             <div className="max-w-2xl mx-auto text-center mb-8">
               <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
                 Popular Categories
@@ -325,13 +327,29 @@ export default function BecomeSellerPage() {
               </div>
             ) : (
               <div className="max-w-6xl mx-auto">
-                {/* Grid Layout - 3 columns on mobile, 4-5 on tablet, 5-6 on desktop */}
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4">
+
+                {/* 
+                  Mobile & Tablet: GRID (left → right)
+                  Desktop only: CENTER if < 6
+                */}
+                <div
+                  className={`
+                    grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5
+                    gap-3 sm:gap-4
+                    ${expertiseCategories.length < 6 ? "lg:flex lg:justify-center lg:flex-wrap" : "lg:grid lg:grid-cols-6"}
+                  `}
+                >
                   {expertiseCategories.map((category) => (
                     <Card
                       key={category.id}
-                      className="p-3 sm:p-4 md:p-5 text-center hover:shadow-lg transition-all cursor-pointer group"
-                      onClick={() => router.push(`/explore?profession=${category.id}`)}
+                      className={`
+                        p-3 sm:p-4 md:p-5 text-center
+                        hover:shadow-lg transition-all cursor-pointer group
+                        ${expertiseCategories.length < 6 ? "lg:w-[150px]" : ""}
+                      `}
+                      onClick={() =>
+                        router.push(`/explore?profession=${category.id}`)
+                      }
                     >
                       <div className="text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform">
                         {category.icon}
@@ -342,10 +360,12 @@ export default function BecomeSellerPage() {
                     </Card>
                   ))}
                 </div>
+
               </div>
             )}
           </div>
         </div>
+
 
         {/* FAQ Section - Simplified */}
         <div className="py-12">
