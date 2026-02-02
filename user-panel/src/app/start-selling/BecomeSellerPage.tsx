@@ -404,7 +404,7 @@ export default function BecomeSellerPage() {
         <ContactFormSection formRef={formRef} />
 
         {/* Final CTA - More Compelling */}
-        <div className="py-16">
+        <div className="py-8">
           <Card className="p-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-center">
             <HeartIcon className="size-16 mx-auto mb-6 text-emerald-200" />
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">

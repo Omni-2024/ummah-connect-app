@@ -318,18 +318,26 @@ export const ContactFormSection = ({ formRef }: { formRef: React.RefObject<HTMLD
         </Card>
 
         {/* Trust Badges */}
-        <div className="mt-8 lg:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 text-center">
+        <div className="mt-8 lg:mt-12 grid grid-cols-3 gap-4 lg:gap-6 text-center">
           <div className="flex flex-col items-center py-3 lg:py-0">
-            <CheckCircle className="w-7 h-7 lg:w-8 lg:h-8 text-emerald-600 mb-2" />
-            <span className="text-sm text-gray-700 font-medium">24-hour review process</span>
+            <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-emerald-600 mb-2" />
+            <span className="text-xs sm:text-sm text-gray-700 font-medium">
+              24-hour review process
+            </span>
           </div>
+
           <div className="flex flex-col items-center py-3 lg:py-0">
-            <CheckCircle className="w-7 h-7 lg:w-8 lg:h-8 text-emerald-600 mb-2" />
-            <span className="text-sm text-gray-700 font-medium">Free to join</span>
+            <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-emerald-600 mb-2" />
+            <span className="text-xs sm:text-sm text-gray-700 font-medium">
+              Free to join
+            </span>
           </div>
+
           <div className="flex flex-col items-center py-3 lg:py-0">
-            <CheckCircle className="w-7 h-7 lg:w-8 lg:h-8 text-emerald-600 mb-2" />
-            <span className="text-sm text-gray-700 font-medium">No hidden fees</span>
+            <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-emerald-600 mb-2" />
+            <span className="text-xs sm:text-sm text-gray-700 font-medium">
+              No hidden fees
+            </span>
           </div>
         </div>
       </div>
