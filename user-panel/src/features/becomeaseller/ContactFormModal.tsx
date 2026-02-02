@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import { CheckCircle, Loader2, Search, ChevronDown } from "lucide-react";
 import { Send } from "iconsax-react";
@@ -18,7 +17,6 @@ export const ContactFormSection = ({ formRef }: { formRef: React.RefObject<HTMLD
     profession: "",
     message: "",
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
 
@@ -26,10 +24,10 @@ export const ContactFormSection = ({ formRef }: { formRef: React.RefObject<HTMLD
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [countrySearch, setCountrySearch] = useState("");
 
-  // Filter countries
-  const filteredCountries = COUNTRY_LIST.filter((country) =>
-    country.label.toLowerCase().includes(countrySearch.toLowerCase()) ||
-    country.value.toLowerCase().includes(countrySearch.toLowerCase())
+  const filteredCountries = COUNTRY_LIST.filter(
+    (country) =>
+      country.label.toLowerCase().includes(countrySearch.toLowerCase()) ||
+      country.value.toLowerCase().includes(countrySearch.toLowerCase())
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -58,7 +56,7 @@ export const ContactFormSection = ({ formRef }: { formRef: React.RefObject<HTMLD
         to_name: "Admin",
       };
 
-      fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -67,64 +65,75 @@ export const ContactFormSection = ({ formRef }: { formRef: React.RefObject<HTMLD
           user_id: PUBLIC_KEY,
           template_params: templateParams,
         }),
-      }).then((res) => {
-        if (res.ok) {
-          setSubmitStatus("success");
-          setFormData({ name: "", email: "", country: "", profession: "", message: "" });
-          setCountrySearch("");
-        } else {
-          setSubmitStatus("error");
-        }
-      }).catch(() => {
-        setSubmitStatus("error");
-      }).finally(() => {
-        setIsSubmitting(false);
       });
+
+      if (res.ok) {
+        setSubmitStatus("success");
+        setFormData({ name: "", email: "", country: "", profession: "", message: "" });
+        setCountrySearch("");
+      } else {
+        setSubmitStatus("error");
+      }
     } catch (error) {
       console.error("EmailJS error:", error);
       setSubmitStatus("error");
+    } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div ref={formRef} className="py-20 bg-gradient-to-br from-emerald-50 via-white to-teal-50">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div
+      ref={formRef}
+      className="py-10 lg:py-20 bg-white lg:bg-gradient-to-br lg:from-emerald-50 lg:via-white lg:to-teal-50"
+    >
+      <div className="container mx-auto px-4 max-w-5xl">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 lg:mb-12">
           <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 rounded-full px-4 py-2 mb-4 text-sm font-medium">
             <CheckCircle className="w-4 h-4" />
             Ready to Get Started?
           </div>
-          <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-3 lg:mb-4 px-2">
             Start Your Seller Application
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Fill out the form below and we'll review your application within 24 hours. 
+          <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+            Fill out the form below and we'll review your application within 24 hours.
             Join thousands of successful sellers today!
           </p>
         </div>
 
-        <Card className="p-8 lg:p-12 shadow-xl">
+        <Card
+          className={`
+            p-6 lg:p-12
+            lg:shadow-lg lg:shadow-xl
+            lg:border lg:border-gray-100
+            bg-white
+          `}
+        >
           {/* Success Message */}
           {submitStatus === "success" && (
-            <div className="mb-8 p-6 bg-emerald-50 border-2 border-emerald-200 rounded-xl text-center">
-              <CheckCircle className="w-12 h-12 text-emerald-600 mx-auto mb-3" />
-              <p className="text-emerald-700 font-semibold text-lg mb-1">Application Submitted Successfully!</p>
-              <p className="text-emerald-600">We'll review your application and get back to you within 24 hours.</p>
+            <div className="mb-6 lg:mb-8 p-4 lg:p-6 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
+              <CheckCircle className="w-10 h-10 lg:w-12 lg:h-12 text-emerald-600 mx-auto mb-2 lg:mb-3" />
+              <p className="text-emerald-700 font-semibold text-base lg:text-lg mb-1">
+                Application Submitted Successfully!
+              </p>
+              <p className="text-sm lg:text-base text-emerald-600">
+                We'll review your application and get back to you within 24 hours.
+              </p>
             </div>
           )}
 
           {/* Error Message */}
           {submitStatus === "error" && (
-            <div className="mb-8 p-6 bg-red-50 border-2 border-red-200 rounded-xl text-center">
+            <div className="mb-6 lg:mb-8 p-4 lg:p-6 bg-red-50 border border-red-200 rounded-xl text-center">
               <p className="text-red-700 font-semibold mb-1">Submission Failed</p>
               <p className="text-red-600 text-sm">Please fill all required fields and try again.</p>
             </div>
           )}
 
           {/* Form Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-6">
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
@@ -162,30 +171,41 @@ export const ContactFormSection = ({ formRef }: { formRef: React.RefObject<HTMLD
             {/* Country Dropdown */}
             <div className="relative">
               <label className="block text-sm font-semibold text-gray-700 mb-2">Country *</label>
-              
+
               <button
                 type="button"
                 onClick={() => setIsCountryOpen(!isCountryOpen)}
                 disabled={isSubmitting}
-                className="w-full px-4 py-3 text-left bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all flex items-center justify-between disabled:opacity-50"
+                className={`
+                  w-full px-4 py-3 text-left bg-white 
+                  border-2 border-gray-200 rounded-lg 
+                  focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 
+                  outline-none transition-all flex items-center justify-between 
+                  disabled:opacity-50
+                `}
               >
                 <span className="flex items-center gap-3">
                   {formData.country ? (
-                    <>
-                      <span>{formData.country}</span>
-                    </>
+                    <span>{formData.country}</span>
                   ) : (
                     <span className="text-gray-400">Select your country</span>
                   )}
                 </span>
-                <ChevronDown className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isCountryOpen ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${isCountryOpen ? "rotate-180" : ""}`}
+                />
               </button>
 
-              {/* Dropdown */}
               {isCountryOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsCountryOpen(false)} />
-                  <div className="absolute z-50 mt-2 w-full bg-white border-2 border-gray-200 rounded-lg shadow-2xl max-h-80 overflow-hidden">
+                  <div
+                    className={`
+                      absolute z-50 mt-2 w-full 
+                      bg-white border-2 border-gray-200 rounded-lg 
+                      shadow-2xl max-h-80 overflow-hidden
+                    `}
+                  >
                     {/* Search Bar */}
                     <div className="p-3 border-b border-gray-200 sticky top-0 bg-white">
                       <div className="relative">
@@ -240,13 +260,13 @@ export const ContactFormSection = ({ formRef }: { formRef: React.RefObject<HTMLD
                 value={formData.profession}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-all"
-                placeholder="Qur’an Teacher"
+                placeholder="Qur'an Teacher"
                 disabled={isSubmitting}
               />
             </div>
 
             {/* Message */}
-            <div className="md:col-span-2">
+            <div className="lg:col-span-2">
               <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
                 Tell us about yourself *
               </label>
@@ -267,42 +287,48 @@ export const ContactFormSection = ({ formRef }: { formRef: React.RefObject<HTMLD
           </div>
 
           {/* Submit Button */}
-          <div className="mt-10">
+          <div className="mt-8 lg:mt-10">
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-4 rounded-lg font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 text-lg shadow-lg hover:shadow-xl"
+              className={`
+                w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white 
+                py-3.5 lg:py-4 rounded-lg font-semibold 
+                hover:from-emerald-700 hover:to-teal-700 transition-all 
+                disabled:opacity-50 disabled:cursor-not-allowed 
+                flex items-center justify-center gap-3 text-base lg:text-lg
+                shadow-md lg:shadow-lg hover:shadow-xl
+              `}
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <Loader2 className="w-5 h-5 lg:w-6 lg:h-6 animate-spin" />
                   Submitting Application...
                 </>
               ) : (
                 <>
-                  <Send className="w-6 h-6" />
                   Submit Application
                 </>
               )}
             </button>
-            <p className="text-center text-sm text-gray-500 mt-4">
+            <p className="text-center text-xs lg:text-sm text-gray-500 mt-4">
               By submitting, you agree to our Terms of Service and Privacy Policy
             </p>
           </div>
         </Card>
 
         {/* Trust Badges */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-          <div className="flex flex-col items-center">
-            <CheckCircle className="w-8 h-8 text-emerald-600 mb-2" />
+        <div className="mt-8 lg:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 text-center">
+          <div className="flex flex-col items-center py-3 lg:py-0">
+            <CheckCircle className="w-7 h-7 lg:w-8 lg:h-8 text-emerald-600 mb-2" />
             <span className="text-sm text-gray-700 font-medium">24-hour review process</span>
           </div>
-          <div className="flex flex-col items-center">
-            <CheckCircle className="w-8 h-8 text-emerald-600 mb-2" />
+          <div className="flex flex-col items-center py-3 lg:py-0">
+            <CheckCircle className="w-7 h-7 lg:w-8 lg:h-8 text-emerald-600 mb-2" />
             <span className="text-sm text-gray-700 font-medium">Free to join</span>
           </div>
-          <div className="flex flex-col items-center">
-            <CheckCircle className="w-8 h-8 text-emerald-600 mb-2" />
+          <div className="flex flex-col items-center py-3 lg:py-0">
+            <CheckCircle className="w-7 h-7 lg:w-8 lg:h-8 text-emerald-600 mb-2" />
             <span className="text-sm text-gray-700 font-medium">No hidden fees</span>
           </div>
         </div>
