@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef, useState } from "react"
+import React, { useRef, useState, useMemo, useCallback, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Navbar from "@/features/app/components/Navbar"
 import NavbarMobile, { NavbarTitle } from "@/features/app/components/Navbar.mobile"
@@ -22,10 +22,13 @@ import {
   ArrowRightIcon,
   PlayIcon,
   ArrowLeftIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
 } from "@radix-ui/react-icons"
 import Footer from "@/features/app/components/Footer"
 import { useCurrentUser } from "@/lib/hooks/useUser"
 import { useAuthState } from "@/features/auth/context/useAuthState"
+import { useCategories } from "@/lib/hooks/useCategories"
 import envs from "@/lib/env"
 import { IconButton } from "@radix-ui/themes"
 import { ContactFormSection } from "@/features/becomeaseller/ContactFormModal"
@@ -48,6 +51,26 @@ export default function BecomeSellerPage() {
 
   const avatarUrl = buildAvatarUrl(user?.profileImage)
   const formRef = useRef<HTMLDivElement>(null!);
+
+  // Fetch real categories from API
+  const {
+    data: categories,
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useCategories()
+
+  // Use real categories from API, sorted by order
+  const expertiseCategories = useMemo(() => {
+    if (!categories || categoriesError) return []
+    
+    return categories
+      .sort((a, b) => a.order - b.order)
+      .map(category => ({
+        id: category.id,
+        name: category.name,
+        icon: getCategoryIcon(category.name),
+      }))
+  }, [categories, categoriesError])
 
   const scrollToForm = () => {
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -74,27 +97,23 @@ export default function BecomeSellerPage() {
   const benefits = [
     {
       icon: <LightningBoltIcon className="size-8 text-emerald-500" />,
-      title: "Earn $500-5000/month",
-      description: "Top sellers earn substantial halal income serving the global Muslim community",
-      highlight: "Avg. $1,200/month",
+      title: "Serve & Earn Halal",
+      description: "Empower your skills while earning in a lawful, dignified, and ethical way.",
     },
     {
       icon: <GlobeIcon className="size-8 text-blue-500" />,
-      title: "Access 500,000+ Muslims",
-      description: "Reach clients across 90+ countries in the world's largest Muslim marketplace",
-      highlight: "24/7 Global Market",
+      title: "One Ummah, One Platform",
+      description: "Connecting Muslims worldwide through a unified, purpose-driven marketplace.",
     },
     {
       icon: <ShieldIcon className="size-8 text-purple-500" />,
-      title: "100% Shariah Compliant",
-      description: "Every transaction follows Islamic principles with scholar-verified guidelines",
-      highlight: "Islamic Finance",
+      title: "Safe, Secure & Private",
+      description: "Your data, transactions, and conversations are protected with strong safeguards.",
     },
     {
       icon: <RocketIcon className="size-8 text-orange-500" />,
-      title: "Launch in 24 Hours",
-      description: "Quick approval process gets you selling faster than any other platform",
-      highlight: "Fast Track",
+      title: "Verified Muslim Professionals",
+      description: "Carefully vetted practitioners who meet our ethical, professional, and community standards.",
     },
   ]
 
@@ -151,44 +170,6 @@ export default function BecomeSellerPage() {
     },
   ]
 
-  const expertiseCategories = [
-    { name: "Islamic Education", demand: "High", icon: "📚" },
-    { name: "Arabic Language", demand: "Very High", icon: "🔤" },
-    { name: "Halal Business", demand: "High", icon: "💼" },
-    { name: "Graphic Design", demand: "Medium", icon: "🎨" },
-    { name: "Web Development", demand: "High", icon: "💻" },
-    { name: "Digital Marketing", demand: "Medium", icon: "📱" },
-    { name: "Writing & Translation", demand: "High", icon: "✍️" },
-    { name: "Video Production", demand: "Medium", icon: "🎥" },
-  ]
-
-  const testimonials = [
-    {
-      name: "Ahmed Hassan",
-      role: "Arabic Teacher",
-      earnings: "$3,200/month",
-      quote: "I've been teaching Arabic online for 2 years and this platform has tripled my income while connecting me with serious learners.",
-      avatar: "👨‍🏫",
-      rating: 5,
-    },
-    {
-      name: "Fatima Al-Zahra",
-      role: "Islamic Finance Consultant",
-      earnings: "$4,800/month",
-      quote: "The quality of clients here is exceptional. They understand the value of Shariah-compliant advice and pay accordingly.",
-      avatar: "👩‍💼",
-      rating: 5,
-    },
-    {
-      name: "Omar Khan",
-      role: "Web Developer",
-      earnings: "$2,900/month",
-      quote: "Building halal businesses' websites gives me purpose beyond just earning. The community support is incredible.",
-      avatar: "👨‍💻",
-      rating: 5,
-    },
-  ]
-
     const handleBack = () => {
     router.back()
   }
@@ -214,7 +195,6 @@ export default function BecomeSellerPage() {
           <div className="max-w-3xl mx-auto text-center text-white">
             <div className="inline-flex items-center gap-2 bg-white/20 rounded-full px-4 py-2 mb-6">
               <CheckCircledIcon className="size-4" />
-              {/*<span className="text-sm">Join 10,000+ successful sellers</span>*/}
               <span className="text-sm">Join now</span>
             </div>
             
@@ -241,16 +221,6 @@ export default function BecomeSellerPage() {
 
             {/* Simple trust indicators */}
             <div className="flex justify-center items-center gap-6 text-sm text-emerald-200">
-              {/*<div className="flex items-center gap-2">*/}
-              {/*  <StarIcon className="size-4" />*/}
-              {/*  <span>4.9 Rating</span>*/}
-              {/*</div>*/}
-              {/*<div className="w-1 h-1 bg-emerald-200 rounded-full"></div>*/}
-              {/*<div className="flex items-center gap-2">*/}
-              {/*  <GlobeIcon className="size-4" />*/}
-              {/*  <span>90+ Countries</span>*/}
-              {/*</div>*/}
-              {/*<div className="w-1 h-1 bg-emerald-200 rounded-full"></div>*/}
               <div className="flex items-center gap-2">
                 <LockClosedIcon className="size-4" />
                 <span>100% Halal</span>
@@ -290,7 +260,7 @@ export default function BecomeSellerPage() {
         </div>
 
         {/* Steps Section - Simplified */}
-        <div className="py-12 bg-gray-50 rounded-xl my-12">
+        <div className="py-12 bg-gray-50 rounded-xl">
           <div className="px-6">
             <div className="max-w-2xl mx-auto text-center mb-8">
               <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
@@ -301,56 +271,38 @@ export default function BecomeSellerPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              {steps.map((step, index) => (
-                <div key={index} className="text-center">
-                  <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-4">
-                    {step.number}
+            {/* Mobile: Horizontal scroll, Desktop: Grid */}
+            <div className="md:grid md:grid-cols-3 md:gap-6 md:max-w-3xl md:mx-auto">
+              <div className="flex md:contents gap-4 overflow-x-auto pb-4 md:pb-0 snap-x snap-mandatory scrollbar-hide px-4 md:px-0 -mx-4 md:mx-0">
+                {steps.map((step, index) => (
+                  <div key={index} className="flex-shrink-0 w-[280px] md:w-auto text-center snap-center">
+                    <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-4">
+                      {step.number}
+                    </div>
+                    <h3 className="font-semibold text-gray-900 mb-2">{step.title}</h3>
+                    <p className="text-sm text-gray-600 mb-2 px-2">{step.description}</p>
+                    <Badge className="text-xs">
+                      {step.time}
+                    </Badge>
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">{step.title}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{step.description}</p>
-                  <Badge  className="text-xs">
-                    {step.time}
-                  </Badge>
-                </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile scroll indicator */}
+            <div className="flex justify-center mt-4 gap-1.5 md:hidden">
+              {steps.map((_, index) => (
+                <div key={index} className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Testimonials Section - Simplified */}
-        {/*<div className="py-12">*/}
-        {/*  <div className="max-w-2xl mx-auto text-center mb-8">*/}
-        {/*    <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">*/}
-        {/*      What Our Sellers Say*/}
-        {/*    </h2>*/}
-        {/*    <p className="text-gray-600">*/}
-        {/*      Real success stories from our community*/}
-        {/*    </p>*/}
-        {/*  </div>*/}
+        {/* Categories Section - Grid Layout (3 per row on mobile) */}
+        <div className="py-8 bg-blue-50 rounded-xl my-8">
+          <div className="px-4 lg:px-6">
 
-        {/*  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">*/}
-        {/*    {testimonials.map((testimonial, index) => (*/}
-        {/*      <Card key={index} className="p-6">*/}
-        {/*        <div className="flex items-center gap-3 mb-3">*/}
-        {/*          <div className="text-2xl">{testimonial.avatar}</div>*/}
-        {/*          <div className="flex-1">*/}
-        {/*            <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>*/}
-        {/*            <p className="text-xs text-gray-600">{testimonial.role}</p>*/}
-        {/*          </div>*/}
-        {/*          <div className="text-right">*/}
-        {/*            <div className="text-sm font-semibold text-emerald-600">{testimonial.earnings}</div>*/}
-        {/*          </div>*/}
-        {/*        </div>*/}
-        {/*        <p className="text-sm text-gray-600 italic">"{testimonial.quote}"</p>*/}
-        {/*      </Card>*/}
-        {/*    ))}*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-
-        {/* Categories Section - Simplified */}
-        <div className="py-12 bg-blue-50 rounded-xl my-12">
-          <div className="px-6">
+            {/* Header */}
             <div className="max-w-2xl mx-auto text-center mb-8">
               <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3">
                 Popular Categories
@@ -360,23 +312,60 @@ export default function BecomeSellerPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-              {expertiseCategories.map((category, index) => (
-                <Card key={index} className="p-4 text-center hover:shadow-md transition-shadow cursor-pointer">
-                  <div className="text-2xl mb-2">{category.icon}</div>
-                  <h3 className="font-medium text-gray-900 text-sm mb-1">{category.name}</h3>
-                  <Badge className={`text-xs ${
-                    category.demand === 'Very High' ? 'bg-red-100 text-red-700' :
-                    category.demand === 'High' ? 'bg-orange-100 text-orange-700' :
-                    'bg-yellow-100 text-yellow-700'
-                  }`}>
-                    {category.demand}
-                  </Badge>
-                </Card>
-              ))}
-            </div>
+            {categoriesLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600" />
+                <span className="ml-3 text-slate-600">Loading categories...</span>
+              </div>
+            ) : categoriesError ? (
+              <div className="text-center py-12 text-red-600">
+                Error loading categories. Please try again later.
+              </div>
+            ) : expertiseCategories.length === 0 ? (
+              <div className="text-center py-12 text-slate-600">
+                No categories available at the moment.
+              </div>
+            ) : (
+              <div className="max-w-6xl mx-auto">
+
+                {/* 
+                  Mobile & Tablet: GRID (left → right)
+                  Desktop only: CENTER if < 6
+                */}
+                <div
+                  className={`
+                    grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5
+                    gap-3 sm:gap-4
+                    ${expertiseCategories.length < 6 ? "lg:flex lg:justify-center lg:flex-wrap" : "lg:grid lg:grid-cols-6"}
+                  `}
+                >
+                  {expertiseCategories.map((category) => (
+                    <Card
+                      key={category.id}
+                      className={`
+                        p-3 sm:p-4 md:p-5 text-center
+                        hover:shadow-lg transition-all cursor-pointer group
+                        ${expertiseCategories.length < 6 ? "lg:w-[150px]" : ""}
+                      `}
+                      onClick={() =>
+                        router.push(`/explore?profession=${category.id}`)
+                      }
+                    >
+                      <div className="text-2xl sm:text-3xl md:text-4xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform">
+                        {category.icon}
+                      </div>
+                      <h3 className="font-medium text-gray-900 text-xs sm:text-sm leading-tight line-clamp-2">
+                        {category.name}
+                      </h3>
+                    </Card>
+                  ))}
+                </div>
+
+              </div>
+            )}
           </div>
         </div>
+
 
         {/* FAQ Section - Simplified */}
         <div className="py-12">
@@ -415,7 +404,7 @@ export default function BecomeSellerPage() {
         <ContactFormSection formRef={formRef} />
 
         {/* Final CTA - More Compelling */}
-        <div className="py-16">
+        <div className="py-8">
           <Card className="p-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-center">
             <HeartIcon className="size-16 mx-auto mb-6 text-emerald-200" />
             <h2 className="text-3xl lg:text-4xl font-bold mb-4">
@@ -425,24 +414,6 @@ export default function BecomeSellerPage() {
               Join thousands of Muslims who've already started their journey to financial independence 
               while serving the Ummah
             </p>
-            {/* <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg" 
-                className="px-8 py-4 bg-white text-emerald-600 hover:bg-gray-100 font-semibold"
-                onClick={handleGetStarted}
-              >
-                <RocketIcon className="mr-2" />
-                Start Your Seller Journey
-              </Button>
-              <Button 
-                variant="primary"
-                size="lg" 
-                className="px-6 py-4 border-white/30 text-white hover:bg-white/10"
-              >
-                <ChatBubbleIcon className="mr-2" />
-                Talk to Our Team
-              </Button>
-            </div> */}
             <p className="text-sm text-emerald-200 mt-6">
               💚 Free to join • 24-hour approval • No hidden fees
             </p>
@@ -460,4 +431,41 @@ export default function BecomeSellerPage() {
       <Footer />
     </div>
   )
+}
+
+// Helper function to assign icons to categories
+function getCategoryIcon(categoryName: string): string {
+  const iconMap: Record<string, string> = {
+    "Islamic Education": "📚",
+    "Arabic Language": "🔤",
+    "Halal Business": "💼",
+    "Graphic Design": "🎨",
+    "Web Development": "💻",
+    "Digital Marketing": "📱",
+    "Writing & Translation": "✍️",
+    "Video Production": "🎥",
+    "Photography": "📸",
+    "Music & Audio": "🎵",
+    "Programming": "⌨️",
+    "Business": "💼",
+    "Lifestyle": "🌟",
+    "Data": "📊",
+    "AI Services": "🤖",
+  }
+  
+  // Try exact match first
+  if (iconMap[categoryName]) {
+    return iconMap[categoryName]
+  }
+  
+  // Try partial match
+  for (const [key, icon] of Object.entries(iconMap)) {
+    if (categoryName.toLowerCase().includes(key.toLowerCase()) || 
+        key.toLowerCase().includes(categoryName.toLowerCase())) {
+      return icon
+    }
+  }
+  
+  // Default icon
+  return "📋"
 }
