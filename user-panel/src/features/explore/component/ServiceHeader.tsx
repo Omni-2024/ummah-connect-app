@@ -71,7 +71,7 @@ export default function ServiceHeader({
     setShowContactOptions(false);
     if (providerId) {
       setUserId(providerId);
-    onContact?.(); // optional chaining in case it's undefined
+    onContact?.(); 
   }
 };
 
@@ -158,21 +158,21 @@ export default function ServiceHeader({
               
               <div className="relative flex-shrink-0">
                 <Button
-                  onClick={handleContactClick}
+                  onClick={handleChat}
                   variant="secondary"
                   size="md"
                   className="flex-shrink-0 px-4 py-2 text-sm font-medium lg:px-3"                
                   >
-                  <ChatBubbleIcon className="size-4 mr-1.5" />
-                  Contact
-                  <ChevronDownIcon 
+                  {/* <ChatBubbleIcon className="size-4 mr-1.5" /> */}
+                  Ask a Question
+                  {/* <ChevronDownIcon 
                     className={`size-4 ml-1.5 transition-transform ${
                       showContactOptions ? 'rotate-180' : ''
                     }`} 
-                  />
+                  /> */}
                 </Button>
 
-                {showContactOptions && (
+                {/* {showContactOptions && (
                   <div className="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-50 min-w-[180px]">
                     <button
                       onClick={handleGetQuote}
@@ -189,7 +189,7 @@ export default function ServiceHeader({
                       <span className="font-medium text-gray-900">Ask a Question</span>
                     </button>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </div>
