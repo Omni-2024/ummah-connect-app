@@ -25,23 +25,23 @@ export default function IslamicValuesSection() {
           {[
             { 
               icon: "🤲", 
-              title: "Du'a Before Learning", 
-              desc: "Every session begins with seeking Allah's guidance" 
+              title: "Serve & Earn Halal", 
+              desc: "Empower your skills while earning in a lawful, dignified, and ethical way." 
             },
             { 
               icon: "🕌", 
-              title: "Prayer-Friendly Schedule", 
-              desc: "Course timings respect Islamic prayer times" 
+              title: "One Ummah, One Platform", 
+              desc: "Connecting Muslims worldwide through a unified, purpose-driven marketplace." 
             },
             { 
               icon: "💰", 
-              title: "Zakat-Conscious Pricing", 
-              desc: "Affordable education with sliding scale for those in need" 
+              title: "Community-First Pricing", 
+              desc: "Affordable, flexible pricing designed to support the Ummah" 
             },
             { 
               icon: "🌙", 
-              title: "Ramadan Adaptations", 
-              desc: "Special schedules and content during holy months" 
+              title: "Safe, Secure & Private", 
+              desc: "Your data, transactions, and conversations are protected with strong safeguards" 
             }
           ].map((value, index) => (
             <div 
