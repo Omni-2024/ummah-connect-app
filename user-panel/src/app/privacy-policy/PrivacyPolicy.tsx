@@ -255,7 +255,7 @@ const PrivacyPolicyPage = () => {
             <p>
               If you have any questions or concerns about this Privacy Policy or
               our practices, please contact us at: Email:{" "}
-              <Link href="mailto:tech@Ummah connect.io">tech@Ummah connect.io</Link>
+              <Link href="mailto:support@ummahcommunity.com">support@ummahcommunity.com</Link>
               .
             </p>
           </li>
