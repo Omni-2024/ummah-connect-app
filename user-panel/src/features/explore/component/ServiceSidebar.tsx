@@ -13,7 +13,7 @@ import QuoteRequestModal from "./QuoteRequestModal";
 import { useAppState } from "@/features/app/context/useAppState";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCurrentUser } from "@/lib/hooks/useUser";
-import router from "next/router";
+import { useRouter } from "next/navigation";
 
 interface ServiceSidebarProps {
   service: any;
@@ -42,6 +42,7 @@ export default function ServiceSidebar({
   isScrolled = false,
   providerId,
 }: ServiceSidebarProps) {
+  const router = useRouter();
   const { setUserId } = useChat();
   const [showContactOptions, setShowContactOptions] = useState(false);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
@@ -76,7 +77,7 @@ export default function ServiceSidebar({
 
     const handleChat = () => {
         if (!user) {
-            router.push("/user/signup");
+            router.push("/user/login");
             return;
         }
 
@@ -178,19 +179,19 @@ export default function ServiceSidebar({
           {/* Contact Button with Dropdown */}
           <div className="relative mt-3">
             <Button
-              onClick={handleContactClick}
+              onClick={handleChat}
               variant="secondary"
               className="w-full flex items-center justify-center gap-2 text-sm"
             >
-              <ChatBubbleIcon className="size-4" />
-              Contact
-              <ChevronDownIcon
+              {/* <ChatBubbleIcon className="size-4" /> */}
+              Ask a Question
+              {/* <ChevronDownIcon
                 className={`size-4 transition-transform ${showContactOptions ? "rotate-180" : ""}`}
-              />
+              /> */}
             </Button>
 
             {/* Contact Options Dropdown */}
-            {showContactOptions && (
+            {/* {showContactOptions && (
               <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50">
                 <button
                   onClick={handleGetQuote}
@@ -207,7 +208,7 @@ export default function ServiceSidebar({
                   Ask a Question
                 </button>
               </div>
-            )}
+            )} */}
           </div>
         </Card>
       </div>

@@ -98,7 +98,7 @@ export default function IslamicLearningPathsSection() {
         {/* Optional CTA Section */}
         <div className="text-center mt-8 sm:mt-12 lg:mt-16">
           <p className="text-slate-600 mb-4 sm:mb-6 text-sm sm:text-base px-4 sm:px-0">
-            Not sure which path to choose? Take our quick assessment
+            Not sure which path to choose?
           </p>
           <button onClick={() => router.push("/explore")} className="bg-slate-900 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl hover:bg-slate-800 transition-all duration-200 font-semibold shadow-lg inline-flex items-center gap-2 text-sm sm:text-base">
             Find My Path

@@ -154,7 +154,7 @@ export default function BecomeSellerPage() {
     },
     {
       question: "Do I need previous online selling experience?",
-      answer: "Not at all! We provide comprehensive training, templates, and 24/7 support to help you succeed. Many of our top sellers started with zero online experience.",
+      answer: "Not at all! We provide 24/7 support to help you succeed. Many of our top sellers started with zero online experience.",
     },
     {
       question: "How do you ensure payments are halal?",
@@ -273,19 +273,49 @@ export default function BecomeSellerPage() {
 
             {/* Mobile: Horizontal scroll, Desktop: Grid */}
             <div className="md:grid md:grid-cols-3 md:gap-6 md:max-w-3xl md:mx-auto">
-              <div className="flex md:contents gap-4 overflow-x-auto pb-4 md:pb-0 snap-x snap-mandatory scrollbar-hide px-4 md:px-0 -mx-4 md:mx-0">
+              <div 
+                className="
+                  flex md:contents 
+                  gap-4 md:gap-6 
+                  overflow-x-auto pb-6 md:pb-0 
+                  snap-x snap-mandatory 
+                  scrollbar-hide 
+                  px-4 md:px-0 
+                  -mx-4 md:mx-0
+                "
+              >
                 {steps.map((step, index) => (
-                  <div key={index} className="flex-shrink-0 w-[280px] md:w-auto text-center snap-center">
-                    <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold text-lg mx-auto mb-4">
-                      {step.number}
-                    </div>
-                    <h3 className="font-semibold text-gray-900 mb-2">{step.title}</h3>
-                    <p className="text-sm text-gray-600 mb-2 px-2">{step.description}</p>
-                    <Badge className="text-xs">
-                      {step.time}
-                    </Badge>
-                  </div>
-                ))}
+              <div 
+                key={index} 
+                className={`
+                  flex-shrink-0 
+                  w-[86vw]           // ← increased from previous suggestions – feels more "one at a time"
+                  max-w-[340px]      // safety cap for very wide phones
+                  md:w-auto 
+                  text-center 
+                  snap-center
+                  bg-white           // ← add card-like background (optional but looks cleaner)
+                  rounded-xl
+                  shadow-sm
+                  px-5 py-6          // ← generous inner padding
+                  border border-gray-100
+                `}
+              >
+                <div className="w-14 h-14 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-bold text-xl mx-auto mb-5">
+                  {step.number}
+                </div>
+                <h3 className="font-semibold text-gray-900 text-lg mb-3">{step.title}</h3>
+                <p className="text-sm text-gray-600 leading-relaxed mb-4 px-1">
+                  {step.description}
+                </p>
+                <Badge 
+                  variant="outline" 
+                  className="text-xs bg-emerald-50 text-emerald-700 border-emerald-200 px-3 py-1"
+                >
+                  {step.time}
+                </Badge>
+              </div>
+            ))}
               </div>
             </div>
 
@@ -435,37 +465,16 @@ export default function BecomeSellerPage() {
 
 // Helper function to assign icons to categories
 function getCategoryIcon(categoryName: string): string {
-  const iconMap: Record<string, string> = {
-    "Islamic Education": "📚",
-    "Arabic Language": "🔤",
-    "Halal Business": "💼",
-    "Graphic Design": "🎨",
-    "Web Development": "💻",
-    "Digital Marketing": "📱",
-    "Writing & Translation": "✍️",
-    "Video Production": "🎥",
-    "Photography": "📸",
-    "Music & Audio": "🎵",
-    "Programming": "⌨️",
-    "Business": "💼",
-    "Lifestyle": "🌟",
-    "Data": "📊",
-    "AI Services": "🤖",
+  const icons = ["📚", "✍️", "🌟", "📋"];
+  
+  // Use a stronger mix + multiply by prime to spread values more
+  let hash = 0;
+  for (let i = 0; i < categoryName.length; i++) {
+    hash = (categoryName.charCodeAt(i) + (hash * 31)) | 0; // 31 is common good prime
   }
   
-  // Try exact match first
-  if (iconMap[categoryName]) {
-    return iconMap[categoryName]
-  }
+  // Optional boost: flip sign and add length to further diversify
+  hash = Math.abs(hash + categoryName.length * 17);
   
-  // Try partial match
-  for (const [key, icon] of Object.entries(iconMap)) {
-    if (categoryName.toLowerCase().includes(key.toLowerCase()) || 
-        key.toLowerCase().includes(categoryName.toLowerCase())) {
-      return icon
-    }
-  }
-  
-  // Default icon
-  return "📋"
+  return icons[hash % icons.length];
 }

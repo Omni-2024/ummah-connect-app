@@ -274,10 +274,10 @@ const ContactUsPage = () => {
                 <div>
                   <p className="text-sm font-medium text-dark-500">Email:</p>
                   <Link
-                    href="mailto:tech@ummahconnect.io"
+                    href="mailto:support@ummahcommunity.com"
                     className="text-base text-status-blue underline"
                   >
-                    tech@ummahconnect.io
+                    support@ummahcommunity.com
                   </Link>
                 </div>
                 <div>
