@@ -30,8 +30,8 @@ export default function IslamicValuesSection() {
             },
             { 
               icon: "🕌", 
-              title: "One Ummah, One Platform", 
-              desc: "Connecting Muslims worldwide through a unified, purpose-driven marketplace." 
+              title: "Faith-Aligned", 
+              desc: "Designed to support worship, ethics, and sincere intentions in every interaction." 
             },
             { 
               icon: "💰", 
