@@ -154,7 +154,7 @@ export default function BecomeSellerPage() {
     },
     {
       question: "Do I need previous online selling experience?",
-      answer: "Not at all! We provide comprehensive training, templates, and 24/7 support to help you succeed. Many of our top sellers started with zero online experience.",
+      answer: "Not at all! We provide 24/7 support to help you succeed. Many of our top sellers started with zero online experience.",
     },
     {
       question: "How do you ensure payments are halal?",
