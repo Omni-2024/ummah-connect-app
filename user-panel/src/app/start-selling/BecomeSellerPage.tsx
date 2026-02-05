@@ -441,8 +441,7 @@ export default function BecomeSellerPage() {
               Ready to Transform Your Skills into Income?
             </h2>
             <p className="text-xl text-emerald-100 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Join thousands of Muslims who've already started their journey to financial independence 
-              while serving the Ummah
+              Join Muslims who’ve already started their journey to financial independence while serving the Ummah
             </p>
             <p className="text-sm text-emerald-200 mt-6">
               💚 Free to join • 24-hour approval • No hidden fees

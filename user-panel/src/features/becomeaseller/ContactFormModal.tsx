@@ -99,7 +99,7 @@ export const ContactFormSection = ({ formRef }: { formRef: React.RefObject<HTMLD
           </h2>
           <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
             Fill out the form below and we'll review your application within 24 hours.
-            Join thousands of successful sellers today!
+            Join our community of successful sellers today.
           </p>
         </div>
 
