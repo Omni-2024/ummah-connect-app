@@ -55,7 +55,7 @@ export default function HeroSection({
                         </h1>
 
                         <p className="text-sm sm:text-base lg:text-xl text-slate-600 mb-6 sm:mb-8 leading-relaxed max-w-2xl mx-auto">
-                            Join thousands of Muslims advancing their careers while staying true to Islamic principles. Learn from certified scholars and industry experts.
+                            Join us today and benefit the ummah while staying true to islamic principles. Learn from  many talented indivudals and industry experts.
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12">
