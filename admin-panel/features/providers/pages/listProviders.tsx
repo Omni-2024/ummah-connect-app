@@ -188,6 +188,7 @@ const ListProviders: React.FC<ListProvidersProps> = ({ search, clearSearch }) =>
           setPopupType(null);
           setSelectedUser(null);
         }}
+        mode={"DELETE"}
       />
 
       {/* EDIT ROLE */}
