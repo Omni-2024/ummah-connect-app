@@ -143,6 +143,19 @@ export class UsersService {
     return user;
   }
 
+  async forceDeleteUser(id: string) {
+    const user = await this.userRepo.findOneById(id);
+    if (!user) {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        error: 'User not found',
+      };
+    }
+
+    await this.userRepo.forceDelete(user);
+    return user;
+  }
+
   async changeStatus(id: string, status: boolean) {
     try {
       const user = await this.userRepo.changeStatus(id, status);

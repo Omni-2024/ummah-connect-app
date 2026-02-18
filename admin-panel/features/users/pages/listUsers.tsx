@@ -11,7 +11,7 @@ import AdvancedPagination from "@/components/widget/advancedPagination";
 import ViewUser from "@/components/popups/viewUser";
 import RemoveDialog from "@/components/widget/removeDialog";
 import { useGeneralUsers } from "@/lib/hooks/useGeneralUsers";
-import { deleteUserFn } from "@/lib/endpoints/usersFns";
+import {deleteUserFn, forceDeleteUserFn} from "@/lib/endpoints/usersFns";
 import { UserEditPopup } from "@/features/app/components/EditUserPopup";
 import Request from "@/lib/http";
 import { getProfessionsFn } from "@/lib/endpoints/categoriesFns";
@@ -27,6 +27,7 @@ enum PopupType {
   AddUser = "addUser",
   EditUser = "editUser",
   DeleteUser = "deleteUser",
+  BlockUser = "blockUser",
 }
 
 const PAGE_SIZE = 10;
@@ -75,6 +76,16 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
   /** DELETE USER */
   const { mutate: deleteUser, isPending: isDeleting } = useMutation({
     mutationFn: deleteUserFn,
+    onSuccess: () => {
+      refetchUsers();
+      Toast.success("User blocked successfully");
+      setPopupType(null);
+      setSelectedUser(null);
+    },
+  });
+
+  const { mutate: forceDeleteUser, isPending: isForceDeleting } = useMutation({
+    mutationFn: forceDeleteUserFn,
     onSuccess: () => {
       refetchUsers();
       Toast.success("User deleted successfully");
@@ -193,9 +204,15 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
               onEdit={() =>
                 setEditRoleUser({ id: user.id, role: user.role })
               }
+              onForceDelete={
+                ()=>{
+                  setSelectedUser(user.id);
+                  setPopupType(PopupType.DeleteUser);
+                }
+              }
               onDelete={() => {
                 setSelectedUser(user.id);
-                setPopupType(PopupType.DeleteUser);
+                setPopupType(PopupType.BlockUser);
               }}
               onViewDetails={() => {
                 setSelectedUser(user.id);
@@ -230,7 +247,7 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
           }
         }}
         onDelete={() => {
-          if (selectedUser) deleteUser(selectedUser);
+          if (selectedUser) forceDeleteUser(selectedUser);
         }}
       />
 
@@ -238,14 +255,30 @@ const ListUsers: React.FC<ListUsersProps> = ({ search, clearSearch }) => {
       <RemoveDialog
         name="user"
         open={popupType === PopupType.DeleteUser}
-        loading={isDeleting}
+        loading={isForceDeleting}
         onRemove={() => {
-          if (selectedUser) deleteUser(selectedUser);
+          if (selectedUser) forceDeleteUser(selectedUser);
         }}
         onClose={() => {
           setPopupType(null);
           setSelectedUser(null);
         }}
+        mode={"DELETE"}
+      />
+
+      {/* BLOCK */}
+      <RemoveDialog
+          name="user"
+          open={popupType === PopupType.BlockUser}
+          loading={isDeleting}
+          onRemove={() => {
+            if (selectedUser) deleteUser(selectedUser);
+          }}
+          onClose={() => {
+            setPopupType(null);
+            setSelectedUser(null);
+          }}
+          mode={"BLOCK"}
       />
 
       {/* EDIT */}

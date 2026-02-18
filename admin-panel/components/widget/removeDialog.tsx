@@ -20,16 +20,22 @@ interface RemoveDialogProps {
     onClose: () => void
     onRemove: () => void
     loading?: boolean
+    mode:"BLOCK" | "DELETE"
 }
 
-const RemoveDialog: React.FC<RemoveDialogProps> = ({ name, open, onClose, onRemove, loading = false }) => {
+const RemoveDialog: React.FC<RemoveDialogProps> = ({ name, open, onClose, onRemove, loading = false,mode }) => {
     return (
         <AlertDialog open={open} onOpenChange={onClose}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Remove {name}?</AlertDialogTitle>
+                    <AlertDialogTitle> {mode == "BLOCK" ? `Block ${name}?` : `Remove ${name}?`}</AlertDialogTitle>
                     <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete the {name}.
+                        {
+                            mode == "DELETE" ? "This action cannot be undone. This will permanently delete the {name}."
+                                :
+                                "This action cannot be undone. This will permanently block the {name}."
+                        }
+
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -40,7 +46,8 @@ const RemoveDialog: React.FC<RemoveDialogProps> = ({ name, open, onClose, onRemo
                         className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     >
                         {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Remove
+                        { mode == "DELETE" ? "Remove" :"Block"}
+
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

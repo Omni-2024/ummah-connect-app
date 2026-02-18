@@ -59,6 +59,14 @@ export const deleteUserFn = async (id: string) => {
     return res.data;
 };
 
+export const forceDeleteUserFn = async (id: string) => {
+    const res = await Request<R<null>>({
+        method: "delete",
+        url: `/api/user/force/${id}`,
+    });
+    return res.data;
+};
+
 export const enableUser = async (id: string) => {
     const res = await Request<R<null>>({
         method: "patch",

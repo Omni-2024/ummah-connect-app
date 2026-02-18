@@ -7,7 +7,7 @@ import {UserData} from "@/types/data";
 import {ArrowRight} from "lucide-react";
 import { UserEditPopup } from "@/features/app/components/EditUserPopup";
 
-type UserCardProps = { data: UserData; onEdit: () => void; onDelete: () => void; onViewDetails: () => void; };
+type UserCardProps = { data: UserData; onEdit: () => void; onDelete: () => void; onViewDetails: () => void;  onForceDelete: () => void;};
 
 export const UserCard: React.FC<UserCardProps> = ({ data, ...props }) => {
     const [imageError, setImageError] = useState(false);
@@ -35,7 +35,8 @@ export const UserCard: React.FC<UserCardProps> = ({ data, ...props }) => {
                 </div>
 
                 <div className="flex gap-2 items-center">
-                    <Button variant="secondary" className="py-2 px-4" onClick={props.onDelete}>Remove</Button>
+                    <Button variant="secondary" className="py-2 px-4" onClick={props.onDelete}>Block</Button>
+                    <Button variant="secondary" className="py-2 px-4" onClick={props.onForceDelete}>Remove</Button>
                     <Button variant="secondary" className="py-2 px-4" onClick={props.onEdit}>Edit</Button>
                 </div>
             </div>

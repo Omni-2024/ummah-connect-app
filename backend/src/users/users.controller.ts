@@ -81,6 +81,17 @@ export class UsersController {
     return await this.userService.deleteUser(id);
   }
 
+  @Roles([
+    UserRole.USER,
+    UserRole.ADMIN,
+    UserRole.ROOT,
+    UserRole.BUSINESS_ADMIN,
+  ])
+  @Delete('force/:id')
+  async forceDeleteUser(@Param('id') id: string) {
+    return await this.userService.forceDeleteUser(id);
+  }
+
   @Roles([UserRole.ADMIN, UserRole.ROOT])
   @Patch('/:id/change-status')
   async changeStatus(
