@@ -158,6 +158,7 @@ export default function ListCategories({ categories }: Props) {
                     }
                 }}
                 loading={isDeletingCat}
+                mode={"DELETE"}
             />
         </>
     );
