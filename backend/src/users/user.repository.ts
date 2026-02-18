@@ -218,6 +218,14 @@ export class UserRepository {
     }
   }
 
+  async forceDelete(user: UserEntity) {
+    try {
+      return await this.userRepository.remove(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async changeStatus(id: string, status: boolean): Promise<UserEntity> {
     try {
       const user = await this.userRepository.findOneBy({ id });
@@ -262,7 +270,6 @@ export class UserRepository {
 
   async updateTotalServices({ id }: { id: string }) {
     try {
-
       const user = await this.userRepository.findOneBy({ id });
       console.log(user);
       if (!user) {
