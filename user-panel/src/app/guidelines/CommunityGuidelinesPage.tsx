@@ -733,8 +733,8 @@ const CommunityGuidelinesPage = () => {
           </h3>
           <p className="text-base text-dark-400">
             If you have questions about these guidelines or need to report a violation, please contact us at{" "}
-            <Link href="mailto:support@ummahcommunity.com" className="text-status-blue underline">
-              support@ummahcommunity.com
+            <Link href="mailto:support@ummahconnect.online" className="text-status-blue underline">
+              support@ummahconnect.online
             </Link>
             . For general support, visit our{" "}
             <Link href="/help-center" className="text-status-blue underline">

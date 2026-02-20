@@ -189,10 +189,10 @@ export default function Footer() {
             {/* Social Links - Optional, can be removed if not needed */}
             <div className="flex items-center gap-4">
               <button
-                onClick={() => handleExternalLink('mailto:support@ummahcommunity.com')}
+                onClick={() => handleExternalLink('mailto:info@ummahconnect.online')}
                 className="text-sm text-gray-700 hover:text-blue-600 transition-colors"
               >
-                support@ummahcommunity.com
+                info@ummahconnect.online
               </button>
             </div>
           </div>
