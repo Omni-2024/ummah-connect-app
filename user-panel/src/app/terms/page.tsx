@@ -286,7 +286,7 @@ const TermsPageContent = () => {
             <p>
               If you have any questions or concerns about these Terms or our
               Services, please contact us at: <br /> Email:{" "}
-              <Link href="mailto:support@ummahcommunity.com">support@ummahcommunity.com</Link>
+              <Link href="mailto:support@ummahconnect.online">support@ummahconnect.online</Link>
               .
             </p>
           </li>

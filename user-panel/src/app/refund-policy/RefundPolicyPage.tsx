@@ -361,8 +361,8 @@ const RefundPolicyPage = () => {
           </h3>
           <p className="text-base text-dark-400">
             If you need to request a refund or have questions about this policy, please contact our support team at{" "}
-            <Link href="mailto:support@ummahconnect.io" className="text-status-blue underline">
-              support@ummahconnect.io
+            <Link href="mailto:support@ummahconnect.online" className="text-status-blue underline">
+              support@ummahconnect.online
             </Link>
             . For disputes, visit our{" "}
             <Link href="/help-center" className="text-status-blue underline">

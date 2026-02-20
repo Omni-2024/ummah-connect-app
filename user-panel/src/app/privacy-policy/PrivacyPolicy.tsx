@@ -212,8 +212,8 @@ const PrivacyPolicyPage = () => {
                 <span>
                   You can access and update your personal information by logging
                   into your account or contacting us at{" "}
-                  <Link href="mailto:tech@Ummah connect.io">
-                    tech@Ummah connect.io
+                  <Link href="mailto:info@ummahconnect.online">
+                    info@ummahconnect.online
                   </Link>
                   .
                 </span>
@@ -255,7 +255,7 @@ const PrivacyPolicyPage = () => {
             <p>
               If you have any questions or concerns about this Privacy Policy or
               our practices, please contact us at: Email:{" "}
-              <Link href="mailto:support@ummahcommunity.com">support@ummahcommunity.com</Link>
+              <Link href="mailto:support@ummahconnect.online">support@ummahconnect.online</Link>
               .
             </p>
           </li>
