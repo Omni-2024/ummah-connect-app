@@ -1,4 +1,4 @@
-import {getAllGeneralUsersFn, getGeneralUser} from "@/lib/endpoints/usersFns";
+import {getAllGeneralBlockedUsersFn, getAllGeneralUsersFn, getGeneralUser} from "@/lib/endpoints/usersFns";
 import { useQuery } from "@tanstack/react-query";
 
 export const useGeneralUsers = (
@@ -12,6 +12,21 @@ export const useGeneralUsers = (
     return useQuery({
         queryKey: ["users", "general", data],
         queryFn: () => getAllGeneralUsersFn(data),
+        placeholderData: keepPrevious ? (data) => data : undefined,
+    });
+};
+
+export const useGeneralBlockedUsers = (
+    data: {
+        limit: number;
+        offset: number;
+        search:string;
+    },
+    keepPrevious?: boolean
+    ) => {
+    return useQuery({
+        queryKey: ["users", "general-blocked", data],
+        queryFn: () => getAllGeneralBlockedUsersFn(data),
         placeholderData: keepPrevious ? (data) => data : undefined,
     });
 };

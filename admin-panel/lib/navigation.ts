@@ -9,12 +9,14 @@ import {
   BarChart3,
   Star,
   User,
+  UserX
 } from "lucide-react"
 
 export const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Users", href: "/admin/users", icon: Users },
   { name: "Freelancers", href: "/admin/providers", icon: Users },
+  { name: "Blocked Users", href: "/admin/blocked-users", icon: UserX },
   { name: "Categories", href: "/admin/categories", icon: Tags },
   { name: "Services", href: "/admin/services", icon: Briefcase },
   // { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
