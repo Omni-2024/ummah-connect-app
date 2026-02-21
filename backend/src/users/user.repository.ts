@@ -125,10 +125,49 @@ export class UserRepository {
           {
             role: UserRole.USER,
             email: Like(`%${query?.toLowerCase()}%`),
+            active: true,
           },
           {
             role: UserRole.USER,
             name: ILike(`%${query}%`),
+            active: true,
+          },
+        ],
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+      return { usersList, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async searchBlockedUsers({
+    query,
+    limit,
+    offset,
+  }: SearchUserDto): Promise<{ usersList: UserEntity[]; count: number }> {
+    try {
+      const options: FindOptions = {};
+      if (limit && limit > 0) {
+        options.take = limit;
+      }
+      if (offset && offset > 0) {
+        options.skip = offset;
+      }
+      const [usersList, count] = await this.userRepository.findAndCount({
+        ...options,
+        where: [
+          {
+            role: UserRole.USER,
+            email: Like(`%${query?.toLowerCase()}%`),
+            active: false,
+          },
+          {
+            role: UserRole.USER,
+            name: ILike(`%${query}%`),
+            active: false,
           },
         ],
         order: {
@@ -148,7 +187,39 @@ export class UserRepository {
     try {
       const options: FindOptions = {
         order: { createdAt: 'DESC' },
-        where: { role: UserRole.USER },
+        where: {
+          role: UserRole.USER,
+          active: true,
+        },
+      };
+      if ((limit && limit > 0) || (offset && offset > 0)) {
+        options.take = limit;
+        options.skip = offset;
+      }
+
+      options.order = {
+        createdAt: 'DESC',
+      };
+
+      const [usersList, count] =
+        await this.userRepository.findAndCount(options);
+      return { usersList, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAllBlockedUsersAndCount({
+    limit,
+    offset,
+  }: PaginatedRequestDto): Promise<{ usersList: UserEntity[]; count: number }> {
+    try {
+      const options: FindOptions = {
+        order: { createdAt: 'DESC' },
+        where: {
+          role: UserRole.USER,
+          active: false,
+        },
       };
       if ((limit && limit > 0) || (offset && offset > 0)) {
         options.take = limit;
@@ -212,6 +283,15 @@ export class UserRepository {
   async deleteUser(user: UserEntity) {
     try {
       user.active = false;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async unblockUser(user: UserEntity) {
+    try {
+      user.active = true;
       return await this.userRepository.save(user);
     } catch (error) {
       throw error;

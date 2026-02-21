@@ -30,6 +30,7 @@ export default function AdminSidebar() {
     "/admin/revenue",
     "/admin/reviews",
     "/admin/profile",
+    "/admin/blocked-users"
   ],
   [ADMIN_ROLES.BUSINESS_ADMIN]: [
     "/admin",

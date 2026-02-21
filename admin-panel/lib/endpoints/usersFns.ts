@@ -39,6 +39,27 @@ export const getAllGeneralUsersFn = async (
     }
 };
 
+/** Get - '/user/all-blocked' - get all Blocked General Users with pagination */
+export const getAllGeneralBlockedUsersFn = async (
+    params: GetAllGeneralUsersFnProps
+) => {
+    try {
+        const res = await Request<GetAllGeneralUsersFnResponse>({
+            method: "get",
+            url: "/api/user/all-blocked",
+            params,
+        });
+        return res.data;
+    } catch (e) {
+        if (!isAxiosError(e)) throw e;
+
+        if (e.status === 404)
+            return { data: [], meta: { total: 0, limit: 0, offset: 0 } };
+
+        throw e;
+    }
+};
+
 /** Get - '/user/:id' - get General User by ID */
 export const getGeneralUser = async (id?: string) => {
     if (!id) return {} as UserData;
@@ -55,6 +76,15 @@ export const deleteUserFn = async (id: string) => {
     const res = await Request<R<null>>({
         method: "delete",
         url: `/api/user/${id}`,
+    });
+    return res.data;
+};
+
+/** Unblock - '/user/unblock/:id' - delete General User */
+export const unBlockUserFn = async (id: string) => {
+    const res = await Request<R<null>>({
+        method: "delete",
+        url: `/api/user/unblock/${id}`,
     });
     return res.data;
 };

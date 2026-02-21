@@ -31,6 +31,20 @@ export class UsersController {
     });
   }
 
+  @Roles([UserRole.ADMIN, UserRole.ROOT, UserRole.BUSINESS_ADMIN])
+  @Get('/all-blocked')
+  async findAllBlocked(
+    @Query('limit') limit?: number,
+    @Query('offset') offset?: number,
+    @Query('query') query?: string,
+  ) {
+    return await this.userService.findAllBlocked({
+      limit,
+      offset,
+      query,
+    });
+  }
+
   @Patch('/:id/retrieve')
   async retrieveUser(@Param('id') id: string) {
     return await this.userService.retrieveUser(id);
@@ -79,6 +93,16 @@ export class UsersController {
   @Delete('/:id')
   async deleteUser(@Param('id') id: string) {
     return await this.userService.deleteUser(id);
+  }
+  @Roles([
+    UserRole.USER,
+    UserRole.ADMIN,
+    UserRole.ROOT,
+    UserRole.BUSINESS_ADMIN,
+  ])
+  @Delete('/unblock/:id')
+  async unblockUser(@Param('id') id: string) {
+    return await this.userService.unblockUser(id);
   }
 
   @Roles([

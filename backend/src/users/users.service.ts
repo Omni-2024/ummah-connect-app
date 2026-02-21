@@ -60,6 +60,43 @@ export class UsersService {
     }
   }
 
+  async findAllBlocked({ limit, offset, query }: SearchUserDto) {
+    try {
+      let users, total;
+      if (query) {
+        const { usersList, count } = await this.userRepo.searchBlockedUsers({
+          query,
+          limit,
+          offset,
+        });
+        users = usersList;
+        total = count;
+      } else {
+        const { count, usersList } =
+          await this.userRepo.getAllBlockedUsersAndCount({
+            limit,
+            offset,
+          });
+        total = count;
+        users = usersList;
+      }
+      if (
+        users instanceof Array &&
+        users.length > 0 &&
+        users[0] instanceof UserEntity &&
+        total
+      ) {
+        return {
+          data: users,
+          meta: { total, limit, offset },
+        };
+      }
+      return { status: HttpStatus.NOT_FOUND, error: 'No users found' };
+    } catch (e) {
+      return { status: HttpStatus.INTERNAL_SERVER_ERROR, error: e.message };
+    }
+  }
+
   async retrieveUser(id: string) {
     const user = await this.userRepo.findOneById(id);
     if (!user) {
@@ -140,6 +177,19 @@ export class UsersService {
     }
 
     await this.userRepo.deleteUser(user);
+    return user;
+  }
+
+  async unblockUser(id: string) {
+    const user = await this.userRepo.findOneById(id);
+    if (!user) {
+      return {
+        status: HttpStatus.NOT_FOUND,
+        error: 'User not found',
+      };
+    }
+
+    await this.userRepo.unblockUser(user);
     return user;
   }
 
