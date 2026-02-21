@@ -263,10 +263,10 @@ const HelpCenterPage = () => {
               <div>
                 <p className="text-sm font-medium text-dark-500">Email:</p>
                 <Link
-                  href="mailto:support@ummahconnect.io"
+                  href="mailto:support@ummahconnect.online"
                   className="text-base text-status-blue underline"
                 >
-                  support@ummahconnect.io
+                  support@ummahconnect.online
                 </Link>
               </div>
               <div>
