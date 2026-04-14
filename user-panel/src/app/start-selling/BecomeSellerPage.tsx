@@ -504,11 +504,23 @@ export default function BecomeSellerPage() {
                   {/* second reminder right above form (so they cannot miss it) */}
                   <Card className="p-5 border border-emerald-200 bg-emerald-50 my-6">
                     <p className="font-semibold text-emerald-900">Before you submit</p>
+
                     <ul className="text-sm text-emerald-900/80 mt-2 list-disc pl-5 space-y-1">
                       <li>Create your account using <b>Email &amp; Password</b> (not Google).</li>
                       <li>Submit the form using the <b>same email</b> you used to create the account.</li>
                       <li>After submission, our team will contact you by email. After agreements, you will receive Admin Panel access.</li>
                     </ul>
+
+                    {/* 🔴 IMPORTANT WARNING */}
+                    <div className="mt-4 p-3 border border-red-300 bg-red-50 rounded-md">
+                      <p className="text-sm text-red-700 font-semibold">
+                        ⚠ Important: Umma Connect verification emails may sometimes be delivered to your Spam/Junk folder. Please check there if you do not see the email in your inbox.
+                      </p>
+                      {/*<p className="text-sm text-red-700 mt-1">*/}
+                      {/*  If you don’t see the full message, please check carefully or view the email in another client.*/}
+                      {/*</p>*/}
+                    </div>
+
                     {!isLoggedIn && (
                         <div className="mt-3">
                           <Button onClick={goToProviderEmailSignup}>Create Email Account</Button>
