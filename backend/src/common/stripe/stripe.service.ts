@@ -88,9 +88,17 @@ export class StripeService {
     const provider = await this.userRepo.findOneById(providerId);
     if (!provider) throw new BadRequestException('Provider not found');
 
+    const countryMap = {
+      "Egypt": "EG",
+      "United Kingdom": "GB",
+      "United States": "US",
+      "Saudi Arabia": "SA",
+    };
+
     if (!provider.stripeConnectAccountId) {
       const account = await this.stripe.accounts.create({
-        type: 'express', // or 'standard' based on your flow
+        type: 'express',
+        country: countryMap[provider.country] || "GB",
         email: provider.email,
         capabilities: {
           card_payments: { requested: true },
